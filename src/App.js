@@ -9,7 +9,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 const API_KEY = "sk-ant-REPLACE-WITH-YOUR-KEY";
 
 // Your GA4 Measurement ID — get one at analytics.google.com (optional)
-const GA4_ID = "G-XXXXXXXXXX";
+const GA4_ID = "G-9TQPPTHT19";
 
 // MOCK MODE: true = instant fake output, zero API cost (for UI testing)
 //            false = real Claude API calls (needs credits)
