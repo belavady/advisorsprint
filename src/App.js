@@ -1262,7 +1262,7 @@ export default function App() {
               CPG Brand &amp; Market Insights<br/>
               <em style={{ color: P.terra }}>Analysed By 7 Parallel Agents</em>
             </h1>
-            <p style={{ fontSize: 14, color: P.inkSoft, maxWidth: 520, margin: "0 auto 28px", lineHeight: 1.8 }}>
+            <p style={{ fontSize: 14, color: P.inkSoft, maxWidth: 525, margin: "0 auto 28px", lineHeight: 1.8 }}>
               In Wave 1, 4 Analysis Agents Fire Simultaneously And 3 Synthesis Agents In Wave 2
             </p>
 
