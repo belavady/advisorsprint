@@ -9,7 +9,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 const API_KEY = "sk-ant-REPLACE-WITH-YOUR-KEY";
 
 // Your GA4 Measurement ID — get one at analytics.google.com (optional)
-const GA4_ID = "G-XXXXXXXXXX";
+const GA4_ID = "G-9TQPPTHT19";
 
 // MOCK MODE: true = instant fake output, zero API cost (for UI testing)
 //            false = real Claude API calls (needs credits)
@@ -1356,14 +1356,14 @@ export default function App() {
               </div>
             )}
             <div style={{ fontSize: 10, color: P.terra, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 14 }}>
-              Rapid Intelligence Sprint · CPG Brands
+              Rapid Intelligence Sprint
             </div>
             <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 38, color: P.forest, lineHeight: 1.15, letterSpacing: "-0.02em", marginBottom: 16 }}>
-              7 agents. One company.<br/>
-              <em style={{ color: P.terra }}>All running in parallel.</em>
+              CPG Brand Insights<br/>
+              <em style={{ color: P.terra }}>Powered by 7 Parallel Agents</em>
             </h1>
             <p style={{ fontSize: 14, color: P.inkSoft, maxWidth: 520, margin: "0 auto 28px", lineHeight: 1.8 }}>
-              4 analysis agents fire simultaneously across market signals, competitive landscape, channels, and customer segments. Then 3 synthesis agents turn those findings into a GTM pivot strategy, operating cadence, and board narrative.
+              In Wave 1, 4 Analysis Agents Fire Simultaneously And In Wave 2, 3 Synthesis Agents Again Fire Simultaneously To Provide The Quickest Analysis!
             </p>
 
             {/* Architecture diagram */}
