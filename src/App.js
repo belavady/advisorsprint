@@ -1582,13 +1582,16 @@ export default function App() {
               <div style={{ fontSize: 14, color: "white", fontWeight: 600 }}>✓ Sprint complete · {company} · {Math.floor(elapsed / 60)}m {elapsed % 60}s</div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,.7)", marginTop: 3 }}>All 7 agents complete · Distribution benchmarks and targets ready for tracking</div>
             </div>
-            <div style={{ display: "flex", gap: 10 }}>
-              <button onClick={downloadPDF} style={{ background: "transparent", border: "1px solid rgba(255,255,255,.4)", color: "white", padding: "9px 18px", borderRadius: 3, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Work Sans',sans-serif", transition: "all .2s" }}>
-                ⬇ Download PDF
-              </button>
-              <button onClick={() => setActiveTab("dashboard")} style={{ background: P.terra, color: "white", border: "none", padding: "9px 20px", borderRadius: 3, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Work Sans',sans-serif" }}>
-                → Open Dashboard
-              </button>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+              <div style={{ display: "flex", gap: 10 }}>
+                <button onClick={downloadPDF} style={{ background: "transparent", border: "1px solid rgba(255,255,255,.4)", color: "white", padding: "9px 18px", borderRadius: 3, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Work Sans',sans-serif", transition: "all .2s" }}>
+                  ⬇ Download PDF
+                </button>
+                <button onClick={() => setActiveTab("dashboard")} style={{ background: P.terra, color: "white", border: "none", padding: "9px 20px", borderRadius: 3, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Work Sans',sans-serif" }}>
+                  → Open Dashboard
+                </button>
+              </div>
+              <div style={{ fontSize: 10, color: "rgba(255,255,255,.45)", fontStyle: "italic" }}>Best in Safari or Edge · Chrome may truncate</div>
             </div>
           </div>
         )}
@@ -1639,13 +1642,16 @@ export default function App() {
               <div style={{ fontFamily:"'Playfair Display',serif", fontSize:18, color:P.cream, fontStyle:"italic", marginBottom:3 }}>Intelligence Sprint Complete</div>
               <div style={{ fontSize:12, color:P.sand }}>4 parallel + 3 synthesis agents · GTM pivot · Board narrative · Operating cadence · Ready to present</div>
             </div>
-  <div style={{ display:"flex", gap:10 }}>
-              <button onClick={downloadPDF} style={{ background:"transparent", border:`1.5px solid rgba(255,255,255,0.3)`, color:P.cream, padding:"10px 20px", borderRadius:2, fontSize:12, fontWeight:700, cursor:"pointer", letterSpacing:"0.05em", fontFamily:"'Instrument Sans',sans-serif", display:"flex", alignItems:"center", gap:7 }}>
-                ⬇ DOWNLOAD PDF
-              </button>
-              <button onClick={reset} style={{ background:P.terra, color:P.cream, border:"none", padding:"10px 22px", borderRadius:2, fontSize:12, fontWeight:700, cursor:"pointer", letterSpacing:"0.05em", fontFamily:"'Instrument Sans',sans-serif" }}>
-                NEW SPRINT →
-              </button>
+  <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:6 }}>
+              <div style={{ display:"flex", gap:10 }}>
+                <button onClick={downloadPDF} style={{ background:"transparent", border:`1.5px solid rgba(255,255,255,0.3)`, color:P.cream, padding:"10px 20px", borderRadius:2, fontSize:12, fontWeight:700, cursor:"pointer", letterSpacing:"0.05em", fontFamily:"'Instrument Sans',sans-serif", display:"flex", alignItems:"center", gap:7 }}>
+                  ⬇ DOWNLOAD PDF
+                </button>
+                <button onClick={reset} style={{ background:P.terra, color:P.cream, border:"none", padding:"10px 22px", borderRadius:2, fontSize:12, fontWeight:700, cursor:"pointer", letterSpacing:"0.05em", fontFamily:"'Instrument Sans',sans-serif" }}>
+                  NEW SPRINT →
+                </button>
+              </div>
+              <div style={{ fontSize:10, color:"rgba(255,255,255,.45)", fontStyle:"italic" }}>Best in Safari or Edge · Chrome may truncate</div>
             </div>
           </div>
         )}
