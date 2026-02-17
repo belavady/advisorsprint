@@ -6,7 +6,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 // Your Anthropic API key — get one at console.anthropic.com
 // IMPORTANT: This key will be visible in your browser source code.
 // Only share the deployed URL with people you trust.
-const API_KEY = "sk-ant-REPLACE-WITH-YOUR-KEY";
+// API calls go through Vercel proxy — no client-side key needed
 
 // Your GA4 Measurement ID — get one at analytics.google.com (optional)
 const GA4_ID = "G-9TQPPTHT19";
@@ -773,96 +773,7 @@ function AgentCard({ agent, status, result, index }) {
     </div>
   );
 }
-function KPIDash({ company }) {
-  const S = { card:{ background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:3, padding:"12px 14px" } };
-  const Tag = ({ type, label }) => {
-    const styles = {
-      dist:    { color:P.forestSoft, background:"rgba(61,107,84,.2)",   border:"1px solid rgba(61,107,84,.3)"   },
-      sales:   { color:P.gold,       background:"rgba(200,146,42,.15)", border:"1px solid rgba(200,146,42,.3)"  },
-      digital: { color:P.sand,       background:"rgba(155,140,120,.12)",border:"1px solid rgba(155,140,120,.2)" },
-      fin:     { color:P.terraSoft,  background:"rgba(212,114,74,.15)", border:"1px solid rgba(212,114,74,.3)"  },
-    };
-    return <span style={{ fontSize:9, fontWeight:700, padding:"2px 8px", borderRadius:20, letterSpacing:".05em", ...styles[type] }}>{label}</span>;
-  };
-  const Metric = ({ name, flag, target, type }) => (
-    <div style={S.card}>
-      <div style={{ fontSize:10, color:P.sand, fontWeight:600, letterSpacing:".08em", textTransform:"uppercase", marginBottom:6 }}>{name}</div>
-      <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:20, color:P.cream, marginBottom:5 }}>—</div>
-      <div style={{ fontSize:11, color:P.inkFaint, marginBottom:6 }}>Target: <span style={{ color:P.terracream }}>{target}</span></div>
-      <div style={{ fontSize:10, color:"rgba(255,255,255,0.35)", lineHeight:1.5, marginBottom:7 }}>{flag}</div>
-      <Tag type={type} label={type === "dist" ? "Distribution" : type === "sales" ? "Sales" : type === "fin" ? "Financial" : "Digital"} />
-    </div>
-  );
-  const sectionLabel = (icon, title) => (
-    <div style={{ fontSize:9, fontWeight:700, letterSpacing:".15em", textTransform:"uppercase", color:P.sand, marginBottom:10, paddingBottom:6, borderBottom:"1px solid rgba(255,255,255,.08)" }}>
-      {icon} {title}
-    </div>
-  );
-  return (
-    <div style={{ background:P.forest, borderRadius:3, padding:22, animation:"fadeUp 0.4s ease" }}>
-      <div style={{ fontFamily:"'Playfair Display',serif", fontSize:16, color:P.cream, fontStyle:"italic", marginBottom:3 }}>Operating Cadence Dashboard</div>
-      <div style={{ fontSize:11, color:P.sand, marginBottom:20 }}>Post-pivot KPIs · {company}</div>
 
-      {/* North Star */}
-      <div style={{ background:"rgba(200,146,42,.12)", border:"1px solid rgba(200,146,42,.3)", borderRadius:3, padding:"13px 16px", marginBottom:20 }}>
-        <div style={{ fontSize:9, fontWeight:700, letterSpacing:".15em", textTransform:"uppercase", color:P.gold, marginBottom:6 }}>North Star Metric</div>
-        <div style={{ fontFamily:"'Playfair Display',serif", fontSize:16, color:P.cream, fontStyle:"italic", marginBottom:5 }}>₹20+ SKU Revenue Share</div>
-        <div style={{ fontSize:12, color:P.sand, lineHeight:1.6 }}>% of total revenue from SKUs priced ₹20+. Target: <strong style={{ color:P.gold }}>28% in 6 months</strong> (from ~14%). Tracks premiumisation at P&L level — cannot be gamed by volume discounting.</div>
-      </div>
-
-      {/* Distribution */}
-      {sectionLabel("📦", "Distribution Health")}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10, marginBottom:20 }}>
-        <Metric name="Numeric Distribution"  target=">72% of universe"       flag="% of total relevant outlets stocking ≥1 Bingo SKU"                          type="dist" />
-        <Metric name="Weighted Distribution" target=">81% value-weighted"    flag="% of category sales value in stores that stock Bingo"                        type="dist" />
-        <Metric name="Active Selling Outlets" target="2.4M → 3.2M"           flag="Outlets with ≥1 Bingo sale in last 30 days (not just stocked)"               type="dist" />
-        <Metric name="Premium SKU Distribution" target="480K outlets by Wk8" flag="Active outlets stocking ≥1 SKU priced ₹20+"                                  type="dist" />
-      </div>
-
-      {/* Sales */}
-      {sectionLabel("🏪", "Sales Execution & Trade")}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10, marginBottom:20 }}>
-        <Metric name="Channel Share"           target="GT 56% · MT 22% · QComm 14%" flag="Revenue split across General Trade, Modern Trade, QComm"              type="sales" />
-        <Metric name="Frontline Productivity"  target="₹4.2L / rep / month"          flag="Revenue per field sales rep per month. Tracks feet-on-street ROI."    type="sales" />
-        <Metric name="Trade Margin Compliance" target=">92% of outlets"               flag="% of outlets receiving agreed trade margin on ₹20+ SKUs"             type="sales" />
-        <Metric name="Shelf Share (SOS)"       target=">18% linear shelf"             flag="Bingo linear shelf ÷ total snacks shelf in MT outlets"               type="sales" />
-      </div>
-
-      {/* Consumer */}
-      {sectionLabel("🔁", "Consumer & Loyalty")}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:20 }}>
-        <Metric name="Repeat Purchase Rate"   target=">38% at 90 days"           flag="% of first-time buyers repurchasing within 90 days. Current: ~31%."  type="sales" />
-        <Metric name="Consumer LTV (12-month)" target="₹620 for ₹20 segment"    flag="Avg spend per buyer over 12 months. ₹20 LTV vs ₹10 LTV gap tracks premium thesis." type="fin" />
-        <Metric name="QComm Reorder Rate"     target=">15% within 14 days"       flag="% of QComm first-time buyers reordering. Cleanest office occasion signal." type="dist" />
-      </div>
-
-      {/* Digital */}
-      {sectionLabel("📱", "Digital & Brand")}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:20 }}>
-        <Metric name="Blended CAC"          target="<₹85 for ₹20 segment"   flag="Total acquisition spend ÷ new repeat buyers across all channels"         type="digital" />
-        <Metric name="QComm Search Rank"    target="Top 3 on Blinkit 'chips'" flag="Avg search placement rank for category keywords across QComm platforms"  type="digital" />
-        <Metric name="NPS — New Segment"    target="> 52"                     flag="Net Promoter Score from office-occasion and ₹20+ segment buyers"         type="digital" />
-      </div>
-
-      {/* Cadence */}
-      <div style={{ fontSize:9, fontWeight:700, letterSpacing:".15em", textTransform:"uppercase", color:P.sand, marginBottom:10, paddingBottom:6, borderBottom:"1px solid rgba(255,255,255,.08)" }}>
-        🗓 Operating Cadence
-      </div>
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10 }}>
-        {[
-          { period:"Weekly Review",    desc:"Founder + sales lead + QComm lead · 25 min · Mon 9AM · Numeric distribution, QComm orders, trade compliance · Decide: field or channel adjustment" },
-          { period:"Monthly Review",   desc:"Full leadership · 90 min · P&L + weighted distribution + channel share + LTV vs CAC · Decide: SKU launches, budget reallocation, field targets" },
-          { period:"Quarterly Review", desc:"Board/ITC leadership · 3 hrs · Pivot thesis scorecard + 3 strategic metrics · Decide: continue / accelerate / revise strategy" },
-        ].map((c,i) => (
-          <div key={i} style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:3, padding:"11px 13px" }}>
-            <div style={{ fontSize:11, color:P.gold, fontWeight:700, marginBottom:4 }}>{c.period}</div>
-            <div style={{ fontSize:11, color:P.sand, lineHeight:1.6 }}>{c.desc}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 function ProgressBar({ statuses, elapsed, estMins }) {
   const total   = AGENTS.length;
   const done    = AGENTS.filter(a => statuses[a.id] === "done").length;
@@ -932,19 +843,7 @@ function ProgressBar({ statuses, elapsed, estMins }) {
 // OPERATING DASHBOARD COMPONENT
 // ══════════════════════════════════════════════════════════════════════════════
 function OperatingDashboard({ company }) {
-  // 21 metrics across 5 sections - values are placeholders (editable)
-  const [metrics, setMetrics] = useState({
-    // Distribution
-    activeOutlets: "—", premiumDist: "—", productiveOutlets: "—", linesPerCall: "—",
-    // Sales
-    revenuePerOutlet: "—", frontlineProd: "—", channelGT: "—", channelMT: "—", channelQComm: "—", shelfShare: "—",
-    // Consumer
-    repeatRate: "—", ltv: "—", cohortM1: "—", cohortM3: "—", cohortM6: "—", qcommReorder: "—",
-    // Unit Economics
-    contributionMargin: "—", ltvCac: "—", apPercent: "—", blendedCac: "—",
-    // Digital
-    qcommRank: "—", d2cShare: "—", conversionRate: "—", cartAbandonment: "—",
-  });
+  // Metric values — will be editable in Phase 2 (CSV upload)
 
   const MetricCard = ({ name, value, unit, target, def, tag, status = "empty" }) => {
     const statusColors = { good: "#4a9b6f", warn: "#d9a846", alert: "#c85a4a", empty: P.sand };
@@ -1167,7 +1066,8 @@ export default function App() {
       }
       return "";
     }
-  }, []);
+  // eslint-disable-line react-hooks/exhaustive-deps
+  }, [company]);
   const runSprint = async () => {
     if (!company.trim() || appState === "running") return;
 
@@ -1267,7 +1167,7 @@ export default function App() {
             <span style={{ color: P.terraSoft }}>Advisor</span>Sprint
           </span>
           <span style={{ marginLeft: 12, fontSize: 10, color: P.sand, letterSpacing: "0.14em", textTransform: "uppercase" }}>
-            Parallel Agent Intelligence · CPG
+            Rapid Intelligence Sprint · Human &amp; AI Powered
           </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -1359,17 +1259,17 @@ export default function App() {
               Rapid Intelligence Sprint
             </div>
             <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 38, color: P.forest, lineHeight: 1.15, letterSpacing: "-0.02em", marginBottom: 16 }}>
-              CPG Brand Insights<br/>
-              <em style={{ color: P.terra }}>Powered by 7 Parallel Agents</em>
+              CPG Brand &amp; Market Insights<br/>
+              <em style={{ color: P.terra }}>Analysed By 7 Parallel Agents</em>
             </h1>
             <p style={{ fontSize: 14, color: P.inkSoft, maxWidth: 520, margin: "0 auto 28px", lineHeight: 1.8 }}>
-              In Wave 1, 4 Analysis Agents Fire Simultaneously And In Wave 2, 3 Synthesis Agents Again Fire Simultaneously To Provide The Quickest Analysis!
+              4 analysis agents fire simultaneously across market signals, competitive landscape, channels, and customer segments. Then 3 synthesis agents turn those findings into a GTM pivot strategy, operating cadence, and board narrative.
             </p>
 
             {/* Architecture diagram */}
             <div style={{ display: "inline-flex", background: P.parchment, border: `1px solid ${P.sand}`, borderRadius: 3, overflow: "hidden", fontSize: 12 }}>
               <div style={{ padding: "14px 20px", borderRight: `1px solid ${P.sand}` }}>
-                <div style={{ fontSize: 9, fontWeight: 700, color: P.inkFaint, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 10 }}>Wave 1 · Parallel</div>
+                <div style={{ fontSize: 9, fontWeight: 700, color: P.inkFaint, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 10 }}>Wave 1 · 4 Analysis Agents</div>
                 {AGENTS.filter(a=>a.wave===1).map(a=>(
                   <div key={a.id} style={{ color: P.forestSoft, fontWeight: 600, marginBottom: 5, display: "flex", alignItems: "center", gap: 6 }}>
                     <span style={{ width: 14, height: 14, borderRadius: "50%", background: P.forestSoft, color: P.white, fontSize: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>●</span>
@@ -1379,7 +1279,7 @@ export default function App() {
               </div>
               <div style={{ padding: "14px 10px", display: "flex", alignItems: "center", color: P.sand, fontSize: 18 }}>→</div>
               <div style={{ padding: "14px 20px" }}>
-                <div style={{ fontSize: 9, fontWeight: 700, color: P.inkFaint, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 10 }}>Wave 2 · Synthesis</div>
+                <div style={{ fontSize: 9, fontWeight: 700, color: P.inkFaint, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 10 }}>Wave 2 · 3 Synthesis Agents</div>
                 {AGENTS.filter(a=>a.wave===2).map(a=>(
                   <div key={a.id} style={{ color: P.terra, fontWeight: 600, marginBottom: 5, display: "flex", alignItems: "center", gap: 6 }}>
                     <span style={{ width: 14, height: 14, borderRadius: "50%", background: P.terra, color: P.white, fontSize: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>◆</span>
@@ -1411,14 +1311,14 @@ export default function App() {
               <div>
                 <label style={{ fontSize: 10, color: P.inkFaint, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Context (optional)</label>
                 <input value={context} onChange={e=>setContext(e.target.value)} disabled={isActive}
-                  placeholder="e.g. D2C brand stuck at ₹50Cr, wants to break into modern trade…"
+                  placeholder="e.g. D2C brand modern trade strategy"
                   style={{ width:"100%", padding:"10px 12px", fontSize:13, background:P.cream, border:`1.5px solid ${P.sand}`, borderRadius:2, color:P.ink, outline:"none", fontFamily:"'Instrument Sans',sans-serif" }}
                 />
               </div>
               <div>
                 <label style={{ fontSize: 10, color: P.inkFaint, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Your Name (optional)</label>
                 <input value={userName} onChange={e=>setUserName(e.target.value)} disabled={isActive}
-                  placeholder="e.g. Rahul Mehta, Peak XV Partners — helps us know who's using this"
+                  placeholder="e.g. Reid Malfoy, MBB Partners"
                   style={{ width:"100%", padding:"10px 12px", fontSize:13, background:P.cream, border:`1.5px solid ${P.sand}`, borderRadius:2, color:P.ink, outline:"none", fontFamily:"'Instrument Sans',sans-serif" }}
                 />
               </div>
@@ -1429,7 +1329,7 @@ export default function App() {
                 Reference Document (optional · 1 PDF · max 500KB · ~25 pages)
               </label>
               <div style={{ fontSize: 11, color: P.inkFaint, fontStyle: "italic", marginBottom: 8 }}>
-                Upload an industry report, brand deck, or market data PDF. Max 500KB (~25 pages). To reduce size: open the PDF, select the key pages (executive summary + data tables), File → Print → Save as PDF.
+                If you want the agents to also analyse any latest reports. To reduce size: open the PDF, select the key pages (executive summary + data tables), File → Print → Save as PDF.
               </div>
 
               <div style={{ display: "flex", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
@@ -1677,7 +1577,7 @@ export default function App() {
             <div style={{ marginTop:32, background:P.parchment, borderLeft:`4px solid ${P.terra}`, padding:"16px 20px", borderRadius:"0 3px 3px 0" }}>
               <div style={{ fontFamily:"'Playfair Display',serif", fontSize:11, color:P.inkFaint, fontStyle:"italic", marginBottom:6 }}>About this tool</div>
               <div style={{ fontSize:12, color:P.inkMid, lineHeight:1.8 }}>
-                Built by <strong style={{ color:P.forest }}>Harsha Belavady</strong> to demonstrate the AI-augmented advisory methodology used with VC portfolio companies and Series B CPG founders (2021–present). This tool recreates that intelligence sprint live — powered by Claude, running as a parallel multi-agent system.
+                Built by <strong style={{ color:P.forest }}>Harsha Belavady</strong>. In Wave 1, 4 Analysis Agents fire in parallel. In Wave 2, 3 Synthesis Agents fire simultaneously — providing the quickest strategic analysis for CPG brands.
               </div>
             </div>
           </div>
