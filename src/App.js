@@ -611,14 +611,78 @@ async function callClaude(prompt, pdfs, signal, agentId = "signals") {
 
   return data.text;
 }
+function parseTable(block) {
+  const rows = block.trim().split("\n").filter(r => r.includes("|"));
+  if (rows.length < 2) return null;
+  const cells = r => r.split("|").map(c => c.trim()).filter((c, i, a) => i > 0 && i < a.length - 1);
+  const header = cells(rows[0]);
+  const body   = rows.slice(2); // skip separator row
+  if (!header.length) return null;
+  const thStyle = `padding:7px 10px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:${P.inkSoft};background:${P.parchment};border-bottom:2px solid ${P.sand};white-space:nowrap;`;
+  const tdStyle = `padding:7px 10px;font-size:11px;color:${P.inkMid};border-bottom:1px solid ${P.sand};vertical-align:top;line-height:1.5;`;
+  const ths = header.map(h => `<th style="${thStyle}">${h}</th>`).join("");
+  const trs = body.map((r, i) => {
+    const tds = cells(r).map(c => `<td style="${tdStyle}">${c}</td>`).join("");
+    return `<tr style="background:${i % 2 === 0 ? P.white : P.cream}">${tds}</tr>`;
+  }).join("");
+  return `<div style="overflow-x:auto;margin:10px 0;border:1px solid ${P.sand};border-radius:3px;">
+    <table style="width:100%;border-collapse:collapse;font-family:'Work Sans',sans-serif;">
+      <thead><tr>${ths}</tr></thead>
+      <tbody>${trs}</tbody>
+    </table>
+  </div>`;
+}
+
+function parseAxesMap(text) {
+  // Detect ASCII 2x2 maps — lines containing ← or → or ←—
+  if (!text.includes("←") && !text.includes("↑")) return null;
+  const lines = text.split("\n");
+  const mapLines = [];
+  let inMap = false;
+  for (const line of lines) {
+    if (line.includes("←") || line.includes("↑") || line.includes("KIRANA") || line.includes("MT/DIGITAL") || line.includes("MASS") || line.includes("PREMIUM")) {
+      inMap = true;
+    }
+    if (inMap) mapLines.push(line);
+    if (inMap && mapLines.length > 6) break;
+  }
+  if (!mapLines.length) return null;
+  return `<div style="background:${P.parchment};border:1px solid ${P.sand};border-radius:3px;padding:12px 14px;margin:10px 0;overflow-x:auto;">
+    <pre style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${P.inkMid};line-height:1.8;margin:0;white-space:pre;">${mapLines.join("\n")}</pre>
+  </div>`;
+}
+
 function md(text) {
   if (!text) return "";
-  return text
-    .replace(/^## (.+)$/gm, `<h3 style="font-family:'Playfair Display',serif;font-size:14px;color:${P.forest};margin:16px 0 6px;border-bottom:1px solid ${P.sand};padding-bottom:4px;">$1</h3>`)
+
+  // 1. Extract and replace tables before other processing
+  let processed = text.replace(/^(\|.+\|\n)(\|[-| :]+\|\n)((?:\|.+\|\n?)+)/gm, (match) => {
+    const table = parseTable(match);
+    return table ? `%%TABLE%%${btoa(unescape(encodeURIComponent(table)))}%%TABLE%%` : match;
+  });
+
+  // 2. Extract axes maps
+  const axesMap = parseAxesMap(text);
+  if (axesMap) {
+    processed = processed
+      .replace(/KIRANA-FIRST.*?\n.*?MASS.*?PREMIUM.*?\n.*?MT\/DIGITAL[^\n]*/gs, `%%AXES%%${btoa(unescape(encodeURIComponent(axesMap)))}%%AXES%%`)
+      .replace(/(KIRANA|MT\/DIGITAL|MASS ←)[^\n]*/g, "");
+  }
+
+  // 3. Standard markdown
+  processed = processed
+    .replace(/^## (.+)$/gm, `<h3 style="font-family:'Libre Baskerville',serif;font-size:14px;color:${P.forest};margin:16px 0 6px;border-bottom:1px solid ${P.sand};padding-bottom:4px;">$1</h3>`)
     .replace(/\*\*(.+?)\*\*/g, `<strong style="color:${P.ink};">$1</strong>`)
     .replace(/^- (.+)$/gm, `<div style="display:flex;gap:7px;margin:3px 0;"><span style="color:${P.terra};flex-shrink:0;">▸</span><span>$1</span></div>`)
     .replace(/\n\n/g, `</p><p style="margin:6px 0;">`)
     .replace(/\n/g, "<br/>");
+
+  // 4. Restore tables and axes maps
+  processed = processed
+    .replace(/%%TABLE%%([^%]+)%%TABLE%%/g, (_, b64) => decodeURIComponent(escape(atob(b64))))
+    .replace(/%%AXES%%([^%]+)%%AXES%%/g, (_, b64) => decodeURIComponent(escape(atob(b64))));
+
+  return processed;
 }
 function AgentCard({ agent, status, result, index }) {
   const colors = {
