@@ -9,7 +9,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 const API_KEY = "sk-ant-REPLACE-WITH-YOUR-KEY";
 
 // Your GA4 Measurement ID — get one at analytics.google.com (optional)
-const GA4_ID = "G-9TQPPTHT19";
+const GA4_ID = "G-XXXXXXXXXX";
 
 // MOCK MODE: true = instant fake output, zero API cost (for UI testing)
 //            false = real Claude API calls (needs credits)
@@ -572,24 +572,14 @@ A decision today to reallocate ₹26 Cr from TV and underperforming digital to Q
 This advisor's view: the data is unambiguous that QComm and the office snacking occasion are structurally underserved by every snack brand in India, and Bingo has ITC's infrastructure to move faster than any D2C challenger could. The risk is not whether the market exists — it does — the risk is whether ITC's internal prioritisation allows Bingo to move at startup speed. Solve that internally, and this is the right pivot at the right time.`,
 };
 
-async function callClaude(prompt, pdfs, signal, attempt = 0) {
+async function callClaude(prompt, pdfs, signal, agentId = "signals") {
   if (MOCK_MODE) {
     await new Promise(r => setTimeout(r, 1200 + Math.random() * 800));
-    const agentId = AGENTS.find(a => prompt.includes(a.label.split(" ")[0]) ||
-      (a.id === "signals"     && prompt.includes("intelligence sprint")) ||
-      (a.id === "competitive" && prompt.includes("competitive intelligence")) ||
-      (a.id === "channels"    && prompt.includes("GTM strategist")) ||
-      (a.id === "segments"    && prompt.includes("customer strategist")) ||
-      (a.id === "pivot"       && prompt.includes("Pivot Thesis") || prompt.includes("GTM pivot")) ||
-      (a.id === "kpis"        && prompt.includes("North Star")) ||
-      (a.id === "narrative"   && prompt.includes("board/investor"))
-    )?.id || "signals";
     return MOCK[agentId] || MOCK.signals;
   }
 
   // Use Vercel API proxy instead of direct Anthropic API
   const API_ENDPOINT = "https://advisorsprint-api.vercel.app/api/claude";
-  const agentId = AGENTS.find(a => prompt.includes(a.label))?.id || "unknown";
 
   const res = await fetch(API_ENDPOINT, {
     method: "POST",
@@ -1097,7 +1087,7 @@ export default function App() {
   };
   const runAgent = useCallback(async (id, prompt, signal, docs) => {
     try {
-      const text = await callClaude(prompt, docs || [], signal);
+      const text = await callClaude(prompt, docs || [], signal, id);
       if (!signal.aborted) {
         setResults(r  => ({ ...r,  [id]: text  }));
         setStatuses(s => ({ ...s, [id]: "done" }));
