@@ -1200,7 +1200,7 @@ export default function App() {
             <span style={{ color: P.terraSoft }}>Advisor</span>Sprint
           </span>
           <span style={{ marginLeft: 12, fontSize: 10, color: P.sand, letterSpacing: "0.14em", textTransform: "uppercase" }}>
-            Rapid Intelligence Sprint · Human &amp; AI Powered
+            Parallel Agent Intelligence
           </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -1288,15 +1288,15 @@ export default function App() {
                 🧪 MOCK MODE — Sample output only. Set MOCK_MODE = false in App.js to use real Claude API.
               </div>
             )}
-            <div style={{ fontSize: 10, color: P.terra, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 14 }}>
-              Rapid Intelligence Sprint
+            <div style={{ fontSize: 12, color: P.terra, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 14 }}>
+              Rapid Intelligence Sprint. Human &amp; AI Powered
             </div>
             <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 38, color: P.forest, lineHeight: 1.15, letterSpacing: "-0.02em", marginBottom: 16 }}>
               CPG Brand &amp; Market Insights<br/>
               <em style={{ color: P.terra }}>Analysed By 7 Parallel Agents</em>
             </h1>
-            <p style={{ fontSize: 14, color: P.inkSoft, maxWidth: 520, margin: "0 auto 28px", lineHeight: 1.8 }}>
-              4 analysis agents fire simultaneously across market signals, competitive landscape, channels, and customer segments. Then 3 synthesis agents turn those findings into a GTM pivot strategy, operating cadence, and board narrative.
+            <p style={{ fontSize: 14, color: P.inkSoft, maxWidth: 535, margin: "0 auto 28px", lineHeight: 1.8 }}>
+              In Wave 1, 4 Analysis Agents Fire Simultaneously And Then 3 Synthesis Agents in Wave 2
             </p>
 
             {/* Architecture diagram */}
@@ -1335,7 +1335,7 @@ export default function App() {
                 <label style={{ fontSize: 10, color: P.inkFaint, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Brand *</label>
                 <input value={company} onChange={e=>setCompany(e.target.value)}
                   onKeyDown={e=>e.key==="Enter"&&!isRunning&&company.trim()&&runSprint()}
-                  placeholder="e.g. Mamaearth, Oatly, Burt's Bees…" disabled={isRunning}
+                  placeholder="e.g. Bingo, Oatly, Burt's Bees…" disabled={isRunning}
                   style={{ width:"100%", padding:"10px 12px", fontSize:13, background:P.cream, border:`1.5px solid ${P.sand}`, borderRadius:2, color:P.ink, outline:"none", fontFamily:"'Instrument Sans',sans-serif" }}
                   onFocus={e=>e.target.style.borderColor=P.forest}
                   onBlur={e=>e.target.style.borderColor=P.sand}
@@ -1344,14 +1344,14 @@ export default function App() {
               <div>
                 <label style={{ fontSize: 10, color: P.inkFaint, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Context (optional)</label>
                 <input value={context} onChange={e=>setContext(e.target.value)} disabled={isActive}
-                  placeholder="e.g. D2C brand stuck at ₹50Cr, wants to break into modern trade…"
+                  placeholder="e.g. D2C brand Q-com Strategy"
                   style={{ width:"100%", padding:"10px 12px", fontSize:13, background:P.cream, border:`1.5px solid ${P.sand}`, borderRadius:2, color:P.ink, outline:"none", fontFamily:"'Instrument Sans',sans-serif" }}
                 />
               </div>
               <div>
                 <label style={{ fontSize: 10, color: P.inkFaint, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Your Name (optional)</label>
                 <input value={userName} onChange={e=>setUserName(e.target.value)} disabled={isActive}
-                  placeholder="e.g. Rahul Mehta, Peak XV Partners — helps us know who's using this"
+                  placeholder="e.g. Tony Stark, MBB Partners"
                   style={{ width:"100%", padding:"10px 12px", fontSize:13, background:P.cream, border:`1.5px solid ${P.sand}`, borderRadius:2, color:P.ink, outline:"none", fontFamily:"'Instrument Sans',sans-serif" }}
                 />
               </div>
@@ -1362,7 +1362,7 @@ export default function App() {
                 Reference Document (optional · 1 PDF · max 500KB · ~25 pages)
               </label>
               <div style={{ fontSize: 11, color: P.inkFaint, fontStyle: "italic", marginBottom: 8 }}>
-                Upload an industry report, brand deck, or market data PDF. Max 500KB (~25 pages). To reduce size: open the PDF, select the key pages (executive summary + data tables), File → Print → Save as PDF.
+                If you want the Agents to access latest reports. To reduce size: open the PDF, select the key pages (executive summary + data tables), File → Print → Save as PDF.
               </div>
 
               <div style={{ display: "flex", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
