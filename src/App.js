@@ -56,6 +56,8 @@ const GLOBAL_CSS = `
     * { animation: none !important; box-shadow: none !important; }
     /* Each agent card gets its own page area */
     [data-agent] { break-inside: avoid; border: 1px solid #ccc !important; margin-bottom: 20px; }
+    /* Remove scroll clipping so full content prints */
+    .agent-content { max-height: none !important; overflow: visible !important; height: auto !important; }
   }
 `;
 
@@ -752,7 +754,7 @@ function AgentCard({ agent, status, result, index }) {
 
       {/* Content */}
       {result && (
-        <div style={{ padding: "16px 20px", fontSize: 13, color: P.inkMid, lineHeight: 1.8,
+        <div className="agent-content" style={{ padding: "16px 20px", fontSize: 13, color: P.inkMid, lineHeight: 1.8,
           fontFamily: "'Instrument Sans', sans-serif", maxHeight: 440, overflowY: "auto",
         }}
           dangerouslySetInnerHTML={{ __html: `<p style="margin:0">${md(result)}</p>` }}
