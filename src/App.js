@@ -1167,7 +1167,7 @@ export default function App() {
             <span style={{ color: P.terraSoft }}>Advisor</span>Sprint
           </span>
           <span style={{ marginLeft: 12, fontSize: 10, color: P.sand, letterSpacing: "0.14em", textTransform: "uppercase" }}>
-            Rapid Intelligence Sprint · Human &amp; AI Powered
+            Parallel Agent Intelligence · CPG
           </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -1255,15 +1255,15 @@ export default function App() {
                 🧪 MOCK MODE — Sample output only. Set MOCK_MODE = false in App.js to use real Claude API.
               </div>
             )}
-            <div style={{ fontSize: 10, color: P.terra, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 14 }}>
-              Rapid Intelligence Sprint
+            <div style={{ fontSize: 12, color: P.terra, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 14 }}>
+              Rapid Intelligence Sprint . Human &amp; AI Powered
             </div>
             <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 38, color: P.forest, lineHeight: 1.15, letterSpacing: "-0.02em", marginBottom: 16 }}>
               CPG Brand &amp; Market Insights<br/>
               <em style={{ color: P.terra }}>Analysed By 7 Parallel Agents</em>
             </h1>
             <p style={{ fontSize: 14, color: P.inkSoft, maxWidth: 520, margin: "0 auto 28px", lineHeight: 1.8 }}>
-              4 analysis agents fire simultaneously across market signals, competitive landscape, channels, and customer segments. Then 3 synthesis agents turn those findings into a GTM pivot strategy, operating cadence, and board narrative.
+              In Wave 1, 4 Analysis Agents Fire Simultaneously And Then 3 Synthesis Agents In Wave 2 !
             </p>
 
             {/* Architecture diagram */}
