@@ -1263,7 +1263,7 @@ export default function App() {
               <em style={{ color: P.terra }}>Analysed By 7 Parallel Agents</em>
             </h1>
             <p style={{ fontSize: 14, color: P.inkSoft, maxWidth: 520, margin: "0 auto 28px", lineHeight: 1.8 }}>
-              In Wave 1, 4 Analysis Agents Fire Simultaneously And Then 3 Synthesis Agents In Wave 2 !
+              In Wave 1, 4 Analysis Agents Fire Simultaneously And 3 Synthesis Agents In Wave 2
             </p>
 
             {/* Architecture diagram */}
