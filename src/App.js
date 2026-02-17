@@ -13,7 +13,7 @@ const GA4_ID = "G-9TQPPTHT19";
 
 // MOCK MODE: true = instant fake output, zero API cost (for UI testing)
 //            false = real Claude API calls (needs credits)
-const MOCK_MODE = true;
+const MOCK_MODE = false;
 
 // ─────────────────────────────────────────────────────────────────────────────
 
