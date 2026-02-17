@@ -13,7 +13,7 @@ const GA4_ID = "G-9TQPPTHT19";
 
 // MOCK MODE: true = instant fake output, zero API cost (for UI testing)
 //            false = real Claude API calls (needs credits)
-const MOCK_MODE = false;
+const MOCK_MODE = true;
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -735,8 +735,8 @@ function AgentCard({ agent, status, result, index }) {
             PROCESSING
           </>}
           {status === "done"    && "✓ DONE"}
-          {status === "queued"  && "— QUEUED"}
-          {status === "waiting" && "— QUEUED"}
+          {status === "queued"  && "— READY"}
+          {status === "waiting" && "— READY"}
           {status === "idle"    && "—"}
           {status === "error"   && "⚠ ERROR — RETRYING"}
         </div>
@@ -761,12 +761,12 @@ function AgentCard({ agent, status, result, index }) {
         />
       )}
 
-      {/* Queued placeholder */}
+      {/* Ready placeholder */}
       {(status === "queued" || status === "waiting") && !result && (
         <div style={{ padding: "12px 18px", display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ width: 8, height: 8, borderRadius: "50%", background: P.sand }}/>
+          <div style={{ width: 8, height: 8, borderRadius: "50%", background: P.sand, animation: "pulse 1.5s infinite" }}/>
           <span style={{ fontSize: 12, color: P.inkFaint, fontStyle: "italic" }}>
-            Queued — will run after current agent completes
+            Ready · Firing in parallel with other agents
           </span>
         </div>
       )}
@@ -1123,7 +1123,16 @@ export default function App() {
 
     if (!signal.aborted) {
       clearInterval(timerRef.current);
-      setAppState("done");
+      // Only mark done if at least Wave 1 agents succeeded
+      setStatuses(s => {
+        const errorCount = Object.values(s).filter(v => v === "error").length;
+        if (errorCount >= 4) {
+          setAppState("idle"); // Most agents failed — reset to idle
+        } else {
+          setAppState("done"); // Partial or full success
+        }
+        return s;
+      });
     }
   };
 
@@ -1167,7 +1176,7 @@ export default function App() {
             <span style={{ color: P.terraSoft }}>Advisor</span>Sprint
           </span>
           <span style={{ marginLeft: 12, fontSize: 10, color: P.sand, letterSpacing: "0.14em", textTransform: "uppercase" }}>
-            Parallel Agent Intelligence · CPG
+            Rapid Intelligence Sprint · Human &amp; AI Powered
           </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -1255,15 +1264,15 @@ export default function App() {
                 🧪 MOCK MODE — Sample output only. Set MOCK_MODE = false in App.js to use real Claude API.
               </div>
             )}
-            <div style={{ fontSize: 12, color: P.terra, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 14 }}>
-              Rapid Intelligence Sprint . Human &amp; AI Powered
+            <div style={{ fontSize: 10, color: P.terra, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 14 }}>
+              Rapid Intelligence Sprint
             </div>
             <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 38, color: P.forest, lineHeight: 1.15, letterSpacing: "-0.02em", marginBottom: 16 }}>
               CPG Brand &amp; Market Insights<br/>
               <em style={{ color: P.terra }}>Analysed By 7 Parallel Agents</em>
             </h1>
-            <p style={{ fontSize: 14, color: P.inkSoft, maxWidth: 535, margin: "0 auto 28px", lineHeight: 1.8 }}>
-              In Wave 1, 4 Analysis Agents Fire Simultaneously And 3 Synthesis Agents In Wave 2
+            <p style={{ fontSize: 14, color: P.inkSoft, maxWidth: 520, margin: "0 auto 28px", lineHeight: 1.8 }}>
+              4 analysis agents fire simultaneously across market signals, competitive landscape, channels, and customer segments. Then 3 synthesis agents turn those findings into a GTM pivot strategy, operating cadence, and board narrative.
             </p>
 
             {/* Architecture diagram */}
@@ -1311,14 +1320,14 @@ export default function App() {
               <div>
                 <label style={{ fontSize: 10, color: P.inkFaint, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Context (optional)</label>
                 <input value={context} onChange={e=>setContext(e.target.value)} disabled={isActive}
-                  placeholder="e.g. D2C brand modern trade strategy"
+                  placeholder="e.g. D2C brand stuck at ₹50Cr, wants to break into modern trade…"
                   style={{ width:"100%", padding:"10px 12px", fontSize:13, background:P.cream, border:`1.5px solid ${P.sand}`, borderRadius:2, color:P.ink, outline:"none", fontFamily:"'Instrument Sans',sans-serif" }}
                 />
               </div>
               <div>
                 <label style={{ fontSize: 10, color: P.inkFaint, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Your Name (optional)</label>
                 <input value={userName} onChange={e=>setUserName(e.target.value)} disabled={isActive}
-                  placeholder="e.g. Reid Malfoy, MBB Partners"
+                  placeholder="e.g. Rahul Mehta, Peak XV Partners — helps us know who's using this"
                   style={{ width:"100%", padding:"10px 12px", fontSize:13, background:P.cream, border:`1.5px solid ${P.sand}`, borderRadius:2, color:P.ink, outline:"none", fontFamily:"'Instrument Sans',sans-serif" }}
                 />
               </div>
@@ -1329,7 +1338,7 @@ export default function App() {
                 Reference Document (optional · 1 PDF · max 500KB · ~25 pages)
               </label>
               <div style={{ fontSize: 11, color: P.inkFaint, fontStyle: "italic", marginBottom: 8 }}>
-                If you want the agents to also analyse any latest reports. To reduce size: open the PDF, select the key pages (executive summary + data tables), File → Print → Save as PDF.
+                Upload an industry report, brand deck, or market data PDF. Max 500KB (~25 pages). To reduce size: open the PDF, select the key pages (executive summary + data tables), File → Print → Save as PDF.
               </div>
 
               <div style={{ display: "flex", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
@@ -1480,7 +1489,7 @@ export default function App() {
           <div className="no-print" style={{ background: P.forestMid, borderRadius: 4, padding: "18px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, animation: "fadeUp 0.4s ease" }}>
             <div>
               <div style={{ fontSize: 14, color: "white", fontWeight: 600 }}>✓ Sprint complete · {company} · {Math.floor(elapsed / 60)}m {elapsed % 60}s</div>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,.7)", marginTop: 3 }}>All 7 agents complete · Distribution benchmarks and targets ready for tracking</div>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,.7)", marginTop: 3 }}>All 7 agents complete · Full intelligence sprint ready to present</div>
             </div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
               <div style={{ display: "flex", gap: 10 }}>
