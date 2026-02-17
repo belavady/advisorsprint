@@ -903,20 +903,22 @@ function OperatingDashboard({ company, northStarKpi = "" }) {
           <div style={{ fontFamily: "'Libre Baskerville',serif", fontSize: 22, color: "white", fontWeight: 700, marginBottom: 6 }}>
             {(() => {
               const kpiText = northStarKpi || "";
-              const m = kpiText.match(/##\s*NORTH STAR METRIC\s*
-+\*?\*?([^
-\*]+)\*?\*?\s*[—–-]/i);
-              return m ? m[1].trim() : "Run a sprint to define your North Star";
+              const lines = kpiText.split("\n");
+              const idx = lines.findIndex(l => l.includes("NORTH STAR METRIC"));
+              const nsLine = idx >= 0 ? lines.slice(idx+1, idx+4).find(l => l.trim().length > 3) || "" : "";
+              const name = nsLine.replace(/\*+/g,"").split(/[—–-]/)[0].trim();
+              return name || "Run a sprint to define your North Star";
             })()}
           </div>
           <div style={{ fontSize: 13, color: "rgba(255,255,255,.75)", lineHeight: 1.6, maxWidth: 520 }}>
             {(() => {
               const kpiText = northStarKpi || "";
-              const m = kpiText.match(/##\s*NORTH STAR METRIC\s*
-+[^
-]+[—–-]+\s*([^
-]{10,})/i);
-              return m ? m[1].trim().slice(0, 220) : "Complete an intelligence sprint first. The Operating Cadence agent will define the North Star metric specific to your brand.";
+              const lines = kpiText.split("\n");
+              const idx = lines.findIndex(l => l.includes("NORTH STAR METRIC"));
+              const nsLine = idx >= 0 ? lines.slice(idx+1, idx+4).find(l => l.includes("—") || l.includes("–")) || "" : "";
+              const parts = nsLine.split(/[—–]/);
+              const desc = parts.length > 1 ? parts.slice(1).join("—").trim() : "";
+              return desc.slice(0, 220) || "Complete an intelligence sprint first. The Operating Cadence agent will define the North Star metric specific to your brand.";
             })()}
           </div>
         </div>
@@ -924,8 +926,7 @@ function OperatingDashboard({ company, northStarKpi = "" }) {
           <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 42, color: "white", lineHeight: 1, fontWeight: 600 }}>—</div>
           <div style={{ fontSize: 11, color: P.gold, marginTop: 6, fontWeight: 600 }}>
             {(() => {
-              const m = (northStarKpi || "").match(/[Tt]arget[:\s]+([^
-\.]{5,60})/);
+              const m = (northStarKpi || "").match(/[Tt]arget[^:]*:\s*([^\n\.]{5,60})/);
               return m ? "Target: " + m[1].trim() : "Run a sprint to set target";
             })()}
           </div>
@@ -1544,10 +1545,11 @@ export default function App() {
                     <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: P.gold, marginBottom: 8 }}>North Star Metric · from Operating Cadence Agent</div>
                     {(() => {
                       const kpiText = results["kpis"] || "";
-                      const nsMatch = kpiText.match(/##\s*NORTH STAR METRIC\s*
-+\*?\*?([^
-\*]+)\*?\*?\s*[—–-]+?\s*([^
-]{10,})/i);
+                      const lines2 = kpiText.split("\n");
+                      const idx2 = lines2.findIndex(l => l.includes("NORTH STAR METRIC"));
+                      const nsRaw = idx2 >= 0 ? lines2.slice(idx2+1, idx2+4).find(l => l.trim().length > 3) || "" : "";
+                      const nsParts = nsRaw.replace(/\*+/g,"").split(/[—–]/);
+                      const nsMatch = nsParts.length > 1 ? [null, nsParts[0].trim(), nsParts.slice(1).join("—").trim()] : null;
                       const nsName = nsMatch ? nsMatch[1].trim() : "North Star Metric";
                       const nsDesc = nsMatch ? nsMatch[2].trim().slice(0, 200) : "Defined by the Operating Cadence agent after sprint completes.";
                       return (
