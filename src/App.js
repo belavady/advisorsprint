@@ -842,7 +842,7 @@ function ProgressBar({ statuses, elapsed, estMins }) {
 // ══════════════════════════════════════════════════════════════════════════════
 // OPERATING DASHBOARD COMPONENT
 // ══════════════════════════════════════════════════════════════════════════════
-function OperatingDashboard({ company }) {
+function OperatingDashboard({ company, northStarKpi = "" }) {
   // Metric values — will be editable in Phase 2 (CSV upload)
 
   const MetricCard = ({ name, value, unit, target, def, tag, status = "empty" }) => {
@@ -900,12 +900,35 @@ function OperatingDashboard({ company }) {
       <div style={{ background: `linear-gradient(135deg, ${P.forest} 0%, ${P.forestMid} 100%)`, borderRadius: 4, padding: "24px 28px", marginBottom: 28, display: "flex", alignItems: "center", gap: 32 }}>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: P.gold, marginBottom: 8 }}>North Star Metric</div>
-          <div style={{ fontFamily: "'Libre Baskerville',serif", fontSize: 22, color: "white", fontWeight: 700, marginBottom: 6 }}>₹20+ SKU Revenue Share</div>
-          <div style={{ fontSize: 13, color: "rgba(255,255,255,.75)", lineHeight: 1.6, maxWidth: 520 }}>% of total revenue from SKUs priced ₹20+. Tracks premiumisation pivot at P&L level — cannot be gamed by volume discounting.</div>
+          <div style={{ fontFamily: "'Libre Baskerville',serif", fontSize: 22, color: "white", fontWeight: 700, marginBottom: 6 }}>
+            {(() => {
+              const kpiText = northStarKpi || "";
+              const m = kpiText.match(/##\s*NORTH STAR METRIC\s*
++\*?\*?([^
+\*]+)\*?\*?\s*[—–-]/i);
+              return m ? m[1].trim() : "Run a sprint to define your North Star";
+            })()}
+          </div>
+          <div style={{ fontSize: 13, color: "rgba(255,255,255,.75)", lineHeight: 1.6, maxWidth: 520 }}>
+            {(() => {
+              const kpiText = northStarKpi || "";
+              const m = kpiText.match(/##\s*NORTH STAR METRIC\s*
++[^
+]+[—–-]+\s*([^
+]{10,})/i);
+              return m ? m[1].trim().slice(0, 220) : "Complete an intelligence sprint first. The Operating Cadence agent will define the North Star metric specific to your brand.";
+            })()}
+          </div>
         </div>
         <div style={{ textAlign: "right", flexShrink: 0 }}>
-          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 42, color: "white", lineHeight: 1, fontWeight: 600 }}>—%</div>
-          <div style={{ fontSize: 11, color: P.gold, marginTop: 6, fontWeight: 600 }}>Target: 28% by Aug 2025</div>
+          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 42, color: "white", lineHeight: 1, fontWeight: 600 }}>—</div>
+          <div style={{ fontSize: 11, color: P.gold, marginTop: 6, fontWeight: 600 }}>
+            {(() => {
+              const m = (northStarKpi || "").match(/[Tt]arget[:\s]+([^
+\.]{5,60})/);
+              return m ? "Target: " + m[1].trim() : "Run a sprint to set target";
+            })()}
+          </div>
         </div>
       </div>
 
@@ -1518,11 +1541,22 @@ export default function App() {
               <div style={{ gridColumn:"1/-1" }}>
                 <div style={{ background: `linear-gradient(135deg, ${P.forest} 0%, ${P.forestMid} 100%)`, borderRadius: 4, padding: "24px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 32 }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: P.gold, marginBottom: 8 }}>North Star Metric from Operating Cadence Agent</div>
-                    <div style={{ fontFamily: "'Libre Baskerville',serif", fontSize: 22, color: "white", fontWeight: 700, marginBottom: 6 }}>₹20+ SKU Revenue Share</div>
-                    <div style={{ fontSize: 13, color: "rgba(255,255,255,.75)", lineHeight: 1.6, maxWidth: 600 }}>
-                      % of total {company} revenue from SKUs priced ₹20 and above. Target: <strong style={{ color: P.gold }}>28% in 6 months</strong> (from ~14%). This metric tracks whether the premiumisation pivot is structurally working — cannot be gamed by volume discounting.
-                    </div>
+                    <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: P.gold, marginBottom: 8 }}>North Star Metric · from Operating Cadence Agent</div>
+                    {(() => {
+                      const kpiText = results["kpis"] || "";
+                      const nsMatch = kpiText.match(/##\s*NORTH STAR METRIC\s*
++\*?\*?([^
+\*]+)\*?\*?\s*[—–-]+?\s*([^
+]{10,})/i);
+                      const nsName = nsMatch ? nsMatch[1].trim() : "North Star Metric";
+                      const nsDesc = nsMatch ? nsMatch[2].trim().slice(0, 200) : "Defined by the Operating Cadence agent after sprint completes.";
+                      return (
+                        <>
+                          <div style={{ fontFamily: "'Libre Baskerville',serif", fontSize: 22, color: "white", fontWeight: 700, marginBottom: 6 }}>{nsName}</div>
+                          <div style={{ fontSize: 13, color: "rgba(255,255,255,.75)", lineHeight: 1.6, maxWidth: 600 }}>{nsDesc}</div>
+                        </>
+                      );
+                    })()}
                   </div>
                   <div style={{ flexShrink: 0 }}>
                     <button onClick={() => setActiveTab("dashboard")} style={{ background: P.terra, color: "white", border: "none", padding: "12px 24px", borderRadius: 4, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Work Sans',sans-serif", letterSpacing: ".05em", display: "flex", alignItems: "center", gap: 8, transition: "all .2s" }}>
@@ -1597,7 +1631,7 @@ export default function App() {
 
       {/* ── DASHBOARD TAB CONTENT ── */}
       {activeTab === "dashboard" && (
-        <OperatingDashboard company={company || "Your Brand"} />
+        <OperatingDashboard company={company || "Your Brand"} northStarKpi={results["kpis"] || ""} />
       )}
       {/* END DASHBOARD TAB */}
 
