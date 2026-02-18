@@ -49,60 +49,62 @@ const GLOBAL_CSS = `
   @keyframes shimmer { 0% { left:-60%; } 100% { left:110%; } }
 
   @media print {
-  @page { size: landscape; margin: 0.75in; }
-  * { animation: none !important; }
+  @page { size: landscape; margin: 0.5in; }
+  * { animation: none !important; box-shadow: none !important; }
   body { background: white; }
   
-  /* Hide web-only elements */
+  /* Hide all UI elements */
   .no-print { display: none !important; }
+  button { display: none !important; }
   
-  /* Premium header on each page */
+  /* Print header - boxed */
   .print-header { 
     display: block !important;
-    font-family: 'Libre Baskerville', serif;
-    color: #1a3325;
-    font-size: 11px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #3d6b54;
-    margin-bottom: 20px;
+    border: 2px solid #3d6b54;
+    background: linear-gradient(135deg, #1a3325 0%, #2d5142 100%);
+    color: white;
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin-bottom: 24px;
   }
   
-  /* Agent cards - color coded */
+  .print-header span:first-child {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  
+  .print-header span:last-child {
+    font-size: 12px;
+    opacity: 0.9;
+  }
+  
+  /* Every agent card = full width row, new page */
   [data-agent] { 
-    break-inside: avoid; 
-    page-break-inside: avoid;
-    margin-bottom: 18px;
+    page-break-before: always !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+    width: 100% !important;
+    display: block !important;
+    margin: 0 0 20px 0 !important;
     border: 1.5px solid #9b8c78 !important;
     border-radius: 4px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+    overflow: visible !important;
   }
   
-  /* Wave 1 agents - 2 column landscape grid */
-  [data-agent="signals"], [data-agent="competitive"],
-  [data-agent="channels"], [data-agent="segments"] {
-    width: 48%;
-    display: inline-block;
-    vertical-align: top;
-    margin-right: 2%;
-  }
-  [data-agent="competitive"], [data-agent="segments"] {
-    margin-right: 0;
+  /* First agent (signals) - no page break before */
+  [data-agent="signals"] {
+    page-break-before: avoid !important;
   }
   
-  /* Wave 2 agents - full width */
-  [data-agent="pivot"], [data-agent="kpis"], [data-agent="narrative"] {
-    page-break-before: always;
-    width: 100%;
-  }
-  
-  /* Agent headers - color coded by wave */
+  /* Agent headers - color coded */
   [data-agent="signals"] > div:first-child,
   [data-agent="competitive"] > div:first-child,
   [data-agent="channels"] > div:first-child,
   [data-agent="segments"] > div:first-child {
     background: #e8f4ed !important;
     border-bottom: 2px solid #3d6b54 !important;
+    padding: 12px 16px !important;
   }
   
   [data-agent="pivot"] > div:first-child,
@@ -110,34 +112,65 @@ const GLOBAL_CSS = `
   [data-agent="narrative"] > div:first-child {
     background: #fef3ec !important;
     border-bottom: 2px solid #d4724a !important;
+    padding: 12px 16px !important;
   }
   
-  /* Content - remove scroll, ensure readability */
+  /* Agent content - full width, readable */
   .agent-content { 
     max-height: none !important; 
     overflow: visible !important; 
     height: auto !important;
-    font-size: 10pt;
-    line-height: 1.5;
-    padding: 12px 14px !important;
+    font-size: 10pt !important;
+    line-height: 1.6 !important;
+    padding: 14px 18px !important;
+    page-break-inside: avoid !important;
   }
   
-  /* Typography improvements */
+  /* Prevent text from being cut mid-line */
+  .agent-content h3,
+  .agent-content p,
+  .agent-content div {
+    page-break-inside: avoid !important;
+  }
+  
+  /* Typography */
   .agent-content h3 {
     font-size: 11pt;
-    margin-top: 12px;
-    margin-bottom: 6px;
+    margin-top: 14px;
+    margin-bottom: 8px;
     color: #1a3325;
+    page-break-after: avoid !important;
   }
   
   .agent-content p {
-    margin: 6px 0;
+    margin: 8px 0;
+    orphans: 3;
+    widows: 3;
   }
   
-  /* Tables - compact in print */
+  /* Tables */
   .agent-content table {
     font-size: 9pt;
-    margin: 10px 0;
+    margin: 12px 0;
+    page-break-inside: avoid !important;
+  }
+  
+  /* North Star Metric - full width row with background */
+  .north-star-print {
+    page-break-before: avoid !important;
+    page-break-inside: avoid !important;
+    display: block !important;
+    width: 100% !important;
+    background: linear-gradient(135deg, #1a3325 0%, #2d5142 100%) !important;
+    border: 2px solid #c8922a !important;
+    border-radius: 6px !important;
+    padding: 18px 24px !important;
+    margin: 20px 0 !important;
+    color: white !important;
+  }
+  
+  .north-star-print * {
+    color: white !important;
   }
 }
 `;
@@ -856,15 +889,16 @@ function AgentCard({ agent, status, result, index }) {
 }
 
 // Print-only header
+// Print-only header
 function PrintHeader({ company, date }) {
   return (
     <div className="print-header" style={{ display: "none" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <span style={{ fontWeight: 700, fontSize: 14 }}>AdvisorSprint</span>
-          <span style={{ fontSize: 11, color: "#6b6b6b", marginLeft: 8 }}>CPG Intelligence · {company}</span>
+          <span>AdvisorSprint</span>
+          <span style={{ marginLeft: 12 }}>CPG Intelligence Report · {company}</span>
         </div>
-        <div style={{ fontSize: 10, color: "#9a9a9a" }}>
+        <div style={{ fontSize: 11, opacity: 0.85 }}>
           {date}
         </div>
       </div>
@@ -1641,7 +1675,7 @@ export default function App() {
             {/* North Star Metric — full width between waves */}
             {showDash && (
               <div style={{ gridColumn:"1/-1" }}>
-                <div style={{ background: `linear-gradient(135deg, ${P.forest} 0%, ${P.forestMid} 100%)`, borderRadius: 4, padding: "24px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 32 }}>
+                <div className="north-star-print" style={{ background: `linear-gradient(135deg, ${P.forest} 0%, ${P.forestMid} 100%)`, borderRadius: 4, padding: "24px 28px", marginBottom: 28, display: "flex", alignItems: "center", gap: 32 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: P.gold, marginBottom: 8 }}>North Star Metric · from Operating Cadence Agent</div>
                     {(() => {
