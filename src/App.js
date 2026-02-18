@@ -53,6 +53,11 @@ const GLOBAL_CSS = `
     size: landscape; 
     margin: 0.6in 0.5in; /* Increase right margin to prevent cutoff */
   }
+/* Force single column - override grid */
+.agent-grid {
+  display: block !important;
+  column-count: 1 !important;
+}
   * { 
     animation: none !important; 
     box-shadow: none !important;
@@ -855,7 +860,12 @@ function md(text) {
   const axesMap = parseAxesMap(text);
   if (axesMap) {
     processed = processed
-      .replace(/KIRANA-FIRST.*?\n.*?MASS.*?PREMIUM.*?\n.*?MT\/DIGITAL[^\n]*/gs, `%%AXES%%${btoa(unescape(encodeURIComponent(axesMap)))}%%AXES%%`)
+     .replace(/```[\s\S]*?```/g, (match) => {
+  if (match.includes("PREMIUM") || match.includes("MASS") || match.includes("←")) {
+    return `%%AXES%%${btoa(unescape(encodeURIComponent(axesMap)))}%%AXES%%`;
+  }
+  return match;
+})
       .replace(/(KIRANA|MT\/DIGITAL|MASS ←)[^\n]*/g, "");
   }
 
@@ -1740,7 +1750,7 @@ export default function App() {
   <>
     <PrintHeader company={company} date={new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} />
     
-    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
+    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }} className="agent-grid">
             {/* Wave 1 agents — side by side, 2 per row */}
             {AGENTS.filter(a=>a.wave===1).map((a,i) => (
               <AgentCard key={a.id} agent={a} status={statuses[a.id]||"idle"} result={results[a.id]||""} index={i} />
