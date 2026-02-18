@@ -49,16 +49,97 @@ const GLOBAL_CSS = `
   @keyframes shimmer { 0% { left:-60%; } 100% { left:110%; } }
 
   @media print {
-    body { background: #fff !important; }
-    .no-print { display: none !important; }
-    .print-section { break-inside: avoid; page-break-inside: avoid; margin-bottom: 24px; }
-    .print-header { display: block !important; }
-    * { animation: none !important; box-shadow: none !important; }
-    /* Each agent card gets its own page area */
-    [data-agent] { break-inside: avoid; border: 1px solid #ccc !important; margin-bottom: 20px; }
-    /* Remove scroll clipping so full content prints */
-    .agent-content { max-height: none !important; overflow: visible !important; height: auto !important; }
+  @page { size: landscape; margin: 0.75in; }
+  * { animation: none !important; }
+  body { background: white; }
+  
+  /* Hide web-only elements */
+  .no-print { display: none !important; }
+  
+  /* Premium header on each page */
+  .print-header { 
+    display: block !important;
+    font-family: 'Libre Baskerville', serif;
+    color: #1a3325;
+    font-size: 11px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #3d6b54;
+    margin-bottom: 20px;
   }
+  
+  /* Agent cards - color coded */
+  [data-agent] { 
+    break-inside: avoid; 
+    page-break-inside: avoid;
+    margin-bottom: 18px;
+    border: 1.5px solid #9b8c78 !important;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+  }
+  
+  /* Wave 1 agents - 2 column landscape grid */
+  [data-agent="signals"], [data-agent="competitive"],
+  [data-agent="channels"], [data-agent="segments"] {
+    width: 48%;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 2%;
+  }
+  [data-agent="competitive"], [data-agent="segments"] {
+    margin-right: 0;
+  }
+  
+  /* Wave 2 agents - full width */
+  [data-agent="pivot"], [data-agent="kpis"], [data-agent="narrative"] {
+    page-break-before: always;
+    width: 100%;
+  }
+  
+  /* Agent headers - color coded by wave */
+  [data-agent="signals"] > div:first-child,
+  [data-agent="competitive"] > div:first-child,
+  [data-agent="channels"] > div:first-child,
+  [data-agent="segments"] > div:first-child {
+    background: #e8f4ed !important;
+    border-bottom: 2px solid #3d6b54 !important;
+  }
+  
+  [data-agent="pivot"] > div:first-child,
+  [data-agent="kpis"] > div:first-child,
+  [data-agent="narrative"] > div:first-child {
+    background: #fef3ec !important;
+    border-bottom: 2px solid #d4724a !important;
+  }
+  
+  /* Content - remove scroll, ensure readability */
+  .agent-content { 
+    max-height: none !important; 
+    overflow: visible !important; 
+    height: auto !important;
+    font-size: 10pt;
+    line-height: 1.5;
+    padding: 12px 14px !important;
+  }
+  
+  /* Typography improvements */
+  .agent-content h3 {
+    font-size: 11pt;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    color: #1a3325;
+  }
+  
+  .agent-content p {
+    margin: 6px 0;
+  }
+  
+  /* Tables - compact in print */
+  .agent-content table {
+    font-size: 9pt;
+    margin: 10px 0;
+  }
+}
 `;
 
 const P = {
@@ -770,6 +851,23 @@ function AgentCard({ agent, status, result, index }) {
           </span>
         </div>
       )}
+    </div>
+  );
+}
+
+// Print-only header
+function PrintHeader({ company, date }) {
+  return (
+    <div className="print-header" style={{ display: "none" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          <span style={{ fontWeight: 700, fontSize: 14 }}>AdvisorSprint</span>
+          <span style={{ fontSize: 11, color: "#6b6b6b", marginLeft: 8 }}>CPG Intelligence · {company}</span>
+        </div>
+        <div style={{ fontSize: 10, color: "#9a9a9a" }}>
+          {date}
+        </div>
+      </div>
     </div>
   );
 }
@@ -1529,9 +1627,12 @@ export default function App() {
           </div>
         )}
 
-        {/* ── AGENT GRID ── */}
-        {hasStarted && (
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
+{/* ── AGENT GRID ── */}
+{hasStarted && (
+  <>
+    <PrintHeader company={company} date={new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} />
+    
+    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
             {/* Wave 1 agents — side by side, 2 per row */}
             {AGENTS.filter(a=>a.wave===1).map((a,i) => (
               <AgentCard key={a.id} agent={a} status={statuses[a.id]||"idle"} result={results[a.id]||""} index={i} />
@@ -1576,9 +1677,10 @@ export default function App() {
               <div key={a.id} style={{ gridColumn:"1/-1" }}>
                 <AgentCard agent={a} status={statuses[a.id]||"idle"} result={results[a.id]||""} index={4+i} />
               </div>
-            ))}
-          </div>
-        )}
+))}
+    </div>
+  </>
+)}
 
         {/* ── COMPLETION ── */}
         {isDone && (
