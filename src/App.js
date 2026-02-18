@@ -755,14 +755,29 @@ function parseAxesMap(text) {
   const lines = text.split("\n");
   const mapLines = [];
   let inMap = false;
+  
   for (const line of lines) {
-    if (line.includes("←") || line.includes("↑") || line.includes("KIRANA") || line.includes("MT/DIGITAL") || line.includes("MASS") || line.includes("PREMIUM")) {
+    // Start capturing when we see map keywords
+    if (line.includes("←") || line.includes("↑") || line.includes("KIRANA") || 
+        line.includes("MT/DIGITAL") || line.includes("MASS") || line.includes("PREMIUM")) {
       inMap = true;
     }
-    if (inMap) mapLines.push(line);
-    if (inMap && mapLines.length > 6) break;
+    
+    if (inMap) {
+      mapLines.push(line);
+      
+      // Stop after MT/DIGITAL line (bottom of the map)
+      if (line.includes("MT/DIGITAL") || line.includes("MT\/DIGITAL")) {
+        break;
+      }
+      
+      // Safety limit
+      if (mapLines.length > 6) break;
+    }
   }
+  
   if (!mapLines.length) return null;
+  
   return `<div style="background:${P.parchment};border:1px solid ${P.sand};border-radius:3px;padding:12px 14px;margin:10px 0;overflow-x:auto;">
     <pre style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${P.inkMid};line-height:1.8;margin:0;white-space:pre;">${mapLines.join("\n")}</pre>
   </div>`;
