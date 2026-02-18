@@ -49,9 +49,19 @@ const GLOBAL_CSS = `
   @keyframes shimmer { 0% { left:-60%; } 100% { left:110%; } }
 
   @media print {
-  @page { size: landscape; margin: 0.5in; }
-  * { animation: none !important; box-shadow: none !important; }
-  body { background: white; }
+  @page { 
+    size: landscape; 
+    margin: 0.6in 0.5in; /* Increase right margin to prevent cutoff */
+  }
+  * { 
+    animation: none !important; 
+    box-shadow: none !important;
+  }
+  body { 
+    background: white;
+    margin: 0;
+    padding: 0;
+  }
   
   /* Hide all UI elements */
   .no-print { display: none !important; }
@@ -79,17 +89,21 @@ const GLOBAL_CSS = `
     opacity: 0.9;
   }
   
-  /* Every agent card = full width row, new page */
+  /* CRITICAL: Force single column layout - each agent is a full-width row */
   [data-agent] { 
     page-break-before: always !important;
     page-break-after: avoid !important;
     page-break-inside: avoid !important;
     width: 100% !important;
+    max-width: 100% !important;
     display: block !important;
-    margin: 0 0 20px 0 !important;
+    float: none !important;
+    margin: 0 0 16px 0 !important;
     border: 1.5px solid #9b8c78 !important;
     border-radius: 4px;
     overflow: visible !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
   }
   
   /* First agent (signals) - no page break before */
@@ -104,7 +118,8 @@ const GLOBAL_CSS = `
   [data-agent="segments"] > div:first-child {
     background: #e8f4ed !important;
     border-bottom: 2px solid #3d6b54 !important;
-    padding: 12px 16px !important;
+    padding: 10px 16px !important;
+    box-sizing: border-box !important;
   }
   
   [data-agent="pivot"] > div:first-child,
@@ -112,18 +127,22 @@ const GLOBAL_CSS = `
   [data-agent="narrative"] > div:first-child {
     background: #fef3ec !important;
     border-bottom: 2px solid #d4724a !important;
-    padding: 12px 16px !important;
+    padding: 10px 16px !important;
+    box-sizing: border-box !important;
   }
   
-  /* Agent content - full width, readable */
+  /* Agent content - prevent cutoff */
   .agent-content { 
     max-height: none !important; 
     overflow: visible !important; 
     height: auto !important;
-    font-size: 10pt !important;
-    line-height: 1.6 !important;
-    padding: 14px 18px !important;
+    font-size: 9.5pt !important;
+    line-height: 1.5 !important;
+    padding: 12px 16px !important;
     page-break-inside: avoid !important;
+    box-sizing: border-box !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
   }
   
   /* Prevent text from being cut mid-line */
@@ -131,28 +150,48 @@ const GLOBAL_CSS = `
   .agent-content p,
   .agent-content div {
     page-break-inside: avoid !important;
+    max-width: 100% !important;
   }
   
   /* Typography */
   .agent-content h3 {
-    font-size: 11pt;
-    margin-top: 14px;
-    margin-bottom: 8px;
+    font-size: 10.5pt;
+    margin-top: 12px;
+    margin-bottom: 6px;
     color: #1a3325;
     page-break-after: avoid !important;
   }
   
   .agent-content p {
-    margin: 8px 0;
+    margin: 6px 0;
     orphans: 3;
     widows: 3;
+    max-width: 100%;
   }
   
-  /* Tables */
+  /* Tables - prevent overflow */
   .agent-content table {
-    font-size: 9pt;
-    margin: 12px 0;
+    font-size: 8.5pt;
+    margin: 10px 0;
     page-break-inside: avoid !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+    word-wrap: break-word !important;
+  }
+  
+  .agent-content table td,
+  .agent-content table th {
+    padding: 6px 8px !important;
+    overflow-wrap: break-word !important;
+  }
+  
+  /* Pre/code blocks - prevent overflow */
+  .agent-content pre {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    font-size: 8pt !important;
   }
   
   /* North Star Metric - full width row with background */
@@ -161,12 +200,14 @@ const GLOBAL_CSS = `
     page-break-inside: avoid !important;
     display: block !important;
     width: 100% !important;
+    max-width: 100% !important;
     background: linear-gradient(135deg, #1a3325 0%, #2d5142 100%) !important;
     border: 2px solid #c8922a !important;
     border-radius: 6px !important;
-    padding: 18px 24px !important;
-    margin: 20px 0 !important;
+    padding: 16px 20px !important;
+    margin: 16px 0 !important;
     color: white !important;
+    box-sizing: border-box !important;
   }
   
   .north-star-print * {
@@ -750,31 +791,49 @@ function parseTable(block) {
 }
 
 function parseAxesMap(text) {
-  // Detect ASCII 2x2 maps — lines containing ← or → or ←—
-  if (!text.includes("←") && !text.includes("↑")) return null;
+  // Detect ASCII 2x2 maps — lines containing ← or → or positioning terms
+  if (!text.includes("←") && !text.includes("↔") && !text.includes("KIRANA") && !text.includes("MASS")) return null;
+  
   const lines = text.split("\n");
   const mapLines = [];
   let inMap = false;
+  let inCodeBlock = false;
   
   for (const line of lines) {
-    // Start capturing when we see map keywords
-    if (line.includes("←") || line.includes("↑") || line.includes("KIRANA") || 
-        line.includes("MT/DIGITAL") || line.includes("MASS") || line.includes("PREMIUM")) {
+    // Detect code block boundaries
+    if (line.trim() === "```") {
+      if (!inCodeBlock) {
+        inCodeBlock = true;
+        continue; // Skip the opening ```
+      } else {
+        break; // Stop at closing ```
+      }
+    }
+    
+    // Start capturing when we see map indicators
+    if (inCodeBlock || line.includes("←") || line.includes("↔") || line.includes("KIRANA") || 
+        line.includes("MT/DIGITAL") || line.includes("MASS") || line.includes("PREMIUM") ||
+        line.includes("TRADITIONAL") || line.includes("MODERN")) {
       inMap = true;
     }
     
     if (inMap) {
       mapLines.push(line);
       
-      // Stop after MT/DIGITAL line (bottom of the map)
-      if (line.includes("MT/DIGITAL") || line.includes("MT\/DIGITAL")) {
+      // Stop after MT/DIGITAL or MASS line (bottom of map)
+      if (line.includes("MT/DIGITAL") || line.includes("MT\/DIGITAL") || 
+          (mapLines.length > 3 && line.includes("MASS") && !line.includes("←"))) {
         break;
       }
       
       // Safety limit
-      if (mapLines.length > 6) break;
+      if (mapLines.length > 15) break;
     }
   }
+  
+  // Remove empty lines from start/end
+  while (mapLines.length && !mapLines[0].trim()) mapLines.shift();
+  while (mapLines.length && !mapLines[mapLines.length-1].trim()) mapLines.pop();
   
   if (!mapLines.length) return null;
   
