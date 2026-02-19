@@ -98,7 +98,7 @@ const GLOBAL_CSS = `
   [data-agent] { 
     page-break-before: always !important;
     page-break-after: avoid !important;
-    page-break-inside: avoid !important;
+    
     width: 100% !important;
     max-width: 100% !important;
     display: block !important;
