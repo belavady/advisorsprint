@@ -107,8 +107,7 @@ const AGENTS = [
   { id: "growth", wave: 1, icon: "◆", label: "Growth Strategy & Channel Orchestration", sub: "GTM roadmap, geographic expansion, sales team" },
   { id: "competitive", wave: 1, icon: "◇", label: "Competitive Battle Plan", sub: "Head-to-head analysis, attack/defend strategies" },
   { id: "synergy", wave: 2, icon: "◈", label: "Synergy Playbook", sub: "Post-acquisition integration, value capture" },
-  { id: "synopsis", wave: 3, icon: "◉", label: "Executive Synopsis", sub: "Strategic synthesis of all 7 agents" },
-,
+  { id: "synopsis", wave: 3, icon: "◉", label: "Executive Synopsis", sub: "Strategic synthesis of all 8 agents" },
   {
     id: "platform",
     label: "Platform Expansion & D2C Brand Incubator",
@@ -119,8 +118,7 @@ const AGENTS = [
 ];
 
 const W1 = AGENTS.filter(a => a.wave === 1).map(a => a.id);
-const W2 = AGENTS.filter(a => a.wave === 2).map(a => a.id);
-const W3 = AGENTS.filter(a => a.wave === 3).map(a => a.id);
+// W2 and W3 not needed - agents run based on wave property directly
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // AGENT PROMPTS
@@ -3400,9 +3398,7 @@ Focus areas:
   const [results, setResults] = useState({});
   const [statuses, setStatuses] = useState({});
   const [elapsed, setElapsed] = useState(0);
-  const [pdfs, setPdfs] = useState([]);
-  const [userName, setUserName] = useState("");
-  const [showDash, setShowDash] = useState(false);
+  // Removed unused state: pdfs, setPdfs, userName, setUserName, showDash, setShowDash
   
   const abortRef = useRef(null);
   const timerRef = useRef(null);
@@ -3415,7 +3411,7 @@ Focus areas:
     return () => style.remove();
   }, []);
 
-  const callClaude = async (prompt, docs, signal, attempt = 0) => {
+  const callClaude = useCallback(async (prompt, docs, signal, attempt = 0) => {
     if (MOCK_MODE) {
       await new Promise(r => setTimeout(r, 1500));
       
@@ -3459,7 +3455,7 @@ Focus areas:
 
     const data = await res.json();
     return data.text || "";
-  };
+  }, []); // callClaude has no dependencies - uses only parameters and constants
 
   const runAgent = useCallback(async (id, prompt, signal, docs) => {
     try {
@@ -3477,7 +3473,7 @@ Focus areas:
       }
       return "";
     }
-  }, [company]);
+  }, [company, callClaude]);
 
   const runSprint = async () => {
     if (!company.trim() || appState === "running") return;
