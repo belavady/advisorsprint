@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
     }
 
     // Model: Sonnet 4.6 for all agents
-    const model = 'claude-sonnet-4-6-20250514';
+    const model = 'claude-sonnet-4-20250514';
 
     // Max tokens based on agent
     const maxTokens = agentId === 'synopsis' ? 4000 
