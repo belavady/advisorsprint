@@ -3487,7 +3487,6 @@ Focus areas:
     
     setAppState("preparing");
     setResults({});
-    setShowDash(false);
     setElapsed(0);
 
     const co = company.trim();
@@ -3495,8 +3494,8 @@ Focus areas:
     
     gaEvent("sprint_launched", {
       company: co,
-      user: userName || "anonymous",
-      pdfs_uploaded: pdfs.length,
+      user: "anonymous",
+      pdfs_uploaded: 0,
       has_context: ctx.length > 0,
     });
 
@@ -3513,7 +3512,7 @@ Focus areas:
         if (signal.aborted) return;
         setStatuses(s => ({ ...s, [id]: "running" }));
         const prompt = makePrompt(id, co, ctx, {});
-        const text = await runAgent(id, prompt, signal, pdfs);
+        const text = await runAgent(id, prompt, signal, []);
         w1texts[id] = text;
       }
 
@@ -3521,7 +3520,7 @@ Focus areas:
       if (!signal.aborted) {
         setStatuses(s => ({ ...s, synergy: "running" }));
         const prompt = makePrompt("synergy", co, ctx, w1texts);
-        const synergyText = await runAgent("synergy", prompt, signal, pdfs);
+        const synergyText = await runAgent("synergy", prompt, signal, []);
         w1texts.synergy = synergyText;
       }
 
@@ -3529,12 +3528,11 @@ Focus areas:
       if (!signal.aborted) {
         setStatuses(s => ({ ...s, synopsis: "running" }));
         const prompt = makePrompt("synopsis", co, ctx, w1texts);
-        await runAgent("synopsis", prompt, signal, pdfs);
+        await runAgent("synopsis", prompt, signal, []);
       }
 
       if (!signal.aborted) {
         setAppState("done");
-        setShowDash(true);
         gaEvent("sprint_completed", { company: co, time_seconds: elapsed });
       }
 
@@ -3554,7 +3552,7 @@ Focus areas:
   };
 
   const downloadPDF = () => {
-    gaEvent("pdf_download", { company, user: userName || "anonymous" });
+    gaEvent("pdf_download", { company, user: "anonymous" });
     window.print();
   };
 
