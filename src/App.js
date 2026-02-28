@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 // Backend API URL
-const API_URL = "https://advisorsprint-api.vercel.app/api/claude";
+const API_URL = "https://advisorsprint-api.onrender.com/api/claude";
 
 // MOCK MODE: true = instant fake output (for testing), false = real API calls via backend
 const MOCK_MODE = false;
