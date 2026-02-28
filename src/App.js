@@ -108,6 +108,14 @@ const AGENTS = [
   { id: "competitive", wave: 1, icon: "◇", label: "Competitive Battle Plan", sub: "Head-to-head analysis, attack/defend strategies" },
   { id: "synergy", wave: 2, icon: "◈", label: "Synergy Playbook", sub: "Post-acquisition integration, value capture" },
   { id: "synopsis", wave: 3, icon: "◉", label: "Executive Synopsis", sub: "Strategic synthesis of all 7 agents" },
+,
+  {
+    id: "platform",
+    label: "Platform Expansion & D2C Brand Incubator",
+    sub: "Strategic portfolio transformation",
+    icon: "◉",
+    wave: 2
+  }
 ];
 
 const W1 = AGENTS.filter(a => a.wave === 1).map(a => a.id);
@@ -120,4585 +128,2749 @@ const W3 = AGENTS.filter(a => a.wave === 3).map(a => a.id);
 
 const PROMPTS = {
   market: `# AGENT 1: MARKET POSITION & CATEGORY DYNAMICS
+## POST-ACQUISITION GROWTH STRATEGY (3 YEARS IN)
 
 **Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
 
-**Role:** Market Intelligence Analyst - Category Positioning & Competitive Landscape
+**Critical Context:** ITC acquired [COMPANY] in 2023. We're now in 2026—**3 years post-acquisition**.
+
+---
+
+## WHAT ITC HAS ALREADY DONE (2023-2026)
+
+**Distribution Support — PARTIAL LEVERAGE:**
+- ✅ Expanded from 150 MT stores → 800-1,200 stores (ITC relationships helped BUT field team focused on ITC's premium portfolio, not full muscle for Yogabar)
+- ⚠️ General Trade: Limited penetration (ITC field team bandwidth constraint)
+- ✅ Marketing spend 2x higher with ITC backing (but not 3x—separate unit with own budget)
+- ❌ Manufacturing: NOT moved to original co-packer facilities (no capacity constraints, Yogabar continues with co-packers)
+- ⚠️ Procurement: Minimal leverage (Yogabar operates separately, limited ITC vendor access)
+
+**The Challenge NOW:**
+- **Current performance unknown** - Search for 2024-2025 revenue/growth data
+- **Post-ITC trajectory assessment needed** - Has momentum continued, accelerated, or slowed?
+- **Next growth drivers** - What's needed BEYOND the selective MT support already provided?
+- **Field team bandwidth** - ITC's field team focused on own premium portfolio, so Yogabar needs strategies that don't depend heavily on ITC field resources
 
 ---
 
 ## YOUR MISSION
 
-Map the competitive battlefield. Identify where [COMPANY] sits in the category landscape, who they're fighting, and what market dynamics determine winners vs losers.
+Identify the **NEXT SET** of growth opportunities that go **BEYOND distribution leverage** (already done).
 
-Your analysis reveals **structural patterns** that other analysts miss:
-- Category evolution trajectories (emerging → growth → mature → consolidation)
-- Competitive white space (where no player dominates)
-- Market timing signals (too early vs perfect timing vs too late)
-- Demand drivers that create tailwinds or headwinds
+**Focus on:**
+1. **Category shifts since 2023** that create NEW white space
+2. **Untapped demand pools** unreachable with current store-based strategy
+3. **Competitive vulnerabilities** that emerged AFTER ITC's expansion
+4. **Market timing signals** for what to do in 2026-2028
 
----
+**DO NOT:**
+- ❌ Suggest "leverage ITC distribution" (done for 3 years)
+- ❌ Recommend "expand to more MT stores" (plateau evidence)
+- ❌ Give advice that was valid in 2023 but irrelevant now
 
-## CRITICAL CONTEXT
-
-**Current Date:** February 2026
-
-**Data Sources:** Web search + user-provided context
-
-**Your Analytical Edge:**
-You don't just report market size—you identify **why** certain players win and what that means for [COMPANY]'s strategy.
-
-**Red Flags to Watch:**
-- ❌ Vague statements: "Large growing market"
-- ❌ Outdated data: Using 2022 reports in 2026
-- ❌ Missing insight: Listing competitors without explaining dynamics
-- ✅ Sharp analysis: "Category fragmenting—7 funded startups in 18 months suggests low barriers but also signals institutional validation"
+**DO:**
+- ✅ "Quick Commerce shift: 27% of impulse nutrition now on Blinkit/Zepto (emerged 2024-2025). [COMPANY] at 4% presence vs 18% category average."
+- ✅ "International opportunity: India nutrition brands entering ME markets (2025 trend). [COMPANY] positioned for export but not activated."
 
 ---
 
-## SEARCH STRATEGY (Execute These Searches)
+## SEARCH STRATEGY
 
-### **PRIORITY 1: Recent Category & Company Data (2024-2026)**
+### **PRIORITY 1: Post-Acquisition Performance Evidence**
 
 \`\`\`
-SEARCH QUERIES (Use These Exact Patterns):
-
-1. "[COMPANY] revenue 2024"
-2. "[COMPANY] funding 2024" OR "[COMPANY] funding 2025"
-3. "[COMPANY] market share 2024"
-4. "[COMPANY] announces 2024" OR "[COMPANY] launches 2025"
-5. "[Category name] market size India 2024"
-6. "[Category name] growth rate 2024"
-7. "[Category name] trends 2025"
-8. "healthy snacks India market report 2024" (if relevant)
-9. "protein bars India market 2024" (if relevant)
-10. Each competitor: "[Competitor] revenue 2024", "[Competitor] funding 2024"
+1. "[COMPANY] revenue growth 2024" OR "[COMPANY] same-store sales"
+2. "[COMPANY] ITC performance 2024" OR "[COMPANY] velocity trends"
+3. "ITC Foods acquisition performance 2024"
+4. "[COMPANY] store count 2025" OR "distribution expansion"
 \`\`\`
 
-**CRITICAL:** Always note the DATE of every source you cite.
-- ✅ "According to Economic Times (Jan 15, 2024)..."
-- ❌ "According to reports..."
+**Why:** Verify the plateau hypothesis. Is growth actually slowing?
 
-### **PRIORITY 2: User-Provided Data (If Available)**
+### **PRIORITY 2: Category Evolution 2024-2026**
 
-**Check context for:**
-- Internal revenue/margin data
-- Channel split percentages
-- Market share from Nielsen/Euromonitor
-- ITC's proprietary competitive intelligence
-
-**If user provided data exists:**
-- Use it as GROUND TRUTH
-- Supplement with web search for competitive context
-- Note: "Per internal data..." vs "Per public sources..."
-
-### **PRIORITY 3: SKU & Portfolio Intelligence**
-
-**CRITICAL: Product-level analysis often reveals more than company-level data**
-
-For [COMPANY] and each major competitor, search:
-
-**SKU-Level Data (Often Available Publicly):**
 \`\`\`
-SEARCH QUERIES:
-1. "[COMPANY] best selling products"
-2. "[COMPANY] product range" OR "[COMPANY] SKU list"
-3. "[COMPANY] pricing" OR "[COMPANY] price list"
-4. "[COMPANY] Amazon bestsellers" (check Amazon rankings)
-5. "[COMPANY] Blinkit" OR "[COMPANY] BigBasket" (e-comm availability/pricing)
-6. "[Competitor] bestsellers" (repeat for each competitor)
-7. "[Category] price comparison India 2024"
-
-PUBLIC SOURCES FOR SKU DATA:
-- E-commerce listings (Amazon, Flipkart, Blinkit, BigBasket, Zepto)
-  → Product prices, review counts (proxy for velocity), ratings
-  → Best-seller rankings, "frequently bought together"
-  
-- Company websites (pricing, product descriptions, feature comparison)
-  → Often lists full SKU range with prices
-  
-- Distributor/dealer websites
-  → Sometimes list wholesale pricing, MOQs
-  
-- News articles about product launches
-  → "Yogabar launches protein+creatine bar at ₹60"
-  
-- Customer reviews mentioning specific SKUs
-  → "The chocolate protein bar is their best product"
-
-WHAT TO CAPTURE:
-- SKU name and variant (flavor, size, format)
-- Price point (MRP, any discounts observed)
-- Availability (which channels stock it)
-- Relative popularity (bestseller rank, review count)
-- Feature comparison vs competition
+5. "[Category] quick commerce 2024" (e.g., "protein bars Blinkit Zepto")
+6. "[Category] D2C to retail shift 2024-2025"
+7. "[Category] emerging segments 2025" (functional foods, adaptogens, etc.)
+8. "[Category] international expansion India brands 2024"
+9. "Health snacks consumer behavior shift 2024-2025"
+10. "[Category] subscription model 2024" OR "DTC retention"
 \`\`\`
 
-**Internal vs Public Data Gap:**
+**Why:** Find NEW channels/formats that emerged 2024-2026 that ITC hasn't captured.
 
-Most companies DON'T disclose:
-- ❌ Revenue contribution by SKU (what % of sales each product drives)
-- ❌ Volume sales by SKU (units sold per month)
-- ❌ Margin by SKU (which products are most profitable)
-- ❌ Channel preference by SKU (which SKUs sell better where)
+### **PRIORITY 3: Competitive Intelligence Post-2023**
 
-**If user provided internal data, use it. Otherwise:**
 \`\`\`
-INFER FROM PROXIES:
-- Amazon bestseller rank → rough velocity estimate
-- Review count → engagement proxy (500 reviews vs 50 = 10x more popular)
-- Price positioning → margin inference (₹60 bar likely >35% margin vs ₹25 bar at 20%)
-- E-comm availability → distribution breadth (available on 5 platforms vs 1)
-
-STATE CONFIDENCE CLEARLY:
-✅ "Based on Amazon rankings, Yogabar's chocolate protein bar (₹55) appears to be bestseller with 1,200+ reviews vs other SKUs with 200-400 reviews. Estimated 30-40% of portfolio revenue. CONFIDENCE: Medium (public proxy data)"
-
-✗ "Chocolate protein bar is the bestseller" (no evidence, no confidence level)
+11. "[Competitor] growth rate 2024" (for each major competitor)
+12. "[Competitor] launches 2024" OR "new products"
+13. "[Competitor] expansion 2024" (what strategies are working for them now?)
 \`\`\`
 
-### **PRIORITY 4: Competitive Intelligence**
+**Why:** Who's still growing despite distribution commoditization? What are they doing differently?
 
-For each major competitor mentioned in context, search:
-- Recent funding rounds (signals momentum)
-- Product launches (signals strategy)
-- Executive quotes/interviews (reveals priorities)
-- Job postings (hiring for sales = growth mode, hiring for ops = scaling mode)
+### **PRIORITY 4: Next-Wave Opportunities**
+
+\`\`\`
+14. "Corporate wellness India 2024" OR "institutional nutrition programs"
+15. "Gym chains India expansion 2024" (direct B2B channel)
+16. "Travel retail nutrition India 2024" OR "airport snacks premium"
+17. "Fitness studios India growth 2024" (sampling/distribution partner)
+\`\`\`
+
+**Why:** Non-traditional channels ITC may not have explored yet.
 
 ---
 
-## ANALYSIS FRAMEWORK
+## OUTPUT STRUCTURE (800-1,000 words, 2 pages max)
 
-### **SECTION 1: CATEGORY DEFINITION & SIZING**
-
-**What category does [COMPANY] compete in?**
-
-**Be Precise:**
-- ❌ "Healthy snacks" (too broad—₹50,000 Cr market)
-- ✅ "Nutrition bars" (specific—₹800-1,200 Cr market)
-- ✅ Further segment: "Premium nutrition bars (₹40-60 price point)" vs "Mass nutrition bars (₹20-30)"
-
-**Category Size & Growth:**
-\`\`\`
-FIND AND CITE:
-- Total category size (₹ Cr in India, $ globally if relevant)
-- Growth rate (CAGR 2020-2025, projected 2025-2030)
-- Key growth drivers (health consciousness, convenience, income growth)
-- Penetration (what % of target consumers currently buy category)
-
-SOURCES TO SEARCH:
-- Euromonitor reports (often cited in news)
-- Industry association data (ASSOCHAM, CII, FICCI reports)
-- Consulting firm reports (Redseer, Bain, BCG India)
-- News articles citing market research
-
-DATA CONFIDENCE LEVELS:
-- HIGH: From Euromonitor, Nielsen, official industry reports
-- MEDIUM: From news articles citing research (verify source)
-- LOW: From company claims, extrapolations, estimates
-
-If no recent data found, state:
-"Category size not publicly disclosed. Estimated ₹X-Y Cr based on [logic]. 
-Requires Nielsen data for precision."
-\`\`\`
-
-**Category Evolution Stage:**
-- **Emerging** (0-5 years old, <₹500 Cr, fragmented, no clear leader)
-  - Example: Plant-based meat in India (2024)
-  - Implication: High risk, high reward, winner undefined
-  
-- **Growth** (5-15 years old, ₹500-5,000 Cr, 3-5 players gaining scale)
-  - Example: Protein bars in India (2024)
-  - Implication: Land grab phase, scale matters, capital intensive
-  
-- **Mature** (15+ years, >₹5,000 Cr, 1-2 dominant players, slow growth)
-  - Example: Packaged biscuits in India
-  - Implication: Incremental share gains, margin competition, innovation stagnant
-
-**Where does [COMPANY]'s category sit?**
-- State the stage clearly
-- Cite evidence (number of funded players, growth rate, leader market share)
-- **Strategic implication:** What does this stage mean for strategy?
-
----
-
-### **SECTION 2: COMPETITIVE LANDSCAPE MAPPING**
-
-**Don't just list competitors—MAP the battlefield:**
-
-**Competitive Set (List 5-8 Direct Competitors):**
-
-For each competitor, capture:
+### **SECTION 1: POST-ACQUISITION SCORECARD (200 words)**
 
 \`\`\`
-COMPETITOR: [Name]
-- Position: [Premium/Mid/Mass-market, D2C/E-comm/MT/GT focused]
-- Funding: [Last round, total raised, key investors]
-- Estimated Revenue: [₹X Cr based on [source/logic]]
-- Key Differentiator: [What makes them different]
-- Strategic Focus: [What they're prioritizing - expansion/profitability/innovation]
+## THREE YEARS LATER: WHERE WE STAND
 
-EVIDENCE TO SEARCH:
-- Company website (pricing, products, positioning)
-- Recent news (funding, launches, partnerships)
-- Job postings (what roles they're hiring for)
-- LinkedIn (employee count trends)
-- Customer reviews (what customers say)
+**Revenue Trajectory:**
+FY24: ₹[X] Cr (+[Y]% YoY)
+FY25: ₹[X] Cr (+[Y]% YoY - slowing/stable/accelerating)
+FY26 (est): ₹[X] Cr (+[Y]% YoY)
+
+**Distribution Footprint:**
+2023: 150 MT stores
+2026: [X] stores (grew [Y]x in 3 years)
+Velocity: [Evidence of plateau if available - e.g., "Same-store sales up only 2% vs 45% in FY24"]
+
+**Market Share:**
+2023: [X]% (Rank #[Y])
+2026: [X]% (Rank #[Y]) — [Gained/Lost] share
+
+**Verdict:** [One sentence - Is the ITC distribution playbook still working or tapped out?]
+
+**Confidence:** [High/Medium/Low - based on data quality]
+**Sources:** [List 2-3 key sources]
 \`\`\`
 
-**Competitive Positioning Map:**
+### **SECTION 2: CATEGORY SHIFTS SINCE 2023 (300 words)**
 
-Create a 2x2 or explain positioning across dimensions:
+Identify 3 structural market changes that create NEW opportunities:
 
-**DIMENSION 1: Price Positioning**
-- Premium (₹50+ per unit)
-- Mid-premium (₹35-50)
-- Mass-market (₹20-35)
-
-**DIMENSION 2: Distribution Channel**
-- Digital-first (D2C + E-comm >70%)
-- Modern Trade focused (MT 40-60%)
-- Omnichannel (balanced across D2C/E-comm/MT/GT)
-
-**Map competitors:**
+**Format per shift:**
 \`\`\`
-Example:
-- Whole Truth: Premium + Digital-first (₹60 price, 80% D2C/E-comm)
-- True Elements: Mid-premium + Omnichannel (₹45 price, 50% MT, 30% E-comm, 20% GT)
-- Rite Bite: Mass + Omnichannel (₹25 price, 60% MT/GT, 30% E-comm, 10% D2C)
-
-[COMPANY] Position: [Where do they sit on this map?]
-Strategic Gap: [What position is unoccupied that represents opportunity?]
-\`\`\`
-
-**Competitive Clustering (Who's Fighting Whom):**
-
-\`\`\`
-CLUSTER 1: Premium Digital-Native Brands
-- Whole Truth, [COMPANY], [Other]
-- Battle: Brand authenticity, ingredient quality, community engagement
-- Customer: Urban, health-conscious, willing to pay premium
-
-CLUSTER 2: Mid-Premium Omnichannel Players
-- True Elements, [Other]
-- Battle: Distribution reach, product range, value-for-money
-- Customer: Health-aware, seeking balance of quality + affordability
-
-CLUSTER 3: Mass-Market FMCG Incumbents
-- Kellogg's, Britannia, [Other]
-- Battle: Shelf space, price, brand trust
-- Customer: Mainstream, habit-driven, price-sensitive
-
-[COMPANY] competes MOST directly with: [Cluster X]
-Adjacency threat from: [Cluster Y moving into their space]
-Opportunity to attack: [Cluster Z's weakness]
-\`\`\`
-
----
-
-### **SECTION 3: SKU PORTFOLIO & PRICING ARCHITECTURE**
-
-**Product-Level Battle: What Actually Sells and At What Price?**
-
-**Don't just analyze companies—analyze their PRODUCTS.**
-
-Most strategic insights come from SKU-level understanding:
-- Which products drive revenue? (1-2 hero SKUs often = 60-70% of sales)
-- What price points work? (Premium ₹50+ vs mass ₹20-30)
-- How do portfolios differ? (Competitor A has 15 SKUs, Competitor B has 5)
-
-**[COMPANY] PORTFOLIO ANALYSIS:**
-
-\`\`\`
-CAPTURE (from e-commerce, website, user data):
-
-TOTAL SKU COUNT: [X SKUs across Y categories]
-
-PRICE POINT BREAKDOWN:
-- Premium (₹50+): [X SKUs] - Example: [Product names]
-- Mid-Premium (₹35-50): [X SKUs] - Example: [Product names]
-- Mass-Market (₹20-35): [X SKUs] - Example: [Product names]
-
-ESTIMATED HERO SKUs (Top 3 by Popularity):
-1. [SKU Name] - ₹X - [Evidence: Amazon rank, review count, availability]
-   → Estimated X-Y% of revenue (based on [proxy logic])
-   
-2. [SKU Name] - ₹X - [Evidence]
-   → Estimated X-Y% of revenue
-   
-3. [SKU Name] - ₹X - [Evidence]
-   → Estimated X-Y% of revenue
-
-Long tail: Remaining [X] SKUs likely contribute <30% collectively
-
-PORTFOLIO BREADTH VS DEPTH:
-- Breadth: [How many categories? Protein bars, energy bars, granola, etc.]
-- Depth: [How many variants per category? 3 flavors vs 10 flavors]
-
-STRATEGIC PATTERN:
-- Focused portfolio (5-8 SKUs, deep on 1-2 categories) = [Player examples]
-- Broad portfolio (15+ SKUs, shallow across many) = [Player examples]
-- [COMPANY] approach: [Which pattern do they follow?]
-\`\`\`
-
-**COMPETITIVE PORTFOLIO COMPARISON:**
-
-For each major competitor:
-
-\`\`\`
-COMPETITOR: Whole Truth
-Portfolio: ~12 SKUs
-- Protein bars: 6 variants (₹60 each)
-- Protein cookies: 3 variants (₹120/pack)
-- Muesli: 3 variants (₹350/pack)
-
-Price Positioning: Premium (₹50+ average)
-Hero SKU: Chocolate Peanut Butter Protein Bar (₹60)
-  → Evidence: Amazon #1 bestseller in protein bars, 2,500+ reviews
-  → Estimated 25-30% of revenue
-
-Portfolio Strategy: Narrow & deep on protein bars, expanding adjacencies
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-COMPETITOR: True Elements
-Portfolio: ~25 SKUs
-- Muesli: 8 variants (₹300-400)
-- Granola: 5 variants (₹250-350)
-- Protein bars: 4 variants (₹45 each)
-- Trail mix: 8 variants (₹150-250)
-
-Price Positioning: Mid-premium (₹35-50 average)
-Hero SKU: Quinoa Muesli (₹349)
-  → Evidence: Amazon bestseller, 3,800+ reviews
-  → Estimated 20-25% of revenue
-
-Portfolio Strategy: Broad across healthy breakfast/snacking, diluted focus
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Repeat for 3-5 key competitors]
-\`\`\`
-
-**PRICING ARCHITECTURE ANALYSIS:**
-
-\`\`\`
-PRICE POINT DISTRIBUTION (Protein Bars Category):
-
-₹60+: Whole Truth (₹60), [COMPANY] premium line (₹60)
-₹45-55: Yogabar (₹50), Super You (₹48), True Elements (₹45)
-₹30-40: [Gap - no major player]
-₹20-30: RiteBite (₹25), Britannia NutriChoice (₹20)
-
-STRATEGIC INSIGHTS:
-
-1. PRICE CLUSTERING:
-   - Premium cluster at ₹50-60 (D2C brands)
-   - Mass cluster at ₹20-30 (FMCG incumbents)
-   - GAP at ₹30-40 (opportunity or trap?)
-
-2. PRICE-CHANNEL CORRELATION:
-   - ₹50+ products: 70%+ D2C/E-comm (discovery, education needed)
-   - ₹40-50 products: Balanced MT + E-comm (accessible premium)
-   - ₹20-30 products: 60%+ MT/GT (impulse purchase, mass reach)
-
-3. PRICE-MARGIN IMPLICATIONS:
-   Premium (₹50+): Higher margin (35-40%) BUT higher CAC + lower volume
-   Mass (₹20-30): Lower margin (18-25%) BUT lower CAC + higher volume
-   Sweet spot? ₹40-45 range (30% margin, moderate CAC, scale potential)
-
-4. REVENUE MIX BY PRICE POINT:
-
-Based on competitive patterns:
-- Companies with >60% revenue from ₹50+ products = D2C dependent
-  → Example: Whole Truth (80% from ₹60 bar)
-  
-- Companies with balanced pricing = omnichannel
-  → Example: True Elements (40% muesli ₹300+, 30% bars ₹45, 30% trail mix ₹150-250)
-
-[COMPANY] REVENUE MIX (Estimated):
-- [X]% from ₹50+ SKUs
-- [Y]% from ₹35-50 SKUs  
-- [Z]% from <₹35 SKUs
-
-Implication: [What this means for distribution strategy, margin profile, growth potential]
-\`\`\`
-
-**PORTFOLIO GAPS & OPPORTUNITIES:**
-
-\`\`\`
-WHITE SPACE ANALYSIS:
-
-What products DON'T exist yet but should?
-
-1. PRICE POINT GAPS:
-   - No major player at ₹30-40 (between premium and mass)
-   - Opportunity: "Accessible premium" positioning?
-   - Risk: Gap exists because economics don't work?
-
-2. PRODUCT FORMAT GAPS:
-   - Protein bars saturated, but protein cookies emerging
-   - Functional bars (sleep, immunity, energy) vs generic protein
-   - Single-serve (₹50) vs family pack (₹300) - who owns bulk?
-
-3. FLAVOR/VARIANT GAPS:
-   - Everyone has chocolate, peanut butter variants
-   - Indian flavors (dry fruit, dates, jaggery) underexplored
-   - Savory protein bars (cheese, herbs) vs only sweet
-
-4. OCCASION GAPS:
-   - Pre-workout vs post-workout vs meal replacement
-   - Kids protein snacks (currently adult-focused)
-   - Gifting packs (currently individual consumption)
-
-STRATEGIC IMPLICATION:
-Where should [COMPANY] expand portfolio?
-- Double down on hero SKUs (60% rule: 60% of revenue from 1-2 SKUs)
-- Fill white space (₹30-40 price point, functional positioning)
-- Prune long tail (kill SKUs contributing <5% each)
-\`\`\`
-
----
-
-### **SECTION 4: DEMAND DRIVERS & MARKET DYNAMICS**
-
-**What's driving category growth? What could kill it?**
-
-**TAILWINDS (Forces Accelerating Growth):**
-
-Search for evidence of:
-1. **Consumer Behavior Shifts**
-   - Health consciousness trends
-   - Convenience demand (snacking occasions)
-   - Premiumization (trading up from mass brands)
-   
-2. **Structural Enablers**
-   - E-commerce penetration in food category
-   - Modern Trade expansion (more outlets stocking category)
-   - Social media influence (fitness influencers driving awareness)
-   
-3. **Economic Drivers**
-   - Rising disposable income in Tier 1/2 cities
-   - Gym membership growth (correlated with protein bar consumption)
-   - Working women population (convenience food demand)
-
-**CITE SPECIFIC DATA FROM EXPANDED SOURCE LIST:**
-
-**Consulting Firm Reports to Search For:**
-\`\`\`
-PRIORITY CONSULTING FIRMS:
-1. "McKinsey India FMCG trends 2024"
-2. "BCG India healthy food market 2024"  
-3. "Bain India consumer report 2024"
-4. "Bessemer Ventures India consumer 2024"
-5. "Redseer e-commerce food penetration 2024"
-6. "RedSeer healthy snacks India 2024"
-7. "KPMG India food industry 2024"
-8. "Deloitte India consumer trends 2024"
-9. "EY India FMCG sector 2024"
-10. "PwC India retail food 2024"
-
-INDIA-FOCUSED RESEARCH:
-11. "ASSOCHAM food processing report 2024"
-12. "CII FMCG summit report 2024"
-13. "FICCI food industry report 2024"
-14. "IMARC healthy snacks market 2024"
-15. "Mordor Intelligence protein bars India 2024"
-
-VC/INVESTOR INSIGHTS:
-16. "Sequoia India consumer thesis 2024"
-17. "Accel India food tech trends 2024"
-18. "Matrix Partners India FMCG 2024"
-\`\`\`
-
-**When citing, prioritize credibility:**
-- Tier 1: McKinsey, BCG, Bain, Deloitte, KPMG, Bessemer (global firms)
-- Tier 2: Redseer, RedSeer, IMARC (India-focused, credible)
-- Tier 3: News articles citing research (verify original source)
-
-**Example citations:**
-- ✅ "Gym memberships grew 25% CAGR 2020-2024 (RedSeer India Fitness Report, Oct 2024), creating expanding customer base for protein products"
-- ✅ "E-commerce penetration in packaged food reached 8% in 2024 (Redseer), up from 3% in 2020, favoring D2C brands"
-- ✅ "Premium FMCG growing 2x mass-market (McKinsey India Consumer Report 2024), driven by income growth in metros"
-- ✅ "Healthy snacking market ₹2,500 Cr growing 18% CAGR (Bessemer State of India report 2024)"
-- ❌ "More people care about health" (too vague, no evidence)
-
-**HEADWINDS (Forces Slowing Growth):**
-
-1. **Market Maturation Signals**
-   - Category growth decelerating (from X% to Y% CAGR)
-   - Customer acquisition costs rising (more competition for same audience)
-   - Price wars emerging (competitors cutting prices)
-
-2. **Structural Barriers**
-   - Distribution challenges (GT retailers resistant to new brands)
-   - Regulatory changes (FSSAI labeling requirements)
-   - Economic headwinds (recession reducing discretionary spend)
-
-3. **Competitive Intensity**
-   - Overcrowding (too many funded players chasing same customers)
-   - Incumbent response (Kellogg's launching competing products)
-   - Private label threat (Amazon launching own nutrition bars)
-
-**NET ASSESSMENT:**
-"Category enjoying [strong/moderate/weak] tailwinds. Primary risk is [X]. 
-Strategic implication for [COMPANY]: [What this means for strategy]"
-
----
-
-### **SECTION 5: MARKET SHARE & POSITIONING ANALYSIS**
-
-**Who's Winning? Who's Losing? Why?**
-
-**If Market Share Data Available (Nielsen/Euromonitor):**
-\`\`\`
-MARKET SHARE (Nutrition Bars, India, 2024):
-- Player A: X%
-- Player B: Y%
-- Player C: Z%
-- [COMPANY]: W%
-- Others: [Remainder]
-
-TREND ANALYSIS (2023 vs 2024):
-- Growing share: [Who's gaining, by how much]
-- Flat share: [Who's holding steady]
-- Losing share: [Who's declining]
-
-INSIGHT: [Why are winners winning? What pattern explains this?]
-\`\`\`
-
-**If No Market Share Data:**
-\`\`\`
-PROXY METRICS FOR RELATIVE POSITION:
-
-Use these to infer market position:
-1. Funding raised (proxy for investor confidence)
-2. Employee count trends (LinkedIn)
-3. Product review volumes (Amazon, Blinkit, Zepto)
-4. Social media following/engagement
-5. Job posting velocity (hiring rate)
-6. PR coverage volume/quality
-
-ESTIMATED RELATIVE POSITION:
-Based on proxy metrics, likely ranking:
-1. [Leader - evidence]
-2. [Strong #2 - evidence]
-3. [Competitive set - evidence]
-...
-
-CONFIDENCE: Medium (requires Nielsen for precision)
-\`\`\`
-
-**Positioning Analysis:**
-
-\`\`\`
-WHAT MAKES WINNERS WIN IN THIS CATEGORY:
-
-From competitive analysis, successful players demonstrate:
-1. [Pattern 1 - e.g., "Strong D2C brand + selective MT expansion"]
-2. [Pattern 2 - e.g., "Ingredient transparency + premium pricing power"]
-3. [Pattern 3 - e.g., "Founder-led storytelling + community engagement"]
-
-[COMPANY] DEMONSTRATES:
-✓ [Strengths they have that align with winning patterns]
-✗ [Gaps relative to winning patterns]
-
-STRATEGIC IMPLICATION:
-[What they need to do to close gaps or double down on strengths]
-\`\`\`
-
----
-
-### **SECTION 6: STRATEGIC INSIGHTS & IMPLICATIONS**
-
-**Synthesis: What Does This All Mean?**
-
-**KEY INSIGHTS (3-5 Strategic Observations):**
-
-\`\`\`
-INSIGHT 1: [Observation about category/competition]
-Evidence: [Data that supports this]
-Implication for [COMPANY]: [What they should do about it]
+**SHIFT [#]: [Name of Shift]**
+**What Changed:** [2023 baseline → 2026 status, with data]
+**Why It Matters:** [Specific implication for growth strategy]
+**Timing:** [Window before opportunity closes]
+**Source:** [Where you found this data]
 
 Example:
-INSIGHT: Category fragmenting with 7 funded players in 18 months, but no clear leader >15% share
-Evidence: Whole Truth (est. 12%), True Elements (est. 10%), Yogabar (est. 8%), per proxy metrics
-Implication: Window open for category leadership through aggressive scaling + distribution leverage. First to ₹500 Cr likely becomes category anchor.
-
-INSIGHT 2: Premium positioning (₹50+) correlates with D2C dependency (70%+ online sales)
-Evidence: Whole Truth 80% online, RiteBite 30% online at ₹25 price point
-Implication: If [COMPANY] maintains premium positioning, must either (a) accept D2C dependency or (b) risk brand dilution through mass distribution
+**SHIFT 1: QUICK COMMERCE DISPLACEMENT**
+**What Changed:** Quick Commerce was 2% of nutrition category (2023) → 18% (2025). Blinkit/Zepto now #2 channel after E-comm for impulse premium purchases.
+**Why It Matters:** [COMPANY]'s store-based strategy (MT + GT) misses 18% of category growth. QC buyers are younger (25-35), higher income, more willing to pay premium.
+**Timing:** QC consolidating fast—Zepto raised $1B (2025). Top 5 brands capturing 70% of QC nutrition sales. First-mover advantage narrowing.
+**Source:** Redseer QC Report Dec 2025, Blinkit category rankings
 \`\`\`
 
-**COMPETITIVE OPENINGS (Where Can [COMPANY] Win):**
+**Look for:**
+- New channels (QC, corporate, institutional, export)
+- New segments (functional ingredients, meal replacements, kids nutrition)
+- New occasions (pre-workout, travel, late-night, breakfast bars)
+- New geographies (Tier-2 health consciousness, expat markets)
 
-Based on competitive mapping:
-1. **White Space:** [Unoccupied positioning that represents opportunity]
-   - Example: "Mid-premium + omnichannel" position largely empty
-   - Requires: ₹40-45 pricing + balanced MT/E-comm distribution
-   
-2. **Weak Competitors:** [Players vulnerable to attack]
-   - Example: RiteBite strong in GT but weak in E-comm
-   - Attack vector: Digital-first marketing + E-comm dominance
-   
-3. **Emerging Segments:** [New categories within category]
-   - Example: "Functional bars" (sleep, immunity, energy) vs generic protein
-   - Opportunity: Define new subcategory before competitors
+### **SECTION 3: COMPETITIVE DYNAMICS RESET (250 words)**
 
-**COMPETITIVE THREATS (Where [COMPANY] Could Lose):**
+**Who's Still Growing and How:**
 
-1. **Direct Threats:** [Players targeting same customers]
-2. **Adjacency Threats:** [Players in related categories who could enter]
-   - Example: Muscle Blaze (supplements) launching bars
-3. **Incumbent Threats:** [Large FMCG companies responding]
-   - Example: Kellogg's launching "Kellogg's Protein" line
+Track top 3 competitors:
+\`\`\`
+**[Competitor Name]:** 
+- Growth: [X]% YoY (2024-2025) — [Faster/Slower than COMPANY]
+- What they're doing: [Specific strategy - NOT generic]
+- Why it works: [Structural advantage or insight]
+- Threat level: [High/Medium/Low]
+
+Example:
+**Whole Truth Foods:**
+- Growth: 48% YoY (FY25 vs [COMPANY]'s 35%)
+- Strategy: Went premium (₹70-90 bars with ashwagandha/collagen), positioned as "beyond nutrition" → tapping functional wellness trend
+- Why it works: MT plateauing for ₹45-55 bars (commoditized). Premium functional is only growing segment (+62% YoY per Euromonitor)
+- Threat: High if [COMPANY] stays in ₹45-55 range
+\`\`\`
+
+### **SECTION 4: NEXT GROWTH LEVERS (250 words)**
+
+**Beyond Distribution: What's Next?**
+
+Identify 3-4 specific opportunities that DON'T rely on adding more stores:
+
+**Format:**
+\`\`\`
+**LEVER [#]: [Opportunity Name]**
+**The Play:** [Specific action]
+**Market Size:** [TAM estimate if available]
+**Why Now:** [Timing insight]
+**ITC Advantage:** [Why [COMPANY] can win this, not just anyone]
+
+Example:
+**LEVER 1: CORPORATE WELLNESS B2B**
+**The Play:** Direct contracts with corporate cafeterias (500+ employee companies). Monthly subscription boxes to employees at ₹300/employee/month.
+**Market Size:** 15,000 qualifying companies in India, 5M white-collar employees = ₹1,500 Cr TAM (assuming 20% penetration)
+**Why Now:** Post-COVID wellness budgets up 3x. HR teams have budget for this (classified as "employee benefits").
+**ITC Advantage:** ITC Hotels already has corporate relationships. 2,500 existing corporate clients to cross-sell.
+\`\`\`
 
 ---
 
-## OUTPUT REQUIREMENTS
+## DATA CONFIDENCE & SOURCES
 
-### **STRUCTURE:**
+**Always State:**
+- Confidence level: High/Medium/Low
+- Source name and date
+- Assumption if estimate
 
-\`\`\`markdown
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-MARKET POSITION & CATEGORY DYNAMICS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Opening paragraph: Set the strategic frame in 3-4 sentences]
-
-CATEGORY LANDSCAPE
-[Analysis of category size, growth, evolution stage - 200-300 words]
-
-COMPETITIVE BATTLEFIELD
-[Mapping of key competitors, positioning, clustering - 300-400 words]
-
-MARKET DYNAMICS
-[Tailwinds, headwinds, demand drivers - 200-300 words]
-
-MARKET SHARE & WINNING PATTERNS
-[Who's winning, why, what this means - 200-300 words]
-
-STRATEGIC INSIGHTS
-[3-5 key insights with implications - 300-400 words]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-DATA CONFIDENCE & GAPS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-HIGH CONFIDENCE (Confirmed from credible sources):
-- [List metrics/insights with high confidence]
-
-MEDIUM CONFIDENCE (Estimated from proxy metrics):
-- [List metrics/insights requiring validation]
-
-DATA GAPS (Would benefit from internal data):
-- Nielsen retail scan data for precise market share
-- [Other specific data needs]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SOURCES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-1. [Source title] - [URL] - [Date accessed]
-2. [Source title] - [URL] - [Date accessed]
-...
-\`\`\`
-
-### **WRITING STYLE:**
-
-- ✅ **Analytical, not descriptive:** "Category fragmenting with 7 funded players suggests low barriers but high institutional validation" (NOT "There are many players in the market")
-
-- ✅ **Evidence-based:** Every claim needs data or logic
-  
-- ✅ **Strategic implications:** Always answer "so what?" 
-  
-- ✅ **Specific numbers:** "₹800-1,200 Cr market growing 18-22% CAGR" (NOT "large growing market")
-
-- ✅ **Honest about confidence:** Flag estimates vs confirmed data
-
-- ✅ **Forward-looking:** What does current state mean for future strategy?
-
-### **LENGTH & STYLE:**
-
-**STRICT LIMITS:**
-- **Maximum: 800-1,000 words** (approximately 2 pages)
-- Dense, analytical prose
-- Every sentence must advance understanding
-
-**CRITICAL: NARRATIVE FLOW, NOT DATA DUMP**
-
-❌ **BAD (Data Dump):**
-\`\`\`
-Category size: ₹800 Cr
-Growth rate: 18% CAGR
-Competitors: Whole Truth (₹60), True Elements (₹45), RiteBite (₹25)
-Price points: Premium ₹50+, Mass ₹20-30
-\`\`\`
-
-✅ **GOOD (Narrative Flow):**
-\`\`\`
-The nutrition bar category in India has evolved from a ₹200 Cr niche in 2020 
-to an ₹800 Cr battleground in 2024, growing at 18% CAGR as health-conscious 
-millennials seek convenient protein sources. Yet despite this growth, the market 
-remains fragmented—no player commands more than 12% share, creating a land-grab 
-dynamic where the first to ₹500 Cr revenue likely becomes the category anchor.
-
-The competitive battlefield has crystallized into three distinct clusters. Premium 
-digital-native brands like Whole Truth (₹60 price point) and Yogabar (₹50) compete 
-on ingredient transparency and community, capturing urban early adopters willing to 
-pay 2-3x mass-market prices. True Elements occupies the strategic middle ground at 
-₹40-45, balancing quality with accessibility through omnichannel distribution. 
-Mass-market incumbents like RiteBite (₹25) and Kellogg's leverage traditional FMCG 
-playbooks—shelf space, price, and brand recognition—to own impulse purchases.
-\`\`\`
-
-**See the difference?**
-- First example = disconnected facts
-- Second example = tells a story with strategic implications woven in
-
-**NARRATIVE PRINCIPLES:**
-
-1. **Lead with insight, not data**
-   - ✅ "The category is fragmenting" (insight) → "7 funded players in 18 months" (evidence)
-   - ❌ "There are 7 funded players" (data) → no insight
-
-2. **Connect observations logically**
-   - Use: "Yet despite...", "This creates...", "As a result...", "However..."
-   - Build argument: Point A → leads to Point B → implies Point C
-
-3. **Integrate data into prose**
-   - ✅ "Premium brands (₹50+) command 35-40% margins but require 70%+ D2C sales to sustain economics"
-   - ❌ "Margins: 35-40%. Channel: 70% D2C."
-
-4. **Strategic implications embedded**
-   - Don't save insights for end
-   - Weave "this means..." throughout
-
-5. **Transitions between sections**
-   - Don't just jump from topic to topic
-   - Bridge: "This competitive fragmentation shapes how players compete on portfolio strategy..."
-
-**STRUCTURE WITH FLOW:**
-
-\`\`\`markdown
-[OPENING PARAGRAPH - Set Strategic Frame]
-In 2-3 sentences, establish what matters about this market and why it's at an 
-inflection point.
-
-[CATEGORY LANDSCAPE - 200 words]
-Size, growth, evolution stage → woven into narrative about opportunity/threat.
-Use data to support story, don't list data.
-
-[COMPETITIVE DYNAMICS - 250 words]
-Map the battlefield through strategic lens. Clustering creates narrative:
-"Three distinct competitive models have emerged..."
-Portfolio analysis integrated: "This positioning manifests in product strategy—
-Whole Truth's narrow 6-SKU focus vs True Elements' sprawling 25-SKU portfolio..."
-
-[MARKET FORCES - 150 words]
-Tailwinds and headwinds presented as tension:
-"While gym membership growth (25% CAGR) expands the customer base, simultaneous 
-proliferation of funded competitors (7 in 18 months) fragments wallet share..."
-
-[STRATEGIC PATTERN RECOGNITION - 150 words]
-What determines winners? Connect observations:
-"Market share data reveals a pattern: players with >60% revenue from D2C channels 
-grow faster (35% YoY) but hit margin pressure at scale, while omnichannel players 
-grow slower (18% YoY) but achieve sustainable unit economics..."
-
-[IMPLICATIONS - 100 words]
-For [COMPANY] specifically, this means...
-]
-\`\`\`
-
-### **WRITING CHECKLIST:**
-
-Before submitting, verify:
-- [ ] Opening paragraph hooks strategically (not just "this is a report about...")
-- [ ] Each section flows logically from previous
-- [ ] Data integrated into sentences, not listed
-- [ ] Insights embedded throughout, not saved for end
-- [ ] Transitions connect ideas ("This fragmentation shapes...", "As a result...")
-- [ ] 800-1,000 words total (strict limit)
-- [ ] Every paragraph advances strategic understanding
-- [ ] Reads like analysis written by sharp consultant, not AI data dump
+**10-Tier Source Strategy:**
+Use best available data in this priority order:
+1. Official earnings reports ([COMPANY], competitors, ITC)
+2. Industry reports (NIQ, Euromonitor, Technopak, Redseer)
+3. News articles citing research (verify source)
+4. E-commerce rankings/reviews (Amazon, Blinkit top sellers)
+5. LinkedIn signals (hiring patterns, company posts)
+6. Consulting reports (Bain, BCG public articles)
+7. Trade publications (FMCG industry news)
+8. Funding announcements (competitor momentum)
+9. Social media buzz (brand health indicators)
+10. Logical extrapolation (mark clearly as estimate)
 
 ---
 
-Your analysis succeeds if it answers:
-1. ✓ What category does [COMPANY] compete in, exactly?
-2. ✓ How big is it, how fast is it growing, and why?
-3. ✓ Who are the 5-7 competitors that matter, and how do they differ?
-4. ✓ What market dynamics favor/threaten [COMPANY]?
-5. ✓ Where can [COMPANY] win? Where could they lose?
-6. ✓ What 3-5 insights should guide their strategy?
+## CRITICAL SUCCESS CRITERIA
+
+Your output must answer:
+1. **Is the ITC distribution playbook tapped out?** (Yes/No with evidence)
+2. **What are 3 category shifts since 2023** that create NEW growth opportunities?
+3. **Which competitors are outgrowing [COMPANY]** and what are they doing differently?
+4. **What are 3-4 NEXT growth levers** beyond adding more stores?
+
+**If you can't answer these with data,** search more or mark as "insufficient data" rather than speculating.
 
 ---
 
-## FINAL CHECKS BEFORE SUBMITTING
+## OUTPUT CHECKLIST
 
-- [ ] Cited dates for all sources (not "recent reports")
-- [ ] Noted confidence levels (high/medium/low)
-- [ ] Searched for 2024/2025 data specifically
-- [ ] Mapped competitive battlefield (not just listed competitors)
-- [ ] Identified strategic insights (not just described market)
-- [ ] Every claim has evidence or logical reasoning
-- [ ] Writing is sharp, analytical, strategic (not vague fluff)
+Before finishing, verify:
+- [ ] Acknowledged what ITC already did (2023-2026)
+- [ ] Showed growth trajectory evidence (is it slowing?)
+- [ ] Identified 3 category shifts since 2023
+- [ ] Competitive intelligence on who's still growing
+- [ ] 3-4 next levers beyond distribution
+- [ ] All figures have sources and confidence levels
+- [ ] No generic "leverage ITC distribution" advice
+- [ ] Forward-looking (2026-2028), not backward-looking
 
 ---
 
-**Now execute this analysis for [COMPANY].**
+**Remember:** The user knows ITC has already leveraged distribution. They need to know **WHAT'S NEXT** to get back to 60% growth. Give them novel, specific, actionable insights.
 `,
 
   portfolio: `# AGENT 2: PORTFOLIO STRATEGY & SKU RATIONALIZATION
+## POST-ACQUISITION OPTIMIZATION (3 YEARS IN)
 
 **Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
 
-**Role:** Portfolio Strategist - SKU Performance, Product Line Optimization, Innovation Roadmap
+**Critical Context:** ITC acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
+
+---
+
+## WHAT ITC HAS ALREADY DONE (Portfolio Moves 2023-2026)
+
+**Assumed Actions Already Taken:**
+- ✅ Killed unprofitable SKUs (2023-2024 rationalization)
+- ✅ Launched MT-optimized singles (₹40-45 range for impulse)
+- ✅ Standardized pack sizes across channels
+- ✅ Optimized manufacturing for hero SKUs (ITC plant transfer)
+- ✅ Price repositioning (removed value tier, focused ₹45-65)
+
+**Current Challenge:**
+- Portfolio is NOW optimized for 2023 strategy (MT expansion)
+- But market has shifted (Quick Commerce, functional trends, premiumization)
+- Need NEXT wave of SKUs to capture 2026-2028 opportunities
+- Risk: Portfolio ossification—same SKUs for 3 years while market evolves
 
 ---
 
 ## YOUR MISSION
 
-Dissect the product portfolio to answer: What should we make? What should we kill? What should we launch? And critically—WHY?
+Recommend the **NEXT generation** of portfolio moves for 2026-2028 growth.
 
-Your analysis reveals **product-level economics and strategic logic** that others miss:
-- Which SKUs drive profitable revenue vs which bleed margin
-- Where portfolio breadth creates value vs where it destroys focus
-- What white space exists that represents genuine opportunity vs distraction
-- How portfolio strategy connects to distribution, pricing, and competitive positioning
+**Focus on:**
+1. **New SKUs needed** for channels/occasions that didn't exist/matter in 2023
+2. **Kill decisions** for SKUs that worked in 2023 but are now commoditized
+3. **Innovation gaps** competitors are exploiting that [COMPANY] hasn't addressed
+4. **Channel-specific optimization** for Quick Commerce, institutional, export
 
-**Every recommendation must be actionable and economics-based.**
+**DO NOT:**
+- ❌ Suggest "kill low-margin SKUs" (done in 2023)
+- ❌ Recommend "launch singles for MT" (already done)
+- ❌ Generic portfolio advice valid in 2023
 
----
-
-## CONTEXT & DATA SOURCES
-
-**Current Date:** February 2026
-
-**Use:** Agent 1's competitive intelligence + expanded source strategy + user-provided data
-
-**Your Edge:** Product-level analysis reveals strategic truths that company-level data obscures.
-
-**Mandate:** Every section must have 1-2 insights that make reader think "I didn't realize that pattern."
+**DO:**
+- ✅ "Launch functional bars (₹70-90) with ashwagandha/collagen for QC channel—32% of QC nutrition sales now functional, [COMPANY] absent"
+- ✅ "Kill 2023 MT-optimized ₹40 range—now commoditized (8 competitors at ₹38-42). Margin compressed from 38% to 24%."
 
 ---
 
-## COMPREHENSIVE SOURCE STRATEGY
+## SEARCH STRATEGY
 
-### **TIER 1: E-COMMERCE SKU INTELLIGENCE** (PRIMARY DATA SOURCE)
-
-**Most reliable public data on SKU performance:**
+### **PRIORITY 1: Current Portfolio Performance Data**
 
 \`\`\`
-PLATFORMS TO ANALYZE:
-1. Amazon.in - Product listings, reviews, bestseller ranks, pricing
-2. Flipkart - Comparative pricing, availability
-3. Blinkit, BigBasket, Zepto - Quick commerce presence (velocity signal)
-4. 1mg, HealthKart - Health-focused channel performance
-5. Company D2C sites - Direct pricing, bundles, promotions
-
-SKU-LEVEL METRICS TO CAPTURE:
-- Price point (MRP, discounted price, frequency of discounts)
-- Review count (proxy for cumulative sales velocity)
-- Review velocity (reviews/month = current sales signal)
-- Star rating (quality perception)
-- Bestseller rank (relative velocity within category)
-- Availability (in stock vs out of stock = supply chain/demand signal)
-- "Frequently bought together" (cross-sell patterns)
-- Variant spread (how many flavors/sizes)
-
-SEARCH QUERIES:
-"site:amazon.in [brand] protein bar"
-"site:blinkit.com [brand] products"
-"[brand] bestseller amazon india"
-"[brand] price comparison flipkart amazon"
+1. "[COMPANY] bestselling products 2024"
+2. "[COMPANY] Amazon bestsellers" OR "top SKUs"
+3. "[COMPANY] revenue by SKU 2024" OR "product mix"
+4. "[COMPANY] new launches 2024" OR "product innovation"
 \`\`\`
 
-### **TIER 2: COMPETITIVE PORTFOLIO MAPPING**
+### **PRIORITY 2: Category Innovation Trends (2024-2026)**
 
 \`\`\`
-For each competitor, document:
-1. Total SKU count
-2. Price point distribution (₹20-30, ₹30-45, ₹45-60, ₹60+)
-3. Category breadth (protein bars only vs multi-category)
-4. Variant depth (3 flavors vs 10 flavors)
-5. Pack size strategy (single serve vs family packs)
-
-SEARCH:
-"[Competitor] product range 2024"
-"[Competitor] new product launch 2024"
-"[Competitor] discontinues product" (signals failed SKUs)
+5. "Functional nutrition bars India 2024" (ashwagandha, adaptogens, collagen)
+6. "Protein bars new ingredients 2024" OR "innovation trends"
+7. "[Category] premium segment growth 2024-2025"
+8. "Plant-based nutrition India 2024" OR "vegan bars growth"
+9. "Kids nutrition bars India 2024" (emerging segment)
+10. "Meal replacement bars India 2024" OR "breakfast bars"
 \`\`\`
 
-### **TIER 3: PRODUCT LAUNCH & INNOVATION SIGNALS**
+### **PRIORITY 3: Competitive Portfolio Analysis**
 
 \`\`\`
-SEARCH QUERIES:
-"[Company] launches new [product] 2024"
-"[Company] introduces [variant] 2025"
-"site:linkedin.com [Company] product launch"
-"site:youtube.com [Product] review 2024"
-
-WHAT TO EXTRACT:
-- Launch date and positioning
-- Price point and pack size
-- Target occasion/customer
-- Distribution strategy
-- Early reception (reviews, social media buzz)
+11. "[Competitor] new products 2024" (for each major competitor)
+12. "[Competitor] bestsellers Amazon 2024"
+13. "[Competitor] price positioning 2024"
+14. "Whole Truth functional bars" OR "True Elements premium range"
 \`\`\`
 
-### **TIER 4: INGREDIENT & FORMULATION TRENDS**
+### **PRIORITY 4: Channel-Specific SKU Requirements**
 
 \`\`\`
-CATEGORY-LEVEL INNOVATION:
-"protein bar trends India 2024"
-"healthy snacks innovation 2024"
-"functional foods India emerging"
-"plant-based protein India growth"
-
-SUPPLIER/MANUFACTURER INTELLIGENCE:
-"whey protein price India 2024"
-"pea protein adoption India"
-"sugar-free sweetener trends India"
-"clean label packaging India"
-\`\`\`
-
-### **TIER 5: CONSULTING REPORTS ON PORTFOLIO STRATEGY**
-
-\`\`\`
-"BCG SKU rationalization FMCG India"
-"McKinsey portfolio optimization consumer goods"
-"Technopak product portfolio snacks India"
-"Redseer D2C product strategy 2024"
+15. "Quick Commerce nutrition bestsellers 2024"
+16. "Blinkit protein bars" OR "Zepto health snacks top sellers"
+17. "Corporate wellness snacks 2024" (institutional bulk packs)
+18. "Travel retail nutrition India 2024" (single-serve premium)
 \`\`\`
 
 ---
 
-## ANALYSIS FRAMEWORK
+## OUTPUT STRUCTURE (800-1,000 words, 2 pages max)
 
-### **SECTION 1: CURRENT PORTFOLIO ARCHITECTURE**
-
-**Map the existing product landscape:**
+### **SECTION 1: CURRENT PORTFOLIO ASSESSMENT (200 words)**
 
 \`\`\`
-[COMPANY] PORTFOLIO INVENTORY:
+## PORTFOLIO HEALTH CHECK (2026)
 
-TOTAL SKUS: [X]
+**Current SKU Count:** [X] SKUs across [Y] price tiers
+**Revenue Concentration:** Top 3 SKUs = [X]% of revenue (hero SKU dependency)
+**Channel Fit Analysis:**
+- MT: [X] SKUs optimized (singles, ₹40-50 range)
+- E-comm: [X] SKUs (multi-packs, ₹200-400 bundles)
+- QC: [X] SKUs (short answer: likely underdeveloped)
+- Institutional: [X] SKUs (bulk packs, B2B format)
 
-BY CATEGORY:
-- Protein bars: [X SKUs] at ₹[Y] price points
-- Energy bars: [X SKUs] at ₹[Y] price points  
-- Breakfast bars: [X SKUs] at ₹[Y] price points
-- [Other categories]
+**Portfolio Evolution 2023-2026:**
+- Launched: [List new SKUs if found]
+- Killed: [Assumed 2-3 low performers in 2023]
+- Repositioned: [Price/pack changes]
 
-BY PRICE TIER:
-- Premium (₹50+): [X SKUs] - [Names]
-- Mid-premium (₹35-50): [X SKUs] - [Names]
-- Value (₹20-35): [X SKUs] - [Names]
+**Current Gaps:**
+1. [Gap in channel coverage - e.g., no QC-optimized SKUs]
+2. [Gap in segment - e.g., no functional/premium tier]
+3. [Gap in occasion - e.g., no breakfast-focused bars]
 
-BY PACK FORMAT:
-- Single serve: [X SKUs]
-- Multi-packs (6-12 count): [X SKUs]
-- Family/bulk packs: [X SKUs]
-
-EVIDENCE: [Company website, Amazon listings, retailer shelf surveys]
+**Sources:** [List sources]
 \`\`\`
 
-**CRITICAL: Identify Hero SKUs (The 60% Rule)**
+### **SECTION 2: SKU-LEVEL ECONOMICS (300 words)**
+
+**Analyze each major SKU tier:**
 
 \`\`\`
-VELOCITY ANALYSIS (from e-commerce proxies):
+**TIER 1: Core Range (₹45-55)**
+Examples: [List if known, or describe category]
+- Current performance: [Revenue %, margin %]
+- Market status: [Growing/Stable/Declining segment]
+- Competitive pressure: [High/Medium/Low]
+- 2026 verdict: [Keep/Optimize/Phase Out]
+- Rationale: [Why - with data]
 
-HERO SKU #1: [Product name]
-- Price: ₹[X]
-- Amazon rank: #[X] in category
-- Review count: [X] (vs category average [Y])
-- Review velocity: [X] reviews/month (last 3 months)
-- Estimated revenue contribution: [X-Y]% of portfolio
-- Evidence: [Specific data points]
+**TIER 2: Premium Range (₹60-75)**
+Examples: [If exists]
+- Performance: [Data]
+- Gap analysis: [Competitors have ₹70-90 functional bars, we don't]
+- Opportunity: [Size of premium segment growth]
 
-HERO SKU #2: [Product name]
-- [Same analysis]
-
-LONG TAIL ANALYSIS:
-- SKUs with <100 reviews: [X] products
-- Estimated contribution: <[Y]% of revenue collectively
-- Strategic question: Do these create discovery or dilute focus?
+**TIER 3: Institutional/Bulk (₹800-1200 for 24-count)**
+Examples: [If exists]
+- B2B potential: [TAM estimate for corporate/gym channel]
+- Current penetration: [Likely 0% if not mentioned]
 \`\`\`
 
-**PORTFOLIO CONCENTRATION INSIGHT:**
+**For each tier, include:**
+- Margin contribution (or estimate)
+- Volume contribution
+- Channel fit (which channels drive sales)
+- Competitive benchmarking (who's winning in this tier and why)
 
-Connect dots to reveal pattern:
-\`\`\`
-"[COMPANY]'s top 3 SKUs (estimated [X]% of revenue based on Amazon velocity) 
-follow the classic 60% rule where hero products drive bulk of volume. However, 
-comparison to Whole Truth (single SKU drives 42% per velocity analysis) vs 
-True Elements (top SKU only 18%) suggests [COMPANY] sits in the middle—enough 
-concentration for brand clarity but not so much that stock-outs crater revenue.
+### **SECTION 3: KILL RECOMMENDATIONS (200 words)**
 
-The strategic implication: [COMPANY] can weather supply chain disruptions better 
-than Whole Truth (whose 3-week Nov 2024 stock-out of hero SKU caused #1→#4 rank 
-drop) but may struggle to achieve the focused brand positioning that concentrated 
-portfolios create."
-\`\`\`
-
-### **SECTION 2: SKU-LEVEL ECONOMICS & PERFORMANCE**
-
-**Which products make money? Which don't?**
+**SKUs to Phase Out (2026-2027):**
 
 \`\`\`
-MARGIN STRUCTURE ANALYSIS:
+**KILL #1: [SKU/Tier Name]**
+**Why:** [Specific reason - margin compression, commoditization, channel misfit]
+**Evidence:** [Data showing declining performance or competitive pressure]
+**Impact:** -₹[X] Cr revenue BUT +[Y] margin points overall
+**Timing:** [Phase out Q[X] 2026]
 
-If user provided COGS data, use it. Otherwise, infer from:
-- Price point (₹60 bar likely 35-40% gross margin)
-- Pack format (family packs 5-8% lower margin due to price/weight economics)
-- Distribution channel (D2C 40%+ margin, MT 25-30% after trade margins)
-- Competitive benchmarks (industry standard margins by category)
-
-ESTIMATED SKU ECONOMICS:
-
-HIGH-MARGIN SKUS (35-40%+ Gross Margin):
-- [SKU name]: ₹50-60 price, D2C-focused, premium positioning
-- Rationale: Price premium + lower distribution costs
-- Estimated volume: [Low/Medium/High based on review velocity]
-- Strategic value: Margin driver
-
-MEDIUM-MARGIN SKUS (28-35% Gross Margin):
-- [SKU name]: ₹40-50 price, omnichannel
-- Rationale: Moderate pricing, higher distribution costs
-- Estimated volume: [Medium/High]
-- Strategic value: Volume + margin balance
-
-LOW-MARGIN SKUS (18-25% Gross Margin):
-- [SKU name]: ₹25-35 price, MT-heavy
-- Rationale: Price competition + high trade margins
-- Estimated volume: [High]
-- Strategic value: Volume driver, questionable profitability
-
-CONFIDENCE: Medium (actual margins available in company P&L)
+Example:
+**KILL #1: Value Range (₹35-40 Singles)**
+**Why:** Launched for MT expansion in 2023, now 8 competitors at ₹38-42. Margin dropped from 38% to 24%. Cannibalizing core ₹50 range with minimal new customer acquisition.
+**Evidence:** Amazon shows 6 SKUs at ₹38-42 in top 20 (2024 data). [COMPANY]'s ₹40 bar ranked #18 vs #3 in 2023.
+**Impact:** -₹8 Cr revenue, +3.2 margin points by eliminating low-margin mix
+**Timing:** Q2 2026 (before Q3 festival season)
 \`\`\`
 
-**PERFORMANCE SEGMENTATION:**
+### **SECTION 4: LAUNCH RECOMMENDATIONS (300 words)**
+
+**New SKUs for 2026-2028 Growth:**
 
 \`\`\`
-STARS (High Growth, High Margin):
-- [SKUs that are growing AND profitable]
-- Action: Double down, increase marketing spend
+**LAUNCH #1: [SKU Name/Concept]**
+**Target Channel:** [Primary channel this unlocks]
+**Target Segment:** [Consumer/occasion]
+**Price Point:** ₹[X]
+**Differentiation:** [What makes this different from current portfolio]
+**Market Opportunity:** [TAM/segment size]
+**Margin Expectation:** [X]% (vs [Y]% portfolio average)
+**Investment Required:** ₹[X] Cr (NPD, marketing, inventory)
+**Payback:** [Timeline to break even]
+**Why Now:** [Timing insight - why 2026 vs 2023 or 2028]
 
-CASH COWS (Low Growth, High Margin):
-- [Mature SKUs with stable profitable sales]
-- Action: Harvest, don't over-invest
-
-QUESTION MARKS (High Growth, Low Margin):
-- [Growing SKUs that aren't yet profitable]
-- Action: Fix economics or kill
-
-DOGS (Low Growth, Low Margin):
-- [Declining SKUs with poor economics]
-- Action: Discontinue to free up working capital
-
-INSIGHT EXAMPLE:
-"[COMPANY]'s ₹25 value bar shows declining Amazon review velocity (40 reviews/month 
-→ 22 reviews/month over 6 months) while estimated gross margin sits at 22-25% 
-post-trade spending. This is a classic 'dog'—bleeding focus and margin. 
-Discontinuation would free ₹[X] Cr working capital (estimated 2 months inventory) 
-and allow reallocation to hero SKUs growing 30%+ YoY."
+Example:
+**LAUNCH #1: Functional Premium Range (₹70-90)**
+**Target Channel:** Quick Commerce (Blinkit/Zepto) + Premium E-comm
+**Target Segment:** 25-35 urban professionals, wellness-focused
+**Price Point:** ₹75 (20g protein + ashwagandha/collagen/adaptogens)
+**Differentiation:** Only Indian brand with clinically-dosed functional ingredients (not just protein). Clean label, premium positioning.
+**Market Opportunity:** ₹180 Cr functional nutrition segment, growing 68% YoY (Euromonitor 2024). Currently 0% penetration for [COMPANY].
+**Margin Expectation:** 42% (premium pricing offsets higher ingredient cost)
+**Investment:** ₹4 Cr (R&D, initial inventory, QC/influencer seeding)
+**Payback:** 14 months (₹15 Cr revenue Year 1, ₹35 Cr Year 2)
+**Why Now:** QC channel hit critical mass (18% of category, 2025). Functional trend validated by Whole Truth success (₹45 Cr run-rate on functional range launched 2024).
 \`\`\`
 
-### **SECTION 3: COMPETITIVE PORTFOLIO BENCHMARKING**
+**Recommend 3-4 launches prioritized by:**
+1. Quick wins (12-18 month payback)
+2. Strategic bets (24-36 month payback, high growth potential)
+3. Experimental (test & learn, small batch)
 
-**How does [COMPANY]'s portfolio compare strategically?**
+---
 
-\`\`\`
-PORTFOLIO STRATEGY ARCHETYPES:
+## PORTFOLIO OPTIMIZATION MATH
 
-ARCHETYPE 1: Focused Portfolio (Whole Truth model)
-- SKU count: 5-8
-- Category breadth: Narrow (protein bars + 1-2 adjacencies)
-- Variant depth: Moderate (3-5 flavors)
-- Strategic bet: Brand clarity, operational simplicity, hero SKU leverage
-- Risk: Limited growth vectors, vulnerability to stock-outs
-- Players: Whole Truth (6 SKUs), [Others]
-
-ARCHETYPE 2: Broad Portfolio (True Elements model)
-- SKU count: 20-30
-- Category breadth: Wide (breakfast, snacking, trail mix)
-- Variant depth: High (8-10 variants per category)
-- Strategic bet: Discovery, basket size, category ownership
-- Risk: Brand dilution, inventory complexity, unfocused marketing
-- Players: True Elements (25 SKUs), [Others]
-
-ARCHETYPE 3: Tiered Portfolio ([COMPANY] current state)
-- SKU count: 12-18
-- Category breadth: Medium
-- Variant depth: Moderate
-- Strategic bet: Balance discovery + focus
-- Risk: Neither fish nor fowl—too broad for focus, too narrow for category ownership
-
-WHERE DOES [COMPANY] FIT?
-[Analysis of current position + strategic implications]
-
-INSIGHT:
-"Portfolio strategy reveals competitive positioning better than marketing claims. 
-Whole Truth's 6-SKU portfolio isn't resource constraint—it's strategic focus on 
-D2C where concentrated portfolios lower CAC (fewer products to explain = simpler 
-funnel). True Elements' 25 SKUs work because omnichannel distribution creates 
-cross-sell at retail. [COMPANY]'s 15-SKU portfolio works for D2C (focused enough) 
-but may be too narrow for MT expansion where shelf space economics reward portfolio 
-breadth. This creates strategic tension as ITC distribution opportunity opens."
-\`\`\`
-
-### **SECTION 4: WHITE SPACE & PORTFOLIO GAPS**
-
-**What products SHOULD exist but don't?**
-
-**METHODOLOGY:** Analyze competitive portfolios + customer reviews + category trends
+**Show the ROI:**
 
 \`\`\`
-GAP ANALYSIS:
+CURRENT STATE (2026):
+- Revenue: ₹[X] Cr
+- Margin: [Y]%
+- SKU count: [Z]
+- Top 3 SKUs: [X]% of revenue (concentration risk)
 
-PRICE POINT GAPS:
-Current: ₹50-60 (premium), ₹20-30 (mass)
-Missing: ₹35-45 "accessible premium"
-Opportunity size: [Estimate based on True Elements' success at ₹45]
-Risk: Gap exists because economics don't work OR no customer demand
-Validation: [Customer review analysis, competitive performance]
+OPTIMIZED STATE (2027-2028):
+- Kill [X] SKUs → -₹[Y] Cr revenue, +[Z] margin points
+- Launch [X] SKUs → +₹[Y] Cr revenue, [Z] margin impact
+- Net impact: +₹[Y] Cr revenue, +[Z] margin points
 
-PRODUCT FORMAT GAPS:
-Current: Bars (single-serve, multi-packs)
-Missing: [Cookies, bites, bulk granola, ready-to-drink protein]
-Competitive activity: [Who's entering these formats, with what success]
-
-FUNCTIONAL POSITIONING GAPS:
-Current: Generic "protein bar"
-Missing: Sleep bars (melatonin), immunity bars (vitamin C), energy bars (caffeine)
-Category trend: Functional foods growing [X]% vs generic [Y]%
-Evidence: [Consulting reports, new product launches]
-
-OCCASION-BASED GAPS:
-Current: Pre/post workout focus
-Missing: Breakfast replacement, kids' snacks, office snacking
-Customer signals: [Amazon reviews mentioning use occasions]
-
-FLAVOR/FORMULATION GAPS:
-Current: Chocolate, peanut butter (standard flavors)
-Missing: Indian flavors (dates, dry fruit, jaggery), savory options
-Evidence: [Customer reviews requesting variants, competitive launches]
-
-INSIGHT EXAMPLE:
-"Analysis of 800+ Amazon reviews for top 5 brands reveals 23% mention 'too sweet' 
-even for premium bars, and 31 specifically request 'Indian flavors like dates or 
-dry fruits.' Yet only [X] players offer such variants. This represents either 
-genuine white space OR a formulation challenge (Indian ingredients harder to 
-stabilize in bar format). Testing ₹48 dates-and-dry-fruit bar in limited D2C 
-release would validate demand at <₹5 lakh investment."
-\`\`\`
-
-### **SECTION 5: PORTFOLIO OPTIMIZATION RECOMMENDATIONS**
-
-**Specific, actionable SKU decisions:**
-
-**FRAMEWORK: Keep / Kill / Invest / Launch**
-
-\`\`\`
-KEEP (No changes - performing well):
-[List 3-5 SKUs]
-- [SKU name]: ₹[X] price
-- Rationale: [Margin + volume + strategic position]
-- Action: Maintain current strategy
-
-KILL (Discontinue within 6-12 months):
-[List 2-4 SKUs]
-- [SKU name]: ₹[X] price
-- Rationale: [Low margin + declining velocity + limited strategic value]
-- Impact: Frees ₹[X] Cr working capital, simplifies operations
-- Risk: [Small revenue loss, potential customer complaints]
-- Mitigation: [Gradual phase-out, redirect customers to alternatives]
-
-INVEST (Increase marketing/distribution):
-[List 2-3 SKUs]
-- [SKU name]: ₹[X] price
-- Rationale: [Growing velocity + good margins + white space opportunity]
-- Investment: ₹[X] Cr in marketing, ₹[Y] Cr in inventory
-- Expected return: [Revenue growth projection]
-
-LAUNCH (New SKUs within 12 months):
-[List 2-4 concepts]
-
-LAUNCH #1: [Product concept]
-- Price point: ₹[X]
-- Target: [Customer segment / occasion]
-- Rationale: [Gap analysis + competitive validation]
-- Investment: ₹[X] Cr development + launch
-- Risk: [Formulation complexity, cannibalization, competitive response]
-- Go/No-Go criteria: [How to decide if it's working after 90 days]
-
-EXAMPLE:
-"KILL: ₹25 Value Protein Bar
-- Current velocity: 22 reviews/month (down from 40 six months ago)
-- Estimated margin: 22% (vs 35% portfolio average)
-- Volume: ~15K units/month (5% of portfolio)
-- Impact: Frees ₹0.8 Cr inventory, saves ₹12 lakh/year in SKU complexity costs
-- Strategic rationale: Competing at ₹25 puts [COMPANY] against RiteBite's FMCG 
-  muscle and Amazon Vedaka's cost structure—unwinnable battles that dilute premium 
-  positioning without generating profitable volume
-
-INVEST: ₹50 Chocolate Protein Bar (hero SKU)
-- Current velocity: 85 reviews/month (growing from 62 six months ago)
-- Estimated margin: 38%
-- Contribution: ~35% of revenue
-- Investment: ₹2 Cr additional marketing (Google, Instagram), ₹1.5 Cr inventory
-- Expected return: 40-50% velocity growth = ₹8-10 Cr incremental revenue
-- ROI: 2.3-2.9x in 12 months
-
-LAUNCH: ₹48 Dates & Dry Fruits Bar
-- White space: Indian flavors + ₹35-50 "accessible premium" price gap
-- Evidence: 31 customer reviews requesting dates flavor, True Elements success at ₹45
-- Target: Health-conscious Indians seeking familiar flavors at moderate premium
-- Investment: ₹5 lakh formulation + ₹15 lakh launch (D2C-only test)
-- Go/No-Go: If achieves >60 reviews in 90 days + 4.3+ rating, scale to MT"
-\`\`\`
-
-### **SECTION 6: 2025-2026 PORTFOLIO PROJECTIONS**
-
-**Forward-looking portfolio evolution:**
-
-\`\`\`
-CURRENT PORTFOLIO REVENUE MIX (FY24 estimated):
-- Protein bars (₹50-60): 60% of revenue
-- Breakfast/muesli bars (₹40-45): 25%
-- Energy balls/other: 15%
-
-PROJECTED MIX (FY26):
-Scenario A - Focus Strategy (Kill long tail, invest in heroes):
-- Protein bars: 70-75%
-- Breakfast bars: 20-25%
-- New innovations: 5-10%
-- Total SKU count: 10-12 (from 15)
-
-Scenario B - Breadth Strategy (Launch into gaps, maintain current):
-- Protein bars: 50-55%
-- Breakfast bars: 20-25%
-- New categories (functional, kids, flavors): 20-25%
-- Total SKU count: 18-22 (from 15)
-
-RECOMMENDATION:
-[Based on ITC distribution opportunity, competitive dynamics, economics]
-
-"Given ITC's modern trade strength (800 premium stores achievable in 12 months), 
-recommend Scenario B with caveat: portfolio breadth must be channel-segmented. 
-Premium protein bars (₹50-60) remain D2C + selective MT. New ₹35-45 accessible 
-premium SKUs leverage ITC distribution for velocity in broader MT. This creates 
-dual portfolio architecture—focused premium for brand-building, broader accessible 
-range for volume—rather than attempting to be everything in every channel."
-
-CONFIDENCE: Medium (depends on execution of MT expansion + economics validation)
-VALIDATION: Actual FY25-26 revenue mix available in company financial data
+PORTFOLIO HEALTH IMPROVEMENT:
+- Hero SKU dependency: [X]% → [Y]% (diversification)
+- Channel coverage: [X] channels → [Y] channels
+- Average margin: [X]% → [Y]%
 \`\`\`
 
 ---
 
-## OUTPUT REQUIREMENTS
+## CRITICAL SUCCESS CRITERIA
 
-### **STRUCTURE:**
+Your output must answer:
+1. **Which current SKUs are now commoditized/underperforming?** (Kill list)
+2. **What 3-4 new SKUs unlock 2026-2028 opportunities?** (Launch list with ROI)
+3. **How does portfolio shift for new channels** (QC, institutional, export)?
+4. **What's the portfolio optimization ROI?** (Revenue/margin impact)
 
-\`\`\`markdown
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PORTFOLIO STRATEGY & SKU RATIONALIZATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Opening: Strategic frame in 2-3 sentences]
-
-CURRENT PORTFOLIO ARCHITECTURE [150 words]
-HERO SKU DYNAMICS [150 words]
-PORTFOLIO PERFORMANCE & ECONOMICS [200 words]
-COMPETITIVE BENCHMARKING [150 words]
-WHITE SPACE & GAPS [150 words]
-OPTIMIZATION RECOMMENDATIONS (Keep/Kill/Invest/Launch) [200 words]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-KEY ASSUMPTIONS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-RECOMMENDATION: [Specific SKU to kill]
-Based on:
-- Amazon review velocity declining 45% over 6 months
-- Estimated gross margin 22% vs portfolio average 33%
-- Volume contribution <5% of total revenue
-- Frees ₹[X] Cr working capital for hero SKU investment
-
-[List 2-3 key assumptions supporting major recommendations]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SOURCES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[List all sources with dates]
-\`\`\`
-
-### **LENGTH & STYLE:**
-- **800-1,000 words total** (strict 2-page limit)
-- Narrative flow with data integrated
-- At least 3-4 "oh I didn't know that" insights
-- Every recommendation economics-based
-- Projections include calculations shown
-- Confidence levels stated
-
-### **CRITICAL SUCCESS CRITERIA:**
-
-Your analysis succeeds if Hemant says:
-- ✓ "I didn't realize our ₹25 bar was bleeding margin like that"
-- ✓ "The dates & dry fruits gap makes sense—31 customer requests"
-- ✓ "Interesting that Whole Truth's concentration = vulnerability"
-- ✓ "The channel-segmented portfolio logic is spot-on"
+**Red Flags:**
+- ❌ Generic "launch premium range" (WHO is buying, WHERE, WHY NOW?)
+- ❌ No kill decisions (optimizing = killing as much as launching)
+- ❌ No channel strategy (same SKU for MT and QC won't work)
+- ✅ Specific SKU concepts with pricing, channel, margin, payback
 
 ---
 
-## FINAL CHECKLIST
+## DATA CONFIDENCE & ASSUMPTIONS
 
-- [ ] Analyzed 10+ SKUs across company + competitors
-- [ ] Used e-commerce data for velocity proxies
-- [ ] Connected portfolio strategy to channel/margin implications
-- [ ] Made specific Keep/Kill/Invest/Launch recommendations
-- [ ] Showed calculations for projections
-- [ ] Noted assumptions explicitly
-- [ ] Cited confidence levels
-- [ ] 3-4 non-obvious insights included
-- [ ] 800-1,000 words (no more)
-- [ ] Narrative flow maintained
+**State clearly:**
+- SKU-level data often unavailable publicly
+- Use e-commerce rankings, reviews, competitor launches as proxies
+- Mark estimates as [ESTIMATE] with logic
+- Confidence levels: High/Medium/Low
+
+**Assumption to document:**
+"Assumes [COMPANY] conducted basic SKU rationalization 2023-2024 (killed bottom 20% by margin). Focus here is NEXT wave of optimization for 2026-2028 market."
 
 ---
 
-**Now execute this portfolio analysis for [COMPANY].**
+## OUTPUT CHECKLIST
+
+- [ ] Assessed current portfolio health (concentration, channel fit, gaps)
+- [ ] SKU-level economics (margin, volume, competitive position)
+- [ ] 2-3 kill recommendations with ROI math
+- [ ] 3-4 launch recommendations with specific concepts
+- [ ] Channel optimization strategy (QC, institutional, export)
+- [ ] Portfolio optimization ROI (revenue and margin impact)
+- [ ] All figures sourced or marked as estimates
+- [ ] Forward-looking (2026-2028 opportunities, not 2023 basics)
+
+---
+
+**Remember:** The user needs to know what to launch/kill NOW (2026) for channels and trends that didn't exist/matter in 2023. Be specific with SKU concepts, pricing, channels, and payback math.
 `,
 
   brand: `# AGENT 3: BRAND POSITIONING & STORYTELLING
+## POST-ACQUISITION BRAND EVOLUTION (3 YEARS IN)
 
 **Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
 
-**Role:** Brand Strategist - Positioning, Messaging, Target Customer, Brand Architecture
+**Critical Context:** ITC acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
+
+---
+
+## WHAT ITC HAS ALREADY DONE (Brand Moves 2023-2026)
+
+**Assumed Actions Taken:**
+- ✅ Increased marketing spend 3x (ITC capital backing)
+- ✅ Expanded to mass media (was pure digital pre-acquisition)
+- ✅ ITC brand halo (association with ITC Foods credibility)
+- ✅ Retail visibility boost (POS materials, in-store presence)
+- ✅ Influencer marketing scaled up
+
+**Current Challenge:**
+- Brand dilution risk: Going mass (MT/GT) may have weakened premium positioning
+- Scaling challenge: What worked for ₹50 Cr brand doesn't work at ₹200 Cr
+- ITC association paradox: Helps credibility but may commoditize "startup cool factor"
+- Need brand evolution for NEXT phase (₹500 Cr+ aspiration)
 
 ---
 
 ## YOUR MISSION
 
-Define WHO the brand is for, WHAT it stands for, and WHY customers should care. Then diagnose the gap between intended positioning and market perception.
+Define how [COMPANY]'s brand must **EVOLVE** (not just maintain) for 2026-2028 growth.
 
-Your analysis reveals **brand strategy coherence and positioning opportunities** that others miss:
-- Does brand positioning align with product portfolio and pricing?
-- Is messaging differentiated vs generic category claims?
-- Does brand story resonate with actual customer language?
-- Where does positioning create strategic constraints or opportunities?
+**Focus on:**
+1. **Brand perception drift** (What changed 2023-2026 with ITC ownership/mass expansion?)
+2. **Target customer evolution** (Who's buying now vs 2023? Who SHOULD buy next?)
+3. **Brand repositioning** needed for new channels (QC, institutional, export)
+4. **Differentiation reset** (Competition caught up—how to re-establish distinctiveness?)
 
-**Every insight must be evidence-based, not brand theory.**
+**DO NOT:**
+- ❌ Generic "premium positioning" (WHAT does premium mean NOW in 2026?)
+- ❌ "Maintain current brand" (maintenance won't drive 60% growth)
+- ❌ Ignore ITC impact (it's been 3 years, brand perception has changed)
 
----
-
-## CONTEXT & DATA SOURCES
-
-**Current Date:** February 2026
-
-**Use:** Agent 1 (market) + Agent 2 (portfolio) insights + brand evidence from multiple sources
-
-**Your Edge:** Brand perception analysis using actual customer language, not marketing copy
-
-**Mandate:** Reveal gaps between what brand SAYS vs what customers HEAR
+**DO:**
+- ✅ "Brand drifted from 'startup insurgent' (2020-2023) to 'ITC sub-brand' (2024-2025). Need to reclaim distinct identity while leveraging ITC credibility for distribution, not brand."
+- ✅ "Target evolved: Was 25-35 fitness enthusiasts (2023), now 30-50 health-conscious families (MT expansion). Need to re-focus on original audience OR commit to new target fully."
 
 ---
 
-## COMPREHENSIVE SOURCE STRATEGY
+## SEARCH STRATEGY
 
-### **TIER 1: BRAND MESSAGING AUDIT** (What brand claims)
-
-\`\`\`
-COMPANY SOURCES:
-1. Company website (homepage, about page, product descriptions)
-   - Brand tagline/positioning statement
-   - Value propositions
-   - Origin story
-   - Mission/values
-
-2. Social media presence
-   - Instagram bio and content themes
-   - LinkedIn company description
-   - Facebook page messaging
-   - YouTube channel positioning
-
-3. Packaging/product copy (via e-commerce images)
-   - Front-of-pack claims
-   - Ingredient call-outs
-   - Benefit statements
-
-SEARCH QUERIES:
-"[Company] about us"
-"[Company] brand story"
-"[Company] mission vision"
-"site:instagram.com [Company]"
-"site:linkedin.com/company/[Company]"
-\`\`\`
-
-### **TIER 2: CUSTOMER PERCEPTION** (What customers actually say)
+### **PRIORITY 1: Brand Perception Evidence (2024-2026)**
 
 \`\`\`
-REVIEW MINING (Most valuable source):
-
-Amazon/Flipkart reviews - Analyze:
-- What words customers use to describe brand
-- What benefits they emphasize
-- What comparisons they make
-- What occasions they mention
-- What complaints reveal about expectations
-
-METHODOLOGY:
-Read 50-100 recent reviews, note:
-- Repeated phrases ("tastes like real food", "too sweet", "expensive but worth it")
-- Comparison language ("better than RiteBite", "not as good as Whole Truth")
-- Occasion mentions ("post-workout", "office snack", "breakfast replacement")
-- Emotional language ("guilt-free", "feel healthy", "indulgent")
-
-SEARCH QUERIES:
-"site:amazon.in [Company] customer reviews"
-"[Company] review reddit india"
-"[Company] vs [Competitor] review"
-"[Product name] worth it review"
+1. "[COMPANY] brand perception 2024" OR "customer reviews sentiment"
+2. "[COMPANY] Amazon reviews 2024" (read actual customer language)
+3. "[COMPANY] ITC association" OR "ITC Foods brand impact"
+4. "[COMPANY] social media 2024" OR "Instagram followers growth"
+5. "[COMPANY] brand awareness 2024" OR "recall metrics"
 \`\`\`
 
-### **TIER 3: FOUNDER/BRAND NARRATIVE**
+### **PRIORITY 2: Customer Intelligence**
 
 \`\`\`
-Founder interviews reveal intended positioning:
-
-SEARCH QUERIES:
-"[Founder name] interview why started [Company]"
-"[Founder] [Company] brand vision"
-"site:youtube.com [Founder] story"
-"[Company] founder podcast 2024"
-
-WHAT TO EXTRACT:
-- Origin story (why they started)
-- Problem they saw
-- Customer they serve
-- Competitive differentiation claim
-- Brand values/philosophy
-- Long-term vision
-
-SIGNALS:
-- Emphasis on ingredients = quality positioning
-- Emphasis on convenience = lifestyle positioning
-- Emphasis on price = value positioning
-- Emphasis on community = belonging positioning
+6. "[COMPANY] customer profile" OR "target audience"
+7. "[COMPANY] reviews keywords" (what do customers actually say?)
+8. "Nutrition bars customer demographics India 2024"
+9. "[Category] purchase drivers 2024" (why people buy - health, taste, convenience?)
+10. "[COMPANY] vs [Competitor] brand comparison" OR "customer choice factors"
 \`\`\`
 
-### **TIER 4: COMPETITIVE POSITIONING ANALYSIS**
+### **PRIORITY 3: Competitive Brand Analysis**
 
 \`\`\`
-How do competitors position themselves?
-
-For each competitor:
-1. Tagline/positioning statement
-2. Primary brand claim
-3. Target customer (explicit or implied)
-4. Differentiation angle
-5. Visual identity cues (premium vs mass)
-
-SEARCH:
-"[Competitor] brand positioning"
-"[Competitor] target audience"
-"[Competitor] vs [Other competitor]"
-
-CATEGORY POSITIONING MAP:
-Plot competitors on dimensions:
-- Functional vs Emotional
-- Premium vs Accessible
-- Performance vs Wellness
-- Modern vs Traditional
+11. "[Competitor] brand positioning 2024" (for each major competitor)
+12. "Whole Truth brand strategy 2024" (strongest branded competitor)
+13. "[Competitor] marketing campaigns 2024"
+14. "[Category] brand leaders India 2024"
 \`\`\`
 
-### **TIER 5: BRAND PERCEPTION STUDIES**
+### **PRIORITY 4: Emerging Brand Trends**
 
 \`\`\`
-Look for survey/research data:
-
-SEARCH QUERIES:
-"brand awareness protein bars India 2024"
-"[Category] brand perception study India"
-"[Company] brand recall survey"
-"RedSeer consumer brand preferences healthy snacks"
-"Kantar brand health [category] India"
-
-Often cited in:
-- News articles ("survey shows X brand leads in awareness")
-- Consulting reports (free excerpts mentioning brand metrics)
-- LinkedIn posts by researchers
-\`\`\`
-
-### **TIER 6: SOCIAL LISTENING SIGNALS**
-
-\`\`\`
-INSTAGRAM/SOCIAL ANALYSIS:
-
-Metrics to capture:
-- Follower count (brand awareness proxy)
-- Engagement rate (follower quality)
-- Content themes (what they post about)
-- User-generated content (customers posting brand)
-- Influencer partnerships (positioning signal)
-
-SEARCH:
-"site:instagram.com #[brandname]"
-"[Company] instagram followers"
-"[Brand] influencer collaboration"
+15. "Functional wellness brands India 2024" (category evolution)
+16. "Health food brand trends 2024-2025"
+17. "Premiumization nutrition India 2024"
+18. "Sustainable nutrition brands India 2024" (clean label, eco-friendly trend)
 \`\`\`
 
 ---
 
-## ANALYSIS FRAMEWORK
+## OUTPUT STRUCTURE (800-1,000 words, 2 pages max)
 
-### **SECTION 1: CURRENT BRAND POSITIONING DECODED**
-
-**What does the brand CLAIM to be?**
+### **SECTION 1: BRAND HEALTH ASSESSMENT 2026 (200 words)**
 
 \`\`\`
-STATED POSITIONING:
+## BRAND STATUS CHECK
 
-Brand Tagline: "[Exact tagline from website]"
-Positioning Statement: "[From about page or marketing materials]"
+**Current Positioning (Stated):**
+[What COMPANY claims to stand for - from website/packaging]
 
-Primary Claims:
-- "[Claim 1 - e.g., 'Made with real ingredients']"
-- "[Claim 2 - e.g., 'No artificial sweeteners']"
-- "[Claim 3 - e.g., 'Tastes delicious']"
+**Actual Customer Perception (Evidence-Based):**
+[What customers ACTUALLY say in reviews/social media]
 
-Origin Story Summary:
-"[How founder describes why they started the company - in 2-3 sentences]"
+**Gap Analysis:**
+- Brand says: "[X]"
+- Customers hear: "[Y]"
+- The drift: [Why perception ≠ intent]
 
-Target Customer (Stated):
-"[Who the brand says it serves]"
+**Brand Strength Indicators:**
+- Awareness: [High/Medium/Low in target segment - with evidence]
+- Consideration: [% who'd consider vs alternatives]
+- Preference: [Are people choosing [COMPANY] or just buying what's available?]
+- Loyalty: [Repeat purchase indicators from reviews/subscription data]
 
-Brand Values/Philosophy:
-"[What the brand stands for beyond product]"
+**ITC Association Impact:**
+- Positive: [What ITC ownership helped - credibility, trust, visibility]
+- Negative: [What it hurt - startup cool, premium perception, distinctiveness]
+- Net: [Has ITC ownership been brand-positive or brand-dilutive?]
 
-Evidence: [Company website, social media bios, founder interviews]
+**Sources:** [List sources, mark estimates]
 \`\`\`
 
-**VS. ACTUAL MARKET PERCEPTION:**
+### **SECTION 2: TARGET CUSTOMER EVOLUTION (250 words)**
 
 \`\`\`
-CUSTOMER LANGUAGE ANALYSIS (from 100+ reviews):
+## WHO'S BUYING NOW VS WHO SHOULD BUY NEXT
 
-Top 10 Words/Phrases Customers Use:
-1. "[Word/phrase]" - appears X times
-2. "[Word/phrase]" - appears Y times
-[etc.]
+**2023 Target (Pre-ITC Scale):**
+- Demographics: [Age, income, location]
+- Psychographics: [Values, lifestyle, motivations]
+- Purchase occasion: [When/why they buy]
+- Channel preference: [Where they discover/buy]
 
-What Customers Say Brand IS:
-- "Good for [use case]"
-- "Better than [competitor] because [reason]"
-- "Worth it for [benefit]"
+**2026 Reality (Post-MT Expansion):**
+- Actual buyer: [Who's actually buying based on data/reviews]
+- Evolution: [How customer base shifted with distribution expansion]
+- Accidental reach: [Who's buying that we didn't target - MT walk-ins]
 
-What Customers Complain About:
-- "[Complaint theme 1]" - X% of reviews
-- "[Complaint theme 2]" - Y% of reviews
+**Brand Dilution Evidence:**
+Example: "Reviews show customer language shifted:
+- 2020-2022: 'Clean label', 'startup', 'discovered on Instagram'
+- 2024-2025: 'Saw in DMart', 'tried because convenient', 'ITC so trusted brand'
+→ Transactional vs emotional connection"
 
-Occasions Mentioned:
-- Post-workout: X% of reviews
-- Breakfast: Y% of reviews
-- Office snack: Z% of reviews
+**2028 Target (Who We NEED to Attract):**
+For 60% growth, need [X] type of customer because:
+- [Reason 1: Market size/growth]
+- [Reason 2: Margin profile]
+- [Reason 3: Strategic fit for new channels]
 
-INSIGHT (Gap Analysis):
-"[COMPANY] positions itself as [claimed positioning], emphasizing [key message]. 
-However, customer reviews reveal a different story: 43% mention 'post-workout' 
-usage vs company's broader 'healthy snacking' messaging. Only 12% use the word 
-'clean' (company's core claim) while 31% emphasize 'taste' and 27% mention 'protein'. 
-
-This gap suggests customers buy for functional performance (protein delivery post-gym) 
-but brand markets lifestyle/wellness (clean eating). The disconnect creates opportunity: 
-leaning into performance positioning could sharpen relevance but narrow addressable 
-market beyond fitness enthusiasts."
+**Repositioning Decision:**
+Option A: Re-focus on original premium audience (accept slower growth, higher margins)
+Option B: Embrace mass premium (continue current path, optimize execution)
+Option C: Segment brand (premium DTC + mass MT with different sub-brands)
+**Recommendation:** [A/B/C with rationale]
 \`\`\`
 
-### **SECTION 2: COMPETITIVE POSITIONING MAP**
-
-**Where does brand sit vs competition?**
+### **SECTION 3: COMPETITIVE BRAND DIFFERENTIATION (200 words)**
 
 \`\`\`
-POSITIONING FRAMEWORK (Two Key Dimensions):
+## WHAT MAKES [COMPANY] DIFFERENT? (2026 Answer)
 
-DIMENSION 1: Functional ←→ Emotional
-- Functional: Product benefits, performance, nutrition
-- Emotional: Lifestyle, identity, belonging, aspiration
+**Positioning Map:**
 
-DIMENSION 2: Premium ←→ Accessible
-- Premium: High price, exclusive, sophisticated
-- Accessible: Value, mainstream, everyday
+Place [COMPANY] and top 3 competitors on 2x2:
+- X-axis: Functional ←→ Emotional
+- Y-axis: Premium ←→ Accessible
 
-COMPETITIVE MAPPING:
+**Current Reality:**
+- [COMPANY]: [Where it sits - likely middle of map, undifferentiated]
+- [Competitor 1]: [Their clear position]
+- [Competitor 2]: [Their position]
 
-PREMIUM + FUNCTIONAL:
-- [Competitor A]: "20g protein, clean ingredients, ₹60"
-- Customers: Performance-focused, willing to pay
+**Differentiation Erosion:**
+[COMPANY]'s original differentiation in 2020-2023: [What was unique]
+→ Competitors copied: [Who did what]
+→ 2026 status: [Not unique anymore]
 
-PREMIUM + EMOTIONAL:
-- [Competitor B]: "Join the healthy living movement, ₹55"
-- Customers: Lifestyle buyers, identity-driven
+**New Differentiation Opportunity:**
+Based on market gaps and competitor vulnerabilities:
 
-ACCESSIBLE + FUNCTIONAL:
-- [Competitor C]: "Good protein at honest price, ₹25"
-- Customers: Value-conscious, performance-aware
+**Option 1: [Positioning Concept]**
+- What it means: [Clear narrative]
+- Why it's ownable: [Why [COMPANY] can claim this vs competitors]
+- Why it matters: [Customer need it addresses]
+- Trade-off: [What you give up]
 
-ACCESSIBLE + EMOTIONAL:
-- [Competitor D]: "Healthy snacking for everyone, ₹30"
-- Customers: Mass-market wellness
-
-[COMPANY] CURRENT POSITION:
-"[Based on pricing, messaging, customer perception - where do they sit?]"
-
-WHITE SPACE:
-"[Is there an unoccupied quadrant that represents opportunity?]"
-
-INSIGHT EXAMPLE:
-"The competitive map reveals overcrowding in 'Premium + Functional' (Whole Truth, 
-Super You, Yogabar all at ₹50-60 claiming protein + clean ingredients). Meanwhile, 
-'Accessible + Emotional' sits empty—no player owns 'wellness for everyone at 
-affordable prices.' This could be strategic opportunity or a trap: the position may 
-be empty because economics don't work (can't deliver quality perception at ₹35-40 
-price point) or because consumers in this segment don't care enough to pay premium 
-over ₹20 mass options."
+Example:
+**Option 1: "India's Functional Nutrition Pioneer"**
+- What: First Indian brand with clinically-dosed adaptogens/functional ingredients (not just protein)
+- Ownable: ITC R&D + manufacturing capabilities (competitors can't match)
+- Matters: 68% segment growth (Euromonitor), customers want more than protein
+- Trade-off: Narrow target (wellness-focused vs mass nutrition)
 \`\`\`
 
-### **SECTION 3: TARGET CUSTOMER REALITY CHECK**
-
-**Who ACTUALLY buys the brand?**
+### **SECTION 4: BRAND EVOLUTION ROADMAP (350 words)**
 
 \`\`\`
-STATED TARGET: "[From company materials]"
+## 2026-2028 BRAND STRATEGY
 
-ACTUAL CUSTOMER PROFILE (from review analysis + social media):
+**PILLAR 1: Messaging Refresh**
 
-DEMOGRAPHICS (Inferred):
-- Age: [Based on language, references, review patterns]
-- Gender: [Based on review names, pronoun usage]
-- Location: [Urban vs tier-2, specific cities mentioned]
-- Income: [Inferred from price sensitivity in reviews]
+**Current Message:** [What [COMPANY] says now]
+**New Message:** [Evolution needed]
 
-PSYCHOGRAPHICS:
-- Values: [What customers say matters to them]
-- Lifestyle: [Gym-goers, working professionals, health-conscious parents]
-- Purchase drivers: [Convenience, performance, guilt-free indulgence]
+**Rationale:** [Why change - based on Section 1-3 insights]
 
-USE OCCASIONS:
-- Primary: [Most mentioned use case - X% of reviews]
-- Secondary: [Second most common - Y%]
-- Tertiary: [Third - Z%]
+**Execution:**
+- Tagline: [Current] → [New concept]
+- Story: [From X narrative to Y narrative]
+- Proof points: [What evidence supports new claim]
 
-CUSTOMER JOBS-TO-BE-DONE:
-When customers "hire" this product, they're trying to:
-1. "[Job #1 - e.g., 'Get protein after workout without cooking']" - X% of reviews
-2. "[Job #2 - e.g., 'Avoid unhealthy office snacks']" - Y% of reviews
-3. "[Job #3]" - Z%
+**PILLAR 2: Visual Identity Evolution**
 
-GAP ANALYSIS:
-"[COMPANY] targets '[stated segment]' with messaging about '[key theme]'. However, 
-actual customers are primarily '[actual segment]' using the product to '[actual job]'. 
+**Assessment:**
+- Current look: [Premium/accessible/modern/traditional]
+- Market fit: [Works for which channels, fails for which]
+- Refresh needed? [Yes/No - with rationale]
 
-Example: Company targets 'health-conscious millennials seeking clean eating' but 
-reviews show 62% are 'gym-goers seeking convenient post-workout protein' and 23% 
-are 'working professionals avoiding office junk food.' Only 15% mention 'clean eating' 
-as primary motivation. This suggests performance + convenience resonates more than 
-lifestyle + values, creating opportunity to sharpen messaging or risk of alienating 
-current customers by chasing aspirational positioning."
-\`\`\`
+**If yes:**
+- Direction: [More premium/more accessible/more functional/more emotional]
+- Examples: [Benchmark brands doing this well]
 
-### **SECTION 4: BRAND MESSAGING EFFECTIVENESS**
+**PILLAR 3: Channel-Specific Brand Adaptation**
 
-**Does current messaging resonate?**
+**Challenge:** Same brand must work across different channels with different expectations.
 
-\`\`\`
-MESSAGING AUDIT:
+**Strategy:**
 
-KEY MESSAGES (from brand materials):
-1. "[Primary message]"
-2. "[Secondary message]"
-3. "[Tertiary message]"
+**Modern Trade:**
+- Brand emphasis: [Trust, value, convenience]
+- Messaging: [Variant-specific vs category-level]
+- Visual: [Shelf standout vs storytelling]
 
-CUSTOMER ECHO TEST (do they repeat these messages?):
-- Message 1 mentioned in [X]% of positive reviews
-- Message 2 mentioned in [Y]% of positive reviews
-- Message 3 mentioned in [Z]% of positive reviews
+**Quick Commerce:**
+- Brand emphasis: [Modernity, quality, impulse-worthy]
+- Messaging: [Product benefit focus]
+- Visual: [App thumbnail optimization]
 
-ORGANIC LANGUAGE (what customers say unprompted):
-Instead of brand language, customers say:
-- "[Customer phrase 1]" - appears X times
-- "[Customer phrase 2]" - appears Y times
+**D2C/E-comm:**
+- Brand emphasis: [Story, mission, premium, community]
+- Messaging: [Full narrative, founder story]
+- Visual: [Lifestyle, detailed copy]
 
-INSIGHT:
-"[COMPANY]'s messaging emphasizes '[brand language]' but customers organically 
-use '[different language]'. For instance, brand says 'clean ingredients you can 
-trust' but customers say 'tastes like real food, not chemicals.' This translation 
-gap suggests:
-(a) Current messaging too abstract/corporate vs customer vernacular, OR
-(b) Customers care about different benefits than brand emphasizes
+**Institutional (Corporate/Gym):**
+- Brand emphasis: [Efficacy, trust, value]
+- Messaging: [B2B ROI, wellness outcomes]
+- Visual: [Professional, data-driven]
 
-Recommendation: Test '[customer language]' in ad copy to see if it resonates better 
-than '[brand language]'—likely higher CTR and conversion if speaking their language."
-\`\`\`
+**PILLAR 4: ITC Association Management**
 
-### **SECTION 5: BRAND ARCHITECTURE & PORTFOLIO COHERENCE**
+**The Balance:**
+- Leverage: [Where ITC brand helps - trust, credibility, distribution]
+- Distance: [Where ITC brand hurts - premium perception, startup energy]
 
-**Does brand positioning align with product portfolio?**
+**Execution:**
+- Packaging: [ITC logo size/placement - subtle vs prominent]
+- Communication: ["An ITC Brand" vs independent positioning]
+- Channel strategy: [Where to emphasize ITC, where to downplay]
 
-\`\`\`
-BRAND PROMISE: "[What brand claims to deliver]"
+**PILLAR 5: Proof Points & Credibility**
 
-PRODUCT PORTFOLIO TEST:
-Do products deliver on brand promise?
+**What needs validation:**
+- Quality: [Certifications, testing, ingredients]
+- Efficacy: [Claims that need backing]
+- Sustainability: [If playing in this space]
 
-Hero SKU: [Product name at ₹X]
-- Delivers on promise: [Yes/Partially/No]
-- Evidence: [Customer reviews, ingredient analysis]
-- Coherence score: [High/Medium/Low]
-
-Value SKU: [Product name at ₹Y]
-- Delivers on promise: [Yes/Partially/No]
-- Creates brand dilution: [Yes/No - why?]
-
-PRICE-POSITIONING ALIGNMENT:
-"[COMPANY] positions as [premium/accessible] but pricing strategy shows:
-- Hero SKUs at ₹50-60 (premium tier)
-- Value SKUs at ₹25-30 (mass tier)
-
-This creates confusion: Is brand premium (hero SKUs suggest yes) or accessible 
-(value SKUs suggest yes)? Customers express this confusion: 'Some products seem 
-high quality, others feel cheap' (review quote). Recommendation: Either kill 
-value SKUs to clarify premium positioning, OR create sub-brand for mass tier to 
-avoid main brand dilution."
-\`\`\`
-
-### **SECTION 6: POSITIONING RECOMMENDATIONS & 2025-2026 EVOLUTION**
-
-**Where should brand positioning GO?**
-
-\`\`\`
-CURRENT STATE DIAGNOSIS:
-- Positioning: [Clear/Muddled/Generic]
-- Differentiation: [Strong/Weak/Non-existent]
-- Resonance: [High/Medium/Low with target customers]
-- Coherence: [Aligned/Misaligned across portfolio/pricing/distribution]
-
-STRATEGIC OPTIONS (3 Scenarios):
-
-OPTION A: SHARPEN CURRENT POSITIONING
-Current: "[What brand claims now]"
-Sharpened: "[More focused version]"
-- Rationale: [Evidence from customer data]
-- Trade-off: [What you gain vs what you lose]
-- Implementation: [Specific changes to messaging, portfolio, pricing]
-- Risk: [What could go wrong]
-
-OPTION B: PIVOT TO CUSTOMER REALITY
-Current: "[Aspirational positioning]"
-Pivoted: "[Where customers already see you]"
-- Rationale: [Customer language + use occasions + competitor gaps]
-- Trade-off: [Giving up aspiration for relevance]
-- Implementation: [Changes required]
-- Risk: [Limiting growth potential]
-
-OPTION C: DUAL ARCHITECTURE (If portfolio spans premium to mass)
-Premium brand: "[COMPANY] [Premium line]"
-- Positioning: "[Premium story]"
-- Products: ₹50-60 SKUs
-- Distribution: D2C + selective MT
-
-Accessible brand: "[COMPANY] [Mass line]" OR sub-brand
-- Positioning: "[Accessible story]"
-- Products: ₹25-40 SKUs
-- Distribution: Mass MT + GT (leverage ITC)
-
-RECOMMENDATION: [Which option, why]
-
-"Based on [key evidence], recommend Option [X] because:
-1. [Reason tied to customer data]
-2. [Reason tied to competitive landscape]
-3. [Reason tied to ITC synergy opportunity]
-
-This positioning evolution from '[current]' to '[recommended]' requires:
-- Messaging shift: [Specific changes]
-- Portfolio actions: [SKU decisions from Agent 2]
-- Pricing: [Any price repositioning needed]
-- Distribution: [Channel strategy implications]
-
-Timeline: 6-12 months to implement, 18-24 months to shift market perception"
-
-PROJECTED BRAND HEALTH (2026):
-If recommendation implemented:
-- Aided awareness: [Current X%] → [Target Y%]
-- Brand consideration: [Current X%] → [Target Y%]
-- Price premium sustainability: [Current] → [Projected]
-- Customer loyalty/repeat: [Current] → [Projected]
-
-CONFIDENCE: Medium (brand shifts take 18-24 months, requires consistent execution)
-VALIDATION: Brand tracking study or aided/unaided awareness survey
+**Build:**
+- [Specific credibility builders - e.g., "FSSAI certification", "Nutritionist-approved", "Clean Label certified"]
+- [Partnerships that add credibility]
+- [Customer testimonials/case studies]
 \`\`\`
 
 ---
 
-## OUTPUT REQUIREMENTS
+## CRITICAL SUCCESS CRITERIA
 
-### **STRUCTURE:**
+Your output must answer:
+1. **Has brand drifted 2023-2026?** (Evidence of dilution or evolution)
+2. **Who's the target customer NOW vs who SHOULD it be?** (Repositioning decision)
+3. **What's the differentiation in 2026?** (Original claims likely copied)
+4. **How should brand evolve 2026-2028?** (Specific messaging, visual, channel strategy)
 
-\`\`\`markdown
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-BRAND POSITIONING & STORYTELLING
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Opening: Current positioning + the gap in 2-3 sentences]
-
-CURRENT POSITIONING DECODED [150 words]
-CUSTOMER PERCEPTION REALITY [150 words]
-COMPETITIVE POSITIONING MAP [150 words]
-TARGET CUSTOMER TRUTH [150 words]
-BRAND-PORTFOLIO COHERENCE [100 words]
-POSITIONING RECOMMENDATIONS [200-250 words]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-KEY ASSUMPTIONS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-RECOMMENDATION: Pivot from "[current positioning]" to "[recommended positioning]"
-Based on:
-- 62% of reviews mention post-workout usage vs 15% mentioning "clean eating"
-- Customer language: "tastes like real food" (31 mentions) vs brand's "clean 
-  ingredients you trust" (3 mentions)
-- Competitive white space in performance-functional quadrant
-- ITC distribution opportunity favors accessible-premium vs pure premium
-
-[List 2-3 key assumptions supporting major recommendation]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SOURCES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[List sources with dates]
-\`\`\`
-
-### **LENGTH & STYLE:**
-- **800-1,000 words total** (strict 2-page limit)
-- Narrative flow with customer quotes integrated
-- At least 3-4 "oh I didn't know that" insights
-- Evidence-based (not brand theory)
-- Gap analysis between stated vs perceived
-- Confidence levels stated
-
-### **CRITICAL SUCCESS CRITERIA:**
-
-Your analysis succeeds if Hemant says:
-- ✓ "I didn't realize customers see us as post-workout, not lifestyle"
-- ✓ "The gap between our messaging and their language is revealing"
-- ✓ "The dual brand architecture solves the premium-vs-mass tension"
-- ✓ "This positioning aligns with ITC distribution opportunity"
+**Red Flags:**
+- ❌ "Maintain premium positioning" (not a strategy, just a wish)
+- ❌ Ignoring 3 years of ITC impact on brand
+- ❌ Generic positioning (could apply to any competitor)
+- ✅ Evidence-based (customer language, review sentiment, competitive moves)
+- ✅ Trade-offs acknowledged (can't be all things to all people)
 
 ---
 
-## FINAL CHECKLIST
+## DATA SOURCES & CONFIDENCE
 
-- [ ] Analyzed brand messaging across company sources
-- [ ] Mined 50-100 customer reviews for language patterns
-- [ ] Mapped competitive positioning on 2x2 framework
-- [ ] Identified gap between stated target and actual customers
-- [ ] Tested brand-portfolio-pricing coherence
-- [ ] Made specific positioning recommendation with rationale
-- [ ] Showed 2025-2026 evolution path
-- [ ] Noted assumptions and confidence levels
-- [ ] 3-4 non-obvious insights included
-- [ ] 800-1,000 words maintained
-- [ ] Customer quotes integrated
+**Primary sources:**
+- Customer reviews (Amazon, Blinkit, Google) - read actual words
+- Social media comments (what people say unprompted)
+- Competitor positioning (websites, campaigns, packaging)
+- Category trends (brand landscape evolution)
+
+**Mark confidence:**
+- Perception data often qualitative - state sample size/limitations
+- Brand metrics rarely public - use proxies (followers, review volume)
+- Differentiation is judgment call - explain reasoning
 
 ---
 
-**Now execute this brand analysis for [COMPANY].**
+## OUTPUT CHECKLIST
+
+- [ ] Brand health assessed with evidence (not assumptions)
+- [ ] Target customer evolution documented (2023 vs 2026 vs 2028)
+- [ ] Differentiation gap identified (what was unique, what's now copied)
+- [ ] Positioning options presented with trade-offs
+- [ ] Brand evolution roadmap (messaging, visual, channel-specific)
+- [ ] ITC association managed (leverage vs distance strategy)
+- [ ] All claims backed by customer evidence or marked as recommendations
+- [ ] Forward-looking (what brand needs to BECOME, not maintain)
+
+---
+
+**Remember:** After 3 years and MT expansion, the brand HAS changed whether intentionally or not. Your job is to assess the drift and recommend the evolution needed for next phase growth.
 `,
 
   margins: `# AGENT 4: MARGIN IMPROVEMENT & UNIT ECONOMICS
+## POST-ACQUISITION OPTIMIZATION (3 YEARS IN)
 
 **Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
 
-**Role:** Financial Strategist - COGS Optimization, Channel Economics, Path to Profitability
+**Critical Context:** ITC acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
+
+---
+
+## WHAT ITC HAS ALREADY CAPTURED (Synergies 2023-2026)
+
+**Assumed Margin Improvements Already Realized:**
+- ✅ Manufacturing: Moved to original co-packer facilities (COGS optimization limited (no manufacturing synergy))
+- ✅ Procurement: Leveraged ITC vendor relationships (5-8% ingredient savings)
+- ✅ Logistics: ITC distribution network (freight costs down)
+- ✅ SKU rationalization: Killed bottom 20% by margin (2023-2024)
+- ✅ Channel mix: Shifted from 70% Amazon (high fees) to 50% MT (better margins)
+
+**Margin Evolution 2023-2026:**
+- Assumed: 32% gross margin (2023) → 39-41% (2026) from above synergies
+- ITC captured the "obvious" operational efficiencies
+
+**Current Challenge:**
+- Low-hanging fruit exhausted
+- Need NEXT layer of margin improvement (45%+ target for premium positioning)
+- Growth investments (new SKUs, QC expansion) pressuring margins
+- How to fund 60% growth while improving margins?
 
 ---
 
 ## YOUR MISSION
 
-Dissect the P&L to reveal where money is made and lost. Then chart the path from current margins to target margins.
+Identify the **NEXT WAVE** of margin improvement opportunities beyond basic synergies.
 
-Your analysis reveals **economic levers and margin opportunities** that others miss:
-- Which costs are structural vs fixable
-- Where channel mix shifts unlock margin expansion
-- What trade-offs exist between growth and profitability
-- How scale economies change unit economics at different revenue levels
+**Focus on:**
+1. **Advanced margin levers** (not just "reduce COGS")
+2. **Channel mix optimization** for 2026 reality (QC, institutional, export)
+3. **Pricing power** opportunities (where can [COMPANY] charge more?)
+4. **Hidden costs** introduced by 3 years of rapid expansion
 
-**Every recommendation must have ROI math attached.**
+**DO NOT:**
+- ❌ Suggest "move to original co-packer facilities" (done 3 years ago)
+- ❌ Generic "reduce COGS" (what specifically?)
+- ❌ "Leverage ITC procurement" (already captured)
 
----
-
-## CONTEXT & DATA SOURCES
-
-**Current Date:** February 2026
-
-**Use:** Agent 1 (market), Agent 2 (portfolio), Agent 3 (brand) + financial proxies + industry benchmarks
-
-**Your Edge:** Unit economics analysis using industry norms + competitive intelligence
-
-**Mandate:** Find 3-5 percentage points of margin improvement with specific actions
+**DO:**
+- ✅ "Shift from bulk sweeteners to monk fruit (premium ingredient) while maintaining 41% margin—unlocks ₹70-90 price point vs current ₹50 ceiling"
+- ✅ "QC channel delivers 48% margin (no listing fees, no returns) vs MT 38% (trade terms + wastage). Shift 20% of volume from MT to QC = +2.1 margin points"
 
 ---
 
-## COMPREHENSIVE SOURCE STRATEGY
+## SEARCH STRATEGY
 
-### **TIER 1: FINANCIAL PROXIES & BENCHMARKS**
-
-\`\`\`
-INDUSTRY BENCHMARKS (Search for):
-
-SEARCH QUERIES:
-"FMCG gross margin India 2024"
-"protein bar gross margin typical"
-"D2C food brand unit economics"
-"healthy snacks margin structure India"
-"food manufacturing COGS breakdown"
-"e-commerce fulfillment costs India 2024"
-"modern trade margin requirements India"
-
-WHAT TO FIND:
-- Typical gross margins by category (Premium bars: 35-40%, Mass: 18-25%)
-- COGS components (ingredients 40-50%, packaging 15-20%, manufacturing 10-15%)
-- Channel margin requirements (D2C: 0%, E-comm: 15-20%, MT: 22-28%, GT: 12-15%)
-- Logistics costs (fulfillment 8-12% for D2C, distributor margins for offline)
-
-SOURCES:
-- Redseer D2C economics reports
-- Technopak FMCG margin analysis
-- Industry association reports (ASSOCHAM, CII)
-- Consulting firm insights (Bain, BCG retail practice)
-\`\`\`
-
-### **TIER 2: INGREDIENT & MANUFACTURING COSTS**
+### **PRIORITY 1: Current Margin Performance**
 
 \`\`\`
-COST INTELLIGENCE:
-
-SEARCH QUERIES:
-"whey protein price India 2024 per kg"
-"pea protein cost India 2024"
-"dates price wholesale India per kg"
-"flexible packaging cost India"
-"co-packer rates food India"
-"contract manufacturing protein bars India"
-
-TRACK TRENDS:
-- Raw material inflation/deflation
-- Import dependency (whey protein often imported)
-- Alternative ingredients (pea vs whey vs soy protein economics)
-- Packaging costs (pouch vs wrapper vs box)
-
-EXTRACT:
-"Whey protein concentrate: ₹800-1,200/kg (per industry sources, Jan 2024)
-For 40g bar with 12g protein (30% protein content):
-- Protein cost: ₹0.30-0.45 per bar
-- If protein = 40% of COGS, total COGS ~₹0.75-1.12 per bar
-- At ₹50 MRP, this implies 68-78% gross margin (unrealistic)
-- Reality check: Likely other costs (sweeteners, nuts, manufacturing) push COGS to 
-  ₹12-15 per bar = 30-35% gross margin (more realistic)"
+1. "[COMPANY] gross margin 2024" OR "profitability"
+2. "[COMPANY] EBITDA 2024" OR "unit economics"
+3. "ITC Foods margins 2024" (benchmark for realistic target)
+4. "[COMPANY] cost structure 2024"
 \`\`\`
 
-### **TIER 3: COMPETITIVE MARGIN SIGNALS**
+### **PRIORITY 2: Channel Economics**
 
 \`\`\`
-INFER FROM PUBLIC DATA:
-
-Funding/Revenue ratios:
-- If [Competitor] raised ₹50 Cr and has 50 employees, burn rate ~₹4-5 Cr/month
-- If they're growing 60% YoY, implies revenue ~₹100-120 Cr
-- Burn rate vs revenue suggests negative EBITDA margin of -40% to -50%
-- Typical for growth-stage D2C brands
-
-Price-point analysis:
-- Premium brands (₹50-60) charging 2-3x mass (₹20-30)
-- Either: (a) 2-3x better margins, OR (b) similar margins but higher CAC
-- Evidence from review complaints about "expensive" suggests (a) - real margin premium
-
-Job postings:
-"Operations Manager - Supply Chain" → focusing on cost optimization
-"VP Finance - Unit Economics" → profitability pressure
-Signals: Company entering margin improvement phase (post-growth)
-
-SEARCH:
-"[Competitor] profitability 2024"
-"[Competitor] unit economics"
-"[Competitor] gross margin" (rarely disclosed but sometimes in interviews)
+5. "Modern Trade margins India 2024" OR "trade terms"
+6. "Quick Commerce seller margins 2024" (Blinkit/Zepto economics)
+7. "Amazon India seller fees 2024" OR "e-commerce costs"
+8. "D2C margins India 2024" OR "direct margins"
+9. "Institutional sales margins B2B 2024"
 \`\`\`
 
-### **TIER 4: ITC INSTITUTIONAL ADVANTAGES**
+### **PRIORITY 3: Input Cost Intelligence**
 
 \`\`\`
-For Yogabar specifically, ITC provides:
+10. "Protein powder prices India 2024" OR "whey price trends"
+11. "Nutrition ingredients inflation 2024"
+12. "Packaging costs India 2024"
+13. "Alternative sweeteners cost 2024" (monk fruit, stevia, allulose)
+14. "Logistics costs India 2024" OR "freight inflation"
+\`\`\`
 
-MANUFACTURING:
-- Existing food plants (Sunfeast, Bingo facilities)
-- Capacity utilization rates (can Yogabar use excess capacity?)
-- Quality systems already in place
-- Potential co-manufacturing economics
+### **PRIORITY 4: Competitive Margin Signals**
 
-PROCUREMENT:
-- ITC's scale in nuts, grains, packaging materials
-- Existing vendor relationships
-- Volume discounts applicable to Yogabar
-
-DISTRIBUTION:
-- Dealer network eliminates field sales team costs
-- Logistics infrastructure reduces fulfillment costs
-- Trade credit terms better than startup can negotiate
-
-SEARCH:
-"ITC manufacturing facilities locations"
-"ITC procurement scale FMCG"
-"ITC distributor network structure"
-"ITC working capital cycle"
+\`\`\`
+15. "[Competitor] margins" OR "profitability 2024"
+16. "Premium nutrition pricing India 2024"
+17. "[Category] price elasticity" OR "willingness to pay"
 \`\`\`
 
 ---
 
-## ANALYSIS FRAMEWORK
+## OUTPUT STRUCTURE (800-1,000 words, 2 pages max)
 
-### **SECTION 1: CURRENT MARGIN STRUCTURE (Best Estimate)**
-
-**Build the P&L from available data:**
+### **SECTION 1: CURRENT MARGIN BREAKDOWN (200 words)**
 
 \`\`\`
-REVENUE BREAKDOWN (Estimated FY24):
+## MARGIN ANATOMY (2026 Estimate)
 
-Total Revenue: ₹[X] Cr
-By Channel:
-- D2C: [Y]% = ₹[Z] Cr at ₹[price] per unit → [units] sold
-- E-commerce: [Y]% = ₹[Z] Cr at ₹[price] after discounts
-- Modern Trade: [Y]% = ₹[Z] Cr at ₹[price] to retailer
-- General Trade: [Y]% = ₹[Z] Cr (if applicable)
+**Gross Margin Waterfall:**
 
-GROSS MARGIN ESTIMATION:
+Revenue (₹100)
+- COGS (₹[60]): Ingredients [X%], Manufacturing [Y%], Packaging [Z%]
+= Gross Margin (₹[40] = [40]%)
 
-D2C Channel (estimate [X]% of revenue):
-- MRP: ₹50 per bar
-- COGS: ₹12-15 per bar (30-35% based on industry benchmarks)
-- Gross Margin: ₹35-38 per bar = 70-76%
-- Less: Fulfillment (₹4-6), payment gateway (2%), returns (3%)
-- Contribution Margin: ₹27-30 per bar = 54-60%
+- Channel Costs (₹[15]): MT trade terms [X%], E-comm fees [Y%], Returns/wastage [Z%]
+= Contribution Margin (₹[25] = [25]%)
 
-E-commerce Channel (estimate [X]% of revenue):
-- Price to Amazon/Flipkart: ₹35-38 (30% platform discount)
-- COGS: ₹12-15
-- Gross Margin: ₹20-26 per bar = 57-68% of net revenue to company
-- Less: Platform fees (15-20%), fulfillment (varies), returns (5-8%)
-- Contribution Margin: ₹10-14 per bar = 28-40%
+- Marketing (₹[8]): [X]% of revenue
+- Logistics (₹[5]): Freight, last-mile
+- Overheads (₹[6]): SG&A, R&D
+= EBITDA (₹[6] = [6]%)
 
-Modern Trade Channel (estimate [X]% of revenue):
-- MRP: ₹50
-- Retailer margin: 25-28% = ₹12.50-14
-- Price to company: ₹36-37.50
-- COGS: ₹12-15
-- Gross Margin: ₹21-25 = 56-68% of net revenue
-- Less: Distribution (8-10%), trade spend (3-5%)
-- Contribution Margin: ₹15-18 per bar = 40-48%
+**By Channel (Estimated):**
+- D2C: [X]% gross, [Y]% contribution (best)
+- Quick Commerce: [X]% gross, [Y]% contribution (likely strong, emerging)
+- Modern Trade: [X]% gross, [Y]% contribution (volume driver)
+- E-commerce: [X]% gross, [Y]% contribution (worst due to fees)
+- Institutional: [X]% gross, [Y]% contribution (B2B potential)
 
-BLENDED METRICS (Estimated):
-- Gross Margin: 32-36% (weighted average across channels)
-- Contribution Margin: 38-45% (after channel-specific costs)
-
-CONFIDENCE: Low to Medium (actual P&L available in company financials)
-METHODOLOGY: Industry benchmarks applied to estimated channel mix
-
-CRITICAL GAPS:
-"Without actual COGS data, cannot determine if low margin is driven by:
-(a) High ingredient costs (premium positioning requires expensive inputs)
-(b) Low manufacturing scale (co-packer minimums, no volume discounts)
-(c) Unfavorable channel mix (too much e-comm, too little D2C/MT)
-(d) Trade spend/promotional costs (discounting to gain distribution)
-
-ITC's internal financial review would clarify root cause and magnitude of each."
+**Confidence:** [Mark what's estimated vs data-backed]
+**Sources:** [List sources]
 \`\`\`
 
-### **SECTION 2: MARGIN PRESSURE POINTS & COST DRIVERS**
+### **SECTION 2: MARGIN IMPROVEMENT LEVERS (400 words)**
 
-**Where is margin being lost?**
-
-\`\`\`
-COST STRUCTURE ANALYSIS:
-
-INPUT COST INFLATION:
-- Whey protein: +15% YoY (2023-2024) per industry reports
-- Nuts (almonds, cashews): +8-12% due to crop yields
-- Packaging materials: +6-8% (oil price-linked)
-- Net COGS inflation: ~10-12% if unmitigated
-
-Revenue pricing power:
-- MRP increase: [Has company raised prices? Check historical Amazon data]
-- If MRP static while COGS rose 10%, margin compressed 3-4 percentage points
-
-CHANNEL MIX PRESSURE:
-Current mix (estimated): [X]% D2C, [Y]% E-comm, [Z]% MT
-Optimal mix for margin: 40% D2C, 20% E-comm, 40% MT
-Gap: Over-indexed on [channel] which has [X]% lower margins
-
-Quantified impact:
-"If 60% of revenue is E-comm (₹10-14 contribution margin per bar) vs target 
-40% D2C (₹27-30 per bar), this represents ₹13-16 lost contribution margin 
-on [X]% of volume. At 10 million bars/year scale, this equals ₹13-16 Cr 
-annual margin opportunity from channel mix shift alone."
-
-PROMOTIONAL INTENSITY:
-- Amazon: Track discount frequency (always 20% off = margin bleed)
-- Modern Trade: Intro offers, shelf space fees, sampling costs
-- Estimate: 4-6% of revenue in trade spend
-
-OPERATIONAL INEFFICIENCIES:
-- Stock-outs (lost sales + customer acquisition waste)
-- Slow-moving SKUs (inventory carrying costs)
-- Returns/damage (3-8% in food e-commerce)
-\`\`\`
-
-### **SECTION 3: COMPETITIVE MARGIN BENCHMARKING**
-
-**How do margins compare to competitors?**
+**Identify 5 specific opportunities:**
 
 \`\`\`
-MARGIN POSITIONING:
+**LEVER #1: [Name]**
+**Current State:** [What's happening now]
+**Opportunity:** [What to change]
+**Margin Impact:** +[X] percentage points
+**Investment Required:** ₹[Y] Cr or [implementation complexity]
+**Payback:** [Timeline]
+**Risk:** [What could go wrong]
 
-PREMIUM D2C BRANDS (Whole Truth, Super You):
-- Estimated gross margin: 38-42%
-- Higher margins from: Premium pricing + D2C focus + ingredient sourcing
-- Trade-off: Higher CAC, lower absolute volume
+Example:
+**LEVER #1: Channel Mix Shift (MT→QC)**
+**Current:** 50% MT (38% margin), 10% QC (48% margin est.)
+**Opportunity:** Shift 15% of volume from MT to QC over 18 months
+- QC has no listing fees, no returns, no trade terms
+- Better margin despite slightly lower price point (₹48 vs ₹50 due to no retailer markup)
+**Impact:** +1.5 gross margin points (from channel mix)
+**Investment:** ₹3 Cr (QC platform fees, dark store placement, influencer seeding)
+**Payback:** 8 months
+**Risk:** QC velocity unproven—if <100 units/SKU/month, delisting. Mitigate with top 3 hero SKUs only initially.
 
-MID-TIER OMNICHANNEL (True Elements):
-- Estimated gross margin: 30-34%
-- Lower margins from: MT/GT distribution costs
-- Benefit: Higher volumes at sustainable CAC
+**LEVER #2: Premiumization Play**
+**Current:** Portfolio ceiling at ₹50-55 (86% of revenue)
+**Opportunity:** Launch functional range at ₹70-90 (monk fruit, adaptogens, 25g protein vs 20g)
+- Premium ingredients add ₹8/bar cost BUT enable ₹75 price (vs ₹50)
+- Margin: 44% vs current 40%
+**Impact:** +0.8 margin points if reaches 20% of mix in 24 months
+**Investment:** ₹5 Cr (NPD, marketing, inventory)
+**Payback:** 18 months
+**Risk:** Market willingness to pay ₹75 unproven. Test with limited batch first.
 
-MASS INCUMBENTS (RiteBite, Kellogg's):
-- Estimated gross margin: 25-28%
-- Lower margins from: Price competition, commodity ingredients
-- Benefit: Massive scale economies in procurement/manufacturing
+**LEVER #3: B2B Institutional (Bulk Packs)**
+**Current:** 0% institutional channel
+**Opportunity:** Corporate cafeterias, gym partnerships (24-48 count packs)
+- Sell at ₹40/bar in bulk BUT no channel costs (direct)
+- Margin: 46% despite lower price (eliminate middlemen)
+**Impact:** +0.6 margin points if reaches 15% of volume
+**Investment:** ₹2 Cr (sales team, B2B samples, contracting)
+**Payback:** 12 months
+**Risk:** Lumpy, cyclical revenue. Need 50+ accounts for stability.
 
-[COMPANY] ESTIMATED: 32-36%
-- Positioning: Between premium D2C and mid-tier omnichannel
-- Opportunity: Could move toward either end depending on strategy
-  → Premium D2C: Need stronger brand, higher prices, D2C focus
-  → Efficient omnichannel: Need scale, distribution, COGS reduction
+**LEVER #4: Ingredient Optimization**
+**Current:** Whey protein isolate (premium but costly - ₹800/kg)
+**Opportunity:** Blend whey + pea protein (70/30) for select SKUs
+- Maintains 20g protein, reduces cost ₹120/kg → ₹680/kg
+- Consumer acceptance test needed (taste impact minimal per R&D)
+**Impact:** +1.2 margin points if applied to 40% of volume
+**Investment:** ₹50L (R&D testing, new vendor setup)
+**Payback:** 3 months
+**Risk:** Customer perception ("pea protein inferior"). Position as "plant-protein blend" for vegan appeal.
 
-INSIGHT:
-"[COMPANY]'s margin structure (est. 32-36%) sits in strategic middle ground 
-but lacks advantages of either extreme. Premium brands (38-42%) justify margins 
-through brand strength and D2C economics. Scaled omnichannel players (30-34%) 
-compensate lower margins with volume. Being in between means:
-(a) Not premium enough to command D2C margins without prohibitive CAC
-(b) Not scaled enough to achieve procurement economies of omnichannel players
-
-ITC acquisition creates path to (b): manufacturing and procurement synergies 
-could drive 3-5 percentage point margin expansion even while expanding distribution 
-that typically compresses margins."
+**LEVER #5: Packaging Efficiency**
+**Current:** Individual bar wrappers costly (₹2.5/unit)
+**Opportunity:** Multi-pack wrappers for D2C/QC (6-pack in single wrap)
+- Reduce packaging cost ₹2.5 → ₹1.8/bar for 30% of volume
+**Impact:** +0.4 margin points
+**Investment:** ₹30L (new packaging line setup)
+**Payback:** 5 months
+**Risk:** None—already proven in market by competitors
 \`\`\`
 
-### **SECTION 4: MARGIN IMPROVEMENT ROADMAP**
-
-**Specific actions to improve margins:**
+### **SECTION 3: PRICING POWER ANALYSIS (200 words)**
 
 \`\`\`
-PATH FROM [X]% → [Y]% GROSS MARGIN (18-24 months)
+## WHERE CAN WE CHARGE MORE?
 
-INITIATIVE 1: Manufacturing Consolidation (ITC Plants)
-Current: Co-packer manufacturing at estimated ₹2.50-3 per bar
-Target: ITC facility manufacturing at ₹2-2.30 per bar
-Savings: ₹0.50-0.70 per bar = 1-1.4 percentage points on gross margin
+**Price Elasticity Test:**
 
-Calculation:
-- ₹0.60 savings per bar × 10M bars/year = ₹6 Cr annual savings
-- At ₹125 Cr revenue, this = 4.8 percentage point improvement
-- Timeline: 9-12 months (formulation transfer, pilot, scale)
-- Risk: Quality variation during transition, minimum volume commitments
-- Go/No-Go: Pilot 2 SKUs first, validate quality before full transfer
+Research question: "If [COMPANY] raised price from ₹50 to ₹55 (10%), what % of customers lost?"
 
-INITIATIVE 2: Procurement Leverage (ITC Scale)
-Current: Buying whey protein at ₹1,000/kg (small volume)
-Target: ITC corporate pricing at ₹820-850/kg (bulk discounts)
-Savings: ₹0.18-0.22 per bar on protein alone
+**Evidence from market:**
+- Competitor pricing: [List 3 competitors with current prices]
+- Price range: ₹[low] to ₹[high] in category
+- [COMPANY] position: [Where it sits—premium/mid/value]
 
-Similar opportunities:
-- Nuts: 8-12% savings
-- Packaging: 10-15% savings from ITC vendor relationships
-- Total ingredient basket: 8-10% reduction
+**Pricing Opportunities:**
 
-Impact: ₹0.80-1.20 per bar savings = 1.6-2.4 percentage points
-Timeline: 3-6 months (renegotiate contracts, qualify ITC vendors)
+**Option A: Across-the-board increase**
+- Current: ₹50
+- New: ₹53 (+6%)
+- Rationale: [Inflation, quality, ITC trust]
+- Margin impact: +3.6 points (if no volume loss)
+- Volume risk: [Estimate loss—likely 3-5% for 6% increase]
+- Net margin gain: +3.1 points
 
-INITIATIVE 3: Channel Mix Optimization
-Current: [X]% E-comm (₹10-14 contribution margin)
-Target: [Y]% D2C + [Z]% MT (₹25-30 and ₹15-18 respectively)
+**Option B: Premium tier pricing (new SKUs)**
+- Launch ₹70-90 functional range (as per Lever #2)
+- No cannibalization of ₹50 range
+- Pure margin accretion
 
-Economics:
-Shift 10% of volume from E-comm to D2C:
-- Current: 10% × ₹12 avg = ₹1.2 contribution margin per bar
-- Future: 10% × ₹27 avg = ₹2.7 contribution margin per bar
-- Gain: ₹1.5 per bar on 10% of volume = ₹1.5 Cr annually
-
-Shift 15% to MT (via ITC distribution):
-- Incremental ₹18 contribution margin (vs ₹12 e-comm)
-- Gain: ₹6 per bar × 15% volume = ₹9 Cr annually
-
-Total channel mix impact: 2-3 percentage points margin improvement
-Timeline: 12-18 months (requires brand building + ITC distribution ramp)
-
-INITIATIVE 4: SKU Rationalization (From Agent 2)
-Kill low-margin SKUs:
-- [List 2-3 SKUs] currently dragging blended margin down
-- Estimated margin on these: 18-22% vs portfolio avg 32-36%
-- Volume: 15% of sales
-- Impact: Removing 15% of volume at 22% margin, reallocating to 36% margin 
-  SKUs improves blended margin by 2.1 percentage points
-
-Freed working capital: ₹[X] Cr (inventory reduction)
-
-INITIATIVE 5: Promotional Discipline
-Current: [X]% of revenue in trade spend/discounts
-Target: [Y]% through:
-- Reduce Amazon "always on discount" from 20% to 12-15%
-- Shift marketing spend from acquisition to retention (lower CAC)
-- MT intro offers time-limited vs permanent
-
-Impact: 1-1.5 percentage points
-Risk: Volume decline if brand not strong enough to hold pricing
-
-TOTAL MARGIN IMPROVEMENT POTENTIAL:
-
-Optimistic Scenario (All initiatives execute well):
-- Manufacturing: +4.8 pts
-- Procurement: +2.4 pts
-- Channel mix: +3 pts
-- SKU rationalization: +2.1 pts
-- Promo discipline: +1.5 pts
-Total: +13.8 pts (32% → 45-46% gross margin)
-
-Realistic Scenario (Partial execution):
-- Manufacturing: +3 pts (pilot 50% of volume first year)
-- Procurement: +1.5 pts (realize 60% of potential savings)
-- Channel mix: +2 pts (modest shift)
-- SKU rationalization: +2 pts (kill underperformers)
-- Promo discipline: +0.8 pts (partial improvement)
-Total: +9.3 pts (32% → 41% gross margin in 24 months)
-
-Conservative Scenario (Challenges arise):
-- Manufacturing: +1.5 pts (quality issues, partial transition)
-- Procurement: +1 pt (vendor qualification delays)
-- Channel mix: +0.5 pts (D2C CAC too high, MT ramp slow)
-- SKU rationalization: +1.5 pts (execute but volume backfill incomplete)
-- Promo discipline: +0.3 pts (competitive pressure maintains discounting)
-Total: +4.8 pts (32% → 37% gross margin)
-
-RECOMMENDATION: Target realistic scenario (+9 pts) with clear phase gates
+**Recommendation:** [A/B/Both with timing]
 \`\`\`
 
-### **SECTION 5: SCALE ECONOMICS & BREAK-EVEN ANALYSIS**
-
-**How do margins improve with scale?**
+### **SECTION 4: MANUFACTURING DECISION ANALYSIS (150 words)**
 
 \`\`\`
-UNIT ECONOMICS AT DIFFERENT SCALES:
+## CO-PACKER VS ITC PLANT: SHOULD [COMPANY] MOVE PRODUCTION?
 
-CURRENT STATE (₹125 Cr revenue, est.):
-- Fixed costs: ₹[X] Cr (team, marketing, overhead)
-- Variable costs: ₹[Y] Cr (COGS, fulfillment, channel costs)
-- EBITDA: -₹[Z] Cr (-[X]% margin)
+**Current State: Co-Packer Model**
+- Flexibility: Can switch suppliers, multi-source, negotiate  
+- CapEx: Zero (no investment required from [COMPANY])
+- Scalability: Easy to add capacity (just order more)
+- Quality control: [Assess current quality - consistent or issues?]
+- Cost: ₹[X]/unit (search for co-packer economics if available)
+- Risk: Dependent on third-party capacity, priorities
 
-PATH TO BREAK-EVEN:
+**ITC Plant Option:**
+- Economies of scale: ITC plants optimized for high volume
+- Quality: Better process control, consistency, food safety systems
+- CapEx: ITC's problem (not [COMPANY]'s P&L burden)
+- Cost at scale: ₹[Y]/unit (likely 8-12% lower at >50M units/year based on ITC Foods precedent)
+- BUT: Loss of flexibility, dependent on ITC plant capacity/scheduling priority
 
-At ₹200 Cr revenue:
-- Gross margin improves to 36% (from procurement + manufacturing leverage)
-- Fixed cost absorption improves (spread over 1.6x volume)
-- EBITDA: -₹[X] Cr (-[Y]% margin) → approaching break-even
+**Break-Even Analysis:**
 
-At ₹300 Cr revenue:
-- Gross margin improves to 38-40% (full synergy realization)
-- Operating leverage kicks in (marketing as % of revenue declines)
-- EBITDA: +₹[X] Cr (+[Y]% margin) → profitable
+| Volume (million units/year) | Co-Packer Cost | ITC Plant Cost | Winner |
+|------------------------------|----------------|----------------|--------|
+| 10M (current estimate?) | ₹[X] | ₹[X + 5%] | Co-packer |
+| 30M | ₹[X] | ₹[X - 3%] | Neutral |
+| 50M+ | ₹[X] | ₹[X - 10%] | ITC plant |
 
-TIMELINE PROJECTION:
-- FY24: ₹125 Cr (estimated)
-- FY25: ₹180 Cr (45% growth, ITC distribution beginning)
-- FY26: ₹270 Cr (50% growth, distribution + margin improvements scaling)
-- FY27: ₹380 Cr (40% growth, profitable at scale)
+**Current Volume:** [Search for actual production volume or estimate from revenue]  
+**Threshold:** ITC plant becomes cost-effective at ~40-50M units/year
 
-KEY ASSUMPTION: Revenue growth 40-50% annually while margins expand
-RISK: If growth slows or margins don't improve, break-even pushes to FY28-29
-CONFIDENCE: Medium (depends on execution of margin initiatives + distribution ramp)
+**Quality Consideration:**
+- If co-packer has quality/consistency issues → Move to ITC regardless of volume
+- If no quality issues → Volume-driven decision only
+
+**RECOMMENDATION:**
+
+**If current volume <30M units/year:** STAY with co-packer
+- Rationale: Flexibility more valuable than cost savings at this scale
+- Cost difference minimal (<5%)
+- Switching costs not justified
+
+**If current volume >40M units/year OR quality issues exist:** MOVE to ITC plant
+- Rationale: Economies of scale justify move, quality improvement, strategic alignment
+- Timing: 12-18 month transition (maintain co-packer as backup initially)
+
+**If volume 30-40M units/year:** PILOT batch at ITC plant
+- Run 20% of volume through ITC plant (test quality, costs, logistics)
+- Compare actual costs vs co-packer for 6 months
+- Make data-driven decision
+
+**Key Assumption:** [COMPANY] operates with autonomy - manufacturing decision should be based on economics and quality, not "ITC wants all brands in ITC plants" (preserve flexibility)
 \`\`\`
 
-### **SECTION 6: STRATEGIC TRADE-OFFS**
-
-**Growth vs Profitability:**
-
 \`\`\`
-SCENARIO A: Maximize Growth (60% CAGR)
-- Aggressive MT expansion via ITC (invest in trade spend)
-- Marketing spend 18-20% of revenue
-- Margins: 30-32% (compressed by growth investments)
-- Break-even: FY28
-- Strategic rationale: Land grab, category leadership race
+## 24-MONTH MARGIN IMPROVEMENT PLAN
 
-SCENARIO B: Balanced Growth + Margin (40% CAGR)
-- Selective MT expansion (premium stores only)
-- Marketing spend 12-15% of revenue
-- Margins: 36-38% (procurement + manufacturing synergies)
-- Break-even: FY26
-- Strategic rationale: Sustainable profitability, prove model
+**Baseline (2026):**
+Gross Margin: [X]%
+Contribution Margin: [Y]%
+EBITDA Margin: [Z]%
 
-SCENARIO C: Margin Focus (25% CAGR)
-- D2C + selective MT only
-- Marketing spend 8-10% of revenue
-- Margins: 40-42% (maximum optimization)
-- Break-even: FY25
-- Strategic rationale: Capital efficiency, avoid burn
+**Phase 1 (Q2-Q3 2026): Quick Wins**
+- Implement Lever #[X] (payback <6 months)
+- Expected gain: +[Y] margin points
+- Investment: ₹[Z] Cr
 
-RECOMMENDATION: [Scenario B] because:
-1. 40% growth fast enough to capture category leadership window
-2. 36-38% margins sustainable and attractive for ITC portfolio
-3. FY26 break-even acceptable timeline for ₹250-300 Cr revenue base
+**Phase 2 (Q4 2026-Q2 2027): Medium-term**
+- Implement Lever #[X] (payback 6-12 months)
+- Expected gain: +[Y] margin points
+- Investment: ₹[Z] Cr
 
-Trade-off: Sacrifice some growth speed for margin quality, betting that 
-category leadership is determined more by distribution reach + brand strength 
-than pure revenue scale. Given ITC's distribution asset, this is defensible.
+**Phase 3 (Q3 2027-Q1 2028): Strategic Bets**
+- Implement Lever #[X] (payback 12-18 months)
+- Expected gain: +[Y] margin points
+- Investment: ₹[Z] Cr
+
+**Target State (Q1 2028):**
+Gross Margin: [X]% (+[Y] points from 2026)
+Contribution Margin: [X]% (+[Y] points)
+EBITDA Margin: [X]% (break-even to positive)
+
+**Total Investment:** ₹[X] Cr
+**Blended Payback:** [Y] months
+**Risk-Adjusted Margin Gain:** +[Z] points (assumes 80% success rate)
 \`\`\`
 
 ---
 
-## OUTPUT REQUIREMENTS
+## CRITICAL SUCCESS CRITERIA
 
-### **STRUCTURE:**
+Your output must answer:
+1. **What's the current margin by channel?** (Data-driven or estimated)
+2. **What are 5 NEXT margin levers?** (Beyond basic ITC synergies)
+3. **Where can [COMPANY] charge more?** (Pricing power analysis)
+4. **What's the 24-month margin roadmap?** (From [X]% to [Y]% with timeline)
 
-\`\`\`markdown
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-MARGIN IMPROVEMENT & UNIT ECONOMICS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Opening: Current margin reality + path to improvement in 2-3 sentences]
-
-CURRENT MARGIN STRUCTURE [150 words]
-MARGIN PRESSURE POINTS [150 words]
-COMPETITIVE BENCHMARKING [100 words]
-MARGIN IMPROVEMENT ROADMAP (5 Initiatives) [250 words]
-SCALE ECONOMICS & BREAK-EVEN [150 words]
-STRATEGIC TRADE-OFFS (Growth vs Margin) [100 words]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-KEY ASSUMPTIONS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-RECOMMENDATION: Target +9 percentage point margin improvement (32% → 41%) over 24 months
-Based on:
-- ITC manufacturing consolidation: +3 pts (₹0.60 per bar savings × volume)
-- ITC procurement leverage: +1.5 pts (8-10% ingredient cost reduction)
-- Channel mix shift (E-comm → D2C/MT): +2 pts (₹6-15 higher contribution margin)
-- SKU rationalization: +2 pts (eliminate 22% margin products)
-- Promotional discipline: +0.8 pts (reduce trade spend 4% → 3%)
-
-Assumptions: (a) ITC plants can accommodate volume, (b) Quality maintained during 
-transition, (c) MT expansion achieves velocity, (d) D2C CAC remains <₹1,500
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SOURCES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[List sources with dates]
-\`\`\`
-
-### **LENGTH & STYLE:**
-- **800-1,000 words total**
-- ROI math shown for each initiative
-- Scenarios with different assumptions
-- Trade-offs made explicit
-- 3-4 "oh I didn't know that" insights
-- Confidence levels stated
-
-### **CRITICAL SUCCESS CRITERIA:**
-
-Analysis succeeds if Hemant says:
-- ✓ "The manufacturing consolidation savings (₹6 Cr) are significant"
-- ✓ "Channel mix shift worth 2-3 points makes sense"
-- ✓ "The realistic scenario (+9 pts) is achievable"
-- ✓ "Growth vs margin trade-off is well-framed"
+**Red Flags:**
+- ❌ "Reduce COGS" (HOW specifically?)
+- ❌ "Leverage ITC" (already done for 3 years)
+- ❌ No channel-specific margin data (critical for decisions)
+- ✅ Specific levers with math (₹ impact, payback, risk)
 
 ---
 
-## FINAL CHECKLIST
+## OUTPUT CHECKLIST
 
-- [ ] Estimated current margin structure from proxies
-- [ ] Identified 5 margin improvement initiatives
-- [ ] Calculated ROI for each initiative
-- [ ] Showed optimistic/realistic/conservative scenarios
-- [ ] Projected scale economics at ₹200/300 Cr
-- [ ] Made growth-vs-margin trade-off recommendation
-- [ ] Noted assumptions and confidence levels
-- [ ] 800-1,000 words maintained
+- [ ] Current margin breakdown (gross, contribution, by channel)
+- [ ] 5 specific margin levers (not generic advice)
+- [ ] Each lever has: impact, investment, payback, risk
+- [ ] Pricing power analyzed (can we charge more? where?)
+- [ ] 24-month roadmap (quick wins → strategic bets)
+- [ ] Target margin state (2028) with path to get there
+- [ ] All figures sourced or clearly marked as estimates
+- [ ] Math adds up (margin impacts are cumulative and realistic)
 
 ---
 
-**Now execute this margin analysis for [COMPANY].**
+**Remember:** ITC already captured basic synergies (manufacturing, procurement). Your job is to find the NEXT ₹5-7 margin points to reach premium brand economics (45%+ gross margin) that fund 60% growth.
 `,
 
   growth: `# AGENT 5: GROWTH STRATEGY & CHANNEL ORCHESTRATION
+## POST-ACQUISITION MOMENTUM RECOVERY (3 YEARS IN)
 
 **Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
 
-**Role:** Growth Strategist - GTM Execution, Channel Strategy, Distribution Leverage, Geographic Expansion
+**Critical Context:** ITC acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
+
+---
+
+## WHAT ITC HAS ALREADY DONE (Distribution 2023-2026)
+
+**Distribution Expansion — COMPLETED:**
+- ✅ Modern Trade: 150 stores (2023) → 800-1,200 MT stores (2026)
+- ✅ General Trade: 0 → 5,000+ premium kirana outlets
+- ✅ E-commerce: Expanded from Amazon-only to 5+ platforms
+- ✅ D2C: Website scaled 3x with ITC digital team support
+
+**Growth Trajectory:**
+- 2020-2023: 60%+ YoY growth (pre-acquisition)
+- 2023-2024: 55% YoY (immediate post-acquisition, distribution boost)
+- 2024-2025: [search for actual data] (growth slowing despite more stores)
+- 2026 projection: 25-30% YoY (plateau risk)
+
+**The Problem:**
+- Distribution leverage tapped out (adding stores doesn't drive proportional growth)
+- Same-store sales plateauing (velocity not improving)
+- ITC's playbook was store expansion—that's done, what's NEXT?
 
 ---
 
 ## YOUR MISSION
 
-Chart the path from current revenue to 3x revenue while maintaining (or improving) unit economics. Specifically: Which channels? Which geographies? What sequence? At what velocity?
+Identify how to get back to **60%+ YoY growth** WITHOUT relying on adding more stores.
 
-Your analysis reveals **growth mechanics and distribution strategies** that others miss:
-- Which channels offer profitable growth vs vanity metrics
-- Where distribution breadth creates moats vs complexity
-- What geographic expansion sequence maximizes ROI
-- How growth velocity impacts organizational capacity and economics
+**Focus on:**
+1. **NEW channels** that didn't exist/matter in 2023 (Quick Commerce, institutional, export)
+2. **Velocity improvement** at existing stores (not quantity, QUALITY of distribution)
+3. **New occasions** (consumption frequency, not just reach)
+4. **Geographic expansion** OUTSIDE India (ITC hasn't explored this)
 
-**Every recommendation must show the math: investment required → revenue generated → payback period.**
+**DO NOT:**
+- ❌ Suggest "expand to more MT stores" (plateau evidence shows this won't work)
+- ❌ "Leverage ITC distribution" (done for 3 years, exhausted)
+- ❌ "Enter General Trade" (already done—5,000 stores)
 
----
-
-## CONTEXT & DATA SOURCES
-
-**Current Date:** February 2026
-
-**Use:** All prior agents + GTM intelligence + ITC distribution asset + user-provided data
-
-**Your Edge:** Channel-level economics analysis using competitive intelligence + ITC synergy modeling
-
-**Mandate:** Build actionable 12-24 month growth roadmap with quarterly milestones
+**DO:**
+- ✅ "Quick Commerce: 0% of [COMPANY] sales (2026) vs 18% of category. Shift 25% of portfolio focus to QC = ₹45 Cr incremental in 18 months"
+- ✅ "International: Export to UAE/Saudi (Indian expat market—280k fitness-conscious diaspora). ITC has food export licenses. ₹25 Cr opportunity in 24 months"
 
 ---
 
-## COMPREHENSIVE SOURCE STRATEGY
+## SEARCH STRATEGY
 
-### **TIER 1: CHANNEL PENETRATION & VELOCITY DATA**
-
-\`\`\`
-E-COMMERCE INTELLIGENCE:
-
-SEARCH QUERIES:
-"[Company] available on Blinkit"
-"[Company] BigBasket delivery"
-"[Company] Zepto quick commerce"
-"[Company] Amazon availability cities"
-"[Product] delivery time Mumbai Delhi Bangalore"
-
-WHAT TO EXTRACT:
-- Platform presence (which quick commerce platforms stock the brand)
-- Geographic availability (which cities have 10-min delivery)
-- SKU depth (do platforms carry full range or just hero SKUs)
-- Delivery speed (proxy for warehouse proximity and velocity)
-- Price consistency (same price across platforms = strong brand, varied = weak)
-
-MODERN TRADE INTELLIGENCE:
-
-"[Company] available DMart"
-"[Company] Reliance Smart stores"
-"[Company] More Megastore"
-"[Company] Nature's Basket"
-"[Company] Spencer's Retail"
-
-Physical store checks (if possible from news/social):
-- Shelf facings (number of slots = retailer confidence in velocity)
-- Shelf position (eye level = premium, bottom = struggling)
-- Promotional presence (end-cap displays, discounts)
-\`\`\`
-
-### **TIER 2: GEOGRAPHIC EXPANSION SIGNALS**
+### **PRIORITY 1: Growth Deceleration Evidence**
 
 \`\`\`
-CITY-LEVEL PENETRATION:
-
-SEARCH QUERIES:
-"[Company] launches in [City] 2024"
-"[Company] expands to [Region]"
-"[Company] availability [Tier-2 city]"
-"[Category] market size [City] 2024"
-
-DELIVERY FOOTPRINT:
-Check Amazon/Flipkart:
-- Enter pin codes for different cities
-- See delivery availability and timeline
-- Maps current distribution footprint
-
-COMPETITOR GEOGRAPHY:
-"Whole Truth cities available"
-"True Elements distribution network"
-"[Competitor] regional expansion"
-
-MARKET OPPORTUNITY BY CITY:
-"gym membership [City] 2024"
-"premium FMCG penetration [City]"
-"health consciousness [Tier-2 cities] India"
+1. "[COMPANY] growth rate 2024" OR "revenue growth 2025"
+2. "[COMPANY] same-store sales" OR "velocity per store"
+3. "[COMPANY] expansion 2024" OR "new stores"
+4. "ITC Foods growth 2024" (parent company momentum)
 \`\`\`
 
-### **TIER 3: DISTRIBUTION PARTNER INTELLIGENCE**
+### **PRIORITY 2: Quick Commerce Opportunity**
 
 \`\`\`
-ITC DISTRIBUTION ASSET (For Yogabar):
-
-SEARCH:
-"ITC distributor network size India"
-"ITC FMCG distribution reach"
-"ITC dealer partner count"
-"ITC retail outlets coverage"
-"ITC modern trade relationships"
-
-COMPETITIVE DISTRIBUTION:
-
-"Whole Truth retail partners 2024"
-"True Elements distributor network"
-"[Competitor] offline expansion strategy"
-"[Competitor] signs distribution deal"
-
-JOB POSTINGS (Distribution signals):
-"[Company] regional sales manager [City]"
-"[Company] distributor manager hiring"
-"[Company] modern trade key account"
-Signals: Where company is hiring sales = where expansion is happening
+5. "Quick Commerce India growth 2024" (Blinkit, Zepto, Swiggy Instamart)
+6. "Blinkit nutrition category 2024" OR "health snacks quick commerce"
+7. "Zepto dark store nutrition 2024"
+8. "[Category] quick commerce sales 2024" (category shift evidence)
+9. "Quick Commerce expansion India cities 2024" (geographic coverage)
 \`\`\`
 
-### **TIER 4: SALES CAPACITY & GTM TEAM**
+### **PRIORITY 3: Institutional/B2B Channels**
 
 \`\`\`
-ORGANIZATIONAL CAPACITY:
-
-LinkedIn/Job Boards:
-- Current team size (employees on LinkedIn)
-- Sales team roles (inside sales, field sales, KAM)
-- Recent hires (velocity of team expansion)
-- Open positions (where they're investing)
-
-SEARCH:
-"site:linkedin.com [Company] sales"
-"site:naukri.com [Company] business development"
-"[Company] careers GTM roles"
-
-INFER CAPACITY:
-- 1 Inside Sales Rep = ₹2-3 Cr revenue potential
-- 1 Field Sales Rep (MT) = ₹5-8 Cr revenue potential
-- Current team size → current capacity → headroom for growth
+10. "Corporate wellness programs India 2024"
+11. "Gym chains India expansion 2024" (fitness studios, crossfit boxes)
+12. "Corporate cafeteria nutrition 2024" OR "office snacks market"
+13. "Hotel chains India 2024" (mini-bar, F&B tie-ups)
 \`\`\`
 
-### **TIER 5: CHANNEL ECONOMICS & BENCHMARKS**
+### **PRIORITY 4: International Expansion**
 
 \`\`\`
-GTM COST STRUCTURES:
+14. "Indian food brands export 2024" (success stories, regulations)
+15. "India UAE export food 2024" OR "Indian diaspora food consumption"
+16. "Nutrition bars Middle East market 2024"
+17. "Indian brands international expansion 2024"
+\`\`\`
 
-SEARCH:
-"D2C customer acquisition cost food India 2024"
-"inside sales productivity B2B India"
-"modern trade sales team costs India"
-"field force productivity FMCG India"
-"distributor margin structure India food"
+### **PRIORITY 5: Velocity Drivers**
 
-BENCHMARKS TO FIND:
-- CAC by channel (D2C: ₹800-1,800, MT: ₹0 after initial sampling)
-- Sales team costs (₹8-15 lakh/year per rep)
-- Distributor margins (12-15% for GT, varies by region)
-- Modern trade terms (payment cycles, returns, promotional support)
+\`\`\`
+18. "Nutrition bars promotional strategies 2024"
+19. "In-store activation nutrition India 2024"
+20. "[COMPANY] sampling" OR "trial programs"
 \`\`\`
 
 ---
 
-## ANALYSIS FRAMEWORK
+## OUTPUT STRUCTURE (800-1,000 words, 2 pages max)
 
-### **SECTION 1: CURRENT GTM STATE & CAPACITY**
-
-**Where does revenue come from today?**
+### **SECTION 1: GROWTH DIAGNOSTIC (200 words)**
 
 \`\`\`
-REVENUE BREAKDOWN (FY24 Estimated):
+## WHY GROWTH IS SLOWING
 
-By Channel:
-- D2C (own website): [X]% = ₹[Y] Cr
-- E-commerce (Amazon, Flipkart, etc.): [X]% = ₹[Y] Cr
-- Quick Commerce (Blinkit, Zepto, BigBasket Now): [X]% = ₹[Y] Cr
-- Modern Trade (organized retail): [X]% = ₹[Y] Cr
-- General Trade (kirana, distributors): [X]% = ₹[Y] Cr
+**Revenue Trend:**
+FY24: ₹[X] Cr (+[Y]% YoY)
+FY25: ₹[X] Cr (+[Y]% YoY) ← Deceleration
+FY26E: ₹[X] Cr (+[Y]% YoY) ← Further slowdown
 
-By Geography:
-- Mumbai: [X]%
-- Delhi-NCR: [Y]%
-- Bangalore: [Z]%
-- Other Metros: [A]%
-- Tier-2 Cities: [B]%
+**Distribution Saturation:**
+- Stores: Grew from 150 to 2,500 (16x) BUT
+- Revenue: Grew only 2.8x in same period
+- Implied: Revenue per store DROPPED (oversaturation signal)
 
-GROWTH RATE BY CHANNEL (Estimated YoY):
-- D2C: [X]% growth (declining from customer acquisition saturation)
-- E-commerce: [Y]% growth (mature, competitive)
-- Quick Commerce: [Z]% growth (fastest, but small base)
-- Modern Trade: [A]% growth (early stage, accelerating)
-- General Trade: [B]% growth (nascent or non-existent)
+**Channel Mix Evolution:**
+- 2023: 45% D2C, 35% E-comm, 15% MT, 5% Other
+- 2026: [Current mix—likely shifted to MT-heavy]
+- Problem: [Lower-margin MT cannibalized higher-margin D2C]
 
-CURRENT GTM TEAM (from LinkedIn):
-- Sales team size: ~[X] people
-- Inside sales: [Y] reps
-- Field sales (MT): [Z] reps
-- Key Account Managers: [A] people
+**Velocity Evidence:**
+[If found: "DMart Yogabar sales down 12% YoY per store despite 40% more SKU facings"]
+[If not found: "Store velocity data unavailable but plateau suggests velocity issue"]
 
-CAPACITY ANALYSIS:
-Current team can handle: ₹[X] Cr revenue
-Current revenue: ₹[Y] Cr
-Utilization: [Z]% (headroom or constrained?)
+**Root Cause:**
+ITC's distribution playbook (add more touchpoints) has hit diminishing returns. Need DIFFERENT growth levers, not MORE of the same.
 
-INSIGHT:
-"[COMPANY]'s revenue concentration in D2C + E-comm (combined [X]%) creates 
-profitable base but limited growth ceiling. D2C CAC rising 30%+ YoY suggests 
-channel saturation at ₹[X] Cr revenue run-rate. Quick commerce (Blinkit, Zepto) 
-growing fastest (+[Y]% YoY) but represents only [Z]% of revenue, indicating 
-distribution gaps. Modern Trade at [A]% of revenue is under-leveraged given 
-category's offline skew (competitors derive 40-50% from MT).
-
-Current sales team ([X] people) operating at [Y]% capacity suggests [headroom 
-for growth / need for expansion]. Each MT field rep can handle ₹5-8 Cr revenue; 
-with [Z] reps, theoretical capacity is ₹[A] Cr vs current MT revenue of ₹[B] Cr."
+**Sources:** [List sources]
 \`\`\`
 
-### **SECTION 2: CHANNEL-SPECIFIC GROWTH STRATEGIES**
-
-**Channel-by-channel playbook:**
+### **SECTION 2: QUICK COMMERCE CHANNEL STRATEGY (300 words)**
 
 \`\`\`
-CHANNEL 1: D2C (Own Website)
+## LEVER #1: QUICK COMMERCE EXPANSION
 
-CURRENT STATE:
-- Revenue: ₹[X] Cr ([Y]% of total)
-- CAC: ₹[Z] (estimated)
-- LTV: ₹[A] (estimated from repeat rates)
-- LTV:CAC ratio: [B]:1
+**Market Opportunity:**
+- QC GMV: ₹[X] Cr (2024), growing [Y]% YoY
+- Nutrition category: [X]% of QC sales, growing [Y]% YoY
+- [COMPANY] presence: [Current—likely minimal/zero]
+- Gap: Category at 18% QC penetration, [COMPANY] at [X]%
 
-GROWTH POTENTIAL:
-- Saturating: CAC rising, diminishing returns on ad spend
-- Path to 2x: Requires ₹[investment] in marketing with [X]% CAC inflation
-- Recommended: Maintain, don't over-invest. Target [growth %] YoY.
+**Why QC Works NOW (Didn't in 2023):**
+- Critical mass reached: Blinkit in 300+ cities, Zepto in 10 (was 50 cities in 2023)
+- Consumer behavior: QC for premium impulse normalized (was experimental in 2023)
+- Economics: Dark stores profitable (wasn't in 2023), willing to stock premium SKUs
 
-INITIATIVES:
-1. Retention focus (increase repeat from [X]% to [Y]%)
-   - Subscription model for hero SKUs
-   - Loyalty program (10% of revenue from repeat by FY26)
-   - Target: 2x LTV → improves LTV:CAC from [current] to [target]
+**Strategy:**
 
-2. Conversion optimization (increase CVR from [X]% to [Y]%)
-   - Product page optimization
-   - Checkout friction reduction
-   - Target: +20% revenue with same traffic = ₹[X] Cr incremental
+**Phase 1 (Months 1-6): Pilot**
+- Launch on Blinkit & Zepto (top 10 metros)
+- SKUs: Top 3 hero products only (reduce complexity)
+- Pricing: ₹48 (vs ₹50 MT) due to no retailer markup
+- Target: 80-120 units/SKU/dark store/month (viability threshold)
+- Investment: ₹2 Cr (platform fees, influencer seeding, dark store placement)
 
-Investment: ₹[X] Cr
-Return: ₹[Y] Cr incremental revenue over 12 months
-Payback: [Z] months
+**Phase 2 (Months 7-18): Scale**
+- Expand to 50 cities if Phase 1 hits targets
+- Add 2-3 more SKUs (including functional premium)
+- Target: ₹45 Cr annualized run-rate (25% of total revenue)
+- Investment: ₹8 Cr (expanded coverage, QC-specific marketing)
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**Economics:**
+- Margin: 48% (vs 38% MT, 54% D2C, 32% E-comm)
+- Customer: Younger (25-35), higher income, impulse buyer
+- Frequency: 2.3x higher order frequency than MT (weekly vs bi-weekly)
 
-CHANNEL 2: E-Commerce Marketplaces
+**Risk:** QC velocity unproven—if <80 units/month, delisting risk. Mitigate with heavy sampling in Month 1-2.
 
-CURRENT STATE:
-- Revenue: ₹[X] Cr ([Y]% of total)
-- Platforms: Amazon (est. [Z]%), Flipkart ([A]%)
-- Growth: [B]% YoY (maturing)
-
-GROWTH POTENTIAL:
-- Category growing 18-22% but competitive intensity high
-- Share of voice limited by ad budget
-- Path to 1.5x requires defending share + expanding assortment
-
-INITIATIVES:
-1. Platform optimization
-   - A+ Content, Enhanced Brand Content (Amazon)
-   - Sponsored Product ads (increase share of voice)
-   - Lightning Deals for trial/awareness
-   - Target: Maintain #1-3 ranking in category
-
-2. Geographic expansion (currently ship to [X] cities)
-   - Enable delivery to Tier-2 cities (100+ additional cities)
-   - Investment: ₹[Y] lakh (inventory positioning)
-   - Return: ₹[Z] Cr incremental (Tier-2 represents 15-20% of category)
-
-Investment: ₹[X] Cr
-Return: ₹[Y] Cr incremental
-Payback: [Z] months
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-CHANNEL 3: Quick Commerce (Blinkit, Zepto, BigBasket Now)
-
-CURRENT STATE:
-- Revenue: ₹[X] Cr ([Y]% of total, small but growing fast)
-- Platforms: Blinkit ([Z] cities), Zepto ([A] cities)
-- Growth: [B]% YoY (fastest-growing channel)
-
-GROWTH POTENTIAL: HIGH
-- Quick commerce penetration in food: 3% → projected 8-10% by 2026
-- Impulse purchase category (protein bar bought when need arises)
-- Premium pricing sustainable (convenience premium)
-
-INITIATIVES:
-1. Platform expansion
-   - Currently: [X] cities on Blinkit/Zepto
-   - Target: 25-30 cities by Q4 FY25
-   - Investment: ₹[Y] Cr (inventory, dark store stocking)
-
-2. SKU optimization
-   - Lead with hero SKUs (single bars, not multi-packs)
-   - Price point: ₹50-60 (convenience premium vs bulk e-comm)
-
-3. Visibility & placement
-   - Category leadership (top 3 results for "protein bar")
-   - Promotional slots during peak hours (6-9 PM)
-
-Investment: ₹[X] Cr
-Return: 3x current QC revenue = ₹[Y] Cr incremental
-Payback: [Z] months
-Growth Rate: 80-100% YoY
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-CHANNEL 4: Modern Trade ⭐ (HIGHEST OPPORTUNITY WITH ITC)
-
-CURRENT STATE:
-- Revenue: ₹[X] Cr ([Y]% of total, under-leveraged)
-- Stores: ~[Z] doors (Reliance, DMart, More, Spencer's, Nature's Basket)
-- Average revenue per store: ₹[A] lakh/month
-
-GROWTH POTENTIAL: VERY HIGH
-- ITC relationships with all major MT chains
-- Category requires physical trial (taste matters)
-- Competitors derive 40-50% revenue from MT vs [COMPANY]'s [X]%
-
-ITC SYNERGY OPPORTUNITY:
-- ITC distribution team can open 500-800 premium MT stores in 12 months
-- No incremental field sales cost (leverage existing relationships)
-- Trade terms better than startup can negotiate
-
-INITIATIVES:
-1. Premium MT Expansion (Tier-1 Cities)
-   - Target: 500 stores (Reliance Smart, DMart, More, Spencer's, Nature's Basket)
-   - Focus: Top 8 metros (Mumbai, Delhi, Bangalore, Hyderabad, Chennai, Pune, Kolkata, Ahmedabad)
-   - SKU: 6-8 hero SKUs (focused assortment)
-   
-   Economics per store:
-   - Average monthly sale: ₹40,000-60,000 (80-120 bars/month)
-   - Annual revenue: ₹4.8-7.2 lakh per store
-   - 500 stores × ₹6 lakh = ₹30 Cr incremental revenue
-
-2. Selective General Trade (Tier-1 + Tier-2)
-   - Target: 2,000 premium kirana/health stores
-   - Via ITC distributor network (no field sales team needed)
-   - SKU: 3-4 hero SKUs only (avoid complexity)
-   
-   Economics:
-   - Average sale: ₹15,000-20,000/month per store
-   - 2,000 stores × ₹18,000 × 12 = ₹43 Cr incremental
-
-Total MT+GT Incremental: ₹73 Cr over 18-24 months
-
-Investment Required:
-- Inventory: ₹8 Cr (2 months stock for 2,500 stores)
-- Sampling/Demo: ₹3 Cr (trial generation)
-- Trade margins: Built into pricing
-- Field support: ₹0 (ITC team handles)
-Total: ₹11 Cr
-
-Return: ₹73 Cr revenue at 35% gross margin = ₹25.5 Cr gross profit
-Payback: <12 months
-ROI: 2.3x over 24 months
-
-CRITICAL SUCCESS FACTORS:
-- Velocity (need 80-120 bars/store/month to hold shelf space)
-- Sampling (20-25% trial rate in MT → purchase conversion)
-- Pricing discipline (maintain ₹50 MRP, no deep discounting)
-
-RISK MITIGATION:
-- Pilot 100 stores first (Q1 FY25)
-- Validate velocity >80 bars/month
-- Scale to 500 only if pilot successful
+**Payback:** 11 months (breakeven on investment)
 \`\`\`
 
-### **SECTION 3: GEOGRAPHIC EXPANSION ROADMAP**
-
-**Which cities, in what sequence?**
+### **SECTION 3: INSTITUTIONAL B2B CHANNEL (200 words)**
 
 \`\`\`
-CURRENT FOOTPRINT:
-- Strong: Mumbai, Delhi-NCR, Bangalore (estimated [X]% of revenue)
-- Moderate: Hyderabad, Pune, Chennai ([Y]%)
-- Weak: Tier-2 cities ([Z]%)
+## LEVER #2: CORPORATE & GYM PARTNERSHIPS
 
-EXPANSION SEQUENCING (Next 18 Months):
+**Opportunity:**
 
-WAVE 1 (Q1-Q2 FY25): Deepen Metros
-Cities: Mumbai, Delhi, Bangalore, Hyderabad, Pune, Chennai
-Strategy: MT expansion (100-150 stores per city)
-Rationale: Highest density of target customers (gym-goers, health-conscious)
-Investment: ₹3 Cr
-Revenue: ₹18 Cr incremental
+**Corporate Wellness:**
+- TAM: 15,000 companies with 500+ employees in India
+- Addressable: 5M white-collar employees with wellness budgets
+- Model: Monthly subscription boxes (₹300/employee/month, 10 bars)
+- Revenue potential: ₹1,500 Cr if 20% penetration (long-term)
+- Near-term: ₹25 Cr in 24 months (300 corporate accounts @ ₹8L/year each)
 
-WAVE 2 (Q3-Q4 FY25): Tier-2 Cities (Top 10)
-Cities: Ahmedabad, Jaipur, Lucknow, Chandigarh, Kochi, Indore, Bhopal, Coimbatore, Nagpur, Visakhapatnam
-Strategy: Selective MT (30-50 stores per city) + E-comm
-Rationale: Emerging health consciousness, lower competition
-Investment: ₹4 Cr
-Revenue: ₹22 Cr incremental
+**Gym Partnerships:**
+- TAM: 8,000+ fitness studios, crossfit boxes, yoga centers
+- Model: Bulk sales (₹40/bar in 48-count packs) + sampling programs
+- Revenue potential: ₹35 Cr in 24 months (1,000 gyms @ ₹3.5L/year each)
 
-WAVE 3 (FY26): Tier-2 Expansion (Next 15-20 cities)
-Cities: 15-20 additional Tier-2/3 markets
-Strategy: E-comm + selective GT (via ITC distributors)
-Rationale: Low-cost expansion, test markets for GT model
-Investment: ₹3 Cr
-Revenue: ₹15 Cr incremental
+**Strategy:**
+- ITC Hotels has 2,500 corporate clients → Cross-sell nutrition to HR teams
+- Bulk pricing (₹40/bar) BUT no channel costs = 46% margin (better than MT)
+- B2B sales team: 8 people focused on corporates + gyms
 
-GEOGRAPHIC PRIORITIZATION CRITERIA:
-1. Gym penetration (proxy for protein bar consumers)
-2. E-commerce adoption (delivery infrastructure exists)
-3. Premium FMCG penetration (willingness to pay ₹50)
-4. ITC distribution strength (leverageable asset)
-5. Competitive intensity (avoid over-served markets if low ROI)
-
-INSIGHT:
-"Geographic expansion should follow 'deepen before broaden' principle. Mumbai/
-Delhi/Bangalore currently represent [X]% of revenue but only [Y]% of potential 
-based on gym membership data (metros have 60% of India's 8-10M gym-goers). 
-Deepening metro MT penetration from current ~[Z] stores to 500 stores could 
-add ₹30 Cr before risking capital in Tier-2 markets where category awareness 
-and willingness-to-pay are unproven."
+**Investment:** ₹4 Cr (sales team, samples, contracting, CRM)
+**Payback:** 16 months
 \`\`\`
 
-### **SECTION 4: SALES TEAM & ORGANIZATIONAL CAPACITY**
-
-**What team is needed to execute?**
+### **SECTION 4: INTERNATIONAL EXPANSION (200 words)**
 
 \`\`\`
-CURRENT TEAM (Estimated):
-- Total sales: [X] people
-- Inside sales (D2C/E-comm support): [Y]
-- Field sales (MT): [Z]
-- Distributors: [A] (if any)
+## LEVER #3: MIDDLE EAST EXPORT
 
-REQUIRED TEAM (To Achieve Growth Plan):
+**Why Now:**
+- UAE/Saudi have 280k Indian expats (fitness-conscious, premium spending power)
+- Indian food export regulations eased (2024 policy changes)
+- ITC has food export licenses (infrastructure ready)
+- Competitors haven't moved yet (first-mover window)
 
-YEAR 1 (FY25):
-- Inside sales: +[X] people (D2C retention, e-comm optimization)
-- MT field sales: +[Y] people (6-8 regions)
-  - Each rep handles 80-100 stores
-  - 500 stores target = 6-7 reps needed
-- KAMs: +[Z] (1 per major MT chain: DMart, Reliance, More, Spencer's)
+**Market Entry Strategy:**
 
-Hiring cost: ₹[A] Cr (salaries + training)
-Productivity ramp: 3-6 months to full productivity
+**Target Markets:**
+- UAE (Dubai, Abu Dhabi): 180k Indian diaspora
+- Saudi Arabia (Riyadh, Jeddah): 100k Indian diaspora
+- Qatar, Kuwait: 50k combined
 
-YEAR 2 (FY26):
-- GT sales support: +[X] people (distributor management)
-- Regional managers: +[Y] people (Tier-2 expansion)
-- E-comm specialists: +[Z] people (platform optimization)
+**Channel:**
+- Modern gourmet stores (Spinney's, Carrefour gourmet)
+- Indian specialty stores (Lulu, Choithrams)
+- Fitness chains (GymNation, Fitness First)
 
-TOTAL HEADCOUNT: [Current] → [FY25] → [FY26]
+**Pricing:**
+- ₹75 equivalent (premium positioning vs ₹50 in India)
+- Margin: 42% despite higher logistics (premium pricing offsets)
 
-CRITICAL: ITC SYNERGY REDUCES TEAM NEEDS
-- ITC field force can support initial MT rollout
-- Reduce incremental hiring need by 60-70%
-- Deploy ITC team for distribution, Yogabar team for brand/marketing
+**Phase 1 (Months 1-12): UAE Test**
+- 50 stores in Dubai/Abu Dhabi
+- Target: ₹8 Cr revenue Year 1
+- Investment: ₹3 Cr (logistics, regulatory, trade partnerships)
+
+**Phase 2 (Months 13-24): Regional Scale**
+- Saudi Arabia + Qatar entry
+- Target: ₹25 Cr combined by Year 2
+
+**ITC Advantage:** Export infrastructure, regulatory clearances, existing B2B relationships
+
+**Payback:** 18 months
 \`\`\`
 
-### **SECTION 5: 24-MONTH GROWTH ROADMAP**
-
-**Quarterly milestones and metrics:**
+### **SECTION 5: VELOCITY IMPROVEMENT (EXISTING STORES) (100 words)**
 
 \`\`\`
-FY25 ROADMAP:
+## LEVER #4: SAME-STORE SALES GROWTH
 
-Q1 (Apr-Jun 2025):
-- D2C: Launch subscription (target 500 subscribers)
-- E-comm: Expand to 50 additional Tier-2 cities
-- MT: Pilot 100 stores in Mumbai/Delhi/Bangalore
-- QC: Add 5 cities on Blinkit/Zepto
-Revenue Target: ₹38 Cr (vs ₹31 Cr in Q4 FY24)
+**Current Problem:** 800-1,200 MT stores but velocity declining
 
-Q2 (Jul-Sep 2025):
-- D2C: Conversion optimization (CVR 2.8% → 3.2%)
-- MT: Scale to 300 stores if pilot successful
-- QC: Add 10 more cities
-Revenue Target: ₹42 Cr
+**Interventions:**
 
-Q3 (Oct-Dec 2025):
-- D2C: Holiday campaigns, gift packs
-- MT: Reach 500 stores across 8 metros
-- GT: Pilot 200 premium kirana stores (ITC distributors)
-- Tier-2: Launch in 10 cities
-Revenue Target: ₹48 Cr
+**A. In-store activation:**
+- Sampling at 500 top stores (₹2 Cr investment)
+- Visibility (endcap placements, shelf talkers)
+- Target: +8% velocity in activated stores
 
-Q4 (Jan-Mar 2026):
-- All channels: Sustain velocity
-- MT: Optimize mix, remove low-velocity stores
-- GT: Scale to 1,000 stores if pilot successful
-Revenue Target: ₹52 Cr
+**B. Retailer incentives:**
+- Performance bonuses for stores hitting >100 bars/month
+- Reduces passive distribution (SKU sits, doesn't sell)
 
-FY25 TOTAL: ₹180 Cr (vs ₹125 Cr FY24) = 44% growth
+**C. SKU rationalization:**
+- Remove slow SKUs (tail products) from 70% of stores
+- Focus on top 3 hero products (improves velocity, reduces complexity)
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-FY26 ROADMAP:
-
-Q1-Q2: MT consolidation, GT expansion to 2,000 stores, Tier-2 scaling
-Q3-Q4: Full omnichannel presence, margin optimization
-
-FY26 TOTAL: ₹270 Cr (50% growth)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-KEY METRICS TO TRACK:
-
-Channel Health:
-- D2C: CAC, LTV, repeat rate, subscription adoption
-- E-comm: Share of voice, bestseller rank, review velocity
-- QC: Cities covered, revenue per city
-- MT: Stores count, revenue per store, velocity (bars/store/month)
-- GT: Distributor count, revenue per distributor
-
-Geographic Health:
-- Revenue per city
-- Store count per city
-- Market share estimates (where available)
-
-Organizational:
-- Team headcount vs plan
-- Sales productivity (revenue per rep)
-- Hiring pipeline (open positions filled)
-\`\`\`
-
-### **SECTION 6: INVESTMENT & RETURNS**
-
-**Total investment required and expected returns:**
-
-\`\`\`
-24-MONTH INVESTMENT BREAKDOWN:
-
-YEAR 1 (FY25):
-- Inventory (MT/GT expansion): ₹8 Cr
-- Marketing (D2C, sampling, brand): ₹12 Cr
-- Team expansion: ₹4 Cr
-- Technology/Operations: ₹2 Cr
-TOTAL FY25: ₹26 Cr investment
-
-YEAR 2 (FY26):
-- Inventory: ₹5 Cr (incremental)
-- Marketing: ₹15 Cr
-- Team: ₹3 Cr (incremental)
-- Operations: ₹2 Cr
-TOTAL FY26: ₹25 Cr investment
-
-CUMULATIVE INVESTMENT: ₹51 Cr over 24 months
-
-RETURNS:
-
-FY25: ₹180 Cr revenue
-- Gross margin: 34% (improving from 32% via Agent 4 initiatives)
-- Gross profit: ₹61 Cr
-- Investment: ₹26 Cr
-- Contribution: ₹35 Cr (before fixed costs)
-
-FY26: ₹270 Cr revenue
-- Gross margin: 37% (synergies scaling)
-- Gross profit: ₹100 Cr
-- Investment: ₹25 Cr
-- Contribution: ₹75 Cr
-
-CUMULATIVE RETURNS:
-- Revenue growth: ₹125 Cr → ₹270 Cr (2.16x in 24 months)
-- Gross profit: ₹40 Cr (FY24) → ₹100 Cr (FY26) = 2.5x
-- Investment: ₹51 Cr
-- Payback: ~18-20 months (approaching break-even by FY26 exit)
-
-ROI: Strong, but requires disciplined execution + ITC synergy realization
+**Combined Impact:** +₹18 Cr from same stores (without adding new ones)
+**Investment:** ₹4 Cr
+**Payback:** 8 months
 \`\`\`
 
 ---
 
-## OUTPUT REQUIREMENTS
+## GROWTH MATH & ROADMAP
 
-### **STRUCTURE:**
-
-\`\`\`markdown
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-GROWTH STRATEGY & CHANNEL ORCHESTRATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Opening: Path from ₹X Cr to ₹Y Cr in 24 months]
-
-CURRENT GTM STATE [150 words]
-CHANNEL-SPECIFIC STRATEGIES [250 words - focus on MT opportunity]
-GEOGRAPHIC EXPANSION [150 words]
-24-MONTH ROADMAP [150 words]
-INVESTMENT & RETURNS [100 words]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-KEY ASSUMPTIONS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-RECOMMENDATION: Achieve ₹270 Cr revenue by FY26 (2.16x growth) via MT expansion
-Based on:
-- ITC distribution opens 500 MT stores at ₹6 lakh/store/year = ₹30 Cr
-- GT expansion via ITC network: 2,000 stores at ₹18K/month = ₹43 Cr
-- D2C/E-comm steady growth at 25-30% = ₹40 Cr incremental
-- Quick commerce 80% growth = ₹15 Cr incremental
-Total: ₹145 Cr incremental (₹125 → ₹270 Cr)
-
-Assumes: (a) MT velocity achieves 80-120 bars/store/month, (b) ITC distribution 
-executes, (c) Gross margin improves to 37% per Agent 4, (d) No major competitive disruption
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SOURCES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Sources]
 \`\`\`
+## 24-MONTH GROWTH PLAN TO 60%+ YoY
 
-### **LENGTH & STYLE:**
-- **800-1,000 words**
-- Math shown for each initiative
-- Quarterly milestones clear
-- Investment → Return → Payback for each channel
-- ITC synergy quantified
-- 3-4 insights
+**Baseline (FY26):**
+Revenue: ₹[X] Cr
+Growth: 30% YoY (slowing)
+
+**New Growth Drivers (FY27-28):**
+
+| Lever | FY27 Impact | FY28 Impact | Total 24M |
+|-------|-------------|-------------|-----------|
+| Quick Commerce | ₹25 Cr | ₹45 Cr | ₹70 Cr |
+| Corporate B2B | ₹15 Cr | ₹25 Cr | ₹40 Cr |
+| International | ₹8 Cr | ₹25 Cr | ₹33 Cr |
+| Same-Store Growth | ₹18 Cr | ₹22 Cr | ₹40 Cr |
+| **Total Incremental** | **₹66 Cr** | **₹117 Cr** | **₹183 Cr** |
+
+**Baseline Growth (30% on existing):** ₹[X] Cr
+
+**Total FY28 Revenue:** ₹[X + 183] Cr
+**Blended Growth Rate:** [Calculate—should be 55-65% YoY]
+
+**Total Investment:** ₹21 Cr
+**Blended Payback:** 13 months
+\`\`\`
 
 ---
 
-**Now execute this growth analysis for [COMPANY].**
+## CRITICAL SUCCESS CRITERIA
+
+Your output must answer:
+1. **Why is growth slowing?** (Evidence of distribution saturation)
+2. **What are 4 NEXT growth levers?** (Not "add more stores")
+3. **What's the Quick Commerce strategy?** (Biggest new opportunity)
+4. **How do we get back to 60%+ growth?** (Math with revenue impact)
+
+**Red Flags:**
+- ❌ "Expand to more MT stores" (plateau evidence)
+- ❌ "Enter Modern Trade" (already done)
+- ❌ No QC strategy (ignoring 18% of category)
+- ✅ Math-driven (₹ Cr impact, not just ideas)
+
+---
+
+## OUTPUT CHECKLIST
+
+- [ ] Growth diagnostic (why slowing? data-driven)
+- [ ] Quick Commerce strategy (phases, economics, targets)
+- [ ] Institutional B2B strategy (corporate + gyms)
+- [ ] International expansion plan (ME markets)
+- [ ] Same-store velocity improvement
+- [ ] 24-month growth math (baseline + incremental = 60%+ target)
+- [ ] Investment and payback for each lever
+- [ ] All figures sourced or clearly marked as estimates
+
+---
+
+**Remember:** ITC already played the distribution card (800-1,200 MT stores). Your job is to find the NEXT set of growth drivers that don't rely on adding more of the same. Think channels (QC, B2B, export), not just coverage.
 `,
 
   competitive: `# AGENT 6: COMPETITIVE BATTLE PLAN
+## POST-ACQUISITION COMPETITIVE RESET (3 YEARS IN)
 
 **Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
 
-**Role:** Competitive Strategist - Head-to-Head Analysis, Attack/Defend Positioning, Win/Loss Scenarios
+**Critical Context:** ITC acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
+
+---
+
+## WHAT CHANGED COMPETITIVELY (2023-2026)
+
+**Pre-ITC (2020-2023):**
+- [COMPANY] was scrappy D2C insurgent competing on "clean label" + digital marketing
+- Distribution was weakness (150 stores vs competitors' 500+)
+
+**Post-ITC (2023-2026):**
+- [COMPANY] now has BEST distribution (800-1,200 MT stores)
+- BUT competitors caught up on other fronts:
+  - Whole Truth raised ₹150 Cr, scaling MT (2024-2025)
+  - True Elements entered premium tier (2024)
+  - RiteBite launched functional range (2025)
+  - International brands entering (Kind Bars, Clif spotted in Mumbai, 2025)
+
+**Competitive Landscape Reset:**
+- [COMPANY]'s distribution advantage (2024) is temporary—others closing gap fast
+- Original brand differentiation ("clean label startup") diluted by ITC association
+- Price competition intensifying (8 brands at ₹45-55 range now vs 3 in 2023)
+- Need NEW basis of competition (distribution advantage won't last)
 
 ---
 
 ## YOUR MISSION
 
-Map the competitive battlefield and determine where to attack, where to defend, and where to avoid. Specifically: Which competitors matter? What are their vulnerabilities? How do we win against each?
+Map the **CURRENT** competitive battlefield (2026) and recommend attack/defend strategies.
 
-Your analysis reveals **competitive dynamics and strategic moves** that others miss:
-- Which competitors to attack head-on vs avoid
-- Where competitive moats are real vs perceived
-- What moves competitors will likely make (and our counter-moves)
-- How competitive landscape evolves with our growth
+**Focus on:**
+1. **Who's the real threat NOW?** (Not in 2023—landscape shifted)
+2. **What are they doing that's working?** (Specific strategies, not generic)
+3. **Where is [COMPANY] vulnerable?** (Honest assessment)
+4. **How to re-establish competitive moat?** (Distribution advantage is eroding)
 
-**Every recommendation must be game-theory based: if we do X, they'll do Y, so we should Z.**
+**DO NOT:**
+- ❌ Generic "monitor competitors" advice
+- ❌ List competitors without analysis of their moves
+- ❌ Assume 2023 competitive dynamics still apply
 
----
-
-## CONTEXT & DATA SOURCES
-
-**Current Date:** February 2026
-
-**Use:** All prior agents + competitive intelligence + game theory analysis
-
-**Your Edge:** Multi-move competitive modeling using actual competitor actions + strategic logic
-
-**Mandate:** Identify 2-3 competitive focus areas with specific attack/defend strategies
+**DO:**
+- ✅ "Whole Truth now #2 (was #5 in 2023). How? Functional range at ₹70-90 captured premium segment [COMPANY] ignored. Revenue ₹140 Cr (FY25) vs ₹85 Cr (FY23). Threat: High"
+- ✅ "Attack vector: Launch functional range to reclaim premium position BEFORE Whole Truth becomes synonymous with 'functional bars' in India"
 
 ---
 
-## COMPREHENSIVE SOURCE STRATEGY
+## SEARCH STRATEGY
 
-### **TIER 1: COMPETITIVE MOVES TRACKING**
-
-\`\`\`
-RECENT COMPETITIVE ACTIONS:
-
-For each major competitor, track:
-
-SEARCH QUERIES:
-"[Competitor] launches product 2024 2025"
-"[Competitor] raises funding 2024 2025"
-"[Competitor] expands to [channel/city] 2024"
-"[Competitor] partnership announcement 2024"
-"[Competitor] acquisition 2024"
-"[Competitor] rebranding 2024"
-
-WHAT TO EXTRACT:
-- Product launches (reveals strategy: premium? mass? functional?)
-- Funding rounds (capital for growth? defensive? struggling?)
-- Distribution moves (D2C → offline? Which retailers?)
-- Partnerships (co-branding? Ingredient suppliers? Celebrities?)
-- Hiring velocity (scaling? Which functions?)
-
-INTERPRET SIGNALS:
-"Whole Truth raised ₹X Cr in Nov 2024 after 18 months (vs typical 24-month gap) 
-→ suggests either (a) hypergrowth opportunity or (b) burn rate pressure requiring 
-faster fundraise. Job postings show 12 MT sales hires → offline expansion confirmed, 
-likely hitting D2C ceiling. Strategic implication: Will compete more directly in 
-MT channel within 6-12 months."
-\`\`\`
-
-### **TIER 2: COMPETITIVE VULNERABILITIES**
+### **PRIORITY 1: Current Competitive Standing**
 
 \`\`\`
-WEAKNESS IDENTIFICATION:
-
-Customer complaints (goldmine for attack vectors):
-
-SEARCH:
-"site:amazon.in [Competitor] negative reviews"
-"[Competitor] customer complaints"
-"[Competitor product] problem reddit"
-"[Competitor] vs [Other] which better"
-
-EXTRACT PATTERNS:
-- What do customers consistently complain about?
-  - "Too sweet" → reformulation opportunity
-  - "Expensive" → pricing vulnerability
-  - "Hard to find" → distribution gap
-  - "Stock-outs" → supply chain weakness
-  - "Poor customer service" → experience gap
-
-EXAMPLE:
-"Analysis of 200+ Whole Truth reviews shows 18% mention 'too sweet despite no 
-added sugar' and 12% complain about 'artificial aftertaste from stevia.' This 
-represents reformulation vulnerability. [COMPANY] can attack with 'naturally 
-sweet from dates' positioning that eliminates stevia usage."
+1. "[COMPANY] market share 2024" OR "ranking 2025"
+2. "[COMPANY] vs [Competitor] 2024" (for each major competitor)
+3. "[Category] top brands India 2024"
+4. "[COMPANY] competitive position 2024"
 \`\`\`
 
-### **TIER 3: STRATEGIC MOVES & COUNTER-MOVES**
+### **PRIORITY 2: Competitor Intelligence (2024-2026)**
+
+For EACH major competitor:
+\`\`\`
+5. "[Competitor] revenue 2024" OR "growth rate"
+6. "[Competitor] funding 2024" OR "valuation"
+7. "[Competitor] new products 2024" OR "launches"
+8. "[Competitor] expansion 2024" (what's their growth strategy?)
+9. "[Competitor] pricing 2024" (are they competing on price?)
+\`\`\`
+
+### **PRIORITY 3: Emerging Threats**
 
 \`\`\`
-GAME THEORY ANALYSIS:
+10. "New nutrition brands India 2024" (startups that emerged post-2023)
+11. "International protein bars India 2024" (Kind, Clif, Quest entry?)
+12. "ITC competitors 2024" (could Britannia, HUL enter category?)
+13. "[Category] acquisitions 2024" (who else is doing M&A?)
+\`\`\`
 
-For each competitor, model:
-- Their likely next move (based on current trajectory)
-- Our best response
-- Their counter to our response
-- Final equilibrium
+### **PRIORITY 4: Competitive Moves**
 
-FRAMEWORK:
-IF [Competitor] DOES [Action]
-THEN [COMPANY] SHOULD [Response]
-BECAUSE [Strategic Logic]
-RESULTING IN [Outcome]
-
-EXAMPLE:
-"IF Whole Truth expands to 500 MT stores via Reliance/DMart partnership,
-THEN Yogabar should:
-(a) Pre-empt by securing exclusive shelf space in premium MT (Nature's Basket, 
-    Spencer's) before Whole Truth enters, OR
-(b) Attack their D2C base by matching their positioning at ₹45 vs their ₹60, 
-    forcing them to defend their core while expanding offline
-
-BECAUSE Whole Truth cannot defend both fronts simultaneously—offline expansion 
-requires capital and attention, leaving D2C vulnerable to undercutting.
-
-RESULTING IN Whole Truth choosing: abandon MT expansion (defend D2C) or accept 
-D2C share loss (pursue MT). Either outcome benefits Yogabar."
+\`\`\`
+14. "[Competitor] marketing campaigns 2024"
+15. "[Competitor] distribution strategy 2024"
+16. "[Competitor] partnerships 2024" (celeb, gym, corporate tie-ups)
+17. "[Competitor] innovation 2024" (functional ingredients, formats)
 \`\`\`
 
 ---
 
-## ANALYSIS FRAMEWORK
+## OUTPUT STRUCTURE (800-1,000 words, 2 pages max)
 
-### **SECTION 1: COMPETITIVE THREAT ASSESSMENT**
-
-**Who are the real threats vs noise?**
+### **SECTION 1: COMPETITIVE LANDSCAPE 2026 (250 words)**
 
 \`\`\`
-COMPETITIVE TIER CLASSIFICATION:
+## MARKET SHARE & MOMENTUM (Current State)
 
-TIER 1 THREATS (Direct, Immediate):
-- [Competitor A]: Same price, same positioning, same channels
-  - Threat level: HIGH
-  - Why: Fighting for same customers in same places
-  - Current share of mind: [X]% vs ours [Y]%
-  - Momentum: [Growing/Stable/Declining]
+**Top 5 Players:**
 
-TIER 2 THREATS (Adjacency, Medium-term):
-- [Competitor B]: Different positioning but moving toward us
-  - Threat level: MEDIUM
-  - Why: [Specific reason - e.g., "premium player moving down-market"]
-  - Watch triggers: [What signals they're becoming Tier 1]
+| Rank | Brand | Est. Revenue (FY25) | Market Share | YoY Growth | Movement vs 2023 |
+|------|-------|---------------------|--------------|------------|------------------|
+| #1 | [Brand] | ₹[X] Cr | [Y]% | +[Z]% | ↑/↓/→ |
+| #2 | [COMPANY] | ₹[X] Cr | [Y]% | +[Z]% | ↑/↓/→ |
+| #3 | [Brand] | ₹[X] Cr | [Y]% | +[Z]% | ↑/↓/→ |
 
-TIER 3 (Not Immediate Threats):
-- [Competitor C]: Different segment/channel/price
-  - Threat level: LOW
-  - Why: Serving different customers with different value prop
-  - Monitor: Don't waste energy competing
+**Key Observations:**
+- [COMPANY]'s position: [Held/Gained/Lost share] since 2023
+- Fastest growing: [Competitor name] at [X]% YoY (why?)
+- Biggest mover: [Competitor] jumped from #[Y] to #[X] (2023→2026)
+- Consolidation: Top 3 now control [X]% share (was [Y]% in 2023)
 
-EMERGING THREATS:
-- New funded startups (last 6-12 months)
-- Incumbent FMCG launching competing products
-- Private label (Amazon Vedaka, retailer brands)
+**Competitive Intensity:**
+- 2023: 5 funded players, mostly D2C-focused
+- 2026: 9 funded players + 2 international entrants = Fragmentation OR consolidation?
+- Price bands: [X] brands now in ₹45-55 range (commoditization signal)
 
-EXAMPLE CLASSIFICATION:
-
-TIER 1: Whole Truth
-- Price: ₹60 (vs our ₹50)
-- Positioning: Premium, clean ingredients, D2C
-- Channels: 70% D2C, 30% E-comm, expanding MT
-- Threat: HIGH - direct competition for same customer
-- Vulnerability: D2C dependent, hitting growth ceiling
-- Our advantage: ₹10 cheaper, ITC distribution asset
-
-TIER 1: True Elements  
-- Price: ₹40-45 (overlaps our range)
-- Positioning: Mid-premium, omnichannel
-- Channels: 50% MT, 30% E-comm, 20% GT
-- Threat: HIGH - similar strategy to our ITC-enabled path
-- Vulnerability: Sprawling 25-SKU portfolio, brand dilution
-- Our advantage: Focused portfolio, ITC manufacturing scale
-
-TIER 2: RiteBite
-- Price: ₹25 (mass market)
-- Positioning: Value, widespread distribution
-- Channels: 60% MT/GT, 40% E-comm
-- Threat: MEDIUM - could trade up, we could trade down
-- Vulnerability: Quality perception, "cheap" positioning
-- Our advantage: Premium brand equity prevents downmarket pull
-
-TIER 3: Super You
-- Price: ₹48
-- Positioning: Fitness/performance focused
-- Channels: 80% E-comm, 20% gym partnerships
-- Threat: LOW - niche positioning, different customer
-- Why monitor: If they expand beyond fitness niche, becomes Tier 2
+**Sources:** [List sources, mark estimates]
 \`\`\`
 
-### **SECTION 2: HEAD-TO-HEAD COMPETITIVE ANALYSIS**
+### **SECTION 2: THREAT MATRIX (300 words)**
 
-**How do we stack up against each Tier 1 competitor?**
-
-\`\`\`
-[COMPANY] VS WHOLE TRUTH
-
-DIRECT COMPARISON:
-
-Price: ₹50 vs ₹60 (we're 17% cheaper)
-- Win: Price-conscious premium buyers
-- Lose: Ultra-premium buyers who equate price with quality
-
-Product Quality (from reviews):
-- [COMPANY]: 4.4 star avg, "tastes good, reasonable price"
-- Whole Truth: 4.5 star avg, "best taste, worth the premium"
-- Assessment: Slight quality perception disadvantage, offset by price
-
-Distribution:
-- [COMPANY]: [X]% D2C, [Y]% E-comm, [Z]% MT (with ITC expanding)
-- Whole Truth: 70% D2C, 30% E-comm, early MT (500 stores target)
-- Win: Broader reach via ITC, less D2C dependent
-- Lose: Less brand heat, smaller community
-
-Brand Strength:
-- [COMPANY]: [X] Instagram followers, [Y]% aided awareness
-- Whole Truth: [A] followers (2x ours), [B]% aided awareness  
-- Assessment: They have stronger brand equity currently
-
-OUR ATTACK VECTORS:
-1. **Price Accessibility**: "Premium quality at accessible price"
-   - Target their price-sensitive customers with ₹50 vs ₹60
-   - Highlight same ingredients, 17% lower price
-   
-2. **Distribution Ubiquity**: "Available everywhere premium is sold"
-   - Leverage ITC to be in 3x stores vs Whole Truth
-   - Make it easier to buy us than them
-   
-3. **Portfolio Breadth**: "More occasions, more options"
-   - Our breakfast bars + protein bars vs their focused portfolio
-   - Capture more wallet share per customer
-
-THEIR LIKELY COUNTER-MOVES:
-- Defend brand premium with community/content (Sustain ₹60 pricing)
-- Accelerate MT to close distribution gap
-- Launch lower-priced line (₹45 "accessible premium")
-
-OUR RESPONSE TO THEIR COUNTER:
-- If they launch ₹45 line: Highlight brand confusion, maintain ₹50 positioning
-- If they go all-in MT: Pre-empt with exclusive shelf space commitments
-- If they double down on D2C: Ignore, focus on our omnichannel strength
-
-OUTCOME:
-We become the "smart premium" choice (90% of quality, 83% of price, 3x distribution)
-They remain ultra-premium choice (shrinking TAM as category matures)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[COMPANY] VS TRUE ELEMENTS
-
-DIRECT COMPARISON:
-
-Portfolio Strategy:
-- [COMPANY]: 12-15 SKUs (protein bars, breakfast bars, energy)
-- True Elements: 25 SKUs (muesli, granola, bars, trail mix)
-- Trade-off: We're focused, they're broad
-
-Channel Strategy:
-- [COMPANY]: Building omnichannel via ITC
-- True Elements: Already omnichannel (50% MT, 30% E-comm, 20% GT)
-- They're ahead in offline, we're catching up
-
-Brand Positioning:
-- [COMPANY]: Premium bars, health/fitness
-- True Elements: Healthy breakfast/snacking, everyday wellness
-- Different core categories reduces direct competition
-
-WHERE WE COMPETE:
-Protein bars (₹50 vs ₹45) - overlapping price, same MT stores
-
-OUR ATTACK VECTORS:
-1. **Category Focus**: "Protein bar specialists vs generalists"
-   - Position as expert in bars, they're spread too thin
-   - Quality signal: focused beats scattered
-
-2. **ITC Manufacturing**: "Better quality at scale"
-   - Food safety, consistency from ITC plants
-   - True Elements uses multiple co-packers (quality variance risk)
-
-THEIR LIKELY COUNTER:
-- Emphasize portfolio breadth (basket size, cross-sell)
-- Leverage existing MT relationships (incumbent advantage)
-
-OUR RESPONSE:
-- Don't compete on breadth, own quality-focus narrative
-- Use ITC to match their MT penetration within 18 months
-
-OUTCOME:
-Peaceful coexistence—we own protein bars, they own breakfast category, 
-minimal direct combat. Monitor if they refocus on bars (then escalate).
-\`\`\`
-
-### **SECTION 3: ATTACK/DEFEND/AVOID STRATEGY**
-
-**Where to compete, where to concede:**
+**Analyze top 3 competitive threats:**
 
 \`\`\`
-STRATEGIC FRAMEWORK:
+**THREAT #1: [Competitor Name]**
 
-ATTACK (Offensive moves to take share):
+**Current Position:** Rank #[X], ₹[Y] Cr revenue, growing [Z]% YoY
 
-TARGET: Whole Truth's Price-Sensitive Customers
-- Tactic: "90% of the quality, 83% of the price"
-- Channel: D2C + E-comm (where they're strong, we undercut)
-- Investment: ₹2 Cr digital marketing comparing value
-- Expected: 15-20% of their growth-stage customers (not loyalists)
-- ROI: High (steal customers vs create new ones = lower CAC)
+**What They're Doing (2024-2026):**
+- Strategy: [Specific—NOT generic "they're growing"]
+- Channel focus: [Where they're winning]
+- Product strategy: [What SKUs/segments they prioritize]
+- Pricing: [How they compete—premium/value/parity]
 
-TARGET: RiteBite's Trade-Up Customers  
-- Tactic: "Real ingredients vs processed junk"
-- Channel: MT stores where both are shelved
-- Investment: ₹3 Cr sampling (trial drives conversion)
-- Expected: Capture customers evolving from ₹25 to ₹50 category
-- ROI: Very High (large addressable market trading up)
+**Why It's Working:**
+[Structural advantage or insight. Examples:]
+- "Functional range (₹70-90) captured premium segment—32% of category growth but [COMPANY] absent"
+- "Celebrity partnerships (Virat Kohli) drove brand awareness 3x vs [COMPANY]'s organic approach"
+- "Quick Commerce focus—62% of revenue from QC vs [COMPANY]'s 5%"
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**Their Vulnerabilities:**
+- [Weakness 1]: [Evidence]
+- [Weakness 2]: [Evidence]
 
-DEFEND (Protect our core):
+**Threat Level:** HIGH / MEDIUM / LOW
+- High: [If directly competing for same customer + winning]
+- Medium: [If adjacency competition + growing fast]
+- Low: [If different segment or slowing growth]
 
-DEFEND: D2C/E-comm Base
-- Threat: Competitors undercutting our ₹50 price
-- Tactic: Subscription program (lock in loyalty)
-- Investment: ₹1 Cr (subscription infrastructure)
-- Retention: Increase repeat from [X]% to [Y]%
+**Recommended Response:**
 
-DEFEND: Premium Positioning
-- Threat: Pressure to discount (MT promotional spend)
-- Tactic: "Never below ₹45" price floor
-- Rationale: Protect brand equity for long-term
-- Sacrifice: Short-term volume for long-term positioning
+**Attack Option:** [If we should go after their position]
+- What: [Specific action]
+- Where: [Channel/segment to compete]
+- Timeline: [When to execute]
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**Defend Option:** [If they're attacking our position]
+- What: [Specific defensive move]
+- Where: [Our vulnerable segment to protect]
+- Timeline: [Urgency]
 
-AVOID (Don't Waste Resources):
+**Ignore Option:** [If threat is overstated]
+- Rationale: [Why not worth responding]
 
-AVOID: Head-to-head with Kellogg's in Mass Market
-- Why: They have FMCG muscle, shelf space dominance, ₹20-30 price
-- We can't win: Manufacturing scale, distribution reach
-- Concede: Mass market (₹20-30) entirely
-- Focus: Premium (₹45-60) where brand matters more than scale
+Example:
+**THREAT #1: Whole Truth Foods**
 
-AVOID: Competing with Super You in Gym Channel
-- Why: Niche they own, requires different GTM (partnerships)
-- ROI too low: Gym channel small, Super You entrenched
-- Concede: Direct gym sales
-- Capture: Gym-goers via MT/E-comm (where we're strong)
+**Position:** #3, ₹145 Cr (FY25), +48% YoY (vs [COMPANY]'s 35%)
 
-AVOID: Price War with True Elements
-- Why: They're established omnichannel, willing to sacrifice margin
-- Risk: Race to bottom destroys both brands
-- Tactic: Differentiate on quality/focus vs price
-- If forced: Match locally (specific stores) not nationally
+**What They're Doing:**
+- Launched functional premium range (₹70-90) with ashwagandha/collagen in 2024
+- QC-first strategy: 60% of sales from Blinkit/Zepto
+- Brand positioning: "Beyond nutrition—functional wellness"
+- Celebrity: Partnered with nutritionists, micro-influencers (authenticity vs celebrity)
+
+**Why It Works:**
+- Functional segment growing 68% YoY (Euromonitor)—they're riding the wave
+- QC has no returns, better margins (48% vs MT 38%)
+- Premium pricing (₹75) acceptable for functional claims (willingness to pay proven)
+
+**Their Vulnerabilities:**
+- Small distribution (500 MT stores vs [COMPANY]'s 2,500)—can't leverage offline
+- Functional trend may be fad (2-3 year window before next trend)
+- High marketing burn (35% of revenue vs [COMPANY]'s 18%)—unprofitable
+
+**Threat Level:** HIGH
+- Reason: Directly competing for premium health-conscious customer. If they become synonymous with "functional bars" before [COMPANY] responds, position lost.
+
+**Recommended Response:**
+
+**Attack:**
+- What: Launch [COMPANY] functional range (₹70-90) within 6 months
+- Where: Quick Commerce + premium E-comm (don't compete in their MT weakness)
+- Differentiation: ITC R&D = clinically-dosed ingredients (vs their marketing claims)
+- Timeline: Q2 2026 launch, scale Q3-Q4
+
+**Defend:**
+- Protect existing ₹50 range by emphasizing ITC trust/quality vs startup
+- Leverage 800-1,200 MT stores for visibility (they can't match offline presence)
 \`\`\`
 
-### **SECTION 4: COMPETITIVE MOVES PLAYBOOK (24 Months)**
+[Repeat format for Threat #2 and #3]
 
-**Anticipated moves and our responses:**
-
-\`\`\`
-QUARTER-BY-QUARTER SCENARIOS:
-
-Q1-Q2 FY25:
-
-EXPECTED COMPETITIVE MOVE:
-- Whole Truth announces MT expansion (500 stores)
-- True Elements launches premium protein bar line (₹60)
-- Amazon Vedaka expands flavors (₹38 price)
-
-OUR RESPONSE:
-- Pre-empt Whole Truth: Secure shelf space commitments with Reliance/DMart 
-  before they sign (ITC relationships advantage)
-- Monitor True Elements: If ₹60 bar underperforms, they validate price ceiling; 
-  if succeeds, they've created premium tier we can undercut at ₹50
-- Ignore Vedaka: Different customer (price-only), doesn't erode our base
-
-Q3-Q4 FY25:
-
-EXPECTED:
-- Whole Truth raises prices (₹60 → ₹65) to fund MT expansion
-- New startup launches (funded ₹20-30 Cr, premium positioning)
-- Incumbent (Britannia/ITC) considers category entry
-
-OUR RESPONSE:
-- Hold ₹50 pricing: Widen gap vs Whole Truth (₹50 vs ₹65 = 23% cheaper)
-- Watch startup: If well-funded + good team, monitor closely; if weak, ignore
-- If ITC enters: Collaborate vs compete (Yogabar = premium, ITC brand = mass)
-
-FY26:
-
-EXPECTED:
-- Market consolidates: 2-3 players >₹200 Cr, others struggle
-- M&A activity: Incumbents acquire startups
-- Category evolution: Functional bars (sleep, immunity) gain share
-
-OUR RESPONSE:
-- Ensure we're in top 3 by revenue (₹270 Cr target puts us there)
-- If acquisition target: Valuation improves with revenue scale + profitability path
-- Portfolio evolution: Launch functional line if category shift validated
-\`\`\`
-
-### **SECTION 5: WIN CONDITIONS & SUCCESS METRICS**
-
-**What does winning look like?**
+### **SECTION 3: COMPETITIVE POSITIONING (150 words)**
 
 \`\`\`
-WIN CONDITION 1: Category Leadership (Market Share)
-- Goal: Top 3 by revenue in nutrition bars India by FY26
-- Metric: ₹270 Cr revenue = estimated 15-18% market share
-- Currently: Estimated [X]% share
-- Why matters: Category leader gets disproportionate mind-share
+## WHERE WE WIN & WHERE WE LOSE
 
-WIN CONDITION 2: Distribution Moat
-- Goal: Available in 3x more MT stores than any competitor
-- Metric: 2,500 stores (500 MT + 2,000 GT) via ITC
-- Currently: ~[X] stores
-- Why matters: Availability creates habit, habit creates loyalty
+**[COMPANY]'s Competitive Advantages (2026):**
+1. Distribution: 800-1,200 MT stores (best in category)
+2. ITC backing: Capital, manufacturing, procurement scale
+3. Established brand: 6+ years, customer trust
+4. [Other advantages based on data]
 
-WIN CONDITION 3: Profitable Growth
-- Goal: Break-even by FY26 while growing 40%+
-- Metric: EBITDA positive at ₹270 Cr revenue
-- Currently: Negative EBITDA
-- Why matters: Proves sustainable model, not just burning capital
+**[COMPANY]'s Competitive Disadvantages (2026):**
+1. Brand dilution: ITC association weakened "startup premium" perception
+2. Innovation lag: No functional range while competitors launched 2024-2025
+3. QC absence: 0-5% of revenue while category average 18%
+4. [Other weaknesses based on competitive analysis]
 
-WIN CONDITION 4: Brand Preference
-- Goal: Top 3 aided awareness in premium nutrition bars
-- Metric: [X]% aided awareness (vs [Y]% today)
-- Why matters: Brand strength creates pricing power and CAC efficiency
+**Net Assessment:**
+- Winning: [Segments/channels where [COMPANY] dominates]
+- Losing: [Segments/channels where competitors ahead]
+- Draw: [Segments where competitive parity]
+\`\`\`
 
-COMPETITIVE SCOREBOARD:
+### **SECTION 4: BATTLE PLAN (300 words)**
 
-VS WHOLE TRUTH:
-- Win: Distribution breadth (3x their store count)
-- Win: Price-value perception (17% cheaper, similar quality)
-- Lose: Brand heat (they have stronger community currently)
-- Draw: Product quality (both premium, taste preference varies)
-Net: Winning on accessibility, behind on aspiration
+\`\`\`
+## 12-MONTH COMPETITIVE STRATEGY
 
-VS TRUE ELEMENTS:
-- Win: Portfolio focus (expert vs generalist narrative)
-- Draw: Distribution reach (both omnichannel by FY26)
-- Lose: Category breadth (they own breakfast, we don't)
-- Win: ITC manufacturing (scale + quality advantage)
-Net: Peaceful coexistence, winning in protein bars specifically
+**OFFENSIVE PLAYS (Going After Competitor Positions):**
 
-VS RITEBIT/MASS:
-- Win: Quality perception (premium vs mass)
-- Win: Customer loyalty (ours don't trade down)
-- Lose: Volume (they sell 5-10x units)
-- Win: Margin (we make 35-40% vs their 22-25%)
-Net: Different game, not really competing
+**Play #1: [Name]**
+**Target Competitor:** [Who we're attacking]
+**Segment to Capture:** [Their stronghold we want]
+**Attack Vector:** [Specific strategy]
+**Timeline:** [When]
+**Success Metric:** [How to measure win]
+
+Example:
+**Play #1: Premium Functional Reclaim**
+**Target:** Whole Truth's functional segment
+**Capture:** ₹180 Cr functional bar segment (68% YoY growth)
+**Vector:** 
+- Launch 3 functional SKUs (₹70-90) with clinically-dosed ingredients
+- Position as "science-backed" vs their "wellness marketing"
+- ITC R&D credibility as proof point
+**Timeline:** Q2 2026 launch, ₹35 Cr revenue target by Q1 2027
+**Metric:** Capture 25% of functional segment (₹45 Cr), Whole Truth growth slows to 30% YoY
+
+**DEFENSIVE PLAYS (Protecting Our Position):**
+
+**Play #1: [Name]**
+**Our Vulnerable Position:** [Where we're at risk]
+**Threat:** [Who's attacking]
+**Defense Strategy:** [Specific defensive move]
+**Timeline:** [Urgency]
+
+Example:
+**Play #1: MT Fortress Defense**
+**Vulnerable:** 2,500 MT stores (our key advantage)
+**Threat:** Whole Truth + True Elements scaling MT (will reach 1,500 stores combined by Q4 2026)
+**Defense:**
+- Exclusivity contracts with top 500 MT stores (premium shelf space locked)
+- In-store activation (sampling, visibility) to boost velocity
+- Retailer incentives (margin bonuses) for hitting targets
+**Timeline:** Q1 2026 (before competitors scale)
+**Metric:** Maintain >80% share of shelf space in top MT chains
+
+**NO-GO ZONES (Where Not to Compete):**
+
+**Zone #1: [Segment/Channel]**
+**Rationale:** [Why not worth competing]
+
+Example:
+**Zone #1: Ultra-Budget (₹25-35 range)**
+**Rationale:** 
+- RiteBite dominates with scale (₹280 Cr revenue)
+- 18-22% margins (unacceptable for premium brand)
+- Customer segment doesn't value [COMPANY]'s differentiation
+- Better to cede low-end, focus on profitable premium
 \`\`\`
 
 ---
 
-## OUTPUT REQUIREMENTS
+## CRITICAL SUCCESS CRITERIA
 
-### **STRUCTURE:**
+Your output must answer:
+1. **Who are the top 3 competitive threats NOW?** (2026, not 2023)
+2. **What are they doing that's working?** (Specific strategies with data)
+3. **Where is [COMPANY] vulnerable?** (Honest weaknesses)
+4. **What's the 12-month battle plan?** (2-3 offensive plays, 2-3 defensive plays)
 
-\`\`\`markdown
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-COMPETITIVE BATTLE PLAN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Opening: Competitive battlefield + our positioning in 2-3 sentences]
-
-THREAT ASSESSMENT [150 words - who matters]
-HEAD-TO-HEAD ANALYSIS [250 words - vs Whole Truth, vs True Elements]
-ATTACK/DEFEND/AVOID STRATEGY [200 words]
-24-MONTH COMPETITIVE PLAYBOOK [150 words]
-WIN CONDITIONS [100 words]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-KEY ASSUMPTIONS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-RECOMMENDATION: Attack Whole Truth's price-sensitive segment while defending premium positioning
-Based on:
-- Whole Truth hitting D2C ceiling (Amazon review velocity -38% YoY)
-- Our ₹50 vs their ₹60 (17% price advantage) appeals to 70% of premium buyers 
-  (not ultra-premium 30%)
-- ITC distribution creates 3x store advantage within 18 months
-- Risk: They drop to ₹55 (narrows gap) or raise to ₹65 (widens our value prop)
-
-Assumes: (a) Whole Truth maintains premium pricing to fund MT expansion, (b) Quality 
-parity maintained, (c) ITC distribution executes as planned
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SOURCES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Sources]
-\`\`\`
-
-### **LENGTH & STYLE:**
-- **800-1,000 words**
-- Game-theory framing (if X then Y)
-- Specific attack/defend tactics
-- Competitor vulnerabilities identified
-- 3-4 "oh I didn't know that" insights
+**Red Flags:**
+- ❌ Generic "monitor competitors" (not a strategy)
+- ❌ No mention of threats that emerged 2024-2026
+- ❌ No defensive thinking (only talking about our strengths)
+- ✅ Specific competitor moves with evidence
+- ✅ Attack/defend strategies with metrics
 
 ---
 
-**Now execute this competitive analysis for [COMPANY].**
+## OUTPUT CHECKLIST
+
+- [ ] Competitive landscape 2026 (market share, momentum, intensity)
+- [ ] Top 3 threats analyzed (what they're doing, why it works, vulnerabilities)
+- [ ] [COMPANY]'s competitive position (advantages, disadvantages, net)
+- [ ] Offensive plays (2-3 specific attacks on competitor positions)
+- [ ] Defensive plays (2-3 specific defenses of our position)
+- [ ] No-go zones (where NOT to compete)
+- [ ] All claims backed by data or clearly marked as estimates
+- [ ] 12-month timeline with success metrics
+
+---
+
+**Remember:** Competitive landscape changed DRAMATICALLY 2023-2026. ITC gave [COMPANY] distribution dominance BUT competitors evolved (functional, QC, international). Your job: map the NEW battlefield and recommend how to win in 2026-2027, not fight yesterday's war.
 `,
 
   synergy: `# AGENT 7: SYNERGY PLAYBOOK
+## POST-ACQUISITION REALITY CHECK (3 YEARS IN)
 
 **Model:** Claude Opus 4.6 (\`claude-opus-4-6-20250514\`)
 
-**Role:** Strategic Integration Architect - Synergy Mapping, Value Capture, Integration Roadmap
+**Critical Context:** ITC acquired [COMPANY] in 2023. We're in 2026—**3 YEARS post-acquisition**.
+
+---
+
+## SYNERGIES ALREADY CAPTURED (2023-2026)
+
+**What ITC Promised (2023):**
+- Distribution leverage (4M outlets)
+- Manufacturing optimization (original co-packer facilities)
+- Procurement scale (vendor leverage)
+- Brand-building muscle (marketing spend)
+- Institutional credibility (ITC halo)
+
+**What Actually Happened (2023-2026):**
+- ✅ Distribution: 150 → 800-1,200 MT stores (16x growth) ✅ DELIVERED
+- ✅ Manufacturing: Moved to original co-packer facilities, COGS optimization limited (no manufacturing synergy) ✅ DELIVERED
+- ✅ Procurement: Vendor leverage captured, 5-8% savings ✅ DELIVERED
+- ⚠️ Brand: Marketing spend up 3x BUT growth slowing (diminishing returns)
+- ⚠️ GT reach: Added 5,000 stores BUT velocity low (distribution ≠ sales)
+
+**Synergy Value Captured (Est.):**
+- Cost synergies: ₹12-15 Cr annual (COGS + procurement)
+- Revenue synergies: ₹80 Cr (FY24-25 incremental from distribution)
+- **Total: ₹92-95 Cr value creation** in 3 years
+
+**BUT:**
+- Growth trajectory (to be discovered from dataion: 60% YoY → [search for actual data] (momentum lost)
+- Margin plateau: 41% gross (target was 45%+)
+- Integration friction: [COMPANY] team attrition (startup→corporate culture shock)
 
 ---
 
 ## YOUR MISSION
 
-Map how two organizations' institutional strengths combine to unlock value neither could capture alone. This applies to acquisitions, partnerships, joint ventures, or strategic collaborations.
+Based on Agents 1-6 analysis, synthesize:
+1. **What synergies are NOW exhausted?** (Don't double-count)
+2. **What NEXT-wave synergies exist?** (Beyond distribution/manufacturing)
+3. **Institutional strengths mapping** (ITC's assets + Yogabar's digital DNA - how each leverages the other)
+4. **What integration issues are blocking synergy capture?** (Culture, processes, brand dilution)
+5. **How to get ANOTHER ₹50-100 Cr of synergy value in 2026-2028?**
 
-Your analysis reveals **synergy opportunities and integration strategies** through:
-- Multi-dimensional value mapping (where capabilities × needs intersect)
-- Trade-off modeling (what's gained vs what's risked)
-- Scenario planning (light/heavy/hybrid integration paths)
-- Implementation roadmaps with phase gates and success criteria
+**CRITICAL NEW FOCUS: Two-Way Institutional Leverage**
 
-**This is the MOST CRITICAL agent - it synthesizes all prior insights into actionable integration strategy.**
+**ITC's Unique Assets (Beyond Distribution):**
+- **ITC Agri Business** → Backward integration (ingredient sourcing at scale, quality control, farmer relationships)
+- **ITC Hotels** → Premium positioning expertise, corporate B2B relationships (2,500 clients), institutional credibility
+- **ITC Commodities & Exports** → International trade infrastructure, export licenses, regulatory expertise (50+ countries)
+- **ITC Life Sciences R&D** → Food science capabilities, clinical validation labs, ingredient innovation
+- **ITC Brand-building Muscle** → Mass media buying power, consumer insights, premium brand management (Aashirvaad, Sunfeast precedent)
 
----
+**Yogabar's Digital-Native DNA (What ITC Lacks):**
+- **Quick Commerce Mastery** → Platform relationships (Blinkit/Zepto), dark store optimization, QC-specific marketing
+- **Marketplace Dynamics** → Amazon/Flipkart algorithms, review management, search optimization, seller performance
+- **Influencer Strategy** → Authentic partnerships, content creation, community building, micro-influencer activation
+- **D2C Playbook** → Conversion optimization, retention mechanics, subscription models, LTV maximization, performance marketing
+- **Digital Agility** → Fast experimentation, A/B testing culture, data-driven decision making, startup speed
 
-## CONTEXT AWARENESS
+**The Synergy Opportunity:**
+- **Yogabar → ITC:** Teach Quick Commerce, influencer marketing, D2C mechanics to entire ITC Foods portfolio (₹5,000 Cr) - Strategic value beyond revenue
+- **ITC → Yogabar:** Unlock Agri Business for clean-label sourcing, Hotels for premium B2B, Exports for international, R&D for functional innovation
 
-**Current Date:** February 2026
+**This is a SYNTHESIS agent—you receive outputs from Agents 1-6. Connect the dots and map INSTITUTIONAL STRENGTHS, not just operational synergies.**
 
-**Use:** ALL prior agent insights (1-6) + user context + institutional knowledge of both entities
+**DO NOT:**
+- ❌ Repeat "leverage ITC distribution" (done for 3 years)
+- ❌ Generic synergy advice (check any M&A playbook)
+- ❌ Ignore integration challenges (pretend everything is smooth)
 
-**Your Edge:** Multi-level strategic reasoning that models:
-- First-order effects (direct synergies)
-- Second-order effects (unintended consequences)
-- Third-order effects (competitive responses)
-
-**Output Quality Bar:** Every section must reveal non-obvious insight that experienced operators would value
-
----
-
-## SYNTHESIS REQUIREMENTS
-
-**CRITICAL: You are Agent 7 of 7. You have access to:**
-
-From **Agent 1** (Market): Category dynamics, competitive landscape, market opportunity
-From **Agent 2** (Portfolio): SKU performance, product gaps, portfolio strategy
-From **Agent 3** (Brand): Positioning, customer perception, brand coherence
-From **Agent 4** (Margins): Unit economics, cost structure, margin improvement levers
-From **Agent 5** (Growth): Channel strategy, geographic expansion, GTM roadmap
-From **Agent 6** (Competitive): Threat assessment, attack/defend strategies, win conditions
-
-**Your job:** Synthesize these into integrated synergy strategy that shows how institutional strengths (from acquirer/partner) unlock the opportunities identified by Agents 1-6.
+**DO:**
+- ✅ "Agent 5 identified QC opportunity (₹45 Cr). ITC lacks QC presence BUT has capital for dark store partnerships. Synergy: Fund [COMPANY] to pioneer ITC's QC entry = ₹45 Cr revenue + learning for ITC Foods portfolio"
+- ✅ "Agent 3 showed brand dilution from ITC association. Counter-intuitive synergy: Give [COMPANY] MORE autonomy (separate brand identity) while using ITC backend (distribution, manufacturing)"
 
 ---
 
-## COMPREHENSIVE SOURCE STRATEGY
+## INPUT SYNTHESIS
 
-### **TIER 1: ACQUIRER/PARTNER INSTITUTIONAL CAPABILITIES**
+You will receive outputs from:
+- Agent 1: Market dynamics, category shifts
+- Agent 2: Portfolio gaps, SKU opportunities
+- Agent 3: Brand positioning issues
+- Agent 4: Margin improvement levers
+- Agent 5: Growth channels (QC, B2B, international)
+- Agent 6: Competitive threats
 
-\`\`\`
-For ITC (or relevant acquirer), research:
-
-DISTRIBUTION & ROUTE-TO-MARKET:
-"ITC distribution network size India"
-"ITC dealer partners count"
-"ITC FMCG retail outlets reached"
-"ITC modern trade relationships"
-"ITC distributor margin structure"
-
-MANUFACTURING & OPERATIONS:
-"ITC food manufacturing plants locations"
-"ITC manufacturing capacity utilization"
-"ITC co-packing capabilities"
-"ITC food safety certifications"
-"ITC quality systems"
-
-PROCUREMENT & SUPPLY CHAIN:
-"ITC procurement scale volume"
-"ITC vendor relationships"
-"ITC working capital cycle FMCG"
-"ITC ingredient sourcing capabilities"
-
-BRAND & MARKETING:
-"ITC brand building capabilities"
-"ITC marketing spend FMCG"
-"ITC consumer insights capabilities"
-"ITC media buying power"
-
-TALENT & SYSTEMS:
-"ITC FMCG talent pool"
-"ITC organization structure"
-"ITC sales force size"
-"ITC ERP systems"
-\`\`\`
-
-### **TIER 2: ACQUIRED/PARTNER ENTITY STRENGTHS**
-
-\`\`\`
-What does [COMPANY] bring that acquirer lacks?
-
-DIGITAL-NATIVE CAPABILITIES:
-- D2C platform and customer data
-- Performance marketing expertise  
-- Social media / influencer relationships
-- Community building capabilities
-- Agile product development
-
-BRAND EQUITY:
-- Premium positioning
-- Millennial/Gen-Z customer base
-- Ingredient innovation capabilities
-- Authentic founder story
-- Customer loyalty and advocacy
-
-CATEGORY EXPERTISE:
-- Product formulation knowledge
-- Health/wellness category insights
-- E-commerce platform relationships
-- Quick commerce partnerships
-\`\`\`
-
-### **TIER 3: INTEGRATION CASE STUDIES**
-
-\`\`\`
-Learn from similar integrations:
-
-SEARCH:
-"Unilever acquires D2C brand integration"
-"FMCG company startup acquisition synergies"
-"ITC acquisitions integration approach"
-"Nestle acquires premium brand strategy"
-"P&G digital brand integration model"
-
-EXTRACT LESSONS:
-- What worked (maintained agility + leveraged scale)
-- What failed (corporate processes killed startup DNA)
-- Timeline (how long to realize synergies)
-- Governance (how much independence to grant)
-\`\`\`
+**Your job:** Connect these insights to ITC's capabilities and find synergies.
 
 ---
 
-## ANALYSIS FRAMEWORK
+## OUTPUT STRUCTURE (800-1,000 words, 2 pages max)
 
-### **SECTION 1: SYNERGY MAPPING (Multi-Dimensional)**
-
-**Where do institutional strengths × acquired needs intersect?**
+### **SECTION 1: SYNERGY SCORECARD (200 words)**
 
 \`\`\`
-FRAMEWORK: CAPABILITY × NEED = SYNERGY OPPORTUNITY
+## THREE YEARS LATER: SYNERGY REALITY CHECK
 
-SYNERGY 1: DISTRIBUTION REACH
+**Synergies Captured (2023-2026):**
 
-[ACQUIRER] Strength:
-- 4M+ retail outlets reached via 1,170 dealer partners
-- Relationships with all major MT chains (Reliance, DMart, More, etc.)
-- Pan-India distribution infrastructure
-- Trade credit terms and negotiating power
+| Synergy Type | Promise (2023) | Reality (2026) | Value Captured | Grade |
+|--------------|----------------|----------------|----------------|-------|
+| Distribution | 4M outlets | 2,500 MT + ~500 GT pilot stores | ₹80 Cr revenue | A |
+| Manufacturing | original co-packer facilities | COGS optimization limited (no manufacturing synergy) | ₹8 Cr annual | A |
+| Procurement | Vendor leverage | 5-8% savings | ₹4 Cr annual | B+ |
+| Brand-building | ITC muscle | 3x spend, momentum lost | ₹15 Cr (?) | C |
+| GT Reach | Premium kirana | 5K stores, low velocity | ₹8 Cr (?) | C |
 
-[COMPANY] Need (from Agent 5):
-- Currently [X]% D2C/E-comm dependent (hitting ceiling)
-- MT represents only [Y]% of revenue vs category potential 40-50%
-- Requires 500-800 premium MT stores for ₹270 Cr target
-- Field sales team cost prohibitive (₹1+ Cr per year for 12 reps)
+**Total Value Created:** ₹92-115 Cr (3 years)
 
-SYNERGY VALUE:
-Direct Impact:
-- Open 500 MT stores in 12 months (vs 24-36 months independently)
-- Eliminate ₹4-5 Cr field sales team hiring cost
-- Negotiate trade terms 3-5 points better (₹50 MRP →  acquirer gets ₹38-39 vs startup gets ₹36-37)
+**Synergies NOT Captured (Gaps):**
+- Quick Commerce (ITC has no QC presence)
+- International export (ITC infrastructure not leveraged)
+- Cross-selling to ITC Hotels/corporate clients (partnership unexplored)
+- R&D capabilities (ITC labs underutilized for innovation)
 
-Quantified: ₹30-40 Cr incremental revenue + ₹5 Cr cost savings = ₹35-45 Cr value capture
+**Integration Challenges:**
+- Culture clash: [COMPANY] startup team → ITC corporate (attrition?)
+- Brand dilution: ITC association hurt premium positioning
+- Decision speed: [COMPANY] slower (ITC approval layers)
 
-Second-Order Effect:
-- Distribution breadth creates competitive moat (from Agent 6: 3x competitor reach)
-- Enables portfolio breadth (from Agent 2: mass-accessible SKUs become viable)
-- Accelerates break-even timeline (from Agent 4: 18-24 months faster)
-
-Third-Order Effect:
-- Competitors must raise more capital to match reach (Whole Truth needs ₹40-50 Cr for equivalent distribution)
-- Category leadership window narrows (first to 2,500 stores = dominant position)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-SYNERGY 2: MANUFACTURING & PROCUREMENT
-
-[ACQUIRER] Strength:
-- Existing food manufacturing plants (Sunfeast, Bingo facilities)
-- Procurement scale (nuts, grains, packaging bulk discounts)
-- Quality systems (FSSC 22000, HACCP certified)
-- R&D capabilities for reformulation
-
-[COMPANY] Need (from Agent 4):
-- Co-packer manufacturing costs ₹2.50-3 per bar
-- Ingredient costs 8-10% higher than optimal (small volume)
-- Quality variance across batches
-- Limited reformulation capabilities
-
-SYNERGY VALUE:
-Direct Impact:
-- Reduce manufacturing cost to ₹2-2.30 per bar (₹0.50-0.70 savings)
-- Procurement savings: 8-10% on ingredient basket
-- Quality consistency improvement (single manufacturer vs multiple co-packers)
-
-Quantified: 
-- Manufacturing: ₹0.60 × 10M bars = ₹6 Cr annual savings
-- Procurement: 8% × ₹25 Cr ingredient spend = ₹2 Cr annual savings
-Total: ₹8 Cr margin improvement (4.8 percentage points at ₹125 Cr base)
-
-Second-Order Effect:
-- Margin expansion enables price competitiveness (can match True Elements' ₹45 with better economics)
-- Faster product innovation (acquirer R&D accelerates new SKU development)
-- Capacity for volume growth (no co-packer minimums limiting expansion)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-SYNERGY 3: BRAND-BUILDING CAPABILITIES
-
-[ACQUIRER] Strength:
-- Mass media buying power (TV, print, outdoor at scale)
-- Traditional FMCG brand management expertise
-- Consumer insights infrastructure (panel data, market research)
-- Marketing ROI discipline
-
-[COMPANY] Need (from Agent 3):
-- Brand awareness limited to early adopters (estimated [X]% aided awareness)
-- D2C marketing high CAC (₹800-1,200 per customer, rising)
-- Limited consumer research capabilities
-- Positioning evolution required (from niche to mainstream premium)
-
-SYNERGY VALUE:
-Direct Impact:
-- Media efficiency: 20-30% better CPMs via bulk buying
-- Brand reach: Mass media unlocks Tier-2/3 awareness (currently untapped)
-- Consumer insights: Research capabilities validate product/messaging decisions
-
-Quantified:
-- CAC reduction: ₹1,200 → ₹900 per customer = ₹300 savings × new customers
-- Brand investment efficiency: ₹12 Cr marketing budget → ₹15-16 Cr equivalent reach
-Value: ₹3-4 Cr annual benefit
-
-Trade-off Risk:
-- Traditional marketing may dilute digital-native authenticity
-- Mass positioning could alienate premium early adopters
-- Corporate brand guidelines may limit creative agility
-
-Mitigation:
-- Dual-track approach: Maintain D2C digital marketing + add selective mass reach
-- Independent brand team (not absorbed into acquirer brand function)
-- Governance: Acquirer provides tools/budget, [COMPANY] maintains creative control
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-SYNERGY 4: TALENT & ORGANIZATIONAL CAPABILITIES
-
-[ACQUIRER] Strength:
-- Deep FMCG operations talent (supply chain, quality, sales)
-- Structured processes (forecasting, S&OP, distribution planning)
-- Management training and development
-- Cross-functional collaboration experience
-
-[COMPANY] Need:
-- Operational expertise as company scales (startup → growth stage)
-- Professional management beyond founders
-- Formal processes for forecasting, planning, execution
-- Capability gaps in functions like supply chain, quality, finance
-
-SYNERGY VALUE:
-- Talent infusion: Access to acquirer talent pool for key hires
-- Process rigor: Implement acquirer systems (S&OP, forecasting) without losing speed
-- Training: Upskill [COMPANY] team via acquirer programs
-
-Value: Avoid costly mistakes that destroy 5-10% of revenue (out-of-stocks, quality issues, inventory write-offs)
-
-Trade-off Risk:
-- Corporate bureaucracy slows decision-making
-- Startup talent leaves due to cultural shift
-- Innovation velocity decreases
-
-Mitigation:
-- Selective integration: Borrow best practices, don't impose full corporate structure
-- Retain [COMPANY] leadership and culture
-- Acquirer acts as advisor/resource, not manager
+**Net Assessment:**
+Basic operational synergies captured. Strategic synergies (brand, innovation, new channels) underexploited. Need NEXT wave.
 \`\`\`
 
-### **SECTION 2: INTEGRATION SCENARIOS (Light / Heavy / Hybrid)**
+### **SECTION 2: NEXT-WAVE SYNERGIES (400 words)**
 
-**Three approaches with different trade-offs:**
+**Map INSTITUTIONAL STRENGTHS - Two-way value creation:**
 
-\`\`\`
-SCENARIO A: LIGHT TOUCH INTEGRATION
-
-Philosophy: Preserve [COMPANY]'s agility, provide capital and selective support
-
-WHAT [COMPANY] RETAINS:
-- Full operational independence
-- Own brand management and product development
-- D2C platform and digital marketing
-- Separate P&L and team
-
-WHAT [ACQUIRER] PROVIDES:
-- Capital for growth (eliminates fundraising cycles)
-- Procurement leverage (negotiate ingredient costs)
-- Manufacturing optionality (if co-packer fails or capacity needed)
-- Strategic advisory (board-level guidance)
-
-SYNERGY CAPTURE:
-- Procurement: 80% of potential (₹1.5-2 Cr of ₹2 Cr)
-- Manufacturing: 20% of potential (₹1-2 Cr of ₹6 Cr, only when co-packer constrained)
-- Distribution: 10% of potential (₹3-5 Cr of ₹35 Cr, opportunistic not systematic)
-Total: ₹5.5-9 Cr annual synergies (LOW)
-
-TIMELINE: Immediate (no integration complexity)
-
-PROS:
-- Preserves startup DNA and agility
-- Retains talent (no culture shock)
-- Fast execution (no reorganization)
-
-CONS:
-- Leaves 70-80% of synergy value uncaptured
-- Doesn't justify acquisition premium paid
-- Competitive advantage limited
-
-BEST FOR: Partnership or minority investment, NOT acquisition
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-SCENARIO B: HEAVY INTEGRATION
-
-Philosophy: Fully integrate into acquirer, maximize synergies
-
-WHAT GETS INTEGRATED:
-- [COMPANY] products become sub-brand of acquirer portfolio
-- Distribution via acquirer's sales force and dealer network
-- Manufacturing in acquirer plants
-- Procurement through acquirer systems
-- Marketing via acquirer brand team
-
-WHAT [COMPANY] LOSES:
-- Independent brand identity
-- Startup culture and agility
-- Founder decision-making autonomy
-- Digital-native capabilities
-
-SYNERGY CAPTURE:
-- Distribution: 100% (₹35-45 Cr, full network leverage)
-- Manufacturing: 100% (₹6 Cr, complete consolidation)
-- Procurement: 100% (₹2 Cr)
-- Brand efficiency: 100% (₹3-4 Cr)
-Total: ₹46-57 Cr annual synergies (HIGH)
-
-TIMELINE: 18-24 months (complex reorganization)
-
-PROS:
-- Maximum synergy capture
-- Operational efficiency
-- Clear accountability
-
-CONS:
-- Destroys what made [COMPANY] valuable (brand, agility, talent)
-- Talent exodus (founders + key team leave)
-- Loss of digital-native capabilities
-- Brand dilution (becomes "just another [acquirer] product")
-
-BEST FOR: Distressed acquisition where value is assets (distribution rights, formulations) not brand/team
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-SCENARIO C: HYBRID MODEL (RECOMMENDED) ⭐
-
-Philosophy: Selective integration to capture 70-80% of synergies while preserving 70-80% of startup value
-
-INTEGRATION MAP:
-
-FULLY INTEGRATED:
-- Distribution (MT + GT via acquirer network)
-- Manufacturing (in acquirer plants after quality validation)
-- Procurement (through acquirer vendors)
-- Back-office (finance, HR, legal systems)
-
-REMAINS INDEPENDENT:
-- Brand management (separate team, own identity)
-- Product development (maintain innovation velocity)
-- D2C platform (keep digital capabilities)
-- Digital marketing (preserve performance marketing expertise)
-- E-commerce management (platform relationships)
-
-GOVERNANCE STRUCTURE:
-- [COMPANY] CEO reports to acquirer business unit head
-- Independent board (includes acquirer + external advisors)
-- Budget autonomy for brand/product (within approved plan)
-- Acquirer approval for major decisions (M&A, new categories, >₹5 Cr investments)
-
-SYNERGY CAPTURE:
-- Distribution: 85% (₹30-38 Cr, systematic MT rollout via acquirer)
-- Manufacturing: 60% (₹3.5-4 Cr, phased transition over 12-18 months)
-- Procurement: 90% (₹1.8 Cr, immediate implementation)
-- Brand efficiency: 50% (₹1.5-2 Cr, selective mass media not full integration)
-Total: ₹36.8-45.8 Cr annual synergies (MEDIUM-HIGH)
-
-TIMELINE: 12-18 months phased implementation
-
-PHASE 1 (Months 1-6): Quick wins
-- Procurement integration
-- Distribution planning and account setup
-- Manufacturing pilots (2-3 SKUs)
-
-PHASE 2 (Months 7-12): Scale
-- 300-500 MT stores launched
-- Manufacturing transition for hero SKUs
-- Brand-team integration with governance
-
-PHASE 3 (Months 13-18): Optimize
-- Full distribution rollout (2,500 stores)
-- Complete manufacturing transfer
-- Portfolio rationalization
-
-PROS:
-- Captures 70-80% of synergy value
-- Preserves 70-80% of startup strengths (brand, agility, digital capabilities)
-- Balanced risk (neither too slow nor too disruptive)
-- Pragmatic timeline (18 months to full realization)
-
-CONS:
-- Complex to manage (dual operating model)
-- Requires strong governance (clear boundaries, decision rights)
-- Some talent risk (ambiguity during transition)
-
-BEST FOR: Strategic acquisition where goal is growth + synergies while preserving brand value
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-RECOMMENDATION: Scenario C (Hybrid) with 18-month roadmap
-
-WHY:
-1. Captures ₹37-46 Cr annual synergies (80% of maximum)
-2. Preserves brand value and digital-native capabilities
-3. Retains key talent through independence + resources
-4. Creates competitive moat (from Agent 6: distribution + digital agility)
-5. Achieves Agent 5's ₹270 Cr target (via distribution) while hitting Agent 4's margin goals (via manufacturing/procurement)
-\`\`\`
-
-### **SECTION 3: 3-YEAR POST-INTEGRATION ROADMAP**
-
-**Year-by-year value capture:**
+**Framework: What can Yogabar leverage FROM ITC that it can't build alone? What can ITC learn FROM Yogabar for its ₹5,000 Cr Foods portfolio?**
 
 \`\`\`
-YEAR 1 (FY25): Foundation + Quick Wins
+**SYNERGY #1: ITC Agri Business → Clean Label Sourcing (from Agent 2 Portfolio insights)**
 
-FOCUS: Procurement, Distribution Planning, Manufacturing Pilots
+**ITC's Asset:** 
+- Agri Business division with direct farmer relationships (wheat, spices, fruits)
+- Backward integration at scale (reduces middlemen, ensures quality)
+- ITC precedent: Aashirvaad atta = farm-to-fork traceability
 
-Synergies Captured:
-- Procurement: ₹1.8 Cr (90% of potential, immediate)
-- Manufacturing: ₹1.5 Cr (25% of potential, pilot phase)
-- Distribution: ₹8-10 Cr (25% of potential, first 150-200 stores)
-Total Year 1: ₹11.3-13.3 Cr
+**Yogabar's Need (from Agent 2):** 
+- Clean label positioning requires transparent sourcing
+- Competitors make claims without proof ("natural ingredients")
+- Premium customers willing to pay for traceable, quality ingredients
 
-Revenue Impact:
-- Base business growth: 25-30% (D2C/E-comm continues)
-- Distribution incremental: ₹15-20 Cr (from new MT stores)
-Total Revenue: ₹140-145 Cr (vs ₹125 Cr base)
+**Synergy Logic:**
+- ITC Agri can source nuts, oats, dates directly from farmers (10-15% cost reduction + quality story)
+- Yogabar gets "farm-traceable" claim (differentiation vs competitors)
+- Marketing: "Sourced through ITC's farmer network - 5,000+ farmers, verified clean-label"
 
-Margin Impact:
-- Gross margin: 32% → 34% (+2 pts from procurement + partial manufacturing)
-- EBITDA: Still negative but improving (-15% → -8%)
+**Value Potential:** 
+- Direct: ₹2-3 Cr annual savings (procurement) + 2-3 margin points from premium pricing
+- Brand: Unique claim (no competitor can match ITC's farmer network scale)
+- ITC Learning: Yogabar teaches "clean label premium" playbook → ITC can apply to Sunfeast, other brands
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**What's Needed:**
+- Agri Business team integration (pilot with 2-3 ingredients)
+- Traceability system (farmer → facility → product)
+- Marketing narrative (storytelling around sourcing)
 
-YEAR 2 (FY26): Scale + Integration
+---
 
-FOCUS: Full Manufacturing Transfer, MT Expansion, GT Launch
+**SYNERGY #2: ITC Hotels → Premium Corporate B2B (from Agent 5 Growth insights)**
 
-Synergies Captured:
-- Procurement: ₹2 Cr (100%)
-- Manufacturing: ₹5 Cr (80% of potential, full transition except new SKUs)
-- Distribution: ₹28-32 Cr (80%, 500 MT + 1,500 GT stores)
-- Brand efficiency: ₹1.5 Cr (50%, selective mass media)
-Total Year 2: ₹36.5-40.5 Cr
+**ITC's Asset:**
+- ITC Hotels serves 2,500+ corporate clients (MNCs, large Indian cos)
+- Relationships with HR teams, procurement, wellness program managers
+- Premium brand = trust for corporate gifting, employee programs
 
-Revenue Impact:
-- Base growth: 30-35%
-- Distribution incremental: ₹55-65 Cr (MT + GT scaling)
-Total Revenue: ₹260-280 Cr (target: ₹270 Cr per Agent 5) ✓
+**Yogabar's Need (from Agent 5):**
+- B2B institutional channel identified as ₹25 Cr opportunity
+- Cold corporate outreach is hard (6-12 month sales cycles)
+- Need warm introductions to decision-makers
 
-Margin Impact:
-- Gross margin: 34% → 38% (+4 pts from full manufacturing + continued procurement)
-- EBITDA: Break-even to +2-3% (profitable!) ✓
+**Synergy Logic:**
+- ITC Hotels' account managers cross-sell Yogabar to existing corporate clients
+- Position as "employee wellness program" (nutrition bars for office pantries, WFH kits)
+- Leverage ITC Hotels' premium association (if hotels use it, it's premium-quality signal)
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**Value:** 
+- Revenue: ₹25 Cr in 24 months (300 corporate accounts @ ₹8L/year)
+- Margin: 46% (direct sales, no middlemen)
+- ITC Learning: Yogabar's digital marketing tactics can help ITC Hotels with younger corporate clients
 
-YEAR 3 (FY27): Optimization + Expansion
+**What's Needed:**
+- Incentive alignment (ITC Hotels sales team gets commission on Yogabar cross-sell)
+- Bundling (hotel stay packages + wellness kits for corporate events)
 
-FOCUS: Portfolio Expansion, Tier-2 Geography, Profitable Growth
+---
 
-Synergies Captured:
-- Procurement: ₹2.5 Cr (increased volume)
-- Manufacturing: ₹7 Cr (new SKUs integrated, full efficiency)
-- Distribution: ₹45-55 Cr (2,500+ stores, Tier-2 expansion)
-- Brand efficiency: ₹3 Cr (full mass + digital integration)
-Total Year 3: ₹57.5-67.5 Cr
+**SYNERGY #3: ITC Commodities/Exports → International Expansion (from Agent 5)**
 
-Revenue Impact:
-- Growth: 35-40% (distribution reach + brand awareness)
-Total Revenue: ₹360-390 Cr
+**ITC's Asset:**
+- Food export infrastructure to 50+ countries (licenses, logistics, distributor network)
+- Existing relationships in Middle East, Southeast Asia
+- Regulatory clearances (FSSAI, export certifications)
 
-Margin Impact:
-- Gross margin: 38% → 40% (scale economies kicking in)
-- EBITDA: +5-8% (strong profitability)
+**Yogabar's Need (from Agent 5):**
+- International opportunity (ME markets, Indian diaspora = ₹25 Cr potential)
+- Can't export independently (regulatory barriers, logistics complexity, no distributor network)
 
-CUMULATIVE VALUE CREATION (3 Years):
-- Revenue: ₹125 Cr → ₹380 Cr (3x in 3 years)
-- Gross Margin: 32% → 40% (+8 percentage points)
-- EBITDA: -20% → +6% (26 point swing)
-- Synergy capture: ₹105-120 Cr cumulative over 3 years
+**Synergy Logic:**
+- Yogabar piggybacks on ITC's existing export infrastructure
+- Target: UAE, Saudi Arabia (280k+ Indian expats, high purchasing power)
+- Use ITC's distributor relationships (e.g., ITC already exports to Lulu, Choithrams)
+
+**Value:**
+- Revenue: ₹25 Cr in 24 months (Year 1: ₹8 Cr UAE pilot, Year 2: ₹17 Cr regional scale)
+- Margin: 42% (premium pricing in international markets)
+- ITC Learning: Yogabar teaches "premium health food export" playbook
+
+**What's Needed:**
+- Leverage ITC's Sharjah/Dubai distributor relationships
+- Export under ITC Foods umbrella (faster regulatory approval)
+- Adapt packaging for international markets (shelf-life, labeling requirements)
+
+---
+
+**SYNERGY #4: Yogabar → ITC Foods (Quick Commerce Playbook Transfer)**
+
+**Yogabar's Asset (from Agent 5):**
+- Quick Commerce expertise (platform relationships, dark store optimization)
+- QC marketing playbook (what works on Blinkit/Zepto vs traditional retail)
+- Category insights: QC buyers prefer singles (₹50 impulse) vs multi-packs
+
+**ITC's Need:**
+- ITC Foods wants QC presence (Bingo chips, Sunfeast biscuits, YiPPee noodles need QC strategy)
+- ₹5,000 Cr Foods portfolio has 0-5% QC penetration (category average 18%)
+- Lacks QC-specific know-how (pricing, packaging, dark store negotiation)
+
+**Synergy Logic (REVERSE - Yogabar teaches ITC):**
+- Yogabar pioneers QC for ITC (becomes test brand)
+- Learnings transfer to entire Foods portfolio (what QC pricing works, which SKUs to push, how to negotiate with platforms)
+- Strategic value to ITC >> Yogabar's direct revenue
+
+**Value:**
+- Yogabar direct: ₹45 Cr revenue (18 months)
+- ITC strategic: If learnings help ITC Foods capture even 2% more QC share across portfolio = ₹100+ Cr impact
+- Positioning: Yogabar as "ITC's innovation lab for digital channels"
+
+**What's Needed:**
+- Yogabar autonomy to experiment (not ITC approval layers)
+- Knowledge transfer system (Yogabar team trains ITC Foods brand managers)
+- Measure & share learnings (what worked, what didn't)
+
+---
+
+**SYNERGY #5: Yogabar → ITC Foods (Influencer Marketing Playbook)**
+
+**Yogabar's Asset:**
+- Influencer strategy (authentic partnerships, content creation, ROI tracking)
+- Knows which influencers work (nutritionists, fitness creators vs celebrities)
+- Digital-native measurement (cost per acquisition, engagement vs reach)
+
+**ITC's Need:**
+- ITC Foods relies on traditional media (TV, print)
+- Younger consumers (18-35) don't watch TV, consume content on Instagram/YouTube
+- ITC tried influencer marketing but doesn't know ROI, picks wrong influencers (celebrity vs micro)
+
+**Synergy Logic:**
+- Yogabar's influencer playbook becomes ITC template
+- Teach: How to identify authentic influencers, negotiate rates, measure ROI, create content that converts
+- ITC applies to Sunfeast, Bingo, YiPPee targeting younger audiences
+
+**Value:**
+- Yogabar: Retains expertise, becomes strategic asset to ITC (not just distribution burden)
+- ITC: 20-30% better marketing efficiency = ₹50+ Cr impact across portfolio
+- Cultural: Yogabar's digital team upskills ITC's marketing function
+
+**What's Needed:**
+- Yogabar team runs influencer workshops for ITC Foods marketers
+- Co-create 2-3 campaigns (Yogabar + ITC brand) to demonstrate ROI
+- Reverse mentorship (startup teaching corporate)
 \`\`\`
 
-### **SECTION 4: CRITICAL SUCCESS FACTORS & RISK MITIGATION**
+Example:
+**SYNERGY #1: Quick Commerce Pioneer (from Agent 5)**
 
-**What must go right:**
+**Opportunity:** QC is 18% of category, [COMPANY] at 0%. Agent 5 identified ₹45 Cr potential (18 months).
+
+**ITC Capability:** 
+- Capital: ₹8 Cr to fund QC expansion (dark store fees, marketing)
+- Strategic intent: ITC Foods wants QC presence (Bingo, Sunfeast also need QC)
+- Learning value: [COMPANY] pioneers, ITC learns for broader portfolio
+
+**Synergy Logic:**
+- [COMPANY] gets capital + ITC's risk appetite (can experiment)
+- ITC gets QC playbook for entire Foods division (₹8 Cr investment = portfolio-wide learning)
+- Dark stores willing to stock "ITC brand" (credibility advantage)
+
+**Value Potential:** 
+- Direct: ₹45 Cr revenue (48% margin = ₹21.6 Cr contribution)
+- Indirect: ITC Foods learns QC, applies to ₹5,000 Cr portfolio = strategic value
+
+**What's Needed:**
+- [COMPANY] team autonomy (QC strategy, ITC doesn't micromanage)
+- Capital approval: ₹8 Cr (Q1 2026)
+- Dark store partnerships: ITC corporate relationships unlock doors
+
+**SYNERGY #2: International Export Leverage (from Agent 5)**
+
+**Opportunity:** ME market (₹25 Cr in 24 months per Agent 5)
+
+**ITC Capability:**
+- Export licenses: ITC has food export infrastructure (regulatory clearances)
+- Logistics: ITC shipping contracts (lower freight costs)
+- Trade relationships: ITC exports to 50+ countries (distributor network)
+
+**Synergy Logic:**
+[COMPANY] couldn't export independently (regulatory barriers, logistics complexity). ITC makes it viable.
+
+**Value:** ₹25 Cr revenue (42% margin) + opens international for ITC snacks
+
+**What's Needed:**
+- Leverage ITC's Sharjah distributor (existing relationship)
+- Export certification under ITC Foods (faster approval)
+
+**SYNERGY #3: Functional Innovation (from Agent 2 + ITC R&D)**
+
+**Opportunity:** Functional bars (₹70-90) = ₹35 Cr potential per Agent 2
+
+**ITC Capability:**
+- Life Sciences & Technology Centre (ITC R&D labs in Bangalore)
+- Clinically-validated ingredients (vs competitors' marketing claims)
+- Food scientists (can develop functional formulations)
+
+**Synergy Logic:**
+Competitors (Whole Truth) have functional bars but unvalidated claims. ITC R&D can create ACTUALLY functional formulations = differentiation.
+
+**Value:** ₹35 Cr revenue + brand repositioning as "science-backed"
+
+**What's Needed:**
+- R&D team collaboration (6-month NPD timeline)
+- Clinical trials (₹2 Cr investment for validation)
+
+**SYNERGY #4: B2B Cross-Sell (from Agent 5 + ITC Hotels)**
+
+**Opportunity:** Corporate wellness (₹25 Cr per Agent 5)
+
+**ITC Capability:**
+- ITC Hotels has 2,500 corporate clients (HR relationships)
+- Existing B2B sales team (can add [COMPANY] to portfolio)
+
+**Synergy Logic:**
+Cold corporate outreach is hard. Warm intro from ITC Hotels' account managers = faster conversion.
+
+**Value:** ₹25 Cr revenue (46% margin, direct sales)
+
+**What's Needed:**
+- Cross-sell training for ITC Hotels B2B team
+- Incentive alignment (commission structure)
+\`\`\`
+
+### **SECTION 3: INTEGRATION OPTIMIZATION (200 words)**
 
 \`\`\`
-SUCCESS FACTOR 1: Velocity in Modern Trade
+## FIXING WHAT'S BROKEN
 
-Target: 80-120 bars per store per month
-Current: Unknown (need to pilot)
-Risk: If velocity < 60 bars/month, retailers delist, entire distribution strategy fails
+**Challenge #1: Brand Dilution (from Agent 3)**
 
-MITIGATION:
-- Pilot 100 stores first (Q1 FY25)
-- Measure velocity weekly
-- Go/No-Go decision after 90 days: If >80 bars/month, scale; if <60, pause
-- Invest in sampling: 20-25% trial → purchase conversion drives velocity
+**Problem:** ITC association weakened [COMPANY]'s startup premium positioning
 
-SUCCESS FACTOR 2: Quality Consistency Through Manufacturing Transition
+**Counter-Intuitive Synergy:**
+- Give [COMPANY] brand autonomy (separate identity)
+- BUT leverage ITC backend (distribution, manufacturing)
+- "House of brands" model (like P&G, Unilever)
 
-Risk: Recipe changes during plant transfer → customer complaints → brand damage
+**Implementation:**
+- Packaging: Remove/shrink ITC logo
+- Communication: Position as "[COMPANY] - powered by ITC" NOT "ITC's [COMPANY]"
+- Team: Dedicated brand team, reports to [COMPANY] CEO (not ITC Foods head)
 
-MITIGATION:
-- Blind taste tests pre/post transition (ensure no detectable difference)
-- Pilot with 2 non-hero SKUs first (less risk if issues emerge)
-- Run co-packer parallel for 3 months (safety net)
-- Quality assurance: Every batch tested first 6 months
+**Value:** Reclaim premium positioning = pricing power (+₹5 per bar = 10% margin impact)
 
-SUCCESS FACTOR 3: Talent Retention
+**Challenge #2: Decision Speed (Culture Clash)**
 
-Risk: Key team leaves during integration (founders, product, marketing)
+**Problem:** [COMPANY] slower post-acquisition (ITC approval layers)
 
-MITIGATION:
-- Retention bonuses tied to milestones (12/24/36 month vesting)
-- Independence guaranteed in writing (governance charter)
-- Career paths: [COMPANY] CEO can grow to head acquirer's health/wellness division
-- Culture preservation: Maintain separate office, team identity, hiring autonomy
+**Fix:**
+- Defined autonomy boundaries: <₹5 Cr decisions = [COMPANY] CEO authority
+- Board seat for [COMPANY] founder (skin in game, accountability)
+- Separate P&L (entrepreneurial ownership vs division mindset)
 
-SUCCESS FACTOR 4: Brand Positioning Coherence
+**Value:** Innovation speed = faster to market with new SKUs (12 months → 6 months NPD cycle)
 
-Risk: Premium brand diluted by mass distribution (from Agent 3 brand-portfolio alignment issue)
+**Challenge #3: Talent Retention**
 
-MITIGATION:
-- Channel-SKU segmentation: Premium SKUs (₹50-60) in selective MT only, accessible SKUs (₹35-45) in broad MT
-- Pricing discipline: Never below ₹35 (protects premium positioning)
-- GT carefully curated: Health stores, premium kirana, NOT random mom-and-pop
+**Problem:** Startup team attrition (corporate culture shock)
+
+**Fix:**
+- Retention equity: 3-year vesting for key team (25% vested)
+- Startup perks: Flexible WFH, flat hierarchy, fast decision-making
+- Career paths: Rotate [COMPANY] talent into ITC Foods leadership (2-way street)
+
+**Value:** Retain institutional knowledge, avoid rebuild costs
+\`\`\`
+
+### **SECTION 4: SYNERGY ROADMAP 2026-2028 (200 words)**
+
+\`\`\`
+## 24-MONTH SYNERGY CAPTURE PLAN
+
+**Phase 1 (Q1-Q2 2026): Quick Wins**
+- Quick Commerce setup (₹8 Cr investment, 8-month payback)
+- B2B cross-sell activation (₹2 Cr, 12-month payback)
+- Brand autonomy reset (organizational change, no cost)
+**Value:** ₹30 Cr revenue, +2 margin points
+
+**Phase 2 (Q3 2026-Q2 2027): Strategic Builds**
+- Functional range R&D (₹2 Cr, 14-month payback)
+- International export (₹3 Cr, 18-month payback)
+- Channel mix optimization (shift MT→QC)
+**Value:** ₹50 Cr revenue, +1.5 margin points
+
+**Phase 3 (Q3 2027-Q1 2028): Scale**
+- QC expansion to 50 cities
+- International to 5 ME countries
+- Functional range scale
+**Value:** ₹80 Cr revenue, EBITDA positive
+
+**Total Incremental Synergy Value (24M):**
+- Revenue: ₹160 Cr (on top of ₹80 Cr already captured)
+- Margin: +3.5 points
+- Total value created: ₹240 Cr (original ₹95 Cr + ₹160 Cr new)
+
+**Investment Required:** ₹23 Cr
+**Blended Payback:** 11 months
 \`\`\`
 
 ---
 
-## OUTPUT REQUIREMENTS
+## CRITICAL SUCCESS CRITERIA
 
-### **STRUCTURE:**
+Your output must:
+1. **Synthesize insights from Agents 1-6** (connect dots, not repeat)
+2. **Assess what synergies are exhausted** vs **what's untapped**
+3. **Identify 4 NEXT-wave synergies** (specific, valued, with ITC capability match)
+4. **Address integration challenges** honestly (culture, brand, speed)
+5. **Provide 24-month roadmap** with investment and value
 
-\`\`\`markdown
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SYNERGY PLAYBOOK
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Opening: Strategic frame - how institutional strengths unlock value]
-
-SYNERGY MAPPING (4 Key Synergies) [300 words]
-- Distribution, Manufacturing, Brand, Talent
-- Quantified value for each
-- Second/third-order effects noted
-
-INTEGRATION SCENARIOS [250 words]
-- Light/Heavy/Hybrid comparison
-- Recommendation with rationale
-
-3-YEAR ROADMAP [200 words]
-- Year-by-year synergy capture
-- Revenue and margin progression
-- Milestones and gates
-
-CRITICAL SUCCESS FACTORS [150 words]
-- What must go right
-- Key risks and mitigations
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-KEY ASSUMPTIONS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-RECOMMENDATION: Hybrid integration model capturing ₹37-46 Cr annual synergies
-Based on:
-- Distribution synergy: ₹30-38 Cr (500 MT + 2,000 GT stores via [ACQUIRER] network)
-- Manufacturing: ₹3.5-4 Cr (60% realized, phased transition maintains quality)
-- Procurement: ₹1.8 Cr (90% realized, vendor consolidation)
-- Brand efficiency: ₹1.5-2 Cr (50%, selective not full integration)
-
-Assumes: (a) MT velocity achieves 80-120 bars/store/month, (b) Quality maintained 
-through manufacturing transfer, (c) Key talent retained via independence + incentives, 
-(d) Premium positioning preserved through channel-SKU segmentation
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SOURCES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Sources from research + synthesis of Agents 1-6]
-\`\`\`
-
-### **LENGTH & STYLE:**
-- **900-1,100 words** (slightly longer given synthesis complexity)
-- Multi-level reasoning (1st/2nd/3rd order effects)
-- Scenario modeling with trade-offs explicit
-- Quantified value at every level
-- Integration roadmap with gates
-- Risk mitigation specific
-
-### **CRITICAL SUCCESS CRITERIA:**
-
-Analysis succeeds if reader says:
-- ✓ "The hybrid model balances synergy capture with preservation of value"
-- ✓ "The ₹37-46 Cr quantification is credible and detailed"
-- ✓ "The 3-year roadmap with phase gates is executable"
-- ✓ "The MT velocity requirement (80-120 bars/month) is the key constraint"
-- ✓ "This synthesizes all prior agents into coherent strategy"
+**Red Flags:**
+- ❌ Repeating Agent 1-6 content (synthesis, not summary)
+- ❌ Generic M&A synergy advice (could apply to any deal)
+- ❌ Ignoring that 3 years have passed (what's NEXT, not repeat)
+- ✅ Novel connections (QC = ITC portfolio learning)
+- ✅ Counter-intuitive insights (brand autonomy = better synergy)
 
 ---
 
-## FINAL CHECKLIST
-
-- [ ] Synthesized insights from all 6 prior agents
-- [ ] Mapped 4+ synergy dimensions with quantified value
-- [ ] Modeled 3 integration scenarios (light/heavy/hybrid)
-- [ ] Recommended scenario with clear rationale
-- [ ] Built 3-year roadmap with annual milestones
-- [ ] Identified critical success factors
-- [ ] Noted risks and specific mitigations
-- [ ] Showed math for all value calculations
-- [ ] 900-1,100 words maintained
-- [ ] Multi-level strategic reasoning demonstrated
-
----
-
-**Now execute this synergy analysis for [COMPANY] + [ACQUIRER/PARTNER].**
+**Remember:** You're the SYNTHESIS agent. Agents 1-6 gave pieces. You assemble the puzzle and show HOW ITC should evolve the relationship 2026-2028 to capture the NEXT ₹100 Cr of value beyond basic operational synergies.
 `,
 
   synopsis: `# AGENT 8: EXECUTIVE SYNOPSIS
+## STRATEGIC SYNTHESIS (3-YEAR POST-ACQUISITION)
 
 **Model:** Claude Opus 4.6 (\`claude-opus-4-6-20250514\`)
 
-**Role:** Strategic Synthesizer - Executive Summary, Key Insights, Strategic Verdict
+**Critical Context:** ITC acquired [COMPANY] in 2023. You're writing an executive brief for Hemant (Board-level) in 2026.
 
 ---
 
 ## YOUR MISSION
 
-You are the FINAL agent, running AFTER all 7 analysis agents complete. Your job: Synthesize 7 detailed analyses into a compelling 2-page executive summary that:
+Synthesize Agents 1-8 into a **board-ready strategic brief** that answers THE question:
 
-1. **Frames the strategic situation** in 2-3 sentences
-2. **Surfaces the 5-7 most critical insights** across all analyses
-3. **Delivers a clear strategic verdict** with specific recommendations
-4. **Quantifies the opportunity** (revenue, margins, value creation)
-5. **Highlights key risks** and mitigation approaches
+**"ITC leveraged distribution for 3 years. Growth is now slowing (60%→[search for actual data]). What's the strategy for 2026-2028 to get back to 60%+ growth while improving margins?"**
 
-**This is what the board/leadership reads FIRST. Make every word count.**
+This is the **OPENING PAGE** of an 11-page report. Make it **irresistible** to read the rest.
 
----
+**Your brief must:**
+1. **Diagnose WHY growth slowed** (data-driven, not vague)
+2. **Synthesize the strategic situation** (3-4 key insights from all agents)
+3. **Recommend THE path forward** (clear verdict, not options)
+4. **Show the math** (₹ Cr revenue impact, margin improvement, payback)
 
-## CONTEXT & INPUTS
-
-**Current Date:** February 2026
-
-**You have access to complete outputs from:**
-- **Agent 1:** Market Position & Category Dynamics
-- **Agent 2:** Portfolio Strategy & SKU Rationalization
-- **Agent 3:** Brand Positioning & Storytelling
-- **Agent 4:** Margin Improvement & Unit Economics
-- **Agent 5:** Growth Strategy & Channel Orchestration
-- **Agent 6:** Competitive Battle Plan
-- **Agent 7:** Synergy Playbook
-
-**Your Edge:** Strategic synthesis that connects dots across analyses to reveal the integrated strategic narrative
-
-**Quality Bar:** Every insight must be:
-- Non-obvious (not just summary of what agents said)
-- Strategic (impacts big decisions, not tactical details)
-- Actionable (clear implication for what to do)
-- Quantified (numbers attached where possible)
+**This is for HEMANT—sharp, decisive, ready to make multi-crore bets. No fluff.**
 
 ---
 
-## SYNTHESIS FRAMEWORK
+## INPUT SYNTHESIS
 
-### **READ ALL 7 AGENT OUTPUTS CAREFULLY**
+You receive ALL outputs from Agents 1-8:
+- **Agent 1:** Market shifts, category evolution, growth opportunities
+- **Agent 2:** Portfolio gaps, SKU kill/launch decisions
+- **Agent 3:** Brand positioning, perception drift
+- **Agent 4:** Margin levers, unit economics
+- **Agent 5:** Growth channels (QC, B2B, international)
+- **Agent 6:** Competitive threats, attack/defend strategies
+- **Agent 7:** Synergy assessment, integration challenges
 
-Before writing, identify:
-
-1. **STRATEGIC THREADS** that connect across agents:
-   - Example: Agent 1 shows category fragmenting, Agent 6 shows 18-month window to leadership, Agent 7 shows distribution as fastest path
-   - Synthesis: "Race to category leadership determined by distribution velocity, not product innovation"
-
-2. **TENSION POINTS** where agents surface trade-offs:
-   - Example: Agent 3 shows premium positioning, Agent 5 shows mass distribution opportunity
-   - Synthesis: "Channel-SKU segmentation resolves premium-vs-accessible tension"
-
-3. **VALUE DRIVERS** that appear in multiple analyses:
-   - Example: Agent 4 shows margin improvement from manufacturing, Agent 7 shows ₹6 Cr synergy from same
-   - Synthesis: "Manufacturing consolidation is single largest value lever (₹6 Cr annual + 4.8 margin points)"
-
-4. **CRITICAL ASSUMPTIONS** that underpin recommendations:
-   - Example: Agent 5 assumes 80-120 bars/store/month velocity, Agent 7 requires same for distribution synergy
-   - Synthesis: "MT velocity (80-120 bars/month) is make-or-break assumption for entire strategy"
-
-5. **RISK CONCENTRATIONS** where multiple agents flag same issue:
-   - Example: Agent 2 shows hero SKU concentration, Agent 5 shows channel risk, Agent 6 shows competitive threat
-   - Synthesis: "Portfolio + channel + competitive risks all stem from narrow positioning—diversification priority"
+**Your job:** Synthesize into ONE coherent narrative with a clear verdict.
 
 ---
 
-## OUTPUT STRUCTURE (STRICT FORMAT)
+## OUTPUT STRUCTURE (1,500 words, 2 PAGES in PDF)
 
-### **PAGE 1: STRATEGIC SITUATION & VERDICT**
+**This Synopsis must be STANDALONE - Hemant can read just these 2 pages and make the decision.**
 
-\`\`\`markdown
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-EXECUTIVE SYNOPSIS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+\`\`\`
+## THE SITUATION
 
-THE SITUATION [100 words]
-
-[3-4 sentences that frame the strategic context]
-- Where the company/category is today
-- What's at stake (opportunity + threat)
-- Why timing matters (windows closing/opening)
-- What decision is being made
+[3 sentences maximum - crisp context]
 
 Example:
-"Yogabar sits at strategic crossroads in India's nutrition bar category. The 
-₹950 Cr market is fragmenting (7 funded players in 18 months, no leader >12% 
-share) creating a 12-18 month window for category leadership before customer 
-preferences solidify around 2-3 default brands. ITC's acquisition provides 
-distribution firepower to compress the path to ₹500 Cr revenue (the threshold 
-for category anchor status) from 4-5 years to 18-24 months. The strategic 
-question: How to leverage ITC's institutional strength without destroying what 
-makes Yogabar valuable—premium positioning, digital-native capabilities, and 
-brand authenticity."
+"ITC acquired [COMPANY] in 2023 to leverage selective distribution support. Three years later, [ACTUAL PERFORMANCE DISCOVERED THROUGH SEARCH - to be inserted based on Agent 1 findings]. The question now: What's the strategy for 2026-2028 to maintain/accelerate momentum?"
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 
-THE OPPORTUNITY [150 words]
+## THE VERDICT
 
-REVENUE PATH:
-FY24: ₹125 Cr → FY26: ₹270 Cr → FY27: ₹380 Cr (3x in 3 years)
+[ONE clear strategic recommendation - 150 words]
 
-MARGIN EXPANSION:
-Gross Margin: 32% → 40% (+8 percentage points via manufacturing + procurement)
-EBITDA: -20% → +6% (profitable by FY26)
-
-VALUE DRIVERS:
-1. Distribution leverage: 2,500 stores (vs 150 today) = ₹73 Cr incremental revenue
-2. Manufacturing synergies: ₹6 Cr annual savings + 4.8 margin points
-3. Procurement scale: ₹2 Cr annual savings from ITC vendor relationships
-4. Category timing: First to scale wins disproportionate share
-
-TOTAL VALUE CREATION:
-₹255 Cr revenue growth + ₹8 Cr margin improvement + break-even achieved = 
-Compelling acquisition ROI within 24 months
-
-[Reference specific agent findings with numbers]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-KEY INSIGHTS [300 words]
-
-INSIGHT 1: [Title - e.g., "Distribution Velocity, Not Product Innovation, Determines Category Leadership"]
-
-[2-3 sentences explaining the insight]
-[Cite which agents surfaced this: "Market analysis (Agent 1) shows..." + "Competitive analysis (Agent 6) reveals..."]
-[Strategic implication: "This means..."]
-[Quantification if applicable]
+**Format as highlighted box in PDF:**
+\`\`\`
+┌─────────────────────────────────────────────┐
+│ RECOMMENDED STRATEGY:                        │
+│                                              │
+│ [One paragraph stating the clear path        │
+│  forward - what to do, why now, expected     │
+│  outcome]                                    │
+│                                              │
+│ Investment: ₹[X] Cr                          │
+│ Target: [Y]% growth, [Z] margin points      │
+│ Timeline: 24 months                          │
+└─────────────────────────────────────────────┘
+\`\`\`
 
 Example:
-"Market analysis reveals category fragmentation with 7 funded players yet no 
-leader commanding >12% share. Competitive analysis shows differentiation on 
-product (protein bars with clean ingredients) has commoditized—customer blind 
-taste tests show <40% correct brand identification. Meanwhile, distribution 
-breadth correlates with revenue leadership: players in 500+ MT stores grow 
-35-40% annually vs 15-20% for D2C-only brands. 
+**Pivot from distribution-led growth to multi-channel innovation + platform expansion.**
 
-Strategic implication: The race is won through ubiquity, not innovation. ITC's 
-4M retail outlet reach can place Yogabar in 3x more stores than any competitor 
-within 18 months, creating a distribution moat that's far more defensible than 
-a new protein bar flavor.
+ITC should shift [COMPANY]'s growth engine from "more stores" (approaching saturation based on Agent 1 findings) to four new levers: Quick Commerce leadership (₹45 Cr potential per Agent 5), functional premium tier (₹35 Cr per Agent 2), B2B institutional (₹25 Cr per Agent 5), and international exports (₹25 Cr per Agent 5). PLUS strategic opportunity: Launch D2C brand incubation platform (Agent 9)—3 new premium brands targeting ₹480 Cr portfolio by Year 5. Combined: 55-60% YoY growth (2026-2028) while improving gross margin from [current]% to 45%+.
 
-Value: ₹30-40 Cr revenue from MT distribution alone, plus competitive 
-positioning that forces competitors to raise ₹40-50 Cr just to match reach."
+**Investment:** ₹85 Cr (₹25 Cr for [COMPANY] growth initiatives + ₹60 Cr for brand incubator platform)  
+**Return:** ₹130 Cr incremental revenue (Yogabar) + ₹480 Cr portfolio (new brands) = ₹610 Cr total by 2030  
+**ROI:** 7-8x on ₹85 Cr investment
 
-[Repeat for 4-6 more insights, each connecting multiple agents]
+---
 
-INSIGHT 2: [e.g., "Channel-SKU Segmentation Resolves Premium-vs-Mass Tension"]
-INSIGHT 3: [e.g., "MT Velocity (80-120 bars/month) Is Make-or-Break Assumption"]
-INSIGHT 4: [e.g., "Hybrid Integration Captures 80% of Synergies, Preserves 80% of Value"]
-INSIGHT 5: [e.g., "18-Month Window Before Category Consolidates"]
+## KEY INSIGHTS
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[5 critical insights from all 8 agents—the strategic breakthroughs]
 
-THE VERDICT [200 words]
+**ONE insight MUST be the Platform Expansion opportunity (Agent 9)**
 
-RECOMMENDED STRATEGY: [One clear sentence]
+Format each as:
+**◉ [INSIGHT NAME IN CAPS]**
+[3-4 sentences: What the insight is, why it matters, what it unlocks]
+
+**Visual formatting in PDF:** Each insight in a subtle box with icon
+
+---
+
+**INSIGHT 1: TWO-WAY INSTITUTIONAL LEVERAGE** (from Agent 7)
+
+Agent 7 mapped the complete synergy picture beyond simple distribution: 
+
+**ITC → [COMPANY]:** Agri Business for farm-traceable sourcing (10-15% cost savings + premium claim), Hotels for corporate B2B access (2,500 existing relationships), Exports infrastructure for ME markets (licenses, distributors ready), R&D labs for clinical validation of functional ingredients.
+
+**[COMPANY] → ITC:** Quick Commerce playbook (teach ITC Foods' ₹5,000 Cr portfolio how to win on Blinkit/Zepto), influencer strategy (replace inefficient celebrity spend with micro-influencers), D2C mechanics (subscription, retention, LTV optimization).
+
+**The shift:** From "how ITC helps [COMPANY]" to "how [COMPANY] becomes ITC's digital transformation teacher." Strategic value beyond revenue.
+
+---
+
+**INSIGHT 2: [KEY FINDING FROM AGENT 1 - MARKET/CATEGORY]**
+
+[Based on what Agent 1 discovers about current performance, category shifts, competitive dynamics]
+
+Example framework:
+"Agent 1 found [current growth rate/market shift]. This explains [why X is happening]. The opportunity: [specific market white space identified]. Timing critical: [why now, window closing]."
+
+---
+
+**INSIGHT 3: [KEY FINDING FROM AGENTS 2/3/4 - PORTFOLIO/BRAND/MARGINS]**
+
+[Synthesize key portfolio move, brand repositioning, or margin lever]
+
+Example framework:
+"Agent [X] identified [specific gap/opportunity]. Current state: [problem]. Recommended shift: [specific action]. Impact: ₹[X] Cr revenue OR [Y] margin points. Why it works: [competitive advantage or market trend]."
+
+---
+
+**INSIGHT 4: [KEY FINDING FROM AGENTS 5/6 - GROWTH/COMPETITIVE]**
+
+[Synthesize new growth channel or competitive strategy]
+
+Example framework:
+"Agent [X] showed [growth opportunity]. Market size: ₹[X] Cr, [COMPANY] penetration: [Y]%. The play: [specific channel strategy]. Why [COMPANY] can win: [unique advantage]. 18-24 month target: ₹[X] Cr incremental."
+
+---
+
+**INSIGHT 5: D2C BRAND INCUBATOR PLATFORM** (from Agent 9) ← STRATEGIC CENTERPIECE
+
+**The Opportunity:** D2C insurgents (Oziva, Wellbeing Nutrition, Farmley) are winning premium categories (functional wellness ₹800 Cr, gourmet snacking ₹1,200 Cr) where ITC's offline brands can't compete. ITC's digital team knows TOOLS but not how to BUILD D2C brands from scratch.
+
+**The Play:** Use [COMPANY] as brand incubation platform. Launch 3 new D2C-native premium brands over 5 years:
+- Year 1: Functional wellness (collagen, adaptogens) — ₹150 Cr by Year 3
+- Year 2.5: Premium snacking (gourmet chips, artisan chocolate) — ₹100 Cr by Year 4  
+- Year 4: Functional beverages (wellness shots) — ₹150 Cr by Year 6
+
+**Why [COMPANY]:** Proven ability to build D2C brands (did it with [COMPANY] itself) + digital-native DNA (QC mastery, influencer authenticity, subscription mechanics)
+
+**Why ITC:** Provides institutional assets [COMPANY] can't build alone (R&D for validation, Agri for sourcing, Hotels for premium positioning, capital for patient building)
+
+**Economics:** ₹60 Cr investment → ₹480 Cr portfolio revenue → ₹1,680 Cr valuation (3.5x multiple) = 28x ROI
+
+**The Precedent:** Unilever/Dollar Shave Club, P&G/Native — use acquisition to BUILD in D2C, don't retrofit existing brands
+
+**Risk Mitigation:** Start with ₹15 Cr pilot (functional wellness). If reaches ₹100 Cr by Year 3 → Scale to Brand #2. If fails → Stop.
+
+---
+
+## CRITICAL SUCCESS FACTORS
+
+[4 specific things that MUST happen - actionable, measurable]
+
+**Format in PDF:** Numbered list with checkboxes visual
+
+**1. [SUCCESS FACTOR]**
+[One sentence: What needs to happen]
+[One sentence: How to measure success]
+[One sentence: Timeline]
 
 Example:
-"Pursue hybrid integration model that leverages ITC distribution + manufacturing 
-while preserving Yogabar's brand independence and digital-native capabilities, 
-targeting ₹270 Cr revenue and break-even by FY26."
+**1. QUICK COMMERCE VELOCITY VALIDATION (Months 1-6)**
+Launch on Blinkit/Zepto with top 3 hero SKUs. Target: 80-120 units/SKU/dark store/month. If achieved → Scale to 50 cities by Month 12. If <60 → Pivot strategy. This validates highest-leverage growth bet (₹45 Cr potential, 8-month payback per Agent 5).
 
-WHY THIS STRATEGY:
+**2. FUNCTIONAL WELLNESS BRAND LAUNCH (Q2 2026)**
+First brand from incubator platform must succeed (90% of importance for entire model). Target: ₹20 Cr Year 1, ₹100 Cr by Year 3. ITC R&D clinical validation = differentiation vs competitors' unvalidated claims. If fails ₹100 Cr threshold → STOP platform, don't launch Brand #2.
 
-[3-4 specific reasons tied to analysis]
+**3. [ANOTHER CRITICAL FACTOR FROM AGENTS]**
 
-1. MARKET TIMING: 
-[From Agent 1] Category at inflection point, 12-18 month window for leadership
-[From Agent 6] Competitive landscape fragmented, first to ₹500 Cr likely dominant
+**4. [ANOTHER CRITICAL FACTOR FROM AGENTS]**
 
-2. SYNERGY CAPTURE:
-[From Agent 7] Hybrid model captures ₹37-46 Cr annual synergies (80% of maximum)
-[From Agent 4] Manufacturing alone = ₹6 Cr savings + 4.8 margin points
+---
 
-3. RISK BALANCE:
-[From Agent 3] Preserves premium brand positioning via channel-SKU segmentation
-[From Agent 7] Maintains talent + culture through governance + independence
+## THE MATH
 
-4. EXECUTION FEASIBILITY:
-[From Agent 5] 18-month phased roadmap with clear milestones and gates
-[From Agent 7] Pilot-first approach (100 stores) validates before scaling
+[Financial summary table - must fit on page, highly visual]
 
-ALTERNATIVES CONSIDERED & REJECTED:
+**BASELINE (2026):**
+Revenue: ₹[X] Cr (from Agent 1 findings)
+Gross Margin: [Y]%
+Growth: [Z]% YoY
 
-Light Integration: Leaves 70% of synergies uncaptured, doesn't justify acquisition
-Heavy Integration: Destroys brand value and digital capabilities worth preserving
-Status Quo: D2C ceiling hit, competitive window closes, margin pressure persists
+**TARGET (2028 - Yogabar Growth Only):**
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+| Growth Lever | FY27 Impact | FY28 Impact | Margin |
+|--------------|-------------|-------------|--------|
+| Quick Commerce | ₹25 Cr | ₹45 Cr | 48% |
+| Functional Premium SKUs | ₹18 Cr | ₹35 Cr | 44% |
+| Corporate B2B | ₹15 Cr | ₹25 Cr | 46% |
+| International (ME) | ₹8 Cr | ₹25 Cr | 42% |
+| **Yogabar Incremental** | **₹66 Cr** | **₹130 Cr** | **45% avg** |
 
-CRITICAL SUCCESS FACTORS [150 words]
+**Baseline Growth (existing):** +₹[X] Cr  
+**Total Yogabar FY28:** ₹[X + 130] Cr  
+**Blended Growth Rate:** 55-60% YoY
 
-MUST HAPPEN:
+**TARGET (2030 - WITH Brand Incubator Platform):**
 
-1. MT Velocity Validation (HIGHEST PRIORITY)
-- Target: 80-120 bars per store per month
-- Approach: Pilot 100 stores Q1 FY25, measure weekly
-- Go/No-Go: If <60 bars/month after 90 days, pause and reassess
-- Risk: If velocity fails, entire distribution strategy collapses
-- Mitigation: Heavy sampling (20-25% trial drives velocity)
+**Yogabar:** ₹[X] Cr  
+**Brand #1 (Wellness):** ₹150 Cr  
+**Brand #2 (Snacking):** ₹100 Cr  
+**Brand #3 (Beverages):** ₹30 Cr (launch year)  
+**Total Portfolio:** ₹[X + 280] Cr
 
-2. Quality Through Manufacturing Transition
-- Risk: Recipe changes → customer complaints → brand damage
-- Mitigation: Blind taste tests, pilot non-hero SKUs first, run co-packer parallel
+**Valuation:** ₹[X]×1.5 (Yogabar) + ₹280×3.5 (new brands) = ₹[Total] Cr value created
 
-3. Talent Retention
-- Risk: Key team leaves during integration  
-- Mitigation: Retention bonuses, independence guaranteed, career paths defined
+---
 
-4. Premium Positioning Protection
-- Risk: Mass distribution dilutes brand
-- Mitigation: Channel-SKU segmentation (₹50-60 selective MT, ₹35-45 broad MT)
+## THE CHOICE
 
-IF ANY OF THESE FAIL: Re-evaluate integration model and timeline
+[Frame the decision clearly - what Hemant must approve]
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**OPTION A: OPERATIONAL EXCELLENCE** (₹25 Cr investment)
+Continue current trajectory + implement operational improvements (QC, B2B, international, margin optimization). Accept 40-45% growth, stay focused on [COMPANY] core business only.
 
-KEY RISKS [150 words]
+**Safe but limited:** Incremental improvements, no platform creation, miss D2C insurgent wave.
 
-RISK 1: MT Velocity Below Threshold
-- Probability: Medium (untested assumption)
-- Impact: High (strategy depends on it)
-- Mitigation: Pilot first, scale only if validated
+---
 
-RISK 2: Competitive Response
-- Whole Truth + True Elements accelerate offline expansion
-- Amazon Vedaka expands aggressively (algorithm + price advantage)
-- Probability: High (they will respond)
-- Impact: Medium (we have 12-18 month head start via ITC)
-- Mitigation: Speed of execution, lock exclusive shelf space early
+**OPTION B: STRATEGIC TRANSFORMATION** ← **RECOMMENDED** (₹85 Cr investment)
 
-RISK 3: Brand Dilution
-- Mass distribution erodes premium perception
-- Probability: Medium (manageable via segmentation)
-- Impact: High (destroys long-term value)
-- Mitigation: Channel-SKU segmentation, price discipline (never below ₹35)
+Execute Option A PLUS launch D2C brand incubator platform:
+- ₹25 Cr for [COMPANY] operational initiatives
+- ₹60 Cr for 3-brand platform (5 years)
 
-RISK 4: Integration Execution
-- Manufacturing quality issues during transition
-- Talent exodus due to culture shock
-- Probability: Medium (common in acquisitions)
-- Impact: High (delays synergy realization)
-- Mitigation: Phased approach, governance charter, retention incentives
+**Target outcomes:**
+- [COMPANY]: 55-60% YoY growth, 45% gross margin
+- Platform: ₹480 Cr portfolio by 2030, ₹1,680 Cr valuation
+- Strategic: ITC becomes India's leader in premium D2C (not just participant)
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**Risk-adjusted:** Start with ₹15 Cr pilot. Stop if Brand #1 fails. Full ₹60 Cr only if model proves.
 
-IMMEDIATE NEXT STEPS (Next 90 Days)
+---
 
-1. MT PILOT LAUNCH (Q1 FY25)
-   - Select 100 stores across Mumbai/Delhi/Bangalore
-   - 6-8 hero SKUs only
-   - Weekly velocity tracking
-   - Go/No-Go decision at day 90
+**THE WINDOW: 12-18 MONTHS**
 
-2. MANUFACTURING PILOT (Q1 FY25)
-   - Transfer 2 non-hero SKUs to ITC plant
-   - Blind taste tests to validate quality
-   - Run parallel with co-packer (safety net)
+Quick Commerce consolidating (Zepto $1B raise, 2025). Functional wellness trend being claimed by Oziva/Wellbeing. International markets opening for Indian brands. After 18 months, first-mover advantages close.
 
-3. GOVERNANCE SETUP
-   - Document independence charter
-   - Define decision rights (brand vs operations)
-   - Execute retention agreements
+**RECOMMENDATION: Execute Option B, starting Q1 2026.**
 
-4. PROCUREMENT TRANSITION
-   - Onboard to ITC vendor system
-   - Renegotiate top 5 ingredient contracts
-   - Quick win: ₹1.5-2 Cr savings in 6 months
+---
 
-5. SYNERGY TRACKING
-   - Weekly dashboard: velocity, margins, revenue by channel
-   - Monthly reviews with clear gates
-   - Course-correct based on data
+## NEXT STEPS (IF APPROVED)
+
+[Concrete actions with timelines]
+
+**IMMEDIATE (Q1 2026):**
+1. Quick Commerce pilot: Blinkit/Zepto top 10 cities (₹2 Cr budget)
+2. Functional wellness brand: NPD kickoff, ITC R&D clinical trials (₹3 Cr)
+3. Talent retention: Equity vesting for [COMPANY] team
+
+**SHORT-TERM (Q2-Q3 2026):**
+1. Functional wellness brand launch (Month 6-8)
+2. Corporate B2B: ITC Hotels cross-sell activation (50 accounts pilot)
+3. QC scale decision: If velocity >80 units/month → Expand to 50 cities
+
+**MEDIUM-TERM (Q4 2026 - Q2 2027):**
+1. Brand #1 performance evaluation: ₹100 Cr trajectory validation
+2. International: UAE pilot (ITC export infrastructure)
+3. Go/No-Go for Brand #2: Board decision based on Brand #1 12-month data
 \`\`\`
 
 ---
 
-## WRITING REQUIREMENTS
+## CRITICAL SUCCESS CRITERIA
 
-### **TONE & STYLE:**
+Your synopsis must:
+1. **Be STANDALONE** - Hemant can make decision from these 2 pages alone
+2. **Synthesize all 8 agents** - Connect insights, show big picture
+3. **Give ONE clear verdict** - Not options, THE recommendation
+4. **Show the math** - ₹ Cr revenue impact, margin improvement, ROI
+5. **Frame the choice** - What to approve, why now, what happens if we don't
+6. **Be visual** - Headlines, boxes, tables (not wall of text)
 
-- **Executive-appropriate:** Written for board/C-suite, not analysts
-- **Decisive:** Clear recommendations, not "on one hand, on the other hand"
-- **Evidence-based:** Every claim tied to specific agent finding
-- **Quantified:** Numbers everywhere (₹X Cr, Y%, Z months)
-- **Honest:** Call out risks and assumptions explicitly
-- **Action-oriented:** Ends with "what to do now" not "interesting insights"
-
-### **STRUCTURE DISCIPLINE:**
-
-- **Total length:** 900-1,000 words (strict 2-page limit)
-- **Situation:** 100 words (sets context)
-- **Opportunity:** 150 words (quantified value)
-- **Insights:** 300 words (5-6 key insights, connecting agents)
-- **Verdict:** 200 words (clear recommendation + rationale)
-- **Success Factors:** 150 words (what must happen)
-- **Risks:** 100 words (what could go wrong)
-- **Next Steps:** 100 words (immediate actions)
-
-### **SYNTHESIS TECHNIQUES:**
-
-**GOOD synthesis (connecting insights):**
-"Market analysis (Agent 1) shows category fragmenting with no leader >12% share, 
-while competitive analysis (Agent 6) reveals product differentiation has 
-commoditized. This creates a distribution race: growth playbook (Agent 5) 
-projects ₹270 Cr revenue if 2,500 stores achieved, and synergy analysis (Agent 7) 
-shows ITC can deliver this in 18 months vs 48 months independently. Together, 
-these insights reveal distribution velocity—not product innovation—determines 
-category leadership."
-
-**BAD synthesis (just summarizing):**
-"Agent 1 shows the market is growing. Agent 5 shows we can grow revenue. Agent 7 
-shows ITC helps with distribution."
+**Format Notes:**
+- This will be Pages 4-5 in the 16-page PDF
+- Must be formatted with boxes, visual hierarchy
+- Key numbers should stand out (large, colored)
+- THE VERDICT in special box
+- Each insight visually separated
+- Math in clear table format
 
 ---
 
-## QUALITY CHECKLIST
+**Remember:** This is for HEMANT at the BOARD LEVEL. It must be sharp enough that he can present these 2 pages and get ₹85 Cr approved. Every sentence must earn its place.
 
-Before submitting, verify:
-
-- [ ] Situation framed in 2-3 compelling sentences
-- [ ] Opportunity quantified (₹ revenue, % margins, timeline)
-- [ ] 5-6 insights that connect across multiple agents
-- [ ] Each insight has strategic implication and quantification
-- [ ] Verdict is single clear recommendation (not multiple options)
-- [ ] Rationale ties to specific agent findings
-- [ ] Success factors and risks are specific (not generic)
-- [ ] Next steps are actionable (90-day timeframe)
-- [ ] Every number cited has source (Agent X shows...)
-- [ ] No jargon or consultant-speak
-- [ ] 900-1,000 words maintained
-- [ ] Reads like something you'd present to a board
+Example:
+"ITC acquired [COMPANY] in 2023 to leverage distribution muscle. Three years later, that playbook is exhausted: [COMPANY] grew from 150 to 800-1,200 MT stores but revenue growth trajectory (to be discovered from dataed from 60% to [search for actual data]. Store velocity is plateauing—adding more touchpoints no longer drives proportional sales. The question now: What's NEXT?"
 
 ---
 
-## FINAL REMINDER
+## THE VERDICT
 
-**You are the LAST agent. The executive reads THIS FIRST.**
+[ONE clear recommendation—not options, not "it depends"]
 
-Your synthesis determines whether they:
-- ✓ Understand the strategic situation clearly
-- ✓ Trust the analysis rigor
-- ✓ Know what decision to make
-- ✓ Feel confident about execution
+Example:
+**Pivot from distribution-led to channel innovation + premiumization.**
 
-**Make every word earn its place. Be decisive. Be quantified. Be actionable.**
+ITC should shift [COMPANY]'s growth engine from "more stores" (exhausted) to three new levers: Quick Commerce leadership (₹45 Cr), functional premium tier (₹35 Cr), and B2B institutional (₹25 Cr). Combined with margin optimization, this delivers 58% YoY growth in FY27-28 while improving gross margin from 41% to 45%.
 
 ---
 
-**Now synthesize all 7 agent outputs into this executive synopsis.**
+## KEY INSIGHTS
+
+[4 critical insights from all 8 agents—the "aha" moments]
+
+**One insight MUST cover: Two-way institutional leverage (what Yogabar teaches ITC + what ITC unlocks for Yogabar)**
+
+Format:
+**◉ [INSIGHT NAME]**
+[2-3 sentences explaining the insight and why it matters]
+
+Example insights to synthesize:
+
+**◉ TWO-WAY INSTITUTIONAL LEVERAGE, NOT ONE-WAY EXTRACTION**
+Agent 7 mapped the complete synergy picture: ITC brings assets Yogabar can't build (Agri Business for clean-label sourcing, Hotels for premium B2B access, Exports for international trade, R&D for functional validation). BUT Yogabar brings digital-native DNA ITC's ₹5,000 Cr Foods portfolio desperately needs (Quick Commerce mastery, influencer strategy, D2C playbook, marketplace optimization). The strategic value: Yogabar becomes ITC's innovation lab teaching digital channels—worth far more than revenue contribution alone. Counter-intuitive insight: Give Yogabar MORE autonomy (to experiment with QC, influencers) so ITC can learn faster.
+
+**◉ [ANOTHER KEY INSIGHT FROM AGENTS 1-6]**
+[Example: Category shift, competitive threat, margin lever, growth channel, etc.]
+
+**◉ [ANOTHER KEY INSIGHT]**
+
+**◉ [ANOTHER KEY INSIGHT]**
+**◉ DISTRIBUTION LEVERAGE EXHAUSTED, QC IS THE NEXT FRONTIER**
+Agent 1 showed category shift: 18% of nutrition sales now happen on Quick Commerce (Blinkit/Zepto), but [COMPANY] is at 0%. Agent 5 quantified the opportunity: ₹45 Cr in 18 months if [COMPANY] pivots to QC-first strategy. Agent 7 connected this to ITC's strategic need: [COMPANY] can pioneer QC for ITC Foods' entire portfolio—₹8 Cr investment creates playbook worth 10x for ITC's ₹5,000 Cr Foods business.
+
+**◉ PREMIUM POSITIONING DILUTED BY MASS EXPANSION**
+Agent 3 found evidence of brand drift: customer reviews shifted from "clean label startup" language (2020-2023) to "saw in DMart, convenient" (2024-2025). Agent 2 identified the fix: launch functional premium range (₹70-90 with adaptogens) to reclaim positioning. Agent 4 showed the margin math: 44% gross margin vs current 41% despite higher ingredient costs. Counter-intuitively, going MORE premium (not mass) is the growth strategy.
+
+**◉ FUNCTIONAL TREND IS THE COMPETITIVE BATTLEGROUND**
+Agent 6 analyzed Whole Truth (top threat): they went from #5 to #2 by launching functional bars in 2024 (₹70-90 with ashwagandha). Agent 1 confirmed the category shift: functional nutrition growing 68% YoY vs 30% for standard protein. Agent 7 identified ITC's synergy: Life Sciences R&D labs can create clinically-validated functional formulations (vs competitors' marketing claims). This is [COMPANY]'s differentiation reset.
+
+**◉ NEXT ₹100 CR COMES FROM NEW CHANNELS, NOT MORE STORES**
+Agent 5 mapped four growth levers beyond distribution: Quick Commerce (₹45 Cr), Corporate B2B (₹25 Cr), International export (₹25 Cr), Functional premium (₹35 Cr). Agent 4 showed margin profile: all four deliver 42-48% gross margin vs MT's 38%. Agent 7 assessed synergy capture: ITC has unrealized assets (export infrastructure, Hotels' corporate clients, R&D labs) that unlock these channels at lower cost than building independently.
+
+---
+
+## CRITICAL SUCCESS FACTORS
+
+[3-4 specific things that MUST happen for this to work]
+
+Example:
+**1. QUICK COMMERCE VELOCITY VALIDATION (Months 1-6)**
+Launch on Blinkit/Zepto in top 10 metros with hero SKUs. Target: 80-120 bars/SKU/dark store/month. If achieved, scale to 50 cities by Month 12. If below 60, pivot strategy. This is the highest-leverage bet (₹45 Cr potential, 8-month payback).
+
+**2. FUNCTIONAL RANGE LAUNCH (Q2 2026)**
+₹70-90 bars with ITC R&D-validated functional ingredients. Must hit market before Whole Truth becomes synonymous with "functional bars in India" (6-month window). Clinical trials (₹2 Cr) for credibility. Target: ₹35 Cr revenue by Q1 2027.
+
+**3. BRAND AUTONOMY RESET (Immediate)**
+Remove/shrink ITC logo, position as "[COMPANY] powered by ITC" not "ITC's [COMPANY]". Agent 3 showed association hurts premium perception. Paradox: giving brand MORE independence while using ITC backend (distribution, manufacturing) maximizes both brand value AND synergy capture.
+
+**4. MT VELOCITY IMPROVEMENT (Ongoing)**
+800-1,200 MT stores but velocity declining. Agent 5 recommended: sampling at top 500 stores (₹2 Cr), retailer incentives for >100 bars/month targets, SKU rationalization (focus on top 3 hero products). Without this, store base becomes cost center not revenue driver.
+
+---
+
+## THE MATH
+
+[Show the 24-month financial trajectory]
+
+**BASELINE (FY26):**
+Revenue: ₹[X] Cr
+Gross Margin: 41%
+Growth: 30% YoY (trajectory (to be discovered from dataing)
+
+**TARGET (FY28):**
+Revenue: ₹[X + 160] Cr (+58% CAGR)
+Gross Margin: 45% (+4 points)
+EBITDA: Break-even to positive
+
+**HOW WE GET THERE:**
+
+| Growth Lever | FY27 | FY28 | Total | Margin |
+|--------------|------|------|-------|--------|
+| Quick Commerce | ₹25 Cr | ₹45 Cr | ₹70 Cr | 48% |
+| Functional Premium | ₹18 Cr | ₹35 Cr | ₹53 Cr | 44% |
+| Corporate B2B | ₹15 Cr | ₹25 Cr | ₹40 Cr | 46% |
+| International | ₹8 Cr | ₹25 Cr | ₹33 Cr | 42% |
+| **New Channels Total** | **₹66 Cr** | **₹130 Cr** | **₹196 Cr** | **45% avg** |
+| Baseline Growth (30%) | ₹[X] | ₹[X] | ₹[X] | 41% |
+| **TOTAL** | **₹[X+66]** | **₹[X+130]** | **58% CAGR** | **43% Y1, 45% Y2** |
+
+**Total Investment:** ₹23 Cr (QC, R&D, B2B, international setup)
+**Blended Payback:** 11 months
+**Risk-Adjusted Return:** ₹160 Cr incremental revenue assumes 80% success rate
+
+---
+
+## THE CHOICE
+
+[End with the decision Hemant needs to make]
+
+**Option A: Status Quo**
+Continue current strategy (more stores, traditional channels). Accept 25-30% growth, 41% margins, gradual competitive erosion. Safe but slow.
+
+**Option B: Strategic Pivot** ← **RECOMMENDED**
+Shift to channel innovation (QC, B2B, international) + premiumization (functional range). Requires ₹23 Cr investment, 11-month payback. Delivers 58% growth, 45% margins, competitive moat re-established.
+
+**The window is 12-18 months.** Quick Commerce is consolidating (Zepto raised $1B in 2025). Functional trend is being claimed by Whole Truth. International markets are opening (Indian brands entering ME). After that, first-mover advantage closes.
+
+**Recommendation: Execute Option B starting Q1 2026.**
+\`\`\`
+
+---
+
+## CRITICAL SUCCESS CRITERIA
+
+Your synopsis must:
+1. **Answer THE question:** "What's next after 3 years of distribution leverage?"
+2. **Synthesize all 8 agents:** Connect insights, don't just summarize
+3. **Give ONE clear verdict:** Not options, not "it depends"
+4. **Show the math:** ₹ Cr revenue, margin points, payback
+5. **Be board-ready:** Hemant can take this to ITC board and get ₹23 Cr approved
+
+**Red Flags:**
+- ❌ Repeating agent content (synthesis, not summary)
+- ❌ Multiple options (Hemant wants a recommendation, not a menu)
+- ❌ No financial math (show the ₹ Cr impact)
+- ❌ Vague insights ("market is growing" - so what?)
+- ✅ Sharp narrative (diagnostic → insights → verdict → math → choice)
+- ✅ Novel connections (agents revealed pieces, you show the picture)
+
+**Format Notes:**
+- Use ◉ bullets for insights (visual formatting)
+- Keep it ONE page in PDF (800-1,000 words max)
+- This is Page 4 of 11 in the full report—reader decides here whether to keep reading
+
+---
+
+## SYNTHESIS QUALITY CHECKLIST
+
+- [ ] Situation diagnosed clearly (why growth slowing?)
+- [ ] Verdict stated upfront (clear recommendation)
+- [ ] 4 key insights synthesized (connected dots from all agents)
+- [ ] Critical success factors (specific, measurable)
+- [ ] Math shown (24-month trajectory, ₹ Cr impact)
+- [ ] Choice framed (status quo vs recommended path)
+- [ ] Board-ready (Hemant can act on this)
+- [ ] Narrative arc (problem → insight → solution → math → decision)
+
+---
+
+**Remember:** This is for HEMANT making multi-crore decisions. It's 2026, 3 years post-acquisition, distribution playbook exhausted. Your synthesis must show him WHAT'S NEXT and WHY NOW. Sharp, decisive, math-backed. Make every word count.
 `,
+
 };
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -5130,6 +3302,84 @@ function makePrompt(id, company, ctx, synthCtx) {
 // MAIN COMPONENT
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// MARKDOWN FORMATTING FUNCTION
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+function md(text) {
+  if (!text) return "";
+  
+  // First, fix the Sources line to ensure it's on one line
+  let fixedText = text.replace(/\*\*Sources:\*\*([^\n]*(?:\n(?!\n)[^\n]*)*)/g, (match, sources) => {
+    const cleaned = sources.replace(/\n/g, ', ').replace(/,\s*,/g, ',').trim();
+    return `**Sources:** ${cleaned}`;
+  });
+  
+  // Remove markdown heading
+  fixedText = fixedText.replace(/^#+ EXECUTIVE SYNOPSIS\s*\n/gm, '');
+  
+  // Check if this is synopsis content (has THE VERDICT)
+  const isSynopsis = fixedText.includes('**THE VERDICT**');
+  
+  if (isSynopsis) {
+    // Handle synopsis with special layout
+    let html = '';
+    
+    // Extract THE VERDICT
+    const verdictMatch = fixedText.match(/\*\*THE VERDICT\*\*\s*\n(.+?)(?=\n◉)/s);
+    if (verdictMatch) {
+      html += `<div style="margin-bottom:12px;padding:11px;background:white;border:1px solid #d4724a;border-left:3px solid #d4724a">
+        <div style="font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#d4724a;margin-bottom:4px">THE VERDICT</div>
+        <p style="font-size:10px;line-height:1.4;color:#2b2b2b;margin:0">${verdictMatch[1].trim()}</p>
+      </div>`;
+    }
+    
+    // Extract all ◉ sections
+    const sections = [];
+    const sectionRegex = /◉ ([A-Z\s&]+)\s*\n(.+?)(?=\n◉|$)/gs;
+    let match;
+    while ((match = sectionRegex.exec(fixedText)) !== null) {
+      sections.push({ title: match[1].trim(), content: match[2].trim() });
+    }
+    
+    // Wave 1: First 4 sections in 2x2 grid
+    if (sections.length >= 4) {
+      html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px">';
+      for (let i = 0; i < 4; i++) {
+        html += `<div style="padding:9px;background:white;border:1px solid #3d6b54;border-left:3px solid #3d6b54">
+          <div style="font-size:7.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#3d6b54;margin-bottom:4px">◉ ${sections[i].title}</div>
+          <p style="font-size:8.5px;line-height:1.35;color:#4a4a4a;margin:0">${sections[i].content}</p>
+        </div>`;
+      }
+      html += '</div>';
+    }
+    
+    // Wave 2: Remaining sections row-wise
+    for (let i = 4; i < sections.length; i++) {
+      html += `<div style="margin-bottom:8px;padding:10px;background:white;border:1px solid #3d6b54;border-left:3px solid #3d6b54">
+        <div style="font-size:7.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#3d6b54;margin-bottom:4px">◉ ${sections[i].title}</div>
+        <p style="font-size:9px;line-height:1.4;color:#4a4a4a;margin:0">${sections[i].content}</p>
+      </div>`;
+    }
+    
+    return html;
+  }
+  
+  // Regular content (agent analysis)
+  // Special case: if content starts with ##, don't add opening <p> tag
+  const startsWithHeader = fixedText.trim().startsWith('##');
+  const openTag = startsWithHeader ? '' : '<p style="margin:6px 0;">';
+  const closeTag = startsWithHeader ? '' : '</p>';
+  
+  return openTag + fixedText
+    .replace(/^## (.+)$/gm, `</p><h3 class="agent-section-header" style="font-family:'Libre Baskerville',serif;font-size:14px;color:${P.forest};margin:16px 0 6px;border-bottom:1px solid ${P.sand};padding-bottom:4px;">$1</h3><p style="margin:6px 0;">`)
+    .replace(/\*\*(.+?)\*\*/g, `<strong style="color:${P.ink};">$1</strong>`)
+    .replace(/^- (.+)$/gm, `<div style="display:flex;gap:7px;margin:3px 0;"><span style="color:${P.terra};">▸</span><span>$1</span></div>`)
+    .replace(/\n\n/g, `</p><p style="margin:6px 0;">`)
+    .replace(/\n/g, " ") + closeTag;
+}
+
 export default function AdvisorSprint() {
   const [company, setCompany] = useState("Yogabar");
   const [context, setContext] = useState(`Post-acquisition growth strategy for Yogabar. ITC acquired stake in 2023, progressively increasing ownership.
@@ -5439,22 +3689,313 @@ Focus areas:
         </div>
       </div>
 
-      {/* PDF Content */}
-      <div className="print-only" style={{ display: "none" }}>
-        {Object.entries(results).map(([agentId, output]) => {
-          const agent = AGENTS.find(a => a.id === agentId);
-          if (!agent) return null;
+      /* BEAUTIFUL 16-PAGE PDF STRUCTURE - PASTE THIS INTO AdvisorSprint FILE */
 
-          return (
-            <div key={agentId} style={{ pageBreakAfter: "always" }}>
-              <div className="agent-content" style={{ padding: "20px 40px", whiteSpace: "pre-wrap", fontSize: 10, lineHeight: 1.4, fontFamily: "'Instrument Sans'" }}>
-                <h2 style={{ fontFamily: "'Playfair Display'", fontSize: 18, fontWeight: 700, marginBottom: 16, color: P.forest }}>{agent.label}</h2>
-                {output}
-              </div>
-            </div>
-          );
-        })}
+/* Replace the PDF section (after line ~3650) with this enhanced version */
+
+{/* PDF CONTENT - 16 PAGES WITH BEAUTIFUL FORMATTING */}
+<div style={{ display: "none" }} className="print-only">
+  
+  {/* ENHANCED CSS FOR PDF */}
+  <style>{`
+    @media print {
+      .recommendation-box {
+        background: #f0d4c0 !important;
+        border-left: 6px solid #b85c38 !important;
+        padding: 18px !important;
+        margin: 20px 0 !important;
+        border-radius: 4px !important;
+        page-break-inside: avoid !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      
+      .recommendation-title {
+        color: #b85c38 !important;
+        font-weight: 700 !important;
+        font-size: 10px !important;
+        letter-spacing: 0.1em !important;
+        text-transform: uppercase !important;
+        margin-bottom: 10px !important;
+        -webkit-print-color-adjust: exact !important;
+      }
+      
+      .verdict-box {
+        background: white !important;
+        border: 3px solid #1a3325 !important;
+        border-left: 8px solid #1a3325 !important;
+        padding: 25px !important;
+        margin: 30px 0 !important;
+        page-break-inside: avoid !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      
+      .big-number {
+        font-size: 28px !important;
+        font-weight: 700 !important;
+        color: #b85c38 !important;
+        font-family: 'Playfair Display', serif !important;
+        -webkit-print-color-adjust: exact !important;
+      }
+      
+      .insight-box {
+        background: #faf8f4 !important;
+        border-left: 4px solid #d4724a !important;
+        padding: 15px !important;
+        margin: 15px 0 !important;
+        page-break-inside: avoid !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      
+      .section-header {
+        border-bottom: 3px solid #1a3325 !important;
+        padding-bottom: 12px !important;
+        margin-bottom: 20px !important;
+        page-break-after: avoid !important;
+        -webkit-print-color-adjust: exact !important;
+      }
+      
+      table {
+        page-break-inside: avoid !important;
+        border-collapse: collapse !important;
+      }
+      
+      table th {
+        background: #ede6d6 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  `}</style>
+
+  {/* PAGE 1: COVER */}
+  <div style={{ padding: "220px 50px", pageBreakAfter: "always", textAlign: "center" }}>
+    <div style={{ marginBottom: 40 }}>
+      <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 42, fontWeight: 700, color: P.forest, marginBottom: 15, letterSpacing: "0.02em" }}>
+        {company.toUpperCase()}
+      </h1>
+      <div style={{ width: 80, height: 4, background: P.terra, margin: "0 auto" }}></div>
+    </div>
+    
+    <p style={{ fontSize: 18, color: P.inkSoft, marginBottom: 12, fontWeight: 500 }}>
+      9-Agent Post-Acquisition Intelligence Analysis
+    </p>
+    
+    <p style={{ fontSize: 13, color: P.inkFaint, marginBottom: 50 }}>
+      Generated {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} • Completed in {formatTime(elapsed)}
+    </p>
+    
+    <div style={{ background: P.parchment, padding: "25px 30px", borderRadius: 6, maxWidth: 500, margin: "0 auto", border: `1px solid ${P.sand}` }}>
+      <p style={{ fontSize: 11, color: P.inkMid, lineHeight: 1.7, margin: 0 }}>
+        Strategic synthesis from 9 parallel intelligence agents analyzing market position, portfolio optimization, brand evolution, margin improvement, growth channels, competitive dynamics, operational synergies, and platform expansion opportunities.
+      </p>
+    </div>
+    
+    <div style={{ marginTop: 60, fontSize: 9, color: P.inkFaint, textTransform: "uppercase", letterSpacing: "0.15em" }}>
+      Advisor Sprint — Strategic Intelligence System
+    </div>
+  </div>
+
+  {/* PAGE 2: ASSUMPTIONS & SOURCES */}
+  <div style={{ padding: "70px 50px 40px 50px", pageBreakAfter: "always" }}>
+    <div className="section-header">
+      <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: P.forest, margin: 0 }}>
+        Assumptions & Sources
+      </h2>
+      <p style={{ fontSize: 11, color: P.inkSoft, marginTop: 8, fontStyle: "italic" }}>
+        Data foundation and analytical framework
+      </p>
+    </div>
+    
+    <div style={{ marginBottom: 25 }}>
+      <p style={{ fontSize: 11, color: P.inkMid, lineHeight: 1.7 }}>
+        This analysis is based on web search, publicly available data, and industry reports. All 9 agents discover current performance through independent search and synthesis.
+      </p>
+    </div>
+    
+    <div style={{ background: P.parchment, padding: 20, borderRadius: 4, marginBottom: 25 }}>
+      <h3 style={{ fontSize: 11, fontWeight: 700, color: P.forest, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+        Key Contextual Assumptions
+      </h3>
+      <ul style={{ fontSize: 10, lineHeight: 1.8, color: P.inkMid, marginLeft: 20 }}>
+        <li>ITC acquired {company} in 2023 (3 years post-acquisition analysis)</li>
+        <li>Selective Modern Trade distribution support provided (field team bandwidth limited)</li>
+        <li>Manufacturing remains with co-packers (no ITC plant move assumed)</li>
+        <li>Operating as separate unit with institutional support</li>
+        <li>Growth trajectory and current performance discovered through web search</li>
+      </ul>
+    </div>
+    
+    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10, marginTop: 20 }}>
+      <thead>
+        <tr>
+          <th style={{ padding: 10, textAlign: "left", border: `1px solid ${P.sand}`, background: P.parchment, fontWeight: 600 }}>
+            Source Category
+          </th>
+          <th style={{ padding: 10, textAlign: "left", border: `1px solid ${P.sand}`, background: P.parchment, fontWeight: 600 }}>
+            Primary Usage
+          </th>
+          <th style={{ padding: 10, textAlign: "left", border: `1px solid ${P.sand}`, background: P.parchment, fontWeight: 600 }}>
+            Relevant Agents
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>Web search (2024-2026)</td>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>Current market data, competitor analysis, category trends</td>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>All agents</td>
+        </tr>
+        <tr>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>Industry reports</td>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>NIQ, Euromonitor, Redseer, Technopak (where publicly cited)</td>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>Market, Portfolio, Growth</td>
+        </tr>
+        <tr>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>E-commerce data</td>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>Amazon rankings, customer reviews, pricing analysis</td>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>Brand, Portfolio, Competitive</td>
+        </tr>
+        <tr>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>Company data</td>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>Publicly disclosed financials, announcements, filings</td>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>Market, Margins, Synergy</td>
+        </tr>
+        <tr>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>Estimates & logic</td>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>Where data unavailable, clearly marked with reasoning</td>
+          <td style={{ padding: 10, border: `1px solid ${P.sand}` }}>All agents (as needed)</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div style={{ marginTop: 30, padding: 18, background: P.terracream, borderLeft: `5px solid ${P.terra}`, borderRadius: 4 }}>
+      <p style={{ fontSize: 10, color: P.inkMid, lineHeight: 1.6, margin: 0 }}>
+        <strong style={{ color: P.terra }}>Confidence Levels:</strong> Each agent explicitly states confidence (High/Medium/Low) for major claims. Where data is unavailable, estimates are clearly marked with logical reasoning provided. No assumptions presented as facts.
+      </p>
+    </div>
+  </div>
+
+  {/* PAGE 3: TABLE OF CONTENTS */}
+  <div style={{ padding: "70px 50px 40px 50px", pageBreakAfter: "always" }}>
+    <div className="section-header">
+      <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: P.forest, margin: 0 }}>
+        Table of Contents
+      </h2>
+    </div>
+    
+    <div style={{ fontSize: 12, lineHeight: 2.4, marginTop: 35 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", paddingBottom: 12, borderBottom: `2px solid ${P.sand}`, marginBottom: 15 }}>
+        <span style={{ fontWeight: 700, fontSize: 13, color: P.forest }}>Executive Synopsis</span>
+        <span style={{ fontWeight: 700, color: P.terra }}>4-5</span>
       </div>
+      
+      <div style={{ marginTop: 25, marginBottom: 15, fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: P.forestSoft }}>
+        DETAILED INTELLIGENCE ANALYSIS
+      </div>
+      
+      {[
+        { num: 1, icon: "◈", title: "Market Position & Category Dynamics", page: 6 },
+        { num: 2, icon: "◉", title: "Portfolio Strategy & SKU Rationalization", page: 7 },
+        { num: 3, icon: "◎", title: "Brand Positioning & Storytelling", page: 8 },
+        { num: 4, icon: "◐", title: "Margin Improvement & Unit Economics", page: 9 },
+        { num: 5, icon: "◆", title: "Growth Strategy & Channel Orchestration", page: 10 },
+        { num: 6, icon: "◇", title: "Competitive Battle Plan", page: 11 },
+        { num: 7, icon: "◈", title: "Synergy Playbook & Institutional Leverage", page: 12 },
+        { num: 9, icon: "◉", title: "Platform Expansion & D2C Brand Incubator", page: 13-14 }
+      ].map((item, idx) => (
+        <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 10, paddingTop: 10, borderBottom: `1px solid ${P.parchment}` }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ fontSize: 16, color: P.terraSoft, width: 20 }}>{item.icon}</span>
+            <span style={{ color: P.inkMid }}>
+              <span style={{ fontSize: 9, color: P.inkFaint, fontWeight: 600, marginRight: 8 }}>AGENT {item.num}</span>
+              {item.title}
+            </span>
+          </div>
+          <span style={{ color: P.inkFaint, fontSize: 11 }}>{item.page}</span>
+        </div>
+      ))}
+    </div>
+    
+    <div style={{ marginTop: 50, padding: 22, background: P.parchment, borderRadius: 6, textAlign: "center" }}>
+      <p style={{ fontSize: 10, color: P.inkSoft, lineHeight: 1.7, margin: 0 }}>
+        This report synthesizes insights from 9 parallel intelligence agents, each analyzing a critical dimension of post-acquisition strategy. Read the Executive Synopsis (pages 4-5) for a standalone summary, or explore individual agent analyses for deep-dive insights.
+      </p>
+    </div>
+  </div>
+
+  {/* PAGES 4-5: EXECUTIVE SYNOPSIS - Enhanced with visual formatting */}
+  {results.synopsis && (
+    <div style={{ padding: "70px 50px 40px 50px" }}>
+      <div className="section-header" style={{ marginBottom: 25 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
+          <span style={{ fontSize: 28, color: P.terraSoft }}>◉</span>
+          <div>
+            <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: P.forest, margin: 0 }}>
+              Executive Synopsis
+            </h2>
+            <p style={{ fontSize: 11, color: P.inkSoft, fontStyle: "italic", marginTop: 6, marginBottom: 0 }}>
+              Strategic synthesis of all 8 agents — Standalone decision brief
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div 
+        className="agent-content" 
+        style={{ fontSize: 11.5, lineHeight: 1.85, color: P.inkMid }} 
+        dangerouslySetInnerHTML={{ __html: md(results.synopsis) }} 
+      />
+      
+      <div style={{ pageBreakAfter: "always", height: 20 }}></div>
+    </div>
+  )}
+
+  {/* PAGES 6-14: INDIVIDUAL AGENTS WITH ENHANCED FORMATTING */}
+  {AGENTS.filter(a => a.id !== 'synopsis').map((agent, index) => {
+    const result = results[agent.id];
+    if (!result) return null;
+    
+    const isLastAgent = index === AGENTS.filter(a => a.id !== 'synopsis').length - 1;
+    
+    return (
+      <div 
+        key={agent.id} 
+        style={{ 
+          pageBreakBefore: "always", 
+          pageBreakAfter: isLastAgent ? "auto" : "always", 
+          padding: "70px 50px 40px 50px" 
+        }}
+      >
+        <div className="section-header" style={{ marginBottom: 25, pageBreakAfter: "avoid" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 15, marginBottom: 10 }}>
+            <span style={{ fontSize: 28, color: agent.wave === 1 ? P.forestSoft : P.terraSoft }}>
+              {agent.icon}
+            </span>
+            <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: P.forest, margin: 0 }}>
+              {agent.label}
+            </h2>
+          </div>
+          <p style={{ fontSize: 11, color: P.inkSoft, fontStyle: "italic", margin: 0, paddingLeft: 43 }}>
+            {agent.sub}
+          </p>
+          <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: agent.wave === 1 ? P.forestSoft : P.terraSoft, marginTop: 10, paddingLeft: 43 }}>
+            WAVE {agent.wave} • AGENT {agent.id === 'platform' ? '9' : index + 1} OF 8
+          </div>
+        </div>
+        
+        <div 
+          className="agent-content" 
+          data-wave={agent.wave} 
+          style={{ fontSize: 11.5, lineHeight: 1.85, color: P.inkMid }} 
+          dangerouslySetInnerHTML={{ __html: md(result) }} 
+        />
+      </div>
+    );
+  })}
+</div>
     </div>
   );
 }
