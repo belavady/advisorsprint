@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
     }
 
     // Correct model name (no .6)
-    const model = 'claude-sonnet-4-20250514';
+    const model = 'claude-haiku-4-20250514';
 
     const maxTokens = agentId === 'synopsis' ? 4000 
                     : (agentId === 'synergy' || agentId === 'platform') ? 3500 
