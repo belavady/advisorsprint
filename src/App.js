@@ -3689,11 +3689,7 @@ Focus areas:
         </div>
       </div>
 
-      /* BEAUTIFUL 16-PAGE PDF STRUCTURE - PASTE THIS INTO AdvisorSprint FILE */
-
-/* Replace the PDF section (after line ~3650) with this enhanced version */
-
-{/* PDF CONTENT - 16 PAGES WITH BEAUTIFUL FORMATTING */}
+      {/* PDF CONTENT - 16 PAGES WITH BEAUTIFUL FORMATTING */}
 <div style={{ display: "none" }} className="print-only">
   
   {/* ENHANCED CSS FOR PDF */}
