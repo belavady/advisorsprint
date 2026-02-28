@@ -8,7 +8,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 const API_URL = "https://advisorsprint-api.vercel.app/api/claude";
 
 // MOCK MODE: true = instant fake output (for testing), false = real API calls via backend
-const MOCK_MODE = true;
+const MOCK_MODE = false;
 
 // GA4 tracking
 const GA4_ID = "G-XXXXXXXXXX";
