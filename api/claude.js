@@ -1,12 +1,14 @@
 module.exports = async (req, res) => {
-  // CORS Headers
+  // Set CORS headers FIRST - before anything else
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-tool-name');
-  res.setHeader('Access-Control-Max-Age', '86400');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, x-tool-name');
 
+  // Handle OPTIONS preflight
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    res.status(200).end();
+    return;
   }
 
   if (req.method !== 'POST') {
@@ -20,17 +22,13 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Missing prompt' });
     }
 
-    // Model: Sonnet 4.6 for all agents
+    // Correct model name (no .6)
     const model = 'claude-sonnet-4-20250514';
 
-    // Max tokens based on agent
     const maxTokens = agentId === 'synopsis' ? 4000 
                     : (agentId === 'synergy' || agentId === 'platform') ? 3500 
                     : 1500;
 
-    console.log(`[${new Date().toISOString()}] Agent: ${agentId}, Model: ${model}`);
-
-    // Call Anthropic
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -47,7 +45,6 @@ module.exports = async (req, res) => {
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('Anthropic error:', error);
       return res.status(response.status).json({ 
         error: 'AI service error',
         details: error 
@@ -57,12 +54,9 @@ module.exports = async (req, res) => {
     const data = await response.json();
     const text = data.content?.[0]?.text || '';
 
-    console.log(`[${new Date().toISOString()}] Success: ${text.length} chars`);
-
     return res.status(200).json({ text });
 
   } catch (error) {
-    console.error('Error:', error);
     return res.status(500).json({ 
       error: 'Server error',
       message: error.message 
