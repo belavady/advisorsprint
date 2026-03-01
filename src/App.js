@@ -3073,7 +3073,19 @@ Examples of correct usage:
 "Quick Commerce now accounts for approximately 15–20% of Yogabar's online GMV [LOW CONFIDENCE — no public disclosure; inferred from QC platform category share data]."
 "ITC's retail reach is 4.2 million outlets [HIGH CONFIDENCE — ITC Annual Report 2024]."
 
-What you must never do: state a number without a confidence label. "Revenue grew to ₹350 Cr" without a label is not acceptable. If you are certain, say [HIGH CONFIDENCE] and name the source. If you are estimating, say [MEDIUM] or [LOW] and briefly explain the basis in brackets.
+What you must never do: state a number without a confidence label. "Revenue grew to ₹350 Cr" without a label is not acceptable. Always use the full form [HIGH CONFIDENCE — source], [MEDIUM CONFIDENCE — basis], or [LOW CONFIDENCE — basis]. Never use the shorthand [HIGH] or [MEDIUM] alone — the basis shown in the brackets is what makes the label useful to the reader.
+
+SHOWING YOUR CALCULATIONS — MANDATORY FOR REVENUE AND MARKET SIZE ESTIMATES:
+
+When you state or derive a revenue figure, market size, growth rate, or financial projection, you must show the calculation inline, in the same sentence or the one immediately following. This is not optional footnoting — it is the sentence itself.
+
+Format: "[Metric] is estimated at [figure] [CONFIDENCE — [source or method]]. Calculation: [starting point from source] × [factor] = [result], or: [A] + [B] = [C]."
+
+Examples:
+"Yogabar's FY25 revenue is estimated at ₹320–350 Cr [MEDIUM CONFIDENCE — extrapolated from acquisition-time base]. Calculation: ₹200 Cr reported at ITC acquisition (FY22) × 1.6 (60% YoY growth × 3 years, compounded) = ₹328 Cr."
+"India nutrition bar market TAM is ₹950 Cr in FY24 [HIGH CONFIDENCE — Redseer Report, March 2024]. Growing at 28% CAGR, FY26 estimated market = ₹950 Cr × 1.28² = ₹1,556 Cr."
+
+If you cannot show the calculation because the number comes directly from a cited source, write: "Source: [name the source, date, page/section if known]." That is sufficient — no calculation needed for directly sourced figures.
 
 `;
 
@@ -3085,13 +3097,16 @@ What you must never do: state a number without a confidence label. "Revenue grew
   
   if (synthCtx && Object.keys(synthCtx).length > 0) {
     const agentNames = {
-      market: 'AGENT 1: MARKET POSITION & CATEGORY DYNAMICS',
-      portfolio: 'AGENT 2: PORTFOLIO STRATEGY & SKU RATIONALIZATION',
-      brand: 'AGENT 3: BRAND POSITIONING & STORYTELLING',
-      margins: 'AGENT 4: MARGIN IMPROVEMENT & UNIT ECONOMICS',
-      growth: 'AGENT 5: GROWTH STRATEGY & CHANNEL ORCHESTRATION',
+      market:      'AGENT 1: MARKET POSITION & CATEGORY DYNAMICS',
+      portfolio:   'AGENT 2: PORTFOLIO STRATEGY & SKU RATIONALIZATION',
+      brand:       'AGENT 3: BRAND POSITIONING & STORYTELLING',
+      margins:     'AGENT 4: MARGIN IMPROVEMENT & UNIT ECONOMICS',
+      growth:      'AGENT 5: GROWTH STRATEGY & CHANNEL ORCHESTRATION',
       competitive: 'AGENT 6: COMPETITIVE BATTLE PLAN',
-      synergy: 'AGENT 7: SYNERGY PLAYBOOK',
+      synergy:     'AGENT 7: SYNERGY PLAYBOOK & INSTITUTIONAL LEVERAGE',
+      platform:    'AGENT 9: PLATFORM EXPANSION & D2C BRAND INCUBATOR',
+      intl:        'AGENT 10: INTERNATIONAL BENCHMARKS & GLOBAL PLAYBOOK',
+      synopsis:    'EXECUTIVE SYNOPSIS',
     };
     
     let priorContext = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nPRIOR AGENT OUTPUTS (FOR SYNTHESIS)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
@@ -3183,9 +3198,12 @@ function md(text) {
   
   // Convert confidence labels to inline badges
   fixedText = fixedText
-    .replace(/\[HIGH CONFIDENCE[^\]]*\]/gi, '<span class="conf-high">✓ High Confidence</span>')
-    .replace(/\[MEDIUM CONFIDENCE[^\]]*\]/gi, '<span class="conf-medium">~ Medium Confidence</span>')
-    .replace(/\[LOW CONFIDENCE[^\]]*\]/gi, '<span class="conf-low">⚠ Low Confidence</span>');
+    .replace(/\[HIGH CONFIDENCE[^\]]*\]/gi,   '<span class="conf-high">✓ High</span>')
+    .replace(/\[MEDIUM CONFIDENCE[^\]]*\]/gi, '<span class="conf-medium">~ Medium</span>')
+    .replace(/\[LOW CONFIDENCE[^\]]*\]/gi,    '<span class="conf-low">⚠ Low</span>')
+    .replace(/\[HIGH\]/gi,   '<span class="conf-high">✓ High</span>')
+    .replace(/\[MEDIUM\]/gi, '<span class="conf-medium">~ Medium</span>')
+    .replace(/\[LOW\]/gi,    '<span class="conf-low">⚠ Low</span>');
 
   // Regular content (agent analysis)
   // Special case: if content starts with ##, don't add opening <p> tag
@@ -3193,12 +3211,26 @@ function md(text) {
   const openTag = startsWithHeader ? '' : '<p style="margin:6px 0;">';
   const closeTag = startsWithHeader ? '' : '</p>';
   
-  return openTag + fixedText
+  // Extract HTML tables before processing — preserve them verbatim
+  const tablePlaceholders = [];
+  fixedText = fixedText.replace(/<table[\s\S]*?<\/table>/gi, (match) => {
+    const ph = `__TABLE_${tablePlaceholders.length}__`;
+    tablePlaceholders.push(match);
+    return ph;
+  });
+
+  let rendered = openTag + fixedText
     .replace(/^## (.+)$/gm, `</p><h3 class="agent-section-header" style="font-family:'Libre Baskerville',serif;font-size:14px;color:${P.forest};margin:16px 0 6px;border-bottom:1px solid ${P.sand};padding-bottom:4px;">$1</h3><p style="margin:6px 0;">`)
     .replace(/\*\*(.+?)\*\*/g, `<strong style="color:${P.ink};">$1</strong>`)
     .replace(/^- (.+)$/gm, `<div style="display:flex;gap:7px;margin:3px 0;"><span style="color:${P.terra};">▸</span><span>$1</span></div>`)
     .replace(/\n\n/g, `</p><p style="margin:6px 0;">`)
     .replace(/\n/g, " ") + closeTag;
+
+  // Restore tables
+  tablePlaceholders.forEach((table, i) => {
+    rendered = rendered.replace(`__TABLE_${i}__`, `</p><div style="margin:14px 0;overflow-x:auto;">${table}</div><p style="margin:6px 0;">`);
+  });
+  return rendered;
 }
 
 export default function AdvisorSprint() {
@@ -3235,65 +3267,82 @@ Focus areas:
     return () => style.remove();
   }, []);
 
-  const callClaude = useCallback(async (prompt, docs, signal, attempt = 0) => {
+  const callClaude = useCallback(async (prompt, agentId, signal) => {
+    // MOCK mode — return canned response
     if (MOCK_MODE) {
       await new Promise(r => setTimeout(r, 1500));
-      
-      const agentId = AGENTS.find(a => 
-        (a.id === "market" && prompt.includes("MARKET POSITION")) ||
-        (a.id === "portfolio" && prompt.includes("PORTFOLIO")) ||
-        (a.id === "brand" && prompt.includes("BRAND POSITIONING")) ||
-        (a.id === "margins" && prompt.includes("MARGIN IMPROVEMENT")) ||
-        (a.id === "growth" && prompt.includes("GROWTH STRATEGY")) ||
-        (a.id === "competitive" && prompt.includes("COMPETITIVE BATTLE")) ||
-        (a.id === "synergy" && prompt.includes("SYNERGY PLAYBOOK")) ||
-        (a.id === "synopsis" && prompt.includes("EXECUTIVE SYNOPSIS")) ||
-        (a.id === "platform" && prompt.includes("D2C BRAND INCUBATOR")) ||
-        (a.id === "intl" && prompt.includes("INTERNATIONAL BENCHMARKS"))
-      )?.id || "market";
-      
-      return MOCK[agentId] || MOCK.market;
+      const mockId = AGENTS.find(a =>
+        (a.id === 'market'      && prompt.includes('MARKET POSITION')) ||
+        (a.id === 'portfolio'   && prompt.includes('PORTFOLIO')) ||
+        (a.id === 'brand'       && prompt.includes('BRAND POSITIONING')) ||
+        (a.id === 'margins'     && prompt.includes('MARGIN IMPROVEMENT')) ||
+        (a.id === 'growth'      && prompt.includes('GROWTH STRATEGY')) ||
+        (a.id === 'competitive' && prompt.includes('COMP')) ||
+        (a.id === 'synergy'     && prompt.includes('SYNERGY')) ||
+        (a.id === 'synopsis'    && prompt.includes('EXECUTIVE SYNOPSIS')) ||
+        (a.id === 'platform'    && prompt.includes('D2C BRAND INCUBATOR')) ||
+        (a.id === 'intl'        && prompt.includes('INTERNATIONAL BENCHMARKS'))
+      )?.id || 'market';
+      return MOCK[mockId] || MOCK.market;
     }
 
+    // Real mode — SSE streaming fetch
     const res = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-tool-name": "advisor",
-      },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-tool-name': 'advisor' },
       signal,
-      body: JSON.stringify({
-        prompt,
-        pdfs: docs.map(p => ({ name: p.name, b64: p.b64 })),
-        agentId: AGENTS.find(a => prompt.includes(a.label))?.id || "market",
-      }),
+      body: JSON.stringify({ prompt, agentId }),
     });
 
-    if (res.status === 429 && attempt < 4) {
-      await new Promise(r => setTimeout(r, (attempt + 1) * 5000));
-      return callClaude(prompt, docs, signal, attempt + 1);
-    }
-
     if (!res.ok) {
-      const err = await res.text().catch(() => "");
+      const err = await res.text().catch(() => '');
       throw new Error(err || `Server error: ${res.status}`);
     }
 
-    const data = await res.json();
-    // Collect sources if returned
-    if (data.sources && data.sources.length > 0) {
-      setSources(prev => {
-        const existing = new Set(prev.map(s => s.url));
-        const newSources = data.sources.filter(s => !existing.has(s.url));
-        return [...prev, ...newSources].slice(0, 50); // cap at 50
-      });
+    // Read the SSE stream
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let fullText = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (signal.aborted) { reader.cancel(); break; }
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop(); // keep incomplete line
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        try {
+          const event = JSON.parse(line.slice(6));
+          if (event.type === 'chunk')     fullText += event.text;
+          if (event.type === 'searching') setStatuses(s => ({ ...s, [agentId]: `searching: ${event.query.slice(0,40)}…` }));
+          if (event.type === 'done') {
+            fullText = event.text || fullText;
+            if (event.sources?.length) {
+              setSources(prev => {
+                const existing = new Set(prev.map(s => s.url));
+                const fresh = event.sources.filter(s => !existing.has(s.url));
+                return [...prev, ...fresh].slice(0, 50);
+              });
+            }
+          }
+          if (event.type === 'error') throw new Error(event.message);
+        } catch (e) {
+          if (e.message && !e.message.startsWith('JSON')) throw e;
+        }
+      }
     }
-    return data.text || "";
-  }, []); // callClaude has no dependencies - uses only parameters and constants
+
+    return fullText;
+  }, [setSources, setStatuses]); // callClaude has no dependencies - uses only parameters and constants
 
   const runAgent = useCallback(async (id, prompt, signal, docs) => {
     try {
-      const text = await callClaude(prompt, docs || [], signal);
+      const text = await callClaude(prompt, id, signal);
       if (!signal.aborted) {
         setResults(r => ({ ...r, [id]: text }));
         setStatuses(s => ({ ...s, [id]: "done" }));
@@ -3646,6 +3695,42 @@ Focus areas:
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
+
+      table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 9px !important;
+        margin: 12px 0 !important;
+        page-break-inside: avoid !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      th {
+        background: #1a3325 !important;
+        color: #f5f0e8 !important;
+        padding: 7px 10px !important;
+        text-align: left !important;
+        font-weight: 700 !important;
+        font-size: 8.5px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        border: 1px solid #1a3325 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      td {
+        padding: 6px 10px !important;
+        border: 1px solid #d4c4a8 !important;
+        font-size: 9px !important;
+        line-height: 1.5 !important;
+        vertical-align: top !important;
+        color: #3d3020 !important;
+      }
+      tr:nth-child(even) td {
+        background: #faf6ef !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
     }
   `}</style>
 
@@ -3678,7 +3763,7 @@ Focus areas:
   </div>
 
   {/* PAGE 2: ASSUMPTIONS & SOURCES */}
-  <div style={{ padding: "70px 50px 40px 50px", pageBreakAfter: "always" }}>
+  <div style={{ padding: "90px 50px 40px 50px", pageBreakAfter: "always" }}>
     <div className="section-header">
       <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: P.forest, margin: 0 }}>
         Assumptions & Sources
@@ -3742,8 +3827,8 @@ Focus areas:
         </div>
       ) : (
         <div style={{ background: P.parchment, padding: 18, borderRadius: 4, borderLeft: `4px solid ${P.sand}` }}>
-          <p style={{ fontSize: 10, color: P.inkFaint, margin: 0, fontStyle: "italic" }}>
-            Sources are cited inline within each agent's analysis. Each claim is labelled with a confidence level (High / Medium / Low) and the basis for the estimate or data point is stated in brackets.
+          <p style={{ fontSize: 10, color: P.inkFaint, margin: 0, fontStyle: "italic", lineHeight: 1.8 }}>
+            This run used MOCK data — no live web search was performed. In a live run, sources retrieved by each agent during web search will appear here as a table with article title, domain, and the agent that fetched them. Each claim in agent outputs is labelled High / Medium / Low confidence with the reasoning shown in brackets.
           </p>
         </div>
       )}
@@ -3757,7 +3842,7 @@ Focus areas:
   </div>
 
   {/* PAGE 3: TABLE OF CONTENTS */}
-  <div style={{ padding: "70px 50px 40px 50px", pageBreakAfter: "always" }}>
+  <div style={{ padding: "90px 50px 40px 50px", pageBreakAfter: "always" }}>
     <div className="section-header">
       <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: P.forest, margin: 0 }}>
         Table of Contents
@@ -3765,9 +3850,24 @@ Focus areas:
     </div>
 
     <div style={{ marginTop: 35 }}>
-      <a href="#section-synopsis" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 14, borderBottom: `2px solid ${P.sand}`, marginBottom: 20, textDecoration: "none" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginBottom: 12 }}>
+        <span style={{ fontSize: 9, color: P.inkFaint, fontStyle: "italic", letterSpacing: "0.04em" }}>
+          ↑ hover any row to navigate
+        </span>
+      </div>
+      <a href="#section-synopsis" style={{
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          paddingBottom: 14, paddingLeft: 10,
+          borderBottom: `2px solid ${P.sand}`, borderLeft: `3px solid transparent`,
+          marginBottom: 20, textDecoration: "none", cursor: "pointer", transition: "all 0.15s ease",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.borderLeftColor = P.terra; e.currentTarget.style.background = P.parchment; }}
+        onMouseLeave={e => { e.currentTarget.style.borderLeftColor = 'transparent'; e.currentTarget.style.background = 'transparent'; }}>
         <span style={{ fontWeight: 700, fontSize: 15, color: P.forest, fontFamily: "'Libre Baskerville', serif" }}>Executive Synopsis</span>
-        <span style={{ fontWeight: 700, color: P.terra, fontSize: 13 }}>4–5</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontWeight: 700, color: P.terra, fontSize: 13 }}>4–5</span>
+          <span style={{ color: P.terra, fontSize: 14, opacity: 0.5 }}>→</span>
+        </div>
       </a>
 
       <div style={{ marginBottom: 16, fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: P.forestSoft }}>
@@ -3785,15 +3885,39 @@ Focus areas:
         { num: 9,  id: "platform",    icon: "◉", title: "Platform Expansion & D2C Brand Incubator",   pages: "15–16" },
         { num: 10, id: "intl",        icon: "◎", title: "International Benchmarks & Global Playbook", pages: "17–18" },
       ].map((item, idx) => (
-        <a key={idx} href={`#section-${item.id}`} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 11, paddingTop: 11, borderBottom: `1px solid ${P.parchment}`, textDecoration: "none" }}>
+        <a key={idx} href={`#section-${item.id}`} style={{
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          paddingBottom: 10, paddingTop: 10,
+          borderBottom: `1px solid ${P.parchment}`,
+          borderLeft: `3px solid transparent`,
+          paddingLeft: 10,
+          textDecoration: "none",
+          cursor: "pointer",
+          transition: "all 0.15s ease",
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.borderLeftColor = P.terra;
+          e.currentTarget.style.background = P.parchment;
+          e.currentTarget.querySelector('.toc-title').style.color = P.terra;
+          e.currentTarget.querySelector('.toc-arrow').style.opacity = '1';
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.borderLeftColor = 'transparent';
+          e.currentTarget.style.background = 'transparent';
+          e.currentTarget.querySelector('.toc-title').style.color = P.inkMid;
+          e.currentTarget.querySelector('.toc-arrow').style.opacity = '0.3';
+        }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span style={{ fontSize: 15, color: P.terraSoft, width: 22 }}>{item.icon}</span>
-            <span style={{ color: P.inkMid, fontSize: 12 }}>
-              <span style={{ fontSize: 9, color: P.inkFaint, fontWeight: 600, marginRight: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>Agent {item.num}</span>
+            <span style={{ fontSize: 15, color: P.terraSoft, width: 22, flexShrink: 0 }}>{item.icon}</span>
+            <span className="toc-title" style={{ color: P.inkMid, fontSize: 12, transition: "color 0.15s ease" }}>
+              <span style={{ fontSize: 9, color: P.inkFaint, fontWeight: 600, marginRight: 8, textTransform: "uppercase", letterSpacing: "0.08em", display: "block" }}>Agent {item.num}</span>
               {item.title}
             </span>
           </div>
-          <span style={{ color: P.terra, fontSize: 11, fontWeight: 600 }}>{item.pages}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+            <span style={{ color: P.terra, fontSize: 11, fontWeight: 600 }}>{item.pages}</span>
+            <span className="toc-arrow" style={{ color: P.terra, fontSize: 14, opacity: 0.3, transition: "opacity 0.15s ease" }}>→</span>
+          </div>
         </a>
       ))}
     </div>
@@ -3806,7 +3930,7 @@ Focus areas:
   </div>
 
 {results.synopsis && (
-    <div id="section-synopsis" style={{ padding: "70px 50px 40px 50px" }}>
+    <div id="section-synopsis" style={{ padding: "90px 50px 40px 50px" }}>
       <div className="section-header" style={{ marginBottom: 25 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
           <span style={{ fontSize: 28, color: P.terraSoft }}>◉</span>
@@ -3845,7 +3969,7 @@ Focus areas:
         style={{ 
           pageBreakBefore: "always", 
           pageBreakAfter: isLastAgent ? "auto" : "always", 
-          padding: "70px 50px 40px 50px" 
+          padding: "90px 50px 40px 50px" 
         }}
       >
         <div className="section-header" style={{ marginBottom: 25, pageBreakAfter: "avoid" }}>
