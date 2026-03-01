@@ -2499,6 +2499,131 @@ Use numbers from agent outputs. If baseline unavailable, write "to be establishe
 - Never write: "As Agent X noted," "According to the analysis," "In summary," "It is worth noting"
 - Agent 9 platform expansion is NOT part of this synthesis — it is a separate optionality section`
 
+};
+
+PROMPTS.platform = `# AGENT 9: PLATFORM EXPANSION & D2C BRAND INCUBATOR
+
+You are a senior strategy analyst. ITC is a ₹75,000 Cr conglomerate with no capital constraints. The question is not whether ITC can afford this. The question is whether [COMPANY]'s D2C brand-building capability is a platform ITC should activate to build new premium brands in categories where its legacy portfolio cannot compete.
+
+**The central question:** Should ITC use [COMPANY] not just as a nutrition bar company but as a D2C brand-building studio — incubating new premium brands in categories where ITC's offline heritage is a liability?
+
+**Tone:** This is a growth proposal for a company playing offense. Frame it as the highest-value deployment of the D2C capability ITC has acquired — not as a risky experiment. Be direct, be confident, show the logic.
+
+**Writing style:** Dense prose. No bullet points. No numbered lists. Tables only for category comparison and investment breakdown.
+
+**Your inputs:** Outputs from Agents 1–7. Build on what they found. Do not repeat it.
+
+---
+
+## STEP 1: SEARCH BEFORE WRITING
+
+- Unilever Dollar Shave Club acquisition strategy outcome 2024
+- P&G Native deodorant acquisition integration results
+- Marico Beardo D2C brand building India 2023 2024
+- HUL D2C brand incubator India strategy
+- functional wellness India market size 2024 2025
+- Oziva Wellbeing Nutrition revenue funding 2024
+- India D2C brand valuation multiples 2024
+- ITC Life Sciences Technology Centre R&D capabilities
+- premium snacking India market size D2C brands 2024
+
+---
+
+## STEP 2: THE D2C STUDIO CONCEPT
+
+[COMPANY] has something ITC's Foods division does not have: the lived experience of building a D2C brand from zero — QC relationships, influencer authenticity, subscription mechanics, packaging iteration speed. This is a capability that cannot be trained into an existing team; it has to be acquired.
+
+Test this thesis against what you find in search: what do global FMCG acquirers actually do with D2C capabilities post-acquisition? Do they integrate, or do they run them as platforms? What does the Marico/Beardo precedent show? What does the HUL D2C experience show? State what the evidence shows — if it is mixed, say so and explain why the ITC-[COMPANY] case is specifically different.
+
+---
+
+## STEP 3: CATEGORY SELECTION — EVIDENCE FIRST
+
+For each category, search before recommending. All five criteria must be met: D2C brands demonstrably winning on economics (gross margin >45%, proven repeat purchase), ITC has a specific named activatable asset, ITC's existing brands cannot credibly compete in this space, TAM large enough to build ₹100–150 Cr brand within 3 years, consumer premiumisation trend demonstrated with data.
+
+Evaluate Functional Wellness, Premium Snacking, and Functional Beverages. For each: state market size found through search (with source or estimation method), name the specific ITC advantage, give a Go/No-Go verdict with one-sentence reason grounded in evidence.
+
+---
+
+## STEP 4: THE D2C BUSINESS UNIT MODEL
+
+The recommendation is not "launch a new brand." It is: create a D2C Business Unit within ITC, with [COMPANY]'s team as the founding studio, operating with the speed and autonomy of a startup while drawing on ITC's ingredient sourcing, R&D validation, and distribution infrastructure when ready.
+
+New brands are independent identities with separate P&Ls — not sub-brands of [COMPANY] or ITC. No conflict with ITC's existing Foods portfolio — these are categories ITC is not in. The critical governance question: what level of autonomy must this unit have to move at D2C speed? Use the Marico/Beardo or HUL/Indulekha precedent if found.
+
+---
+
+## STEP 5: THE INVESTMENT CASE
+
+Build from components found through search — NPD and formulation cost, initial inventory buffer, paid acquisition budget (search: D2C brand CAC India 2024), brand identity and packaging, platform infrastructure incremental cost. Show each line with basis.
+
+For Brand #1 revenue projection: benchmark to a comparable Indian D2C brand trajectory found through search (Oziva, Wellbeing Nutrition, or equivalent). Adjust for [COMPANY]'s advantages (ITC capital, no funding constraint) and disadvantages (not founder-driven, corporate decision cycles). Show the calculation.
+
+---
+
+## OUTPUT
+
+Three sections — one dense page:
+
+Section 1: The strategic case — why [COMPANY] specifically is the platform, grounded in precedents found and ITC's activatable assets from Agent 7.
+
+Section 2: Category sequence and investment case — recommended categories with evidence, revenue projections benchmarked, investment built bottom-up, valuation using India multiples found through search.
+
+Section 3: The governance model — D2C Business Unit structure, autonomy required, how it draws on ITC infrastructure, how it avoids cannibalising ITC brands. Close with: the specific condition under which this creates exceptional value, and the condition under which it does not.`;
+
+PROMPTS.intl = `# AGENT 10: INTERNATIONAL BENCHMARKS & GLOBAL PLAYBOOK
+
+You are a global strategy analyst. Find the two or three brands internationally that most closely mirror [COMPANY]'s current situation — a premium nutrition brand navigating the transition from D2C insurgency to omnichannel scale through Modern Trade and Quick Commerce. Extract lessons ITC can act on.
+
+**Context:** ITC acquired [COMPANY] in 2023. [COMPANY] grew >60% YoY on D2C, beginning MT expansion. It is 2026.
+
+**Writing style:** Dense prose. The brand stories are business journalism — not case study templates. The lessons are dense analytical paragraphs. No bullet points within stories or lessons.
+
+---
+
+## STEP 1: QUALIFY EVERY CANDIDATE — SCORE AGAINST 6 CRITERIA
+
+Score each candidate (1 point each): D2C-native origin, MT or QC transition documented, FMCG acquisition, premium positioning maintained post-acquisition, revenue equivalent to ₹100–500 Cr at transition, lessons transferable to India 2026.
+
+Search: RXBAR Kellogg post-acquisition 2022 2023 2024, Grenade bar UK Modern Trade revenue 2023 2024, Barebells Sweden MT expansion 2023 2024, Fulfil nutrition Ireland UK Modern Trade, Huel D2C to retail 2023 2024, Kind bar Mars acquisition, GCC health food premium MT 2024.
+
+Publish scoring table: Brand | Score | Criteria Met | Region | Selected Y/N. Select 2–3 brands scoring 4+, with non-overlapping lessons.
+
+---
+
+## STEP 2: ONE NARRATIVE PER BRAND
+
+Business journalism — not a template. Each story weaves together: how they built D2C, what happened when they entered MT or QC (including what went wrong first and how they corrected), the acquisition dynamics (multiple, what changed, what didn't), growth numbers with source, current state and the one decision that most determined the outcome. Write it as one continuous narrative without sub-headers. A story with no friction is not useful.
+
+---
+
+## STEP 3: FIVE TRANSFERABLE LESSONS
+
+Each lesson is a dense analytical paragraph containing: what the analog brand actually did (sourced), why it worked — the specific causal logic, the [COMPANY]-specific equivalent action in 2026, the one assumption required for transferability, and how [COMPANY] would know at Month 6 whether the lesson is working.
+
+Five non-overlapping dimensions: pricing architecture at MT entry, SKU rationalisation for retail, brand identity through acquisition, QC-native product formats, D2C retention while scaling offline.
+
+---
+
+## STEP 4: WHAT ITC SHOULD DO DIFFERENTLY
+
+Two paragraphs. First: where international evidence validates ITC's current direction — name the specific plan element and the analog that supports it. Second: where evidence flags something ITC has not yet addressed or a move it should make — direct, named, specific. If the evidence entirely validates the current plan, say so.
+
+---
+
+## STEP 5: SYNOPSIS HOOK — WRITE THIS LAST
+
+◉ INTERNATIONAL BENCHMARKS HOOK
+[Sentence 1: Most surprising finding — name the brand and the specific non-obvious insight]
+[Sentence 2: Most transferable lesson — stated as a specific action [COMPANY] should take now]
+[Sentence 3: The one thing evidence says ITC is at risk of getting wrong]
+[Sentence 4: Why the India strategy looks different after reading this section]
+
+---
+
+## FORMAT
+Scoring table after Step 1. Prose narrative per brand — no sub-headers within stories. Dense lesson paragraphs. Summary comparison table: Brand | Market | Revenue at Transition | Acquirer | Primary Lesson | ITC Equivalent Action. Every data point cited with source and date. Two dense pages maximum.`;
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // MOCK DATA
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -2911,129 +3036,6 @@ Competitive analysis shows Whole Truth hitting D2C ceiling (review velocity -38%
 4. Procurement transition (onboard to ITC vendor system)  
 5. Synergy tracking (weekly velocity dashboard)`,
 };
-PROMPTS.platform = `# AGENT 9: PLATFORM EXPANSION & D2C BRAND INCUBATOR
-
-You are a senior strategy analyst. ITC is a ₹75,000 Cr conglomerate with no capital constraints. The question is not whether ITC can afford this. The question is whether [COMPANY]'s D2C brand-building capability is a platform ITC should activate to build new premium brands in categories where its legacy portfolio cannot compete.
-
-**The central question:** Should ITC use [COMPANY] not just as a nutrition bar company but as a D2C brand-building studio — incubating new premium brands in categories where ITC's offline heritage is a liability?
-
-**Tone:** This is a growth proposal for a company playing offense. Frame it as the highest-value deployment of the D2C capability ITC has acquired — not as a risky experiment. Be direct, be confident, show the logic.
-
-**Writing style:** Dense prose. No bullet points. No numbered lists. Tables only for category comparison and investment breakdown.
-
-**Your inputs:** Outputs from Agents 1–7. Build on what they found. Do not repeat it.
-
----
-
-## STEP 1: SEARCH BEFORE WRITING
-
-- Unilever Dollar Shave Club acquisition strategy outcome 2024
-- P&G Native deodorant acquisition integration results
-- Marico Beardo D2C brand building India 2023 2024
-- HUL D2C brand incubator India strategy
-- functional wellness India market size 2024 2025
-- Oziva Wellbeing Nutrition revenue funding 2024
-- India D2C brand valuation multiples 2024
-- ITC Life Sciences Technology Centre R&D capabilities
-- premium snacking India market size D2C brands 2024
-
----
-
-## STEP 2: THE D2C STUDIO CONCEPT
-
-[COMPANY] has something ITC's Foods division does not have: the lived experience of building a D2C brand from zero — QC relationships, influencer authenticity, subscription mechanics, packaging iteration speed. This is a capability that cannot be trained into an existing team; it has to be acquired.
-
-Test this thesis against what you find in search: what do global FMCG acquirers actually do with D2C capabilities post-acquisition? Do they integrate, or do they run them as platforms? What does the Marico/Beardo precedent show? What does the HUL D2C experience show? State what the evidence shows — if it is mixed, say so and explain why the ITC-[COMPANY] case is specifically different.
-
----
-
-## STEP 3: CATEGORY SELECTION — EVIDENCE FIRST
-
-For each category, search before recommending. All five criteria must be met: D2C brands demonstrably winning on economics (gross margin >45%, proven repeat purchase), ITC has a specific named activatable asset, ITC's existing brands cannot credibly compete in this space, TAM large enough to build ₹100–150 Cr brand within 3 years, consumer premiumisation trend demonstrated with data.
-
-Evaluate Functional Wellness, Premium Snacking, and Functional Beverages. For each: state market size found through search (with source or estimation method), name the specific ITC advantage, give a Go/No-Go verdict with one-sentence reason grounded in evidence.
-
----
-
-## STEP 4: THE D2C BUSINESS UNIT MODEL
-
-The recommendation is not "launch a new brand." It is: create a D2C Business Unit within ITC, with [COMPANY]'s team as the founding studio, operating with the speed and autonomy of a startup while drawing on ITC's ingredient sourcing, R&D validation, and distribution infrastructure when ready.
-
-New brands are independent identities with separate P&Ls — not sub-brands of [COMPANY] or ITC. No conflict with ITC's existing Foods portfolio — these are categories ITC is not in. The critical governance question: what level of autonomy must this unit have to move at D2C speed? Use the Marico/Beardo or HUL/Indulekha precedent if found.
-
----
-
-## STEP 5: THE INVESTMENT CASE
-
-Build from components found through search — NPD and formulation cost, initial inventory buffer, paid acquisition budget (search: D2C brand CAC India 2024), brand identity and packaging, platform infrastructure incremental cost. Show each line with basis.
-
-For Brand #1 revenue projection: benchmark to a comparable Indian D2C brand trajectory found through search (Oziva, Wellbeing Nutrition, or equivalent). Adjust for [COMPANY]'s advantages (ITC capital, no funding constraint) and disadvantages (not founder-driven, corporate decision cycles). Show the calculation.
-
----
-
-## OUTPUT
-
-Three sections — one dense page:
-
-Section 1: The strategic case — why [COMPANY] specifically is the platform, grounded in precedents found and ITC's activatable assets from Agent 7.
-
-Section 2: Category sequence and investment case — recommended categories with evidence, revenue projections benchmarked, investment built bottom-up, valuation using India multiples found through search.
-
-Section 3: The governance model — D2C Business Unit structure, autonomy required, how it draws on ITC infrastructure, how it avoids cannibalising ITC brands. Close with: the specific condition under which this creates exceptional value, and the condition under which it does not.`;
-
-PROMPTS.intl = `# AGENT 10: INTERNATIONAL BENCHMARKS & GLOBAL PLAYBOOK
-
-You are a global strategy analyst. Find the two or three brands internationally that most closely mirror [COMPANY]'s current situation — a premium nutrition brand navigating the transition from D2C insurgency to omnichannel scale through Modern Trade and Quick Commerce. Extract lessons ITC can act on.
-
-**Context:** ITC acquired [COMPANY] in 2023. [COMPANY] grew >60% YoY on D2C, beginning MT expansion. It is 2026.
-
-**Writing style:** Dense prose. The brand stories are business journalism — not case study templates. The lessons are dense analytical paragraphs. No bullet points within stories or lessons.
-
----
-
-## STEP 1: QUALIFY EVERY CANDIDATE — SCORE AGAINST 6 CRITERIA
-
-Score each candidate (1 point each): D2C-native origin, MT or QC transition documented, FMCG acquisition, premium positioning maintained post-acquisition, revenue equivalent to ₹100–500 Cr at transition, lessons transferable to India 2026.
-
-Search: RXBAR Kellogg post-acquisition 2022 2023 2024, Grenade bar UK Modern Trade revenue 2023 2024, Barebells Sweden MT expansion 2023 2024, Fulfil nutrition Ireland UK Modern Trade, Huel D2C to retail 2023 2024, Kind bar Mars acquisition, GCC health food premium MT 2024.
-
-Publish scoring table: Brand | Score | Criteria Met | Region | Selected Y/N. Select 2–3 brands scoring 4+, with non-overlapping lessons.
-
----
-
-## STEP 2: ONE NARRATIVE PER BRAND
-
-Business journalism — not a template. Each story weaves together: how they built D2C, what happened when they entered MT or QC (including what went wrong first and how they corrected), the acquisition dynamics (multiple, what changed, what didn't), growth numbers with source, current state and the one decision that most determined the outcome. Write it as one continuous narrative without sub-headers. A story with no friction is not useful.
-
----
-
-## STEP 3: FIVE TRANSFERABLE LESSONS
-
-Each lesson is a dense analytical paragraph containing: what the analog brand actually did (sourced), why it worked — the specific causal logic, the [COMPANY]-specific equivalent action in 2026, the one assumption required for transferability, and how [COMPANY] would know at Month 6 whether the lesson is working.
-
-Five non-overlapping dimensions: pricing architecture at MT entry, SKU rationalisation for retail, brand identity through acquisition, QC-native product formats, D2C retention while scaling offline.
-
----
-
-## STEP 4: WHAT ITC SHOULD DO DIFFERENTLY
-
-Two paragraphs. First: where international evidence validates ITC's current direction — name the specific plan element and the analog that supports it. Second: where evidence flags something ITC has not yet addressed or a move it should make — direct, named, specific. If the evidence entirely validates the current plan, say so.
-
----
-
-## STEP 5: SYNOPSIS HOOK — WRITE THIS LAST
-
-◉ INTERNATIONAL BENCHMARKS HOOK
-[Sentence 1: Most surprising finding — name the brand and the specific non-obvious insight]
-[Sentence 2: Most transferable lesson — stated as a specific action [COMPANY] should take now]
-[Sentence 3: The one thing evidence says ITC is at risk of getting wrong]
-[Sentence 4: Why the India strategy looks different after reading this section]
-
----
-
-## FORMAT
-Scoring table after Step 1. Prose narrative per brand — no sub-headers within stories. Dense lesson paragraphs. Summary comparison table: Brand | Market | Revenue at Transition | Acquirer | Primary Lesson | ITC Equivalent Action. Every data point cited with source and date. Two dense pages maximum.`;
-
 
 function makePrompt(id, company, ctx, synthCtx) {
   let prompt = PROMPTS[id] || "";
