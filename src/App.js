@@ -47,7 +47,7 @@ const GLOBAL_CSS = `
   @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.2; } }
   
   @media print {
-    @page { margin-top: 18mm; margin-right: 0; margin-bottom: 10mm; margin-left: 0; }
+    @page { margin: 0; }
     body { background: white !important; margin: 0 !important; padding: 0 !important; }
     .no-print { display: none !important; }
     .print-only { display: block !important; }
@@ -57,6 +57,7 @@ const GLOBAL_CSS = `
       top: 0;
       left: 0;
       right: 0;
+      height: 52px !important;
       z-index: 9999;
       background: #1a3325 !important;
       -webkit-print-color-adjust: exact !important;
@@ -71,8 +72,6 @@ const GLOBAL_CSS = `
     .agent-content { 
       max-height: none !important; 
       overflow: visible !important;
-      padding-top: 110px !important;
-      margin-top: -104px !important;
     }
     h2 {
       page-break-after: avoid !important;
@@ -2412,7 +2411,7 @@ Your output must:
 
 You are the senior partner who has read every page of this report. You write two pages for Hemant and the ITC leadership team. You give the aggregated synthesis first — your conclusions, your narrative, your reading of the situation — and only after that do you attribute where each insight came from. The reader should understand the full strategic picture before they see the source attribution.
 
-**Tone:** ITC is playing offense. Yogabar is growing. Frame this as acceleration. Never write: "exhausted," "saturated," "broken," "collapsed," or any language implying the current model has failed.
+**Tone:** ITC is playing offense. Yogabar is growing. Frame everything as acceleration and opportunity. Never write: "exhausted," "saturated," "broken," "collapsed," "risk," "concern," "weakness," "challenge," "problem," or any language implying difficulty. There are no negatives of the ITC acquisition — only untapped advantages. Every finding is an opportunity, every gap is a space to move into.
 
 **Numbers:** Every number from agent outputs. Cite the agent as source. If unavailable, write "not confirmed through available data." Do not invent.
 
@@ -2479,25 +2478,6 @@ Four things ITC will do to deliver this strategy. Written as actions in prose �
 Do not include founder retention. Focus on strategy execution and capability deployment.
 
 ---
-
-**THE 90-DAY LAUNCH PLAN**
-
-Three sprint blocks as prose — what happens, who owns it, measurable output at the end of each phase. Close with the KPI table:
-
-<table>
-  <tr><th>KPI</th><th>Current Baseline</th><th>Month 3 Target</th><th>Month 6 Target</th><th>Source Agent</th></tr>
-</table>
-
-Use numbers from agent outputs. If baseline unavailable, write "to be established in Days 1–30."
-
----
-
-## QUALITY RULES
-- Part 1 must be readable standalone — someone who hasn't read the agents should understand the full strategic picture from Part 1 alone
-- Part 2 adds credibility and action; the story is told in Part 1
-- Two pages maximum. Stop when nothing non-obvious remains.
-- Never write: "As Agent X noted," "According to the analysis," "In summary," "It is worth noting"
-- Agent 9 platform expansion is NOT part of this synthesis — it is a separate optionality section`
 
 };
 
@@ -2567,7 +2547,7 @@ Three sections — one dense page:
 
 Section 1: The strategic case — why [COMPANY] specifically is the platform, grounded in precedents found and ITC's activatable assets from Agent 7.
 
-Section 2: Category sequence and investment case — recommended categories with evidence, revenue projections benchmarked, investment built bottom-up, valuation using India multiples found through search.
+Section 2: Category sequence and investment case — recommended categories with evidence, revenue projections benchmarked, investment built bottom-up, valuation using India multiples found through search. You MUST present candidate category scoring as an HTML <table> with columns: Category | Strategic Fit (1-5) | Market Readiness (1-5) | ITC Leverage (1-5) | Revenue Potential (₹Cr) | Priority Rank. Use <table><thead><tr><th>...</th></tr></thead><tbody>...</tbody></table> tags.
 
 Section 3: The governance model — D2C Business Unit structure, autonomy required, how it draws on ITC infrastructure, how it avoids cannibalising ITC brands. Close with: the specific condition under which this creates exceptional value, and the condition under which it does not.`;
 
@@ -3071,6 +3051,10 @@ Format: state the figure, then on the next line: "Calculation: [starting point] 
 WEB SEARCH BUDGET — YOU HAVE 2 SEARCHES MAXIMUM:
 
 You have exactly 2 web searches. Use them on the 2 highest-value queries — the ones that will give you the most specific, sourced numbers that cannot be estimated from general knowledge. Prioritise: company-specific revenue or growth data, a named industry report figure, or a specific competitor data point. Do not waste a search on something you can estimate confidently. Make every search count.
+
+NEVER SHOW YOUR REASONING PROCESS: Do not write sentences like "I'll conduct targeted searches", "Based on my research I can now", "Let me structure this", or "---" dividers. Begin immediately with analysis content. No preamble, no meta-commentary, no closing remarks.
+
+NO NEGATIVES ABOUT THE ITC ACQUISITION: Every finding must be an opportunity, advantage, or action. Do not write about risks, weaknesses, or challenges. Frame difficulties as "the priority investment area." ITC acquiring Yogabar is unambiguously positive.
 
 `;
 
