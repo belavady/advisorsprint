@@ -3068,6 +3068,10 @@ When you state or derive a revenue figure, market size, growth rate, or financia
 
 Format: state the figure, then on the next line: "Calculation: [starting point] × [factor] = [result]" or "Source: [name, date]." Direct citations need no calculation.
 
+WEB SEARCH BUDGET — YOU HAVE 2 SEARCHES MAXIMUM:
+
+You have exactly 2 web searches. Use them on the 2 highest-value queries — the ones that will give you the most specific, sourced numbers that cannot be estimated from general knowledge. Prioritise: company-specific revenue or growth data, a named industry report figure, or a specific competitor data point. Do not waste a search on something you can estimate confidently. Make every search count.
+
 `;
 
   if (ctx) {
