@@ -47,7 +47,7 @@ const GLOBAL_CSS = `
   @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.2; } }
   
   @media print {
-    @page { margin: 0; }
+    @page { margin-top: 18mm; margin-right: 0; margin-bottom: 10mm; margin-left: 0; }
     body { background: white !important; margin: 0 !important; padding: 0 !important; }
     .no-print { display: none !important; }
     .print-only { display: block !important; }
@@ -3271,23 +3271,13 @@ Focus areas:
       return MOCK[mockId] || MOCK.market;
     }
 
-    // Real mode — SSE streaming fetch with 429 retry
-    let res;
-    for (let attempt = 0; attempt < 5; attempt++) {
-      res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-tool-name': 'advisor' },
-        signal,
-        body: JSON.stringify({ prompt, agentId }),
-      });
-      if (res.status === 429) {
-        const wait = (attempt + 1) * 30000;
-        setStatuses(s => ({ ...s, [agentId]: `rate limited — retrying in ${wait/1000}s…` }));
-        await new Promise(r => setTimeout(r, wait));
-        continue;
-      }
-      break;
-    }
+    // Real mode — single attempt, no retry (retries multiply cost via re-running searches)
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-tool-name': 'advisor' },
+      signal,
+      body: JSON.stringify({ prompt, agentId }),
+    });
     if (!res.ok) {
       const err = await res.text().catch(() => '');
       throw new Error(err || `Server error: ${res.status}`);
@@ -3413,7 +3403,7 @@ Focus areas:
         // 20s gap after each agent — keeps input tokens well under 30k/min
         if (!signal.aborted && id !== 'synopsis') {
           setStatuses(s => ({ ...s, [id]: "done" }));
-          await new Promise(r => setTimeout(r, 20000));
+          await new Promise(r => setTimeout(r, 60000)); // 60s — clears both input+output rate limit buckets
         }
       }
 
@@ -3760,7 +3750,7 @@ Focus areas:
   </div>
 
   {/* PAGE 2: ASSUMPTIONS & SOURCES */}
-  <div style={{ padding: "90px 50px 40px 50px", pageBreakAfter: "always" }}>
+  <div style={{ padding: "60px 50px 40px 50px", pageBreakAfter: "always" }}>
     <div className="section-header">
       <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: P.forest, margin: 0 }}>
         Assumptions & Sources
@@ -3839,7 +3829,7 @@ Focus areas:
   </div>
 
   {/* PAGE 3: TABLE OF CONTENTS */}
-  <div style={{ padding: "90px 50px 40px 50px", pageBreakAfter: "always" }}>
+  <div style={{ padding: "60px 50px 40px 50px", pageBreakAfter: "always" }}>
     <div className="section-header">
       <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: P.forest, margin: 0 }}>
         Table of Contents
@@ -3927,7 +3917,7 @@ Focus areas:
   </div>
 
 {results.synopsis && (
-    <div id="section-synopsis" style={{ padding: "90px 50px 40px 50px" }}>
+    <div id="section-synopsis" style={{ padding: "60px 50px 40px 50px" }}>
       <div className="section-header" style={{ marginBottom: 25 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
           <span style={{ fontSize: 28, color: P.terraSoft }}>◉</span>
@@ -3966,7 +3956,7 @@ Focus areas:
         style={{ 
           pageBreakBefore: "always", 
           pageBreakAfter: isLastAgent ? "auto" : "always", 
-          padding: "90px 50px 40px 50px" 
+          padding: "60px 50px 40px 50px" 
         }}
       >
         <div className="section-header" style={{ marginBottom: 25, pageBreakAfter: "avoid" }}>
