@@ -3049,15 +3049,7 @@ Prose means: paragraphs. Each paragraph makes one argument, develops it with evi
 
 Why no bullets: Bullet points fragment analysis. They hide the logic chain. A reader can scan bullets without understanding anything. Every sentence in this report should give Hemant a fact he did not have, explain what it means, or tell him what to do because of it.
 
-What good prose looks like here: "Yogabar's Quick Commerce channel is growing at roughly 80% year-on-year, making it the fastest-growing channel in the portfolio by a significant margin. The unit economics are also the strongest: no distributor margin, near-zero returns, and impulse basket sizes 30-40% higher than e-commerce. This is not a discovery — it is a confirmation that the next growth engine is already running, and the question is how fast to invest behind it." Three sentences. Each moves the argument forward. None could have been written without thinking about Yogabar.
-
-Never write:
-- "Key findings:" followed by any list
-- Any section opening with a bolded phrase followed by a colon and a list
-- Numbered action items as standalone lines
-- Any sentence beginning with a dash or bullet character
-
-HTML tables are permitted ONLY where a grid genuinely aids comprehension: competitor matrices, SKU tier tables, KPI dashboards. Tables are not a substitute for analysis.
+Never write bullet lists, numbered lists, or "Key findings:" headers. Write in paragraphs only. HTML tables permitted only for structured comparisons.
 
 CONFIDENCE LABELLING — MANDATORY FOR EVERY NUMBER:
 
@@ -3068,24 +3060,13 @@ Every number, estimate, or data claim must carry a confidence label inline using
 
 The label appears in brackets immediately after the number in the same sentence.
 
-Examples of correct usage:
-"Yogabar's revenue is estimated at ₹320–350 Cr in FY25 [MEDIUM CONFIDENCE — extrapolated from 60% YoY growth on a ₹200 Cr FY22 base reported at acquisition]."
-"Quick Commerce now accounts for approximately 15–20% of Yogabar's online GMV [LOW CONFIDENCE — no public disclosure; inferred from QC platform category share data]."
-"ITC's retail reach is 4.2 million outlets [HIGH CONFIDENCE — ITC Annual Report 2024]."
-
-What you must never do: state a number without a confidence label. "Revenue grew to ₹350 Cr" without a label is not acceptable. Always use the full form [HIGH CONFIDENCE — source], [MEDIUM CONFIDENCE — basis], or [LOW CONFIDENCE — basis]. Never use the shorthand [HIGH] or [MEDIUM] alone — the basis shown in the brackets is what makes the label useful to the reader.
+Every number needs: [HIGH CONFIDENCE — source], [MEDIUM CONFIDENCE — basis], or [LOW CONFIDENCE — basis] immediately after it. Never state a number without a confidence label.
 
 SHOWING YOUR CALCULATIONS — MANDATORY FOR REVENUE AND MARKET SIZE ESTIMATES:
 
 When you state or derive a revenue figure, market size, growth rate, or financial projection, you must show the calculation inline, in the same sentence or the one immediately following. This is not optional footnoting — it is the sentence itself.
 
-Format: "[Metric] is estimated at [figure] [CONFIDENCE — [source or method]]. Calculation: [starting point from source] × [factor] = [result], or: [A] + [B] = [C]."
-
-Examples:
-"Yogabar's FY25 revenue is estimated at ₹320–350 Cr [MEDIUM CONFIDENCE — extrapolated from acquisition-time base]. Calculation: ₹200 Cr reported at ITC acquisition (FY22) × 1.6 (60% YoY growth × 3 years, compounded) = ₹328 Cr."
-"India nutrition bar market TAM is ₹950 Cr in FY24 [HIGH CONFIDENCE — Redseer Report, March 2024]. Growing at 28% CAGR, FY26 estimated market = ₹950 Cr × 1.28² = ₹1,556 Cr."
-
-If you cannot show the calculation because the number comes directly from a cited source, write: "Source: [name the source, date, page/section if known]." That is sufficient — no calculation needed for directly sourced figures.
+Format: state the figure, then on the next line: "Calculation: [starting point] × [factor] = [result]" or "Source: [name, date]." Direct citations need no calculation.
 
 `;
 
@@ -3113,7 +3094,11 @@ If you cannot show the calculation because the number comes directly from a cite
     
     Object.entries(synthCtx).forEach(([agentId, result]) => {
       const agentName = agentNames[agentId] || agentId.toUpperCase();
-      priorContext += `${agentName}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${result}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+      // Trim each agent output to first 1200 chars to stay within rate limits
+      const trimmed = result.length > 1200
+        ? result.slice(0, 1200) + '\n[...truncated for rate limit — full analysis in PDF sections]'
+        : result;
+      priorContext += `${agentName}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${trimmed}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
     });
     
     prompt = priorContext + prompt;
@@ -3286,14 +3271,23 @@ Focus areas:
       return MOCK[mockId] || MOCK.market;
     }
 
-    // Real mode — SSE streaming fetch
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-tool-name': 'advisor' },
-      signal,
-      body: JSON.stringify({ prompt, agentId }),
-    });
-
+    // Real mode — SSE streaming fetch with 429 retry
+    let res;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-tool-name': 'advisor' },
+        signal,
+        body: JSON.stringify({ prompt, agentId }),
+      });
+      if (res.status === 429) {
+        const wait = (attempt + 1) * 30000;
+        setStatuses(s => ({ ...s, [agentId]: `rate limited — retrying in ${wait/1000}s…` }));
+        await new Promise(r => setTimeout(r, wait));
+        continue;
+      }
+      break;
+    }
     if (!res.ok) {
       const err = await res.text().catch(() => '');
       throw new Error(err || `Server error: ${res.status}`);
@@ -3330,7 +3324,10 @@ Focus areas:
               });
             }
           }
-          if (event.type === 'error') throw new Error(event.message);
+          if (event.type === 'error') {
+            if (event.message?.includes('rate_limit')) throw new Error('RATE_LIMIT:' + event.message);
+            throw new Error(event.message);
+          }
         } catch (e) {
           if (e.message && !e.message.startsWith('JSON')) throw e;
         }
@@ -3373,6 +3370,14 @@ Focus areas:
     setSources([]);
     setElapsed(0);
 
+    // Wake Render backend — free tier sleeps after 15min inactivity
+    try {
+      await Promise.race([
+        fetch(API_URL.replace('/api/claude', '/')),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 35000))
+      ]);
+    } catch (e) { console.warn('wake-up ping:', e.message); }
+
     const co = company.trim();
     const ctx = context.trim();
     
@@ -3390,34 +3395,26 @@ Focus areas:
     try {
       setAppState("running");
       
-      // Wave 1: 6 agents in parallel
+      // All agents run sequentially — one at a time with gap to respect 30k/min rate limit
       const w1texts = {};
-      W1.forEach(id => setStatuses(s => ({ ...s, [id]: "running" })));
-      await Promise.all(W1.map(async (id) => {
-        if (signal.aborted) return;
-        const prompt = makePrompt(id, co, ctx, {});
+      const ALL_AGENTS_ORDERED = [...W1, ...W2, 'synopsis'];
+
+      for (const id of ALL_AGENTS_ORDERED) {
+        if (signal.aborted) break;
+
+        setStatuses(s => ({ ...s, [id]: "running" }));
+
+        // synopsis gets all prior outputs; W2 agents get W1 outputs; W1 gets nothing
+        const ctx_for_agent = (W2.includes(id) || id === 'synopsis') ? w1texts : {};
+        const prompt = makePrompt(id, co, ctx, ctx_for_agent);
         const text = await runAgent(id, prompt, signal, []);
         w1texts[id] = text;
-      }));
 
-      // Wave 2: synergy + platform + intl in parallel
-      if (!signal.aborted) {
-        const w2texts = {};
-        W2.forEach(id => setStatuses(s => ({ ...s, [id]: "running" })));
-        await Promise.all(W2.map(async (id) => {
-          if (signal.aborted) return;
-          const prompt = makePrompt(id, co, ctx, w1texts);
-          const text = await runAgent(id, prompt, signal, []);
-          w2texts[id] = text;
-        }));
-        Object.assign(w1texts, w2texts);
-      }
-
-      // Wave 3: synopsis receives all 9 prior agent outputs
-      if (!signal.aborted) {
-        setStatuses(s => ({ ...s, synopsis: "running" }));
-        const prompt = makePrompt("synopsis", co, ctx, w1texts);
-        await runAgent("synopsis", prompt, signal, []);
+        // 20s gap after each agent — keeps input tokens well under 30k/min
+        if (!signal.aborted && id !== 'synopsis') {
+          setStatuses(s => ({ ...s, [id]: "done" }));
+          await new Promise(r => setTimeout(r, 20000));
+        }
       }
 
       if (!signal.aborted) {
