@@ -140,7 +140,7 @@ This hook must create genuine curiosity. Not "international analogs offer rich l
 const API_URL = "https://advisorsprint-api.onrender.com/api/claude";
 
 // MOCK MODE: true = instant fake output (for testing), false = real API calls via backend
-const MOCK_MODE = true;
+const MOCK_MODE = false;
 
 // GA4 tracking
 const GA4_ID = "G-XXXXXXXXXX";
