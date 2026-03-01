@@ -2479,6 +2479,7 @@ Do not include founder retention. Focus on strategy execution and capability dep
 
 ---
 
+`
 };
 
 PROMPTS.platform = `# AGENT 9: PLATFORM EXPANSION & D2C BRAND INCUBATOR
