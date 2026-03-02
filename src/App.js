@@ -65,23 +65,7 @@ const GLOBAL_CSS = `
       max-height: none !important; 
       overflow: visible !important;
     }
-    .print-section-header {
-      display: flex !important;
-      align-items: center !important;
-      justify-content: space-between !important;
-      background: #1a3325 !important;
-      padding: 7px 20px !important;
-      margin-bottom: 16px !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-    .print-section-header span {
-      color: #f5f0e8 !important;
-      font-size: 8px !important;
-      font-weight: 700 !important;
-      letter-spacing: 0.12em !important;
-      text-transform: uppercase !important;
-    }
+
 
     h2 {
       page-break-after: avoid !important;
@@ -2321,7 +2305,17 @@ Two paragraphs. First: where international evidence validates ITC's current dire
 ---
 
 ## FORMAT
-Scoring table after Step 1. Prose narrative per brand — no sub-headers within stories. Dense lesson paragraphs. Summary comparison table: Brand | Market | Revenue at Transition | Acquirer | Primary Lesson | ITC Equivalent Action. Every data point cited with source and date. Two dense pages maximum.`;
+Output the Step 1 scoring as an HTML table (see template in Step 1 above). Prose narrative per brand — no sub-headers within stories. Dense lesson paragraphs. Output the summary comparison as an HTML table EXACTLY like this:
+<table>
+<thead><tr><th>Brand</th><th>Market</th><th>Revenue at Transition</th><th>Acquirer</th><th>Primary Lesson</th><th>ITC Equivalent Action</th></tr></thead>
+<tbody>
+<tr><td>Brand Name</td><td>US</td><td>₹840 Cr</td><td>Nestlé</td><td>Kept D2C premium while entering MT</td><td>Maintain yogabar.co as hero channel</td></tr>
+</tbody>
+</table>
+
+Every data point cited with source and date. All revenue figures in ₹ Cr.
+
+COMPLETION IS MANDATORY: You must complete all 5 Steps plus the summary table. If running long, compress Step 3 lessons — but never stop before Step 5 and the summary table. A truncated response is a failed response.`;
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // MOCK DATA
@@ -2740,7 +2734,20 @@ function makePrompt(id, company, ctx, synthCtx) {
   let prompt = PROMPTS[id] || "";
   prompt = prompt.replace(/\[COMPANY\]/g, company);
   
-  const NARRATIVE_RULES = `WRITING STYLE — MANDATORY FOR EVERY AGENT:
+  const NARRATIVE_RULES = `VERIFIED FINANCIAL DATA — USE THESE EXACT NUMBERS, DO NOT CONTRADICT:
+
+Yogabar revenue (verified, do not dispute or estimate differently):
+- FY24 (ending March 2024): ₹110 Cr
+- FY25 (ending March 2025): ₹201.66 Cr (+83% YoY)
+- FY26E (ending March 2026): ₹320–350 Cr projected (+60%+ YoY)
+
+Growth has ACCELERATED post-ITC acquisition — not decelerated. ITC's distribution support has driven 80%+ YoY growth. Do NOT write about growth deceleration, plateau, or slowdown. The trajectory is strongly upward.
+
+All currency must be in ₹ Cr. Convert any USD figures to ₹ Cr at ₹84/USD before writing (e.g. $1M = ₹8.4 Cr, $1B = ₹840 Cr).
+
+Do NOT mention any individual person's name (e.g. Hemant, founders, executives) in your analysis. This is a company analysis, not a people analysis.
+
+WRITING STYLE — MANDATORY FOR EVERY AGENT:
 
 You write in dense, precise prose — not bullet points, not numbered lists, not sub-bullets.
 
@@ -2844,6 +2851,10 @@ NO NEGATIVES ABOUT THE ITC ACQUISITION: Every finding must be an opportunity, ad
 function md(text) {
   if (!text) return "";
   
+  // Strip reasoning preamble lines that agents sometimes output
+  text = text.replace(/^[^\n]*(?:I'll conduct|I will conduct|Let me|Based on my research|I need to|I'll search|I'll analyze|I'll now|I'll begin|I'll start)[^\n]*\n/gim, '');
+  text = text.replace(/^#{1,2}\s*$/gm, ''); // remove empty headers left behind
+
   // First, fix the Sources line to ensure it's on one line
   let fixedText = text.replace(/\*\*Sources:\*\*([^\n]*(?:\n(?!\n)[^\n]*)*)/g, (match, sources) => {
     const cleaned = sources.replace(/\n/g, ', ').replace(/,\s*,/g, ',').trim();
@@ -2930,7 +2941,7 @@ function md(text) {
   });
 
   let rendered = openTag + fixedText
-    .replace(/^## (.+)$/gm, `</p><h3 class="agent-section-header" style="font-family:'Libre Baskerville',serif;font-size:14px;color:${P.forest};margin:16px 0 6px;border-bottom:1px solid ${P.sand};padding-bottom:4px;">$1</h3><p style="margin:6px 0;">`)
+    .replace(/^## (.+)$/gm, `</p><h3 class="agent-section-header" style="font-family:'Libre Baskerville',serif;font-size:14px;font-weight:700;color:${P.forest};margin:16px 0 6px;border-bottom:2px solid ${P.sand};padding-bottom:4px;">$1</h3><p style="margin:6px 0;">`)
     .replace(/\*\*(.+?)\*\*/g, `<strong style="color:${P.ink};">$1</strong>`)
     .replace(/^- (.+)$/gm, `<div style="display:flex;gap:7px;margin:3px 0;"><span style="color:${P.terra};">▸</span><span>$1</span></div>`)
     .replace(/\n\n/g, `</p><p style="margin:6px 0;">`)
@@ -2940,6 +2951,14 @@ function md(text) {
   tablePlaceholders.forEach((table, i) => {
     rendered = rendered.replace(`__TABLE_${i}__`, `</p><div style="margin:14px 0;overflow-x:auto;">${table}</div><p style="margin:6px 0;">`);
   });
+
+  // Convert USD/$ amounts to Rs Cr (1 USD ≈ 84 Rs, so $1M ≈ Rs 8.4 Cr)
+  rendered = rendered
+    .replace(/\$([\d,\.]+)\s*(?:billion|bn)/gi, (_, n) => `₹${(parseFloat(n.replace(/,/g,'')) * 84 * 100).toFixed(0)} Cr`)
+    .replace(/\$([\d,\.]+)\s*(?:million|mn|M)\b/gi, (_, n) => `₹${(parseFloat(n.replace(/,/g,'')) * 84 / 10).toFixed(1)} Cr`)
+    .replace(/USD\s*([\d,\.]+)\s*(?:billion|bn)/gi, (_, n) => `₹${(parseFloat(n.replace(/,/g,'')) * 84 * 100).toFixed(0)} Cr`)
+    .replace(/USD\s*([\d,\.]+)\s*(?:million|mn)/gi, (_, n) => `₹${(parseFloat(n.replace(/,/g,'')) * 84 / 10).toFixed(1)} Cr`);
+
   return rendered;
 }
 
@@ -3466,7 +3485,7 @@ Focus areas:
   `}</style>
 
   {/* PAGE 1: COVER */}
-  <div style={{ padding: "220px 50px", pageBreakAfter: "always", textAlign: "center" }}>
+  <div style={{ padding: "220px 50px", pageBreakAfter: "always", textAlign: "center", border: `8px solid ${P.forest}`, boxSizing: "border-box", minHeight: "100vh" }}>
     <div style={{ marginBottom: 40 }}>
       <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 42, fontWeight: 700, color: P.forest, marginBottom: 15, letterSpacing: "0.02em" }}>
         {company.toUpperCase()}
@@ -3495,7 +3514,21 @@ Focus areas:
 
   {/* PAGE 2: ASSUMPTIONS & SOURCES */}
   <div style={{ padding: "20px 50px 40px 50px", pageBreakAfter: "always" }}>
-        <div className="print-section-header no-screen"><span>Assumptions &amp; Sources</span><span>AdvisorSprint · Strategic Intelligence</span></div>
+        <div className="no-screen"><div style={{ background: P.forest, padding: "14px 20px", borderBottom: `3px solid ${P.forestMid}`, width: "100%" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 700, color: P.parchment, letterSpacing: ".03em" }}>
+                <span style={{ fontWeight: 400, fontStyle: "italic" }}>Advisor</span><span>Sprint</span>
+              </div>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: ".15em", textTransform: "uppercase", color: P.parchment, opacity: 0.9 }}>
+                PARALLEL AGENT INTELLIGENCE
+              </div>
+            </div>
+            <div style={{ background: P.terra, color: P.white, fontSize: 9, fontWeight: 700, letterSpacing: ".1em", padding: "5px 12px", borderRadius: 12 }}>
+              HARSHA BELAVADY
+            </div>
+          </div>
+        </div></div>
     <div className="section-header">
       <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: P.forest, margin: 0 }}>
         Assumptions & Sources
@@ -3527,58 +3560,33 @@ Focus areas:
           <p style={{ fontSize: 9.5, color: P.inkFaint, marginBottom: 12, fontStyle: "italic" }}>
             The following sources were retrieved by agents during live web search. All searches conducted at time of generation.
           </p>
-          {(() => {
-              // Group sources by agent, show 2 per agent + count remainder
-              const agentOrder = AGENTS.map(a => a.id);
-              const grouped = {};
-              sources.forEach(s => {
-                if (!grouped[s.agent]) grouped[s.agent] = [];
-                grouped[s.agent].push(s);
-              });
-              const rows = [];
-              agentOrder.forEach(agentId => {
-                const agentSources = grouped[agentId] || [];
-                if (!agentSources.length) return;
-                const shown = agentSources.slice(0, 2);
-                const remaining = agentSources.length - 2;
-                const agentLabel = AGENTS.find(a => a.id === agentId)?.label?.split('&')[0].trim() || agentId;
-                shown.forEach((s, i) => {
-                  const domain = (() => { try { return new URL(s.url).hostname.replace('www.',''); } catch { return s.url; } })();
-                  const title = s.title && s.title !== s.url ? s.title.slice(0, 70) + (s.title.length > 70 ? '…' : '') : domain;
-                  rows.push(
-                    <tr key={agentId + i} style={{ background: rows.length % 2 === 0 ? P.white : P.parchment }}>
-                      <td style={{ padding: "6px 10px", border: `1px solid ${P.sand}`, color: P.inkMid, wordBreak: "break-word", fontSize: 9 }}>{title}</td>
-                      <td style={{ padding: "6px 10px", border: `1px solid ${P.sand}`, color: P.inkFaint, fontSize: 8.5, whiteSpace: "nowrap" }}>{i === 0 ? agentLabel : ''}</td>
-                      <td style={{ padding: "6px 10px", border: `1px solid ${P.sand}`, color: P.terra, fontSize: 8.5 }}>{domain}</td>
-                    </tr>
-                  );
-                });
-                if (remaining > 0) {
-                  rows.push(
-                    <tr key={agentId + 'more'} style={{ background: rows.length % 2 === 0 ? P.white : P.parchment }}>
-                      <td colSpan={3} style={{ padding: "4px 10px", border: `1px solid ${P.sand}`, color: P.inkFaint, fontSize: 8, fontStyle: "italic" }}>
-                        + {remaining} more source{remaining > 1 ? 's' : ''} from {agentLabel}
-                      </td>
-                    </tr>
-                  );
-                }
-              });
-              return (
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9.5 }}>
-                  <thead>
-                    <tr>
-                      <th style={{ padding: "8px 10px", textAlign: "left", border: `1px solid ${P.sand}`, background: P.forest, color: P.white, fontWeight: 600, width: "55%" }}>Source</th>
-                      <th style={{ padding: "8px 10px", textAlign: "left", border: `1px solid ${P.sand}`, background: P.forest, color: P.white, fontWeight: 600, width: "22%" }}>Agent</th>
-                      <th style={{ padding: "8px 10px", textAlign: "left", border: `1px solid ${P.sand}`, background: P.forest, color: P.white, fontWeight: 600, width: "23%" }}>Domain</th>
-                    </tr>
-                  </thead>
-                  <tbody>{rows}</tbody>
-                </table>
-              );
-            })()}
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9.5 }}>
+            <thead>
+              <tr>
+                <th style={{ padding: "8px 10px", textAlign: "left", border: `1px solid ${P.sand}`, background: P.forest, color: P.white, fontWeight: 600, width: "55%" }}>Source</th>
+                <th style={{ padding: "8px 10px", textAlign: "left", border: `1px solid ${P.sand}`, background: P.forest, color: P.white, fontWeight: 600, width: "20%" }}>Agent</th>
+                <th style={{ padding: "8px 10px", textAlign: "left", border: `1px solid ${P.sand}`, background: P.forest, color: P.white, fontWeight: 600, width: "25%" }}>Domain</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sources.slice(0, 15).map((s, i) => {
+                const domain = (() => { try { return new URL(s.url).hostname.replace('www.',''); } catch { return s.url; } })();
+                const agentLabel = AGENTS.find(a => a.id === s.agent)?.label?.split(' ')[0] || s.agent;
+                return (
+                  <tr key={i} style={{ background: i % 2 === 0 ? P.white : P.parchment }}>
+                    <td style={{ padding: "7px 10px", border: `1px solid ${P.sand}`, color: P.inkMid, wordBreak: "break-word" }}>
+                      {s.title && s.title !== s.url ? s.title.slice(0, 80) + (s.title.length > 80 ? '…' : '') : domain}
+                    </td>
+                    <td style={{ padding: "7px 10px", border: `1px solid ${P.sand}`, color: P.inkFaint, fontSize: 8.5 }}>{agentLabel}</td>
+                    <td style={{ padding: "7px 10px", border: `1px solid ${P.sand}`, color: P.terra, fontSize: 8.5 }}>{domain}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
           {sources.length > 15 && (
             <p style={{ fontSize: 9, color: P.inkFaint, marginTop: 8, fontStyle: "italic" }}>
-              And {sources.length - 15} additional sources cited inline throughout the report.
+              Total sources retrieved across all agents: {sources.length}. Top 15 shown above.
             </p>
           )}
         </div>
@@ -3600,7 +3608,21 @@ Focus areas:
 
   {/* PAGE 3: TABLE OF CONTENTS */}
   <div style={{ padding: "20px 50px 40px 50px", pageBreakAfter: "always" }}>
-        <div className="print-section-header no-screen"><span>Table of Contents</span><span>AdvisorSprint · Strategic Intelligence</span></div>
+        <div className="no-screen"><div style={{ background: P.forest, padding: "14px 20px", borderBottom: `3px solid ${P.forestMid}`, width: "100%" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 700, color: P.parchment, letterSpacing: ".03em" }}>
+                <span style={{ fontWeight: 400, fontStyle: "italic" }}>Advisor</span><span>Sprint</span>
+              </div>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: ".15em", textTransform: "uppercase", color: P.parchment, opacity: 0.9 }}>
+                PARALLEL AGENT INTELLIGENCE
+              </div>
+            </div>
+            <div style={{ background: P.terra, color: P.white, fontSize: 9, fontWeight: 700, letterSpacing: ".1em", padding: "5px 12px", borderRadius: 12 }}>
+              HARSHA BELAVADY
+            </div>
+          </div>
+        </div></div>
     <div className="section-header">
       <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: P.forest, margin: 0 }}>
         Table of Contents
@@ -3688,7 +3710,21 @@ Focus areas:
 
 {results.synopsis && (
     <div id="section-synopsis" style={{ padding: "20px 50px 40px 50px" }}>
-        <div className="print-section-header no-screen"><span>Executive Synopsis</span><span>AdvisorSprint · Strategic Intelligence</span></div>
+        <div className="no-screen"><div style={{ background: P.forest, padding: "14px 20px", borderBottom: `3px solid ${P.forestMid}`, width: "100%" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 700, color: P.parchment, letterSpacing: ".03em" }}>
+                <span style={{ fontWeight: 400, fontStyle: "italic" }}>Advisor</span><span>Sprint</span>
+              </div>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: ".15em", textTransform: "uppercase", color: P.parchment, opacity: 0.9 }}>
+                PARALLEL AGENT INTELLIGENCE
+              </div>
+            </div>
+            <div style={{ background: P.terra, color: P.white, fontSize: 9, fontWeight: 700, letterSpacing: ".1em", padding: "5px 12px", borderRadius: 12 }}>
+              HARSHA BELAVADY
+            </div>
+          </div>
+        </div></div>
       <div className="section-header" style={{ marginBottom: 25 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
           <span style={{ fontSize: 28, color: P.terraSoft }}>◉</span>
@@ -3730,10 +3766,21 @@ Focus areas:
           padding: "20px 50px 40px 50px" 
         }}
       >
-        <div className="print-section-header no-screen">
-          <span>{agent.label}</span>
-          <span>AdvisorSprint · Strategic Intelligence</span>
-        </div>
+        <div className="no-screen"><div style={{ background: P.forest, padding: "14px 20px", borderBottom: `3px solid ${P.forestMid}`, width: "100%" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 700, color: P.parchment, letterSpacing: ".03em" }}>
+                <span style={{ fontWeight: 400, fontStyle: "italic" }}>Advisor</span><span>Sprint</span>
+              </div>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: ".15em", textTransform: "uppercase", color: P.parchment, opacity: 0.9 }}>
+                PARALLEL AGENT INTELLIGENCE
+              </div>
+            </div>
+            <div style={{ background: P.terra, color: P.white, fontSize: 9, fontWeight: 700, letterSpacing: ".1em", padding: "5px 12px", borderRadius: 12 }}>
+              HARSHA BELAVADY
+            </div>
+          </div>
+        </div></div>
         <div className="section-header" style={{ marginBottom: 25, pageBreakAfter: "avoid" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 15, marginBottom: 10 }}>
             <span style={{ fontSize: 28, color: agent.wave === 1 ? P.forestSoft : P.terraSoft }}>
