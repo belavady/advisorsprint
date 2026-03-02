@@ -2877,7 +2877,7 @@ function md(text) {
     if (verdictMatch) {
       const vClean = verdictMatch[1].trim().replace(/\n\n/g,' ').replace(/\n/g,' ');
       html += `<div class="verdict-box">
-        <div class="verdict-label">The Recommendation</div>
+        <div class="verdict-label" style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#1a3325;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #3d6b54;">THE RECOMMENDATION</div>
         <p class="verdict-text">${vClean.replace(/\*\*(.+?)\*\*/g,'<strong style="color:#ede6d6">$1</strong>')}</p>
       </div>`;
     }
@@ -2898,9 +2898,9 @@ function md(text) {
     if (sections.length >= 4) {
       html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px">';
       for (let i = 0; i < 4; i++) {
-        html += `<div style="padding:9px;background:white;border:1px solid #3d6b54;border-left:3px solid #3d6b54">
-          <div style="font-size:7.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#3d6b54;margin-bottom:4px">◉ ${sections[i].title}</div>
-          <p style="font-size:8.5px;line-height:1.35;color:#4a4a4a;margin:0">${sections[i].content}</p>
+        html += `<div style="padding:10px 12px;background:white;border:1px solid #3d6b54;border-left:4px solid #3d6b54;margin-bottom:2px">
+          <div style="font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#1a3325;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #d4c4a8">◉ ${sections[i].title}</div>
+          <p style="font-size:8.5px;line-height:1.4;color:#3d3020;margin:0">${sections[i].content}</p>
         </div>`;
       }
       html += '</div>';
@@ -2908,9 +2908,9 @@ function md(text) {
     
     // Wave 2: Remaining sections row-wise
     for (let i = 4; i < sections.length; i++) {
-      html += `<div style="margin-bottom:8px;padding:10px;background:white;border:1px solid #3d6b54;border-left:3px solid #3d6b54">
-        <div style="font-size:7.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#3d6b54;margin-bottom:4px">◉ ${sections[i].title}</div>
-        <p style="font-size:9px;line-height:1.4;color:#4a4a4a;margin:0">${sections[i].content}</p>
+      html += `<div style="margin-bottom:6px;padding:10px 12px;background:white;border:1px solid #3d6b54;border-left:4px solid #3d6b54">
+        <div style="font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#1a3325;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #d4c4a8">◉ ${sections[i].title}</div>
+        <p style="font-size:9px;line-height:1.4;color:#3d3020;margin:0">${sections[i].content}</p>
       </div>`;
     }
     
