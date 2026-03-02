@@ -47,22 +47,14 @@ const GLOBAL_CSS = `
   @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.2; } }
   
   @media print {
-    @page { margin: 0; }
+    @page { margin: 0 0 8mm 0; }
     body { background: white !important; margin: 0 !important; padding: 0 !important; }
     .no-print { display: none !important; }
+    .no-screen { display: none !important; }
     .print-only { display: block !important; }
+    .no-screen { display: flex !important; }
     .pdf-header { 
-      display: block !important;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 52px !important;
-      z-index: 9999;
-      background: #1a3325 !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-      color-adjust: exact !important;
+      display: none !important;
     }
     .pdf-header * {
       -webkit-print-color-adjust: exact !important;
@@ -73,11 +65,24 @@ const GLOBAL_CSS = `
       max-height: none !important; 
       overflow: visible !important;
     }
-    /* On overflow pages, content continues under the fixed header.
-       Add a top margin to every section so continuation pages clear the header */
-    .page-section {
-      padding-top: 60px !important;
+    .print-section-header {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      background: #1a3325 !important;
+      padding: 7px 20px !important;
+      margin-bottom: 16px !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
     }
+    .print-section-header span {
+      color: #f5f0e8 !important;
+      font-size: 8px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.12em !important;
+      text-transform: uppercase !important;
+    }
+
     h2 {
       page-break-after: avoid !important;
       page-break-inside: avoid !important;
@@ -2252,7 +2257,16 @@ Three sections — one dense page:
 
 Section 1: The strategic case — why [COMPANY] specifically is the platform, grounded in precedents found and ITC's activatable assets from Agent 7.
 
-Section 2: Category sequence and investment case — recommended categories with evidence, revenue projections benchmarked, investment built bottom-up, valuation using India multiples found through search. You MUST present candidate category scoring as an HTML <table> with columns: Category | Strategic Fit (1-5) | Market Readiness (1-5) | ITC Leverage (1-5) | Revenue Potential (₹Cr) | Priority Rank. Use <table><thead><tr><th>...</th></tr></thead><tbody>...</tbody></table> tags.
+Section 2: Category sequence and investment case — recommended categories with evidence, revenue projections benchmarked, investment built bottom-up, valuation using India multiples found through search. You MUST present candidate category scoring as an HTML table. Output it EXACTLY like this, replacing values:
+
+<table>
+<thead><tr><th>Category</th><th>Strategic Fit (1-5)</th><th>Market Readiness (1-5)</th><th>ITC Leverage (1-5)</th><th>Revenue Potential (₹Cr)</th><th>Priority</th></tr></thead>
+<tbody>
+<tr><td>Example Category</td><td>4</td><td>3</td><td>5</td><td>₹80–120 Cr</td><td>1</td></tr>
+</tbody>
+</table>
+
+Do not describe the table in prose — output the raw HTML table.
 
 Section 3: The governance model — D2C Business Unit structure, autonomy required, how it draws on ITC infrastructure, how it avoids cannibalising ITC brands. Close with: the specific condition under which this creates exceptional value, and the condition under which it does not.`;
 
@@ -3480,7 +3494,8 @@ Focus areas:
   </div>
 
   {/* PAGE 2: ASSUMPTIONS & SOURCES */}
-  <div style={{ padding: "60px 50px 40px 50px", pageBreakAfter: "always" }}>
+  <div style={{ padding: "20px 50px 40px 50px", pageBreakAfter: "always" }}>
+        <div className="print-section-header no-screen"><span>Assumptions &amp; Sources</span><span>AdvisorSprint · Strategic Intelligence</span></div>
     <div className="section-header">
       <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: P.forest, margin: 0 }}>
         Assumptions & Sources
@@ -3512,30 +3527,55 @@ Focus areas:
           <p style={{ fontSize: 9.5, color: P.inkFaint, marginBottom: 12, fontStyle: "italic" }}>
             The following sources were retrieved by agents during live web search. All searches conducted at time of generation.
           </p>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9.5 }}>
-            <thead>
-              <tr>
-                <th style={{ padding: "8px 10px", textAlign: "left", border: `1px solid ${P.sand}`, background: P.forest, color: P.white, fontWeight: 600, width: "55%" }}>Source</th>
-                <th style={{ padding: "8px 10px", textAlign: "left", border: `1px solid ${P.sand}`, background: P.forest, color: P.white, fontWeight: 600, width: "20%" }}>Agent</th>
-                <th style={{ padding: "8px 10px", textAlign: "left", border: `1px solid ${P.sand}`, background: P.forest, color: P.white, fontWeight: 600, width: "25%" }}>Domain</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sources.slice(0, 15).map((s, i) => {
-                const domain = (() => { try { return new URL(s.url).hostname.replace('www.',''); } catch { return s.url; } })();
-                const agentLabel = AGENTS.find(a => a.id === s.agent)?.label?.split(' ')[0] || s.agent;
-                return (
-                  <tr key={i} style={{ background: i % 2 === 0 ? P.white : P.parchment }}>
-                    <td style={{ padding: "7px 10px", border: `1px solid ${P.sand}`, color: P.inkMid, wordBreak: "break-word" }}>
-                      {s.title && s.title !== s.url ? s.title.slice(0, 80) + (s.title.length > 80 ? '…' : '') : domain}
-                    </td>
-                    <td style={{ padding: "7px 10px", border: `1px solid ${P.sand}`, color: P.inkFaint, fontSize: 8.5 }}>{agentLabel}</td>
-                    <td style={{ padding: "7px 10px", border: `1px solid ${P.sand}`, color: P.terra, fontSize: 8.5 }}>{domain}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          {(() => {
+              // Group sources by agent, show 2 per agent + count remainder
+              const agentOrder = AGENTS.map(a => a.id);
+              const grouped = {};
+              sources.forEach(s => {
+                if (!grouped[s.agent]) grouped[s.agent] = [];
+                grouped[s.agent].push(s);
+              });
+              const rows = [];
+              agentOrder.forEach(agentId => {
+                const agentSources = grouped[agentId] || [];
+                if (!agentSources.length) return;
+                const shown = agentSources.slice(0, 2);
+                const remaining = agentSources.length - 2;
+                const agentLabel = AGENTS.find(a => a.id === agentId)?.label?.split('&')[0].trim() || agentId;
+                shown.forEach((s, i) => {
+                  const domain = (() => { try { return new URL(s.url).hostname.replace('www.',''); } catch { return s.url; } })();
+                  const title = s.title && s.title !== s.url ? s.title.slice(0, 70) + (s.title.length > 70 ? '…' : '') : domain;
+                  rows.push(
+                    <tr key={agentId + i} style={{ background: rows.length % 2 === 0 ? P.white : P.parchment }}>
+                      <td style={{ padding: "6px 10px", border: `1px solid ${P.sand}`, color: P.inkMid, wordBreak: "break-word", fontSize: 9 }}>{title}</td>
+                      <td style={{ padding: "6px 10px", border: `1px solid ${P.sand}`, color: P.inkFaint, fontSize: 8.5, whiteSpace: "nowrap" }}>{i === 0 ? agentLabel : ''}</td>
+                      <td style={{ padding: "6px 10px", border: `1px solid ${P.sand}`, color: P.terra, fontSize: 8.5 }}>{domain}</td>
+                    </tr>
+                  );
+                });
+                if (remaining > 0) {
+                  rows.push(
+                    <tr key={agentId + 'more'} style={{ background: rows.length % 2 === 0 ? P.white : P.parchment }}>
+                      <td colSpan={3} style={{ padding: "4px 10px", border: `1px solid ${P.sand}`, color: P.inkFaint, fontSize: 8, fontStyle: "italic" }}>
+                        + {remaining} more source{remaining > 1 ? 's' : ''} from {agentLabel}
+                      </td>
+                    </tr>
+                  );
+                }
+              });
+              return (
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9.5 }}>
+                  <thead>
+                    <tr>
+                      <th style={{ padding: "8px 10px", textAlign: "left", border: `1px solid ${P.sand}`, background: P.forest, color: P.white, fontWeight: 600, width: "55%" }}>Source</th>
+                      <th style={{ padding: "8px 10px", textAlign: "left", border: `1px solid ${P.sand}`, background: P.forest, color: P.white, fontWeight: 600, width: "22%" }}>Agent</th>
+                      <th style={{ padding: "8px 10px", textAlign: "left", border: `1px solid ${P.sand}`, background: P.forest, color: P.white, fontWeight: 600, width: "23%" }}>Domain</th>
+                    </tr>
+                  </thead>
+                  <tbody>{rows}</tbody>
+                </table>
+              );
+            })()}
           {sources.length > 15 && (
             <p style={{ fontSize: 9, color: P.inkFaint, marginTop: 8, fontStyle: "italic" }}>
               And {sources.length - 15} additional sources cited inline throughout the report.
@@ -3559,7 +3599,8 @@ Focus areas:
   </div>
 
   {/* PAGE 3: TABLE OF CONTENTS */}
-  <div style={{ padding: "60px 50px 40px 50px", pageBreakAfter: "always" }}>
+  <div style={{ padding: "20px 50px 40px 50px", pageBreakAfter: "always" }}>
+        <div className="print-section-header no-screen"><span>Table of Contents</span><span>AdvisorSprint · Strategic Intelligence</span></div>
     <div className="section-header">
       <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: P.forest, margin: 0 }}>
         Table of Contents
@@ -3582,7 +3623,7 @@ Focus areas:
         onMouseLeave={e => { e.currentTarget.style.borderLeftColor = 'transparent'; e.currentTarget.style.background = 'transparent'; }}>
         <span style={{ fontWeight: 700, fontSize: 15, color: P.forest, fontFamily: "'Libre Baskerville', serif" }}>Executive Synopsis</span>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontWeight: 700, color: P.terra, fontSize: 13 }}>§ Syn</span>
+          <span style={{ fontWeight: 700, color: P.terra, fontSize: 13 }}>Syn</span>
           <span style={{ color: P.terra, fontSize: 14, opacity: 0.5 }}>→</span>
         </div>
       </a>
@@ -3592,15 +3633,15 @@ Focus areas:
       </div>
 
       {[
-        { num: 1,  id: "market",      icon: "◈", title: "Market Position & Category Dynamics",         pages: "§1"  },
-        { num: 2,  id: "portfolio",   icon: "◉", title: "Portfolio Strategy & SKU Rationalization",    pages: "§2"  },
-        { num: 3,  id: "brand",       icon: "◎", title: "Brand Positioning & Storytelling",            pages: "§3"  },
-        { num: 4,  id: "margins",     icon: "◐", title: "Margin Improvement & Unit Economics",         pages: "§4"  },
-        { num: 5,  id: "growth",      icon: "◆", title: "Growth Strategy & Channel Orchestration",     pages: "§5"  },
-        { num: 6,  id: "competitive", icon: "◇", title: "Competitive Battle Plan",                     pages: "§6"  },
-        { num: 7,  id: "synergy",     icon: "◈", title: "Synergy Playbook & Institutional Leverage",   pages: "§7"  },
-        { num: 8,  id: "platform",    icon: "◉", title: "Platform Expansion & D2C Brand Incubator",   pages: "§8" },
-        { num: 10, id: "intl",        icon: "◎", title: "International Benchmarks & Global Playbook", pages: "§9" },
+        { num: 1,  id: "market",      icon: "◈", title: "Market Position & Category Dynamics",         },
+        { num: 2,  id: "portfolio",   icon: "◉", title: "Portfolio Strategy & SKU Rationalization",    },
+        { num: 3,  id: "brand",       icon: "◎", title: "Brand Positioning & Storytelling",            },
+        { num: 4,  id: "margins",     icon: "◐", title: "Margin Improvement & Unit Economics",         },
+        { num: 5,  id: "growth",      icon: "◆", title: "Growth Strategy & Channel Orchestration",     },
+        { num: 6,  id: "competitive", icon: "◇", title: "Competitive Battle Plan",                     },
+        { num: 7,  id: "synergy",     icon: "◈", title: "Synergy Playbook & Institutional Leverage",   },
+        { num: 8,  id: "platform",    icon: "◉", title: "Platform Expansion & D2C Brand Incubator",   },
+        { num: 9,  id: "intl",        icon: "◎", title: "International Benchmarks & Global Playbook", },
       ].map((item, idx) => (
         <a key={idx} href={`#section-${item.id}`} style={{
           display: "flex", justifyContent: "space-between", alignItems: "center",
@@ -3632,7 +3673,6 @@ Focus areas:
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            <span style={{ color: P.terra, fontSize: 11, fontWeight: 600 }}>{item.pages}</span>
             <span className="toc-arrow" style={{ color: P.terra, fontSize: 14, opacity: 0.3, transition: "opacity 0.15s ease" }}>→</span>
           </div>
         </a>
@@ -3647,7 +3687,8 @@ Focus areas:
   </div>
 
 {results.synopsis && (
-    <div id="section-synopsis" style={{ padding: "60px 50px 40px 50px" }}>
+    <div id="section-synopsis" style={{ padding: "20px 50px 40px 50px" }}>
+        <div className="print-section-header no-screen"><span>Executive Synopsis</span><span>AdvisorSprint · Strategic Intelligence</span></div>
       <div className="section-header" style={{ marginBottom: 25 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
           <span style={{ fontSize: 28, color: P.terraSoft }}>◉</span>
@@ -3686,9 +3727,13 @@ Focus areas:
         style={{ 
           pageBreakBefore: "always", 
           pageBreakAfter: isLastAgent ? "auto" : "always", 
-          padding: "60px 50px 40px 50px" 
+          padding: "20px 50px 40px 50px" 
         }}
       >
+        <div className="print-section-header no-screen">
+          <span>{agent.label}</span>
+          <span>AdvisorSprint · Strategic Intelligence</span>
+        </div>
         <div className="section-header" style={{ marginBottom: 25, pageBreakAfter: "avoid" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 15, marginBottom: 10 }}>
             <span style={{ fontSize: 28, color: agent.wave === 1 ? P.forestSoft : P.terraSoft }}>
