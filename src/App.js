@@ -73,6 +73,11 @@ const GLOBAL_CSS = `
       max-height: none !important; 
       overflow: visible !important;
     }
+    /* On overflow pages, content continues under the fixed header.
+       Add a top margin to every section so continuation pages clear the header */
+    .page-section {
+      padding-top: 60px !important;
+    }
     h2 {
       page-break-after: avoid !important;
       page-break-inside: avoid !important;
@@ -1299,337 +1304,38 @@ Your output must answer:
 `,
 
   growth: `# AGENT 5: GROWTH STRATEGY & CHANNEL ORCHESTRATION
-## POST-ACQUISITION MOMENTUM RECOVERY (3 YEARS IN)
 
-**Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
+You are a senior channel strategist. Your mandate is STRICTLY channel development and new revenue streams — not brand, not portfolio, not margins (those belong to other agents).
 
-**Critical Context:** ITC acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
+ITC acquired [COMPANY] in 2022-23. Three years in, the distribution buildout is largely complete. Your job is to identify what comes NEXT — the growth levers that do not depend on adding more retail touchpoints.
 
----
-
-## WHAT ITC HAS ALREADY DONE (Distribution 2023-2026)
-
-**Distribution Expansion — COMPLETED:**
-- ✅ Modern Trade: 150 stores (2023) → 800-1,200 MT stores (2026)
-- ✅ General Trade: 0 → 5,000+ premium kirana outlets
-- ✅ E-commerce: Expanded from Amazon-only to 5+ platforms
-- ✅ D2C: Website scaled 3x with ITC digital team support
-
-**Growth Trajectory:**
-- 2020-2023: 60%+ YoY growth (pre-acquisition)
-- 2023-2024: 55% YoY (immediate post-acquisition, distribution boost)
-- 2024-2025: [search for actual data] (growth slowing despite more stores)
-- 2026 projection: 25-30% YoY (plateau risk)
-
-**The Problem:**
-- Distribution leverage tapped out (adding stores doesn't drive proportional growth)
-- Same-store sales plateauing (velocity not improving)
-- ITC's playbook was store expansion—that's done, what's NEXT?
+**Do not repeat:** market sizing (Agent 1), portfolio mix (Agent 2), brand positioning (Agent 3), margin structure (Agent 4). Reference them only when directly relevant, in one sentence.
 
 ---
 
-## YOUR MISSION
+## YOUR FOUR MANDATED SECTIONS
 
-Identify how to get back to **60%+ YoY growth** WITHOUT relying on adding more stores.
+**Section 1: Growth Diagnostic**
+What does [COMPANY]'s current channel mix look like? Where is growth coming from and where is it plateauing? Use web search to find the most recent revenue and channel data. Estimate distribution saturation if data is unavailable. 150–200 words.
 
-**Focus on:**
-1. **NEW channels** that didn't exist/matter in 2023 (Quick Commerce, institutional, export)
-2. **Velocity improvement** at existing stores (not quantity, QUALITY of distribution)
-3. **New occasions** (consumption frequency, not just reach)
-4. **Geographic expansion** OUTSIDE India (ITC hasn't explored this)
+**Section 2: Quick Commerce**
+The single largest underpenetrated channel. Quantify the QC opportunity specifically for [COMPANY] — market size, [COMPANY]'s current QC share (likely near zero), what it would take to build to 20–25% of revenue via QC. Phase the investment and set numeric milestones. 200–250 words.
 
-**DO NOT:**
-- ❌ Suggest "expand to more MT stores" (plateau evidence shows this won't work)
-- ❌ "Leverage ITC distribution" (done for 3 years, exhausted)
-- ❌ "Enter General Trade" (already done—5,000 stores)
+**Section 3: Institutional and B2B**
+Corporate wellness, gym chains, hotel minibars, airline catering. ITC has direct relationships in all of these through its hospitality and FMCG infrastructure. Quantify the opportunity, identify the 2–3 highest-leverage entry points, and show the revenue math. 150–200 words.
 
-**DO:**
-- ✅ "Quick Commerce: 0% of [COMPANY] sales (2026) vs 18% of category. Shift 25% of portfolio focus to QC = ₹45 Cr incremental in 18 months"
-- ✅ "International: Export to UAE/Saudi (Indian expat market—280k fitness-conscious diaspora). ITC has food export licenses. ₹25 Cr opportunity in 24 months"
+**Section 4: International Expansion**
+ITC has food export licenses and existing trade infrastructure. Where should [COMPANY] go first — Middle East diaspora, South-East Asia, or UK? Make a specific recommendation with market sizing and a phased entry plan. 150–200 words.
+
+Close with a single summary table: Lever | 24-Month Revenue Potential | Investment Required | Payback Period.
 
 ---
 
-## SEARCH STRATEGY
+**Tone:** Every section leads with data, ends with a specific action. Show the arithmetic. No section should begin with a bullet list — start with a sentence that makes the argument.
 
-### **PRIORITY 1: Growth Deceleration Evidence**
+**Length:** 700–900 words total. Complete all four sections. Do not truncate.`,
 
-\`\`\`
-1. "[COMPANY] growth rate 2024" OR "revenue growth 2025"
-2. "[COMPANY] same-store sales" OR "velocity per store"
-3. "[COMPANY] expansion 2024" OR "new stores"
-4. "ITC Foods growth 2024" (parent company momentum)
-\`\`\`
-
-### **PRIORITY 2: Quick Commerce Opportunity**
-
-\`\`\`
-5. "Quick Commerce India growth 2024" (Blinkit, Zepto, Swiggy Instamart)
-6. "Blinkit nutrition category 2024" OR "health snacks quick commerce"
-7. "Zepto dark store nutrition 2024"
-8. "[Category] quick commerce sales 2024" (category shift evidence)
-9. "Quick Commerce expansion India cities 2024" (geographic coverage)
-\`\`\`
-
-### **PRIORITY 3: Institutional/B2B Channels**
-
-\`\`\`
-10. "Corporate wellness programs India 2024"
-11. "Gym chains India expansion 2024" (fitness studios, crossfit boxes)
-12. "Corporate cafeteria nutrition 2024" OR "office snacks market"
-13. "Hotel chains India 2024" (mini-bar, F&B tie-ups)
-\`\`\`
-
-### **PRIORITY 4: International Expansion**
-
-\`\`\`
-14. "Indian food brands export 2024" (success stories, regulations)
-15. "India UAE export food 2024" OR "Indian diaspora food consumption"
-16. "Nutrition bars Middle East market 2024"
-17. "Indian brands international expansion 2024"
-\`\`\`
-
-### **PRIORITY 5: Velocity Drivers**
-
-\`\`\`
-18. "Nutrition bars promotional strategies 2024"
-19. "In-store activation nutrition India 2024"
-20. "[COMPANY] sampling" OR "trial programs"
-\`\`\`
-
----
-
-## OUTPUT STRUCTURE (800-1,000 words, 2 pages max)
-
-### **SECTION 1: GROWTH DIAGNOSTIC (200 words)**
-
-\`\`\`
-## WHY GROWTH IS SLOWING
-
-**Revenue Trend:**
-FY24: ₹[X] Cr (+[Y]% YoY)
-FY25: ₹[X] Cr (+[Y]% YoY) ← Deceleration
-FY26E: ₹[X] Cr (+[Y]% YoY) ← Further slowdown
-
-**Distribution Saturation:**
-- Stores: Grew from 150 to 2,500 (16x) BUT
-- Revenue: Grew only 2.8x in same period
-- Implied: Revenue per store DROPPED (oversaturation signal)
-
-**Channel Mix Evolution:**
-- 2023: 45% D2C, 35% E-comm, 15% MT, 5% Other
-- 2026: [Current mix—likely shifted to MT-heavy]
-- Problem: [Lower-margin MT cannibalized higher-margin D2C]
-
-**Velocity Evidence:**
-[If found: "DMart Yogabar sales down 12% YoY per store despite 40% more SKU facings"]
-[If not found: "Store velocity data unavailable but plateau suggests velocity issue"]
-
-**Root Cause:**
-ITC's distribution playbook (add more touchpoints) has hit diminishing returns. Need DIFFERENT growth levers, not MORE of the same.
-
-**Sources:** [List sources]
-\`\`\`
-
-### **SECTION 2: QUICK COMMERCE CHANNEL STRATEGY (300 words)**
-
-\`\`\`
-## LEVER #1: QUICK COMMERCE EXPANSION
-
-**Market Opportunity:**
-- QC GMV: ₹[X] Cr (2024), growing [Y]% YoY
-- Nutrition category: [X]% of QC sales, growing [Y]% YoY
-- [COMPANY] presence: [Current—likely minimal/zero]
-- Gap: Category at 18% QC penetration, [COMPANY] at [X]%
-
-**Why QC Works NOW (Didn't in 2023):**
-- Critical mass reached: Blinkit in 300+ cities, Zepto in 10 (was 50 cities in 2023)
-- Consumer behavior: QC for premium impulse normalized (was experimental in 2023)
-- Economics: Dark stores profitable (wasn't in 2023), willing to stock premium SKUs
-
-**Strategy:**
-
-**Phase 1 (Months 1-6): Pilot**
-- Launch on Blinkit & Zepto (top 10 metros)
-- SKUs: Top 3 hero products only (reduce complexity)
-- Pricing: ₹48 (vs ₹50 MT) due to no retailer markup
-- Target: 80-120 units/SKU/dark store/month (viability threshold)
-- Investment: ₹2 Cr (platform fees, influencer seeding, dark store placement)
-
-**Phase 2 (Months 7-18): Scale**
-- Expand to 50 cities if Phase 1 hits targets
-- Add 2-3 more SKUs (including functional premium)
-- Target: ₹45 Cr annualized run-rate (25% of total revenue)
-- Investment: ₹8 Cr (expanded coverage, QC-specific marketing)
-
-**Economics:**
-- Margin: 48% (vs 38% MT, 54% D2C, 32% E-comm)
-- Customer: Younger (25-35), higher income, impulse buyer
-- Frequency: 2.3x higher order frequency than MT (weekly vs bi-weekly)
-
-**Risk:** QC velocity unproven—if <80 units/month, delisting risk. Mitigate with heavy sampling in Month 1-2.
-
-**Payback:** 11 months (breakeven on investment)
-\`\`\`
-
-### **SECTION 3: INSTITUTIONAL B2B CHANNEL (200 words)**
-
-\`\`\`
-## LEVER #2: CORPORATE & GYM PARTNERSHIPS
-
-**Opportunity:**
-
-**Corporate Wellness:**
-- TAM: 15,000 companies with 500+ employees in India
-- Addressable: 5M white-collar employees with wellness budgets
-- Model: Monthly subscription boxes (₹300/employee/month, 10 bars)
-- Revenue potential: ₹1,500 Cr if 20% penetration (long-term)
-- Near-term: ₹25 Cr in 24 months (300 corporate accounts @ ₹8L/year each)
-
-**Gym Partnerships:**
-- TAM: 8,000+ fitness studios, crossfit boxes, yoga centers
-- Model: Bulk sales (₹40/bar in 48-count packs) + sampling programs
-- Revenue potential: ₹35 Cr in 24 months (1,000 gyms @ ₹3.5L/year each)
-
-**Strategy:**
-- ITC Hotels has 2,500 corporate clients → Cross-sell nutrition to HR teams
-- Bulk pricing (₹40/bar) BUT no channel costs = 46% margin (better than MT)
-- B2B sales team: 8 people focused on corporates + gyms
-
-**Investment:** ₹4 Cr (sales team, samples, contracting, CRM)
-**Payback:** 16 months
-\`\`\`
-
-### **SECTION 4: INTERNATIONAL EXPANSION (200 words)**
-
-\`\`\`
-## LEVER #3: MIDDLE EAST EXPORT
-
-**Why Now:**
-- UAE/Saudi have 280k Indian expats (fitness-conscious, premium spending power)
-- Indian food export regulations eased (2024 policy changes)
-- ITC has food export licenses (infrastructure ready)
-- Competitors haven't moved yet (first-mover window)
-
-**Market Entry Strategy:**
-
-**Target Markets:**
-- UAE (Dubai, Abu Dhabi): 180k Indian diaspora
-- Saudi Arabia (Riyadh, Jeddah): 100k Indian diaspora
-- Qatar, Kuwait: 50k combined
-
-**Channel:**
-- Modern gourmet stores (Spinney's, Carrefour gourmet)
-- Indian specialty stores (Lulu, Choithrams)
-- Fitness chains (GymNation, Fitness First)
-
-**Pricing:**
-- ₹75 equivalent (premium positioning vs ₹50 in India)
-- Margin: 42% despite higher logistics (premium pricing offsets)
-
-**Phase 1 (Months 1-12): UAE Test**
-- 50 stores in Dubai/Abu Dhabi
-- Target: ₹8 Cr revenue Year 1
-- Investment: ₹3 Cr (logistics, regulatory, trade partnerships)
-
-**Phase 2 (Months 13-24): Regional Scale**
-- Saudi Arabia + Qatar entry
-- Target: ₹25 Cr combined by Year 2
-
-**ITC Advantage:** Export infrastructure, regulatory clearances, existing B2B relationships
-
-**Payback:** 18 months
-\`\`\`
-
-### **SECTION 5: VELOCITY IMPROVEMENT (EXISTING STORES) (100 words)**
-
-\`\`\`
-## LEVER #4: SAME-STORE SALES GROWTH
-
-**Current Problem:** 800-1,200 MT stores but velocity declining
-
-**Interventions:**
-
-**A. In-store activation:**
-- Sampling at 500 top stores (₹2 Cr investment)
-- Visibility (endcap placements, shelf talkers)
-- Target: +8% velocity in activated stores
-
-**B. Retailer incentives:**
-- Performance bonuses for stores hitting >100 bars/month
-- Reduces passive distribution (SKU sits, doesn't sell)
-
-**C. SKU rationalization:**
-- Remove slow SKUs (tail products) from 70% of stores
-- Focus on top 3 hero products (improves velocity, reduces complexity)
-
-**Combined Impact:** +₹18 Cr from same stores (without adding new ones)
-**Investment:** ₹4 Cr
-**Payback:** 8 months
-\`\`\`
-
----
-
-## GROWTH MATH & ROADMAP
-
-\`\`\`
-## 24-MONTH GROWTH PLAN TO 60%+ YoY
-
-**Baseline (FY26):**
-Revenue: ₹[X] Cr
-Growth: 30% YoY (slowing)
-
-**New Growth Drivers (FY27-28):**
-
-| Lever | FY27 Impact | FY28 Impact | Total 24M |
-|-------|-------------|-------------|-----------|
-| Quick Commerce | ₹25 Cr | ₹45 Cr | ₹70 Cr |
-| Corporate B2B | ₹15 Cr | ₹25 Cr | ₹40 Cr |
-| International | ₹8 Cr | ₹25 Cr | ₹33 Cr |
-| Same-Store Growth | ₹18 Cr | ₹22 Cr | ₹40 Cr |
-| **Total Incremental** | **₹66 Cr** | **₹117 Cr** | **₹183 Cr** |
-
-**Baseline Growth (30% on existing):** ₹[X] Cr
-
-**Total FY28 Revenue:** ₹[X + 183] Cr
-**Blended Growth Rate:** [Calculate—should be 55-65% YoY]
-
-**Total Investment:** ₹21 Cr
-**Blended Payback:** 13 months
-\`\`\`
-
----
-
-## CRITICAL SUCCESS CRITERIA
-
-Your output must answer:
-1. **Why is growth slowing?** (Evidence of distribution saturation)
-2. **What are 4 NEXT growth levers?** (Not "add more stores")
-3. **What's the Quick Commerce strategy?** (Biggest new opportunity)
-4. **How do we get back to 60%+ growth?** (Math with revenue impact)
-
-**Red Flags:**
-- ❌ "Expand to more MT stores" (plateau evidence)
-- ❌ "Enter Modern Trade" (already done)
-- ❌ No QC strategy (ignoring 18% of category)
-- ✅ Math-driven (₹ Cr impact, not just ideas)
-
----
-
-## OUTPUT CHECKLIST
-
-- [ ] Growth diagnostic (why slowing? data-driven)
-- [ ] Quick Commerce strategy (phases, economics, targets)
-- [ ] Institutional B2B strategy (corporate + gyms)
-- [ ] International expansion plan (ME markets)
-- [ ] Same-store velocity improvement
-- [ ] 24-month growth math (baseline + incremental = 60%+ target)
-- [ ] Investment and payback for each lever
-- [ ] All figures sourced or clearly marked as estimates
-
----
-
-**Remember:** ITC already played the distribution card (800-1,200 MT stores). Your job is to find the NEXT set of growth drivers that don't rely on adding more of the same. Think channels (QC, B2B, export), not just coverage.
-`,
+  competitive:
 
   competitive: `# AGENT 6: COMPETITIVE BATTLE PLAN
 ## POST-ACQUISITION COMPETITIVE RESET (3 YEARS IN)
@@ -3053,6 +2759,24 @@ WEB SEARCH BUDGET — YOU HAVE 2 SEARCHES MAXIMUM:
 
 You have exactly 2 web searches. Use them on the 2 highest-value queries — the ones that will give you the most specific, sourced numbers that cannot be estimated from general knowledge. Prioritise: company-specific revenue or growth data, a named industry report figure, or a specific competitor data point. Do not waste a search on something you can estimate confidently. Make every search count.
 
+LENGTH AND COMPLETION — CRITICAL:
+
+Your analysis must be COMPLETE. Never stop mid-sentence or mid-section. If you are running out of space, shorten earlier sections — but always finish the final section properly. A truncated analysis is unprofessional. Target 600–900 words of dense prose. More than 1000 words is too long. Cut repetition ruthlessly before cutting conclusions.
+
+DO NOT REPEAT WHAT OTHER AGENTS COVER:
+
+You are one of 10 specialist agents. Do not write about topics that belong to another agent's mandate:
+- Market sizing and category growth → Agent 1 (market)
+- SKU mix and portfolio decisions → Agent 2 (portfolio)  
+- Brand positioning and consumer → Agent 3 (brand)
+- Margins and unit economics → Agent 4 (margins)
+- Channel strategy and GTM → Agent 5 (growth)
+- Competitor moves → Agent 6 (competitive)
+- ITC synergies and integration → Agent 7 (synergy)
+- D2C platform and new brands → Agent 8 (platform)
+- Global benchmarks → Agent 9 (intl)
+Stay strictly within your mandate. Cross-reference another agent only when directly relevant, in one sentence.
+
 NEVER SHOW YOUR REASONING PROCESS: Do not write sentences like "I'll conduct targeted searches", "Based on my research I can now", "Let me structure this", or "---" dividers. Begin immediately with analysis content. No preamble, no meta-commentary, no closing remarks.
 
 NO NEGATIVES ABOUT THE ITC ACQUISITION: Every finding must be an opportunity, advantage, or action. Do not write about risks, weaknesses, or challenges. Frame difficulties as "the priority investment area." ITC acquiring Yogabar is unambiguously positive.
@@ -3615,12 +3339,32 @@ Focus areas:
       table {
         page-break-inside: avoid !important;
         border-collapse: collapse !important;
+        width: 100%;
+        font-size: 11px;
       }
-      
+
       table th {
-        background: #ede6d6 !important;
+        background: #2d5040 !important;
+        color: #f5f0e8 !important;
+        padding: 8px 12px !important;
+        font-weight: 700 !important;
+        font-size: 10px !important;
+        letter-spacing: 0.05em !important;
+        text-transform: uppercase !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
+      }
+
+      table td {
+        padding: 7px 12px !important;
+        border: 1px solid #d4c4a8 !important;
+        color: #1a1208 !important;
+        vertical-align: top !important;
+        line-height: 1.4 !important;
+      }
+
+      table tr:nth-child(even) td {
+        background: #faf6ef !important;
       }
 
       .conf-high {
@@ -3724,12 +3468,12 @@ Focus areas:
     </p>
     
     <p style={{ fontSize: 13, color: P.inkFaint, marginBottom: 50 }}>
-      Generated {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} • Completed in {formatTime(elapsed)}
+      Generated {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} • Completed in {formatTime(elapsed)} minutes
     </p>
     
     <div style={{ background: P.parchment, padding: "25px 30px", borderRadius: 6, maxWidth: 500, margin: "0 auto", border: `1px solid ${P.sand}` }}>
       <p style={{ fontSize: 11, color: P.inkMid, lineHeight: 1.7, margin: 0 }}>
-        Strategic synthesis from 9 parallel intelligence agents analyzing market position, portfolio optimization, brand evolution, margin improvement, growth channels, competitive dynamics, operational synergies, and platform expansion opportunities.
+        Strategic synthesis from 10 parallel intelligence agents analyzing market position, portfolio optimization, brand evolution, margin improvement, growth channels, competitive dynamics, operational synergies, and platform expansion opportunities.
       </p>
     </div>
     
@@ -3841,7 +3585,7 @@ Focus areas:
         onMouseLeave={e => { e.currentTarget.style.borderLeftColor = 'transparent'; e.currentTarget.style.background = 'transparent'; }}>
         <span style={{ fontWeight: 700, fontSize: 15, color: P.forest, fontFamily: "'Libre Baskerville', serif" }}>Executive Synopsis</span>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontWeight: 700, color: P.terra, fontSize: 13 }}>4–5</span>
+          <span style={{ fontWeight: 700, color: P.terra, fontSize: 13 }}>§ Syn</span>
           <span style={{ color: P.terra, fontSize: 14, opacity: 0.5 }}>→</span>
         </div>
       </a>
@@ -3851,15 +3595,15 @@ Focus areas:
       </div>
 
       {[
-        { num: 1,  id: "market",      icon: "◈", title: "Market Position & Category Dynamics",         pages: "6–7"   },
-        { num: 2,  id: "portfolio",   icon: "◉", title: "Portfolio Strategy & SKU Rationalization",    pages: "8–9"   },
-        { num: 3,  id: "brand",       icon: "◎", title: "Brand Positioning & Storytelling",            pages: "10"    },
-        { num: 4,  id: "margins",     icon: "◐", title: "Margin Improvement & Unit Economics",         pages: "11"    },
-        { num: 5,  id: "growth",      icon: "◆", title: "Growth Strategy & Channel Orchestration",     pages: "12"    },
-        { num: 6,  id: "competitive", icon: "◇", title: "Competitive Battle Plan",                     pages: "13"    },
-        { num: 7,  id: "synergy",     icon: "◈", title: "Synergy Playbook & Institutional Leverage",   pages: "14"    },
-        { num: 9,  id: "platform",    icon: "◉", title: "Platform Expansion & D2C Brand Incubator",   pages: "15–16" },
-        { num: 10, id: "intl",        icon: "◎", title: "International Benchmarks & Global Playbook", pages: "17–18" },
+        { num: 1,  id: "market",      icon: "◈", title: "Market Position & Category Dynamics",         pages: "§1"  },
+        { num: 2,  id: "portfolio",   icon: "◉", title: "Portfolio Strategy & SKU Rationalization",    pages: "§2"  },
+        { num: 3,  id: "brand",       icon: "◎", title: "Brand Positioning & Storytelling",            pages: "§3"  },
+        { num: 4,  id: "margins",     icon: "◐", title: "Margin Improvement & Unit Economics",         pages: "§4"  },
+        { num: 5,  id: "growth",      icon: "◆", title: "Growth Strategy & Channel Orchestration",     pages: "§5"  },
+        { num: 6,  id: "competitive", icon: "◇", title: "Competitive Battle Plan",                     pages: "§6"  },
+        { num: 7,  id: "synergy",     icon: "◈", title: "Synergy Playbook & Institutional Leverage",   pages: "§7"  },
+        { num: 8,  id: "platform",    icon: "◉", title: "Platform Expansion & D2C Brand Incubator",   pages: "§8" },
+        { num: 10, id: "intl",        icon: "◎", title: "International Benchmarks & Global Playbook", pages: "§9" },
       ].map((item, idx) => (
         <a key={idx} href={`#section-${item.id}`} style={{
           display: "flex", justifyContent: "space-between", alignItems: "center",
