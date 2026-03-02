@@ -1335,8 +1335,6 @@ Close with a single summary table: Lever | 24-Month Revenue Potential | Investme
 
 **Length:** 700–900 words total. Complete all four sections. Do not truncate.`,
 
-  competitive:
-
   competitive: `# AGENT 6: COMPETITIVE BATTLE PLAN
 ## POST-ACQUISITION COMPETITIVE RESET (3 YEARS IN)
 
