@@ -1316,7 +1316,7 @@ Corporate wellness, gym chains, hotel minibars, airline catering. ITC has direct
 **Section 4: International Expansion**
 ITC has food export licenses and existing trade infrastructure. Where should [COMPANY] go first — Middle East diaspora, South-East Asia, or UK? Make a specific recommendation with market sizing and a phased entry plan. 150–200 words.
 
-Close with a single summary table: Lever | 24-Month Revenue Potential | Investment Required | Payback Period.
+Close with a brief one-paragraph summary of the combined revenue impact across all four levers.
 
 ---
 
@@ -2743,7 +2743,7 @@ Yogabar revenue (verified, do not dispute or estimate differently):
 
 Growth has ACCELERATED post-ITC acquisition — not decelerated. ITC's distribution support has driven 80%+ YoY growth. Do NOT write about growth deceleration, plateau, or slowdown. The trajectory is strongly upward.
 
-All currency must be in ₹ Cr. Convert any USD figures to ₹ Cr at ₹84/USD before writing (e.g. $1M = ₹8.4 Cr, $1B = ₹840 Cr).
+For Indian companies and markets, use ₹ Cr. For international brands, keep figures in their original currency ($ USD) — do not convert. Never convert the same figure twice.
 
 Do NOT mention any individual person's name (e.g. Hemant, founders, executives) in your analysis. This is a company analysis, not a people analysis.
 
@@ -2780,7 +2780,7 @@ You have exactly 2 web searches. Use them on the 2 highest-value queries — the
 
 LENGTH AND COMPLETION — CRITICAL:
 
-Your analysis must be COMPLETE. Never stop mid-sentence or mid-section. If you are running out of space, shorten earlier sections — but always finish the final section properly. A truncated analysis is unprofessional. Target 600–900 words of dense prose. More than 1000 words is too long. Cut repetition ruthlessly before cutting conclusions.
+Your analysis must be COMPLETE. Never stop mid-sentence or mid-section. You have ample token budget — use it fully. If you are running long, tighten prose rather than dropping sections. Always finish the final section with a complete sentence. A truncated analysis is a failed analysis. Target 700–1000 words of dense prose. Cut repetition before cutting conclusions. For Synopsis: you may write up to 1500 words — completeness takes priority over brevity.
 
 DO NOT REPEAT WHAT OTHER AGENTS COVER:
 
@@ -2951,13 +2951,6 @@ function md(text) {
   tablePlaceholders.forEach((table, i) => {
     rendered = rendered.replace(`__TABLE_${i}__`, `</p><div style="margin:14px 0;overflow-x:auto;">${table}</div><p style="margin:6px 0;">`);
   });
-
-  // Convert USD/$ amounts to Rs Cr (1 USD ≈ 84 Rs, so $1M ≈ Rs 8.4 Cr)
-  rendered = rendered
-    .replace(/\$([\d,\.]+)\s*(?:billion|bn)/gi, (_, n) => `₹${(parseFloat(n.replace(/,/g,'')) * 84 * 100).toFixed(0)} Cr`)
-    .replace(/\$([\d,\.]+)\s*(?:million|mn|M)\b/gi, (_, n) => `₹${(parseFloat(n.replace(/,/g,'')) * 84 / 10).toFixed(1)} Cr`)
-    .replace(/USD\s*([\d,\.]+)\s*(?:billion|bn)/gi, (_, n) => `₹${(parseFloat(n.replace(/,/g,'')) * 84 * 100).toFixed(0)} Cr`)
-    .replace(/USD\s*([\d,\.]+)\s*(?:million|mn)/gi, (_, n) => `₹${(parseFloat(n.replace(/,/g,'')) * 84 / 10).toFixed(1)} Cr`);
 
   return rendered;
 }
@@ -3645,7 +3638,6 @@ Focus areas:
         onMouseLeave={e => { e.currentTarget.style.borderLeftColor = 'transparent'; e.currentTarget.style.background = 'transparent'; }}>
         <span style={{ fontWeight: 700, fontSize: 15, color: P.forest, fontFamily: "'Libre Baskerville', serif" }}>Executive Synopsis</span>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontWeight: 700, color: P.terra, fontSize: 13 }}>Syn</span>
           <span style={{ color: P.terra, fontSize: 14, opacity: 0.5 }}>→</span>
         </div>
       </a>
