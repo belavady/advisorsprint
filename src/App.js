@@ -3017,13 +3017,12 @@ Focus areas:
           if (event.type === 'searching') setStatuses(s => ({ ...s, [agentId]: `searching: ${event.query.slice(0,40)}…` }));
           if (event.type === 'done') {
             fullText = event.text || fullText;
-            if (event.sources?.length) {
-              setSources(prev => {
-                const existing = new Set(prev.map(s => s.url));
-                const fresh = event.sources.filter(s => !existing.has(s.url));
-                return [...prev, ...fresh].slice(0, 50);
-              });
-            }
+          }
+          if (event.type === 'source' && event.url) {
+            setSources(prev => {
+              if (prev.find(s => s.url === event.url)) return prev;
+              return [...prev, { url: event.url, title: event.title, agent: event.agent }].slice(0, 100);
+            });
           }
           if (event.type === 'error') {
             if (event.message?.includes('rate_limit')) throw new Error('RATE_LIMIT:' + event.message);
