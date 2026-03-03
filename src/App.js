@@ -118,24 +118,24 @@ const PROMPTS = {
 
 **Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
 
-**Critical Context:** ITC acquired [COMPANY] in 2023. We're now in 2026—**3 years post-acquisition**.
+**Critical Context:** [ACQUIRER] acquired [COMPANY] in 2023. We're now in 2026—**3 years post-acquisition**.
 
 ---
 
-## WHAT ITC HAS ALREADY DONE (2023-2026)
+## WHAT [ACQUIRER] HAS ALREADY DONE (2023-2026)
 
 **Distribution Support — PARTIAL LEVERAGE:**
-- ✅ Expanded from 150 MT stores → 800-1,200 stores (ITC relationships helped BUT field team focused on ITC's premium portfolio, not full muscle for Yogabar)
+- ✅ Expanded from 150 MT stores → 800-1,200 stores (ITC relationships helped BUT field team focused on [ACQUIRER]'s premium portfolio, not full muscle for Yogabar)
 - ⚠️ General Trade: Limited penetration (ITC field team bandwidth constraint)
-- ✅ Marketing spend 2x higher with ITC backing (but not 3x—separate unit with own budget)
+- ✅ Marketing spend 2x higher with [ACQUIRER] backing (but not 3x—separate unit with own budget)
 - ❌ Manufacturing: NOT moved to original co-packer facilities (no capacity constraints, Yogabar continues with co-packers)
-- ⚠️ Procurement: Minimal leverage (Yogabar operates separately, limited ITC vendor access)
+- ⚠️ Procurement: Minimal leverage (Yogabar operates separately, limited [ACQUIRER] vendor access)
 
 **The Challenge NOW:**
 - **Current performance unknown** - Search for 2024-2025 revenue/growth data
 - **Post-ITC trajectory assessment needed** - Has momentum continued, accelerated, or slowed?
 - **Next growth drivers** - What's needed BEYOND the selective MT support already provided?
-- **Field team bandwidth** - ITC's field team focused on own premium portfolio, so Yogabar needs strategies that don't depend heavily on ITC field resources
+- **Field team bandwidth** - [ACQUIRER]'s field team focused on own premium portfolio, so Yogabar needs strategies that don't depend heavily on [ACQUIRER] field resources
 
 ---
 
@@ -150,7 +150,7 @@ Identify the **NEXT SET** of growth opportunities that go **BEYOND distribution 
 4. **Market timing signals** for what to do in 2026-2028
 
 **DO NOT:**
-- ❌ Suggest "leverage ITC distribution" (done for 3 years)
+- ❌ Suggest "leverage [ACQUIRER] distribution" (done for 3 years)
 - ❌ Recommend "expand to more MT stores" (plateau evidence)
 - ❌ Give advice that was valid in 2023 but irrelevant now
 
@@ -166,8 +166,8 @@ Identify the **NEXT SET** of growth opportunities that go **BEYOND distribution 
 
 \`\`\`
 1. "[COMPANY] revenue growth 2024" OR "[COMPANY] same-store sales"
-2. "[COMPANY] ITC performance 2024" OR "[COMPANY] velocity trends"
-3. "ITC Foods acquisition performance 2024"
+2. "[COMPANY] [ACQUIRER] performance 2024" OR "[COMPANY] velocity trends"
+3. "[ACQUIRER] Foods acquisition performance 2024"
 4. "[COMPANY] store count 2025" OR "distribution expansion"
 \`\`\`
 
@@ -184,7 +184,7 @@ Identify the **NEXT SET** of growth opportunities that go **BEYOND distribution 
 10. "[Category] subscription model 2024" OR "DTC retention"
 \`\`\`
 
-**Why:** Find NEW channels/formats that emerged 2024-2026 that ITC hasn't captured.
+**Why:** Find NEW channels/formats that emerged 2024-2026 that [ACQUIRER] hasn't captured.
 
 ### **PRIORITY 3: Competitive Intelligence Post-2023**
 
@@ -205,7 +205,7 @@ Identify the **NEXT SET** of growth opportunities that go **BEYOND distribution 
 17. "Fitness studios India growth 2024" (sampling/distribution partner)
 \`\`\`
 
-**Why:** Non-traditional channels ITC may not have explored yet.
+**Why:** Non-traditional channels [ACQUIRER] may not have explored yet.
 
 ---
 
@@ -230,7 +230,7 @@ Velocity: [Evidence of plateau if available - e.g., "Same-store sales up only 2%
 2023: [X]% (Rank #[Y])
 2026: [X]% (Rank #[Y]) — [Gained/Lost] share
 
-**Verdict:** [One sentence - Is the ITC distribution playbook still working or tapped out?]
+**Verdict:** [One sentence - Is the [ACQUIRER] distribution playbook still working or tapped out?]
 
 **Confidence:** [High/Medium/Low - based on data quality]
 **Sources:** [List 2-3 key sources]
@@ -301,7 +301,7 @@ Example:
 **The Play:** Direct contracts with corporate cafeterias (500+ employee companies). Monthly subscription boxes to employees at ₹300/employee/month.
 **Market Size:** 15,000 qualifying companies in India, 5M white-collar employees = ₹1,500 Cr TAM (assuming 20% penetration)
 **Why Now:** Post-COVID wellness budgets up 3x. HR teams have budget for this (classified as "employee benefits").
-**ITC Advantage:** ITC Hotels already has corporate relationships. 2,500 existing corporate clients to cross-sell.
+**ITC Advantage:** [ACQUIRER] Hotels already has corporate relationships. 2,500 existing corporate clients to cross-sell.
 \`\`\`
 
 ---
@@ -331,7 +331,7 @@ Use best available data in this priority order:
 ## CRITICAL SUCCESS CRITERIA
 
 Your output must answer:
-1. **Is the ITC distribution playbook tapped out?** (Yes/No with evidence)
+1. **Is the [ACQUIRER] distribution playbook tapped out?** (Yes/No with evidence)
 2. **What are 3 category shifts since 2023** that create NEW growth opportunities?
 3. **Which competitors are outgrowing [COMPANY]** and what are they doing differently?
 4. **What are 3-4 NEXT growth levers** beyond adding more stores?
@@ -343,18 +343,18 @@ Your output must answer:
 ## OUTPUT CHECKLIST
 
 Before finishing, verify:
-- [ ] Acknowledged what ITC already did (2023-2026)
+- [ ] Acknowledged what [ACQUIRER] already did (2023-2026)
 - [ ] Showed growth trajectory evidence (is it slowing?)
 - [ ] Identified 3 category shifts since 2023
 - [ ] Competitive intelligence on who's still growing
 - [ ] 3-4 next levers beyond distribution
 - [ ] All figures have sources and confidence levels
-- [ ] No generic "leverage ITC distribution" advice
+- [ ] No generic "leverage [ACQUIRER] distribution" advice
 - [ ] Forward-looking (2026-2028), not backward-looking
 
 ---
 
-**Remember:** The user knows ITC has already leveraged distribution. They need to know **WHAT'S NEXT** to get back to 60% growth. Give them novel, specific, actionable insights.
+**Remember:** The user knows [ACQUIRER] has already leveraged distribution. They need to know **WHAT'S NEXT** to get back to 60% growth. Give them novel, specific, actionable insights.
 `,
 
   portfolio: `# AGENT 2: PORTFOLIO STRATEGY & SKU RATIONALIZATION
@@ -362,17 +362,17 @@ Before finishing, verify:
 
 **Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
 
-**Critical Context:** ITC acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
+**Critical Context:** [ACQUIRER] acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
 
 ---
 
-## WHAT ITC HAS ALREADY DONE (Portfolio Moves 2023-2026)
+## WHAT [ACQUIRER] HAS ALREADY DONE (Portfolio Moves 2023-2026)
 
 **Assumed Actions Already Taken:**
 - ✅ Killed unprofitable SKUs (2023-2024 rationalization)
 - ✅ Launched MT-optimized singles (₹40-45 range for impulse)
 - ✅ Standardized pack sizes across channels
-- ✅ Optimized manufacturing for hero SKUs (ITC plant transfer)
+- ✅ Optimized manufacturing for hero SKUs ([ACQUIRER] plant transfer)
 - ✅ Price repositioning (removed value tier, focused ₹45-65)
 
 **Current Challenge:**
@@ -634,23 +634,23 @@ Your output must answer:
 
 **Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
 
-**Critical Context:** ITC acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
+**Critical Context:** [ACQUIRER] acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
 
 ---
 
-## WHAT ITC HAS ALREADY DONE (Brand Moves 2023-2026)
+## WHAT [ACQUIRER] HAS ALREADY DONE (Brand Moves 2023-2026)
 
 **Assumed Actions Taken:**
 - ✅ Increased marketing spend 3x (ITC capital backing)
 - ✅ Expanded to mass media (was pure digital pre-acquisition)
-- ✅ ITC brand halo (association with ITC Foods credibility)
+- ✅ [ACQUIRER] brand halo (association with [ACQUIRER] Foods credibility)
 - ✅ Retail visibility boost (POS materials, in-store presence)
 - ✅ Influencer marketing scaled up
 
 **Current Challenge:**
 - Brand dilution risk: Going mass (MT/GT) may have weakened premium positioning
 - Scaling challenge: What worked for ₹50 Cr brand doesn't work at ₹200 Cr
-- ITC association paradox: Helps credibility but may commoditize "startup cool factor"
+- [ACQUIRER] association paradox: Helps credibility but may commoditize "startup cool factor"
 - Need brand evolution for NEXT phase (₹500 Cr+ aspiration)
 
 ---
@@ -660,7 +660,7 @@ Your output must answer:
 Define how [COMPANY]'s brand must **EVOLVE** (not just maintain) for 2026-2028 growth.
 
 **Focus on:**
-1. **Brand perception drift** (What changed 2023-2026 with ITC ownership/mass expansion?)
+1. **Brand perception drift** (What changed 2023-2026 with [ACQUIRER] ownership/mass expansion?)
 2. **Target customer evolution** (Who's buying now vs 2023? Who SHOULD buy next?)
 3. **Brand repositioning** needed for new channels (QC, institutional, export)
 4. **Differentiation reset** (Competition caught up—how to re-establish distinctiveness?)
@@ -668,10 +668,10 @@ Define how [COMPANY]'s brand must **EVOLVE** (not just maintain) for 2026-2028 g
 **DO NOT:**
 - ❌ Generic "premium positioning" (WHAT does premium mean NOW in 2026?)
 - ❌ "Maintain current brand" (maintenance won't drive 60% growth)
-- ❌ Ignore ITC impact (it's been 3 years, brand perception has changed)
+- ❌ Ignore [ACQUIRER] impact (it's been 3 years, brand perception has changed)
 
 **DO:**
-- ✅ "Brand drifted from 'startup insurgent' (2020-2023) to 'ITC sub-brand' (2024-2025). Need to reclaim distinct identity while leveraging ITC credibility for distribution, not brand."
+- ✅ "Brand drifted from 'startup insurgent' (2020-2023) to 'ITC sub-brand' (2024-2025). Need to reclaim distinct identity while leveraging [ACQUIRER] credibility for distribution, not brand."
 - ✅ "Target evolved: Was 25-35 fitness enthusiasts (2023), now 30-50 health-conscious families (MT expansion). Need to re-focus on original audience OR commit to new target fully."
 
 ---
@@ -683,7 +683,7 @@ Define how [COMPANY]'s brand must **EVOLVE** (not just maintain) for 2026-2028 g
 \`\`\`
 1. "[COMPANY] brand perception 2024" OR "customer reviews sentiment"
 2. "[COMPANY] Amazon reviews 2024" (read actual customer language)
-3. "[COMPANY] ITC association" OR "ITC Foods brand impact"
+3. "[COMPANY] [ACQUIRER] association" OR "[ACQUIRER] Foods brand impact"
 4. "[COMPANY] social media 2024" OR "Instagram followers growth"
 5. "[COMPANY] brand awareness 2024" OR "recall metrics"
 \`\`\`
@@ -743,9 +743,9 @@ Define how [COMPANY]'s brand must **EVOLVE** (not just maintain) for 2026-2028 g
 - Loyalty: [Repeat purchase indicators from reviews/subscription data]
 
 **ITC Association Impact:**
-- Positive: [What ITC ownership helped - credibility, trust, visibility]
+- Positive: [What [ACQUIRER] ownership helped - credibility, trust, visibility]
 - Negative: [What it hurt - startup cool, premium perception, distinctiveness]
-- Net: [Has ITC ownership been brand-positive or brand-dilutive?]
+- Net: [Has [ACQUIRER] ownership been brand-positive or brand-dilutive?]
 
 **Sources:** [List sources, mark estimates]
 \`\`\`
@@ -818,7 +818,7 @@ Based on market gaps and competitor vulnerabilities:
 Example:
 **Option 1: "India's Functional Nutrition Pioneer"**
 - What: First Indian brand with clinically-dosed adaptogens/functional ingredients (not just protein)
-- Ownable: ITC R&D + manufacturing capabilities (competitors can't match)
+- Ownable: [ACQUIRER] R&D + manufacturing capabilities (competitors can't match)
 - Matters: 68% segment growth (Euromonitor), customers want more than protein
 - Trade-off: Narrow target (wellness-focused vs mass nutrition)
 \`\`\`
@@ -877,15 +877,15 @@ Example:
 - Messaging: [B2B ROI, wellness outcomes]
 - Visual: [Professional, data-driven]
 
-**PILLAR 4: ITC Association Management**
+**PILLAR 4: [ACQUIRER] Association Management**
 
 **The Balance:**
-- Leverage: [Where ITC brand helps - trust, credibility, distribution]
-- Distance: [Where ITC brand hurts - premium perception, startup energy]
+- Leverage: [Where [ACQUIRER] brand helps - trust, credibility, distribution]
+- Distance: [Where [ACQUIRER] brand hurts - premium perception, startup energy]
 
 **Execution:**
 - Packaging: [ITC logo size/placement - subtle vs prominent]
-- Communication: ["An ITC Brand" vs independent positioning]
+- Communication: ["An [ACQUIRER] Brand" vs independent positioning]
 - Channel strategy: [Where to emphasize ITC, where to downplay]
 
 **PILLAR 5: Proof Points & Credibility**
@@ -913,7 +913,7 @@ Your output must answer:
 
 **Red Flags:**
 - ❌ "Maintain premium positioning" (not a strategy, just a wish)
-- ❌ Ignoring 3 years of ITC impact on brand
+- ❌ Ignoring 3 years of [ACQUIRER] impact on brand
 - ❌ Generic positioning (could apply to any competitor)
 - ✅ Evidence-based (customer language, review sentiment, competitive moves)
 - ✅ Trade-offs acknowledged (can't be all things to all people)
@@ -942,7 +942,7 @@ Your output must answer:
 - [ ] Differentiation gap identified (what was unique, what's now copied)
 - [ ] Positioning options presented with trade-offs
 - [ ] Brand evolution roadmap (messaging, visual, channel-specific)
-- [ ] ITC association managed (leverage vs distance strategy)
+- [ ] [ACQUIRER] association managed (leverage vs distance strategy)
 - [ ] All claims backed by customer evidence or marked as recommendations
 - [ ] Forward-looking (what brand needs to BECOME, not maintain)
 
@@ -956,22 +956,22 @@ Your output must answer:
 
 **Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
 
-**Critical Context:** ITC acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
+**Critical Context:** [ACQUIRER] acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
 
 ---
 
-## WHAT ITC HAS ALREADY CAPTURED (Synergies 2023-2026)
+## WHAT [ACQUIRER] HAS ALREADY CAPTURED (Synergies 2023-2026)
 
 **Assumed Margin Improvements Already Realized:**
 - ✅ Manufacturing: Moved to original co-packer facilities (COGS optimization limited (no manufacturing synergy))
-- ✅ Procurement: Leveraged ITC vendor relationships (5-8% ingredient savings)
-- ✅ Logistics: ITC distribution network (freight costs down)
+- ✅ Procurement: Leveraged [ACQUIRER] vendor relationships (5-8% ingredient savings)
+- ✅ Logistics: [ACQUIRER] distribution network (freight costs down)
 - ✅ SKU rationalization: Killed bottom 20% by margin (2023-2024)
 - ✅ Channel mix: Shifted from 70% Amazon (high fees) to 50% MT (better margins)
 
 **Margin Evolution 2023-2026:**
 - Assumed: 32% gross margin (2023) → 39-41% (2026) from above synergies
-- ITC captured the "obvious" operational efficiencies
+- [ACQUIRER] captured the "obvious" operational efficiencies
 
 **Current Challenge:**
 - Low-hanging fruit exhausted
@@ -994,7 +994,7 @@ Identify the **NEXT WAVE** of margin improvement opportunities beyond basic syne
 **DO NOT:**
 - ❌ Suggest "move to original co-packer facilities" (done 3 years ago)
 - ❌ Generic "reduce COGS" (what specifically?)
-- ❌ "Leverage ITC procurement" (already captured)
+- ❌ "Leverage [ACQUIRER] procurement" (already captured)
 
 **DO:**
 - ✅ "Shift from bulk sweeteners to monk fruit (premium ingredient) while maintaining 41% margin—unlocks ₹70-90 price point vs current ₹50 ceiling"
@@ -1009,7 +1009,7 @@ Identify the **NEXT WAVE** of margin improvement opportunities beyond basic syne
 \`\`\`
 1. "[COMPANY] gross margin 2024" OR "profitability"
 2. "[COMPANY] EBITDA 2024" OR "unit economics"
-3. "ITC Foods margins 2024" (benchmark for realistic target)
+3. "[ACQUIRER] Foods margins 2024" (benchmark for realistic target)
 4. "[COMPANY] cost structure 2024"
 \`\`\`
 
@@ -1158,7 +1158,7 @@ Research question: "If [COMPANY] raised price from ₹50 to ₹55 (10%), what % 
 **Option A: Across-the-board increase**
 - Current: ₹50
 - New: ₹53 (+6%)
-- Rationale: [Inflation, quality, ITC trust]
+- Rationale: [Inflation, quality, [ACQUIRER] trust]
 - Margin impact: +3.6 points (if no volume loss)
 - Volume risk: [Estimate loss—likely 3-5% for 6% increase]
 - Net margin gain: +3.1 points
@@ -1174,7 +1174,7 @@ Research question: "If [COMPANY] raised price from ₹50 to ₹55 (10%), what % 
 ### **SECTION 4: MANUFACTURING DECISION ANALYSIS (150 words)**
 
 \`\`\`
-## CO-PACKER VS ITC PLANT: SHOULD [COMPANY] MOVE PRODUCTION?
+## CO-PACKER VS [ACQUIRER] PLANT: SHOULD [COMPANY] MOVE PRODUCTION?
 
 **Current State: Co-Packer Model**
 - Flexibility: Can switch suppliers, multi-source, negotiate  
@@ -1185,25 +1185,25 @@ Research question: "If [COMPANY] raised price from ₹50 to ₹55 (10%), what % 
 - Risk: Dependent on third-party capacity, priorities
 
 **ITC Plant Option:**
-- Economies of scale: ITC plants optimized for high volume
+- Economies of scale: [ACQUIRER] plants optimized for high volume
 - Quality: Better process control, consistency, food safety systems
 - CapEx: ITC's problem (not [COMPANY]'s P&L burden)
-- Cost at scale: ₹[Y]/unit (likely 8-12% lower at >50M units/year based on ITC Foods precedent)
-- BUT: Loss of flexibility, dependent on ITC plant capacity/scheduling priority
+- Cost at scale: ₹[Y]/unit (likely 8-12% lower at >50M units/year based on [ACQUIRER] Foods precedent)
+- BUT: Loss of flexibility, dependent on [ACQUIRER] plant capacity/scheduling priority
 
 **Break-Even Analysis:**
 
-| Volume (million units/year) | Co-Packer Cost | ITC Plant Cost | Winner |
+| Volume (million units/year) | Co-Packer Cost | [ACQUIRER] Plant Cost | Winner |
 |------------------------------|----------------|----------------|--------|
 | 10M (current estimate?) | ₹[X] | ₹[X + 5%] | Co-packer |
 | 30M | ₹[X] | ₹[X - 3%] | Neutral |
-| 50M+ | ₹[X] | ₹[X - 10%] | ITC plant |
+| 50M+ | ₹[X] | ₹[X - 10%] | [ACQUIRER] plant |
 
 **Current Volume:** [Search for actual production volume or estimate from revenue]  
-**Threshold:** ITC plant becomes cost-effective at ~40-50M units/year
+**Threshold:** [ACQUIRER] plant becomes cost-effective at ~40-50M units/year
 
 **Quality Consideration:**
-- If co-packer has quality/consistency issues → Move to ITC regardless of volume
+- If co-packer has quality/consistency issues → Move to [ACQUIRER] regardless of volume
 - If no quality issues → Volume-driven decision only
 
 **RECOMMENDATION:**
@@ -1213,16 +1213,16 @@ Research question: "If [COMPANY] raised price from ₹50 to ₹55 (10%), what % 
 - Cost difference minimal (<5%)
 - Switching costs not justified
 
-**If current volume >40M units/year OR quality issues exist:** MOVE to ITC plant
+**If current volume >40M units/year OR quality issues exist:** MOVE to [ACQUIRER] plant
 - Rationale: Economies of scale justify move, quality improvement, strategic alignment
 - Timing: 12-18 month transition (maintain co-packer as backup initially)
 
-**If volume 30-40M units/year:** PILOT batch at ITC plant
-- Run 20% of volume through ITC plant (test quality, costs, logistics)
+**If volume 30-40M units/year:** PILOT batch at [ACQUIRER] plant
+- Run 20% of volume through [ACQUIRER] plant (test quality, costs, logistics)
 - Compare actual costs vs co-packer for 6 months
 - Make data-driven decision
 
-**Key Assumption:** [COMPANY] operates with autonomy - manufacturing decision should be based on economics and quality, not "ITC wants all brands in ITC plants" (preserve flexibility)
+**Key Assumption:** [COMPANY] operates with autonomy - manufacturing decision should be based on economics and quality, not "ITC wants all brands in [ACQUIRER] plants" (preserve flexibility)
 \`\`\`
 
 \`\`\`
@@ -1264,7 +1264,7 @@ EBITDA Margin: [X]% (break-even to positive)
 
 Your output must answer:
 1. **What's the current margin by channel?** (Data-driven or estimated)
-2. **What are 5 NEXT margin levers?** (Beyond basic ITC synergies)
+2. **What are 5 NEXT margin levers?** (Beyond basic [ACQUIRER] synergies)
 3. **Where can [COMPANY] charge more?** (Pricing power analysis)
 4. **What's the 24-month margin roadmap?** (From [X]% to [Y]% with timeline)
 
@@ -1289,14 +1289,14 @@ Your output must answer:
 
 ---
 
-**Remember:** ITC already captured basic synergies (manufacturing, procurement). Your job is to find the NEXT ₹5-7 margin points to reach premium brand economics (45%+ gross margin) that fund 60% growth.
+**Remember:** [ACQUIRER] already captured basic synergies (manufacturing, procurement). Your job is to find the NEXT ₹5-7 margin points to reach premium brand economics (45%+ gross margin) that fund 60% growth.
 `,
 
   growth: `# AGENT 5: GROWTH STRATEGY & CHANNEL ORCHESTRATION
 
 You are a senior channel strategist. Your mandate is STRICTLY channel development and new revenue streams — not brand, not portfolio, not margins (those belong to other agents).
 
-ITC acquired [COMPANY] in 2022-23. Three years in, the distribution buildout is largely complete. Your job is to identify what comes NEXT — the growth levers that do not depend on adding more retail touchpoints.
+[ACQUIRER] acquired [COMPANY] in 2022-23. Three years in, the distribution buildout is largely complete. Your job is to identify what comes NEXT — the growth levers that do not depend on adding more retail touchpoints.
 
 **Do not repeat:** market sizing (Agent 1), portfolio mix (Agent 2), brand positioning (Agent 3), margin structure (Agent 4). Reference them only when directly relevant, in one sentence.
 
@@ -1311,10 +1311,10 @@ What does [COMPANY]'s current channel mix look like? Where is growth coming from
 The single largest underpenetrated channel. Quantify the QC opportunity specifically for [COMPANY] — market size, [COMPANY]'s current QC share (likely near zero), what it would take to build to 20–25% of revenue via QC. Phase the investment and set numeric milestones. 200–250 words.
 
 **Section 3: Institutional and B2B**
-Corporate wellness, gym chains, hotel minibars, airline catering. ITC has direct relationships in all of these through its hospitality and FMCG infrastructure. Quantify the opportunity, identify the 2–3 highest-leverage entry points, and show the revenue math. 150–200 words.
+Corporate wellness, gym chains, hotel minibars, airline catering. [ACQUIRER] has direct relationships in all of these through its hospitality and FMCG infrastructure. Quantify the opportunity, identify the 2–3 highest-leverage entry points, and show the revenue math. 150–200 words.
 
 **Section 4: International Expansion**
-ITC has food export licenses and existing trade infrastructure. Where should [COMPANY] go first — Middle East diaspora, South-East Asia, or UK? Make a specific recommendation with market sizing and a phased entry plan. 150–200 words.
+[ACQUIRER] has food export licenses and existing trade infrastructure. Where should [COMPANY] go first — Middle East diaspora, South-East Asia, or UK? Make a specific recommendation with market sizing and a phased entry plan. 150–200 words.
 
 Close with a brief one-paragraph summary of the combined revenue impact across all four levers.
 
@@ -1329,7 +1329,7 @@ Close with a brief one-paragraph summary of the combined revenue impact across a
 
 **Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
 
-**Critical Context:** ITC acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
+**Critical Context:** [ACQUIRER] acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
 
 ---
 
@@ -1349,7 +1349,7 @@ Close with a brief one-paragraph summary of the combined revenue impact across a
 
 **Competitive Landscape Reset:**
 - [COMPANY]'s distribution advantage (2024) is temporary—others closing gap fast
-- Original brand differentiation ("clean label startup") diluted by ITC association
+- Original brand differentiation ("clean label startup") diluted by [ACQUIRER] association
 - Price competition intensifying (8 brands at ₹45-55 range now vs 3 in 2023)
 - Need NEW basis of competition (distribution advantage won't last)
 
@@ -1521,11 +1521,11 @@ Example:
 **Attack:**
 - What: Launch [COMPANY] functional range (₹70-90) within 6 months
 - Where: Quick Commerce + premium E-comm (don't compete in their MT weakness)
-- Differentiation: ITC R&D = clinically-dosed ingredients (vs their marketing claims)
+- Differentiation: [ACQUIRER] R&D = clinically-dosed ingredients (vs their marketing claims)
 - Timeline: Q2 2026 launch, scale Q3-Q4
 
 **Defend:**
-- Protect existing ₹50 range by emphasizing ITC trust/quality vs startup
+- Protect existing ₹50 range by emphasizing [ACQUIRER] trust/quality vs startup
 - Leverage 800-1,200 MT stores for visibility (they can't match offline presence)
 \`\`\`
 
@@ -1538,12 +1538,12 @@ Example:
 
 **[COMPANY]'s Competitive Advantages (2026):**
 1. Distribution: 800-1,200 MT stores (best in category)
-2. ITC backing: Capital, manufacturing, procurement scale
+2. [ACQUIRER] backing: Capital, manufacturing, procurement scale
 3. Established brand: 6+ years, customer trust
 4. [Other advantages based on data]
 
 **[COMPANY]'s Competitive Disadvantages (2026):**
-1. Brand dilution: ITC association weakened "startup premium" perception
+1. Brand dilution: [ACQUIRER] association weakened "startup premium" perception
 2. Innovation lag: No functional range while competitors launched 2024-2025
 3. QC absence: 0-5% of revenue while category average 18%
 4. [Other weaknesses based on competitive analysis]
@@ -1575,7 +1575,7 @@ Example:
 **Vector:** 
 - Launch 3 functional SKUs (₹70-90) with clinically-dosed ingredients
 - Position as "science-backed" vs their "wellness marketing"
-- ITC R&D credibility as proof point
+- [ACQUIRER] R&D credibility as proof point
 **Timeline:** Q2 2026 launch, ₹35 Cr revenue target by Q1 2027
 **Metric:** Capture 25% of functional segment (₹45 Cr), Whole Truth growth slows to 30% YoY
 
@@ -1644,7 +1644,7 @@ Your output must answer:
 
 ---
 
-**Remember:** Competitive landscape changed DRAMATICALLY 2023-2026. ITC gave [COMPANY] distribution dominance BUT competitors evolved (functional, QC, international). Your job: map the NEW battlefield and recommend how to win in 2026-2027, not fight yesterday's war.
+**Remember:** Competitive landscape changed DRAMATICALLY 2023-2026. [ACQUIRER] gave [COMPANY] distribution dominance BUT competitors evolved (functional, QC, international). Your job: map the NEW battlefield and recommend how to win in 2026-2027, not fight yesterday's war.
 `,
 
   synergy: `# AGENT 7: SYNERGY PLAYBOOK
@@ -1652,13 +1652,13 @@ Your output must answer:
 
 **Model:** Claude Opus 4.6 (\`claude-opus-4-6-20250514\`)
 
-**Critical Context:** ITC acquired [COMPANY] in 2023. We're in 2026—**3 YEARS post-acquisition**.
+**Critical Context:** [ACQUIRER] acquired [COMPANY] in 2023. We're in 2026—**3 YEARS post-acquisition**.
 
 ---
 
 ## SYNERGIES ALREADY CAPTURED (2023-2026)
 
-**What ITC Promised (2023):**
+**What [ACQUIRER] Promised (2023):**
 - Distribution leverage (4M outlets)
 - Manufacturing optimization (original co-packer facilities)
 - Procurement scale (vendor leverage)
@@ -1697,12 +1697,12 @@ Based on Agents 1-6 analysis, synthesize:
 
 **ITC's Unique Assets (Beyond Distribution):**
 - **ITC Agri Business** → Backward integration (ingredient sourcing at scale, quality control, farmer relationships)
-- **ITC Hotels** → Premium positioning expertise, corporate B2B relationships (2,500 clients), institutional credibility
+- **[ACQUIRER] Hotels** → Premium positioning expertise, corporate B2B relationships (2,500 clients), institutional credibility
 - **ITC Commodities & Exports** → International trade infrastructure, export licenses, regulatory expertise (50+ countries)
 - **ITC Life Sciences R&D** → Food science capabilities, clinical validation labs, ingredient innovation
 - **ITC Brand-building Muscle** → Mass media buying power, consumer insights, premium brand management (Aashirvaad, Sunfeast precedent)
 
-**Yogabar's Digital-Native DNA (What ITC Lacks):**
+**Yogabar's Digital-Native DNA (What [ACQUIRER] Lacks):**
 - **Quick Commerce Mastery** → Platform relationships (Blinkit/Zepto), dark store optimization, QC-specific marketing
 - **Marketplace Dynamics** → Amazon/Flipkart algorithms, review management, search optimization, seller performance
 - **Influencer Strategy** → Authentic partnerships, content creation, community building, micro-influencer activation
@@ -1710,19 +1710,19 @@ Based on Agents 1-6 analysis, synthesize:
 - **Digital Agility** → Fast experimentation, A/B testing culture, data-driven decision making, startup speed
 
 **The Synergy Opportunity:**
-- **Yogabar → ITC:** Teach Quick Commerce, influencer marketing, D2C mechanics to entire ITC Foods portfolio (₹5,000 Cr) - Strategic value beyond revenue
+- **Yogabar → ITC:** Teach Quick Commerce, influencer marketing, D2C mechanics to entire [ACQUIRER] Foods portfolio (₹5,000 Cr) - Strategic value beyond revenue
 - **ITC → Yogabar:** Unlock Agri Business for clean-label sourcing, Hotels for premium B2B, Exports for international, R&D for functional innovation
 
 **This is a SYNTHESIS agent—you receive outputs from Agents 1-6. Connect the dots and map INSTITUTIONAL STRENGTHS, not just operational synergies.**
 
 **DO NOT:**
-- ❌ Repeat "leverage ITC distribution" (done for 3 years)
+- ❌ Repeat "leverage [ACQUIRER] distribution" (done for 3 years)
 - ❌ Generic synergy advice (check any M&A playbook)
 - ❌ Ignore integration challenges (pretend everything is smooth)
 
 **DO:**
-- ✅ "Agent 5 identified QC opportunity (₹45 Cr). ITC lacks QC presence BUT has capital for dark store partnerships. Synergy: Fund [COMPANY] to pioneer ITC's QC entry = ₹45 Cr revenue + learning for ITC Foods portfolio"
-- ✅ "Agent 3 showed brand dilution from ITC association. Counter-intuitive synergy: Give [COMPANY] MORE autonomy (separate brand identity) while using ITC backend (distribution, manufacturing)"
+- ✅ "Agent 5 identified QC opportunity (₹45 Cr). [ACQUIRER] lacks QC presence BUT has capital for dark store partnerships. Synergy: Fund [COMPANY] to pioneer [ACQUIRER]'s QC entry = ₹45 Cr revenue + learning for [ACQUIRER] Foods portfolio"
+- ✅ "Agent 3 showed brand dilution from [ACQUIRER] association. Counter-intuitive synergy: Give [COMPANY] MORE autonomy (separate brand identity) while using [ACQUIRER] backend (distribution, manufacturing)"
 
 ---
 
@@ -1736,7 +1736,7 @@ You will receive outputs from:
 - Agent 5: Growth channels (QC, B2B, international)
 - Agent 6: Competitive threats
 
-**Your job:** Connect these insights to ITC's capabilities and find synergies.
+**Your job:** Connect these insights to [ACQUIRER]'s capabilities and find synergies.
 
 ---
 
@@ -1754,20 +1754,20 @@ You will receive outputs from:
 | Distribution | 4M outlets | 2,500 MT + ~500 GT pilot stores | ₹80 Cr revenue | A |
 | Manufacturing | original co-packer facilities | COGS optimization limited (no manufacturing synergy) | ₹8 Cr annual | A |
 | Procurement | Vendor leverage | 5-8% savings | ₹4 Cr annual | B+ |
-| Brand-building | ITC muscle | 3x spend, momentum lost | ₹15 Cr (?) | C |
+| Brand-building | [ACQUIRER] muscle | 3x spend, momentum lost | ₹15 Cr (?) | C |
 | GT Reach | Premium kirana | 5K stores, low velocity | ₹8 Cr (?) | C |
 
 **Total Value Created:** ₹92-115 Cr (3 years)
 
 **Synergies NOT Captured (Gaps):**
-- Quick Commerce (ITC has no QC presence)
+- Quick Commerce ([ACQUIRER] has no QC presence)
 - International export (ITC infrastructure not leveraged)
-- Cross-selling to ITC Hotels/corporate clients (partnership unexplored)
+- Cross-selling to [ACQUIRER] Hotels/corporate clients (partnership unexplored)
 - R&D capabilities (ITC labs underutilized for innovation)
 
 **Integration Challenges:**
-- Culture clash: [COMPANY] startup team → ITC corporate (attrition?)
-- Brand dilution: ITC association hurt premium positioning
+- Culture clash: [COMPANY] startup team → [ACQUIRER] corporate (attrition?)
+- Brand dilution: [ACQUIRER] association hurt premium positioning
 - Decision speed: [COMPANY] slower (ITC approval layers)
 
 **Net Assessment:**
@@ -1778,15 +1778,15 @@ Basic operational synergies captured. Strategic synergies (brand, innovation, ne
 
 **Map INSTITUTIONAL STRENGTHS - Two-way value creation:**
 
-**Framework: What can Yogabar leverage FROM ITC that it can't build alone? What can ITC learn FROM Yogabar for its ₹5,000 Cr Foods portfolio?**
+**Framework: What can Yogabar leverage FROM [ACQUIRER] that it can't build alone? What can [ACQUIRER] learn FROM Yogabar for its ₹5,000 Cr Foods portfolio?**
 
 \`\`\`
-**SYNERGY #1: ITC Agri Business → Clean Label Sourcing (from Agent 2 Portfolio insights)**
+**SYNERGY #1: [ACQUIRER] Agri Business → Clean Label Sourcing (from Agent 2 Portfolio insights)**
 
 **ITC's Asset:** 
 - Agri Business division with direct farmer relationships (wheat, spices, fruits)
 - Backward integration at scale (reduces middlemen, ensures quality)
-- ITC precedent: Aashirvaad atta = farm-to-fork traceability
+- [ACQUIRER] precedent: Aashirvaad atta = farm-to-fork traceability
 
 **Yogabar's Need (from Agent 2):** 
 - Clean label positioning requires transparent sourcing
@@ -1794,14 +1794,14 @@ Basic operational synergies captured. Strategic synergies (brand, innovation, ne
 - Premium customers willing to pay for traceable, quality ingredients
 
 **Synergy Logic:**
-- ITC Agri can source nuts, oats, dates directly from farmers (10-15% cost reduction + quality story)
+- [ACQUIRER] Agri can source nuts, oats, dates directly from farmers (10-15% cost reduction + quality story)
 - Yogabar gets "farm-traceable" claim (differentiation vs competitors)
 - Marketing: "Sourced through ITC's farmer network - 5,000+ farmers, verified clean-label"
 
 **Value Potential:** 
 - Direct: ₹2-3 Cr annual savings (procurement) + 2-3 margin points from premium pricing
 - Brand: Unique claim (no competitor can match ITC's farmer network scale)
-- ITC Learning: Yogabar teaches "clean label premium" playbook → ITC can apply to Sunfeast, other brands
+- [ACQUIRER] Learning: Yogabar teaches "clean label premium" playbook → [ACQUIRER] can apply to Sunfeast, other brands
 
 **What's Needed:**
 - Agri Business team integration (pilot with 2-3 ingredients)
@@ -1810,10 +1810,10 @@ Basic operational synergies captured. Strategic synergies (brand, innovation, ne
 
 ---
 
-**SYNERGY #2: ITC Hotels → Premium Corporate B2B (from Agent 5 Growth insights)**
+**SYNERGY #2: [ACQUIRER] Hotels → Premium Corporate B2B (from Agent 5 Growth insights)**
 
 **ITC's Asset:**
-- ITC Hotels serves 2,500+ corporate clients (MNCs, large Indian cos)
+- [ACQUIRER] Hotels serves 2,500+ corporate clients (MNCs, large Indian cos)
 - Relationships with HR teams, procurement, wellness program managers
 - Premium brand = trust for corporate gifting, employee programs
 
@@ -1823,22 +1823,22 @@ Basic operational synergies captured. Strategic synergies (brand, innovation, ne
 - Need warm introductions to decision-makers
 
 **Synergy Logic:**
-- ITC Hotels' account managers cross-sell Yogabar to existing corporate clients
+- [ACQUIRER] Hotels' account managers cross-sell Yogabar to existing corporate clients
 - Position as "employee wellness program" (nutrition bars for office pantries, WFH kits)
-- Leverage ITC Hotels' premium association (if hotels use it, it's premium-quality signal)
+- Leverage [ACQUIRER] Hotels' premium association (if hotels use it, it's premium-quality signal)
 
 **Value:** 
 - Revenue: ₹25 Cr in 24 months (300 corporate accounts @ ₹8L/year)
 - Margin: 46% (direct sales, no middlemen)
-- ITC Learning: Yogabar's digital marketing tactics can help ITC Hotels with younger corporate clients
+- [ACQUIRER] Learning: Yogabar's digital marketing tactics can help [ACQUIRER] Hotels with younger corporate clients
 
 **What's Needed:**
-- Incentive alignment (ITC Hotels sales team gets commission on Yogabar cross-sell)
+- Incentive alignment ([ACQUIRER] Hotels sales team gets commission on Yogabar cross-sell)
 - Bundling (hotel stay packages + wellness kits for corporate events)
 
 ---
 
-**SYNERGY #3: ITC Commodities/Exports → International Expansion (from Agent 5)**
+**SYNERGY #3: [ACQUIRER] Commodities/Exports → International Expansion (from Agent 5)**
 
 **ITC's Asset:**
 - Food export infrastructure to 50+ countries (licenses, logistics, distributor network)
@@ -1850,23 +1850,23 @@ Basic operational synergies captured. Strategic synergies (brand, innovation, ne
 - Can't export independently (regulatory barriers, logistics complexity, no distributor network)
 
 **Synergy Logic:**
-- Yogabar piggybacks on ITC's existing export infrastructure
+- Yogabar piggybacks on [ACQUIRER]'s existing export infrastructure
 - Target: UAE, Saudi Arabia (280k+ Indian expats, high purchasing power)
-- Use ITC's distributor relationships (e.g., ITC already exports to Lulu, Choithrams)
+- Use ITC's distributor relationships (e.g., [ACQUIRER] already exports to Lulu, Choithrams)
 
 **Value:**
 - Revenue: ₹25 Cr in 24 months (Year 1: ₹8 Cr UAE pilot, Year 2: ₹17 Cr regional scale)
 - Margin: 42% (premium pricing in international markets)
-- ITC Learning: Yogabar teaches "premium health food export" playbook
+- [ACQUIRER] Learning: Yogabar teaches "premium health food export" playbook
 
 **What's Needed:**
 - Leverage ITC's Sharjah/Dubai distributor relationships
-- Export under ITC Foods umbrella (faster regulatory approval)
+- Export under [ACQUIRER] Foods umbrella (faster regulatory approval)
 - Adapt packaging for international markets (shelf-life, labeling requirements)
 
 ---
 
-**SYNERGY #4: Yogabar → ITC Foods (Quick Commerce Playbook Transfer)**
+**SYNERGY #4: Yogabar → [ACQUIRER] Foods (Quick Commerce Playbook Transfer)**
 
 **Yogabar's Asset (from Agent 5):**
 - Quick Commerce expertise (platform relationships, dark store optimization)
@@ -1874,28 +1874,28 @@ Basic operational synergies captured. Strategic synergies (brand, innovation, ne
 - Category insights: QC buyers prefer singles (₹50 impulse) vs multi-packs
 
 **ITC's Need:**
-- ITC Foods wants QC presence (Bingo chips, Sunfeast biscuits, YiPPee noodles need QC strategy)
+- [ACQUIRER] Foods wants QC presence (Bingo chips, Sunfeast biscuits, YiPPee noodles need QC strategy)
 - ₹5,000 Cr Foods portfolio has 0-5% QC penetration (category average 18%)
 - Lacks QC-specific know-how (pricing, packaging, dark store negotiation)
 
 **Synergy Logic (REVERSE - Yogabar teaches ITC):**
-- Yogabar pioneers QC for ITC (becomes test brand)
+- Yogabar pioneers QC for [ACQUIRER] (becomes test brand)
 - Learnings transfer to entire Foods portfolio (what QC pricing works, which SKUs to push, how to negotiate with platforms)
-- Strategic value to ITC >> Yogabar's direct revenue
+- Strategic value to [ACQUIRER] >> Yogabar's direct revenue
 
 **Value:**
 - Yogabar direct: ₹45 Cr revenue (18 months)
-- ITC strategic: If learnings help ITC Foods capture even 2% more QC share across portfolio = ₹100+ Cr impact
+- [ACQUIRER] strategic: If learnings help [ACQUIRER] Foods capture even 2% more QC share across portfolio = ₹100+ Cr impact
 - Positioning: Yogabar as "ITC's innovation lab for digital channels"
 
 **What's Needed:**
-- Yogabar autonomy to experiment (not ITC approval layers)
-- Knowledge transfer system (Yogabar team trains ITC Foods brand managers)
+- Yogabar autonomy to experiment (not [ACQUIRER] approval layers)
+- Knowledge transfer system (Yogabar team trains [ACQUIRER] Foods brand managers)
 - Measure & share learnings (what worked, what didn't)
 
 ---
 
-**SYNERGY #5: Yogabar → ITC Foods (Influencer Marketing Playbook)**
+**SYNERGY #5: Yogabar → [ACQUIRER] Foods (Influencer Marketing Playbook)**
 
 **Yogabar's Asset:**
 - Influencer strategy (authentic partnerships, content creation, ROI tracking)
@@ -1903,23 +1903,23 @@ Basic operational synergies captured. Strategic synergies (brand, innovation, ne
 - Digital-native measurement (cost per acquisition, engagement vs reach)
 
 **ITC's Need:**
-- ITC Foods relies on traditional media (TV, print)
+- [ACQUIRER] Foods relies on traditional media (TV, print)
 - Younger consumers (18-35) don't watch TV, consume content on Instagram/YouTube
-- ITC tried influencer marketing but doesn't know ROI, picks wrong influencers (celebrity vs micro)
+- [ACQUIRER] tried influencer marketing but doesn't know ROI, picks wrong influencers (celebrity vs micro)
 
 **Synergy Logic:**
-- Yogabar's influencer playbook becomes ITC template
+- Yogabar's influencer playbook becomes [ACQUIRER] template
 - Teach: How to identify authentic influencers, negotiate rates, measure ROI, create content that converts
-- ITC applies to Sunfeast, Bingo, YiPPee targeting younger audiences
+- [ACQUIRER] applies to Sunfeast, Bingo, YiPPee targeting younger audiences
 
 **Value:**
-- Yogabar: Retains expertise, becomes strategic asset to ITC (not just distribution burden)
+- Yogabar: Retains expertise, becomes strategic asset to [ACQUIRER] (not just distribution burden)
 - ITC: 20-30% better marketing efficiency = ₹50+ Cr impact across portfolio
 - Cultural: Yogabar's digital team upskills ITC's marketing function
 
 **What's Needed:**
-- Yogabar team runs influencer workshops for ITC Foods marketers
-- Co-create 2-3 campaigns (Yogabar + ITC brand) to demonstrate ROI
+- Yogabar team runs influencer workshops for [ACQUIRER] Foods marketers
+- Co-create 2-3 campaigns (Yogabar + [ACQUIRER] brand) to demonstrate ROI
 - Reverse mentorship (startup teaching corporate)
 \`\`\`
 
@@ -1930,42 +1930,42 @@ Example:
 
 **ITC Capability:** 
 - Capital: ₹8 Cr to fund QC expansion (dark store fees, marketing)
-- Strategic intent: ITC Foods wants QC presence (Bingo, Sunfeast also need QC)
-- Learning value: [COMPANY] pioneers, ITC learns for broader portfolio
+- Strategic intent: [ACQUIRER] Foods wants QC presence (Bingo, Sunfeast also need QC)
+- Learning value: [COMPANY] pioneers, [ACQUIRER] learns for broader portfolio
 
 **Synergy Logic:**
 - [COMPANY] gets capital + ITC's risk appetite (can experiment)
-- ITC gets QC playbook for entire Foods division (₹8 Cr investment = portfolio-wide learning)
+- [ACQUIRER] gets QC playbook for entire Foods division (₹8 Cr investment = portfolio-wide learning)
 - Dark stores willing to stock "ITC brand" (credibility advantage)
 
 **Value Potential:** 
 - Direct: ₹45 Cr revenue (48% margin = ₹21.6 Cr contribution)
-- Indirect: ITC Foods learns QC, applies to ₹5,000 Cr portfolio = strategic value
+- Indirect: [ACQUIRER] Foods learns QC, applies to ₹5,000 Cr portfolio = strategic value
 
 **What's Needed:**
-- [COMPANY] team autonomy (QC strategy, ITC doesn't micromanage)
+- [COMPANY] team autonomy (QC strategy, [ACQUIRER] doesn't micromanage)
 - Capital approval: ₹8 Cr (Q1 2026)
-- Dark store partnerships: ITC corporate relationships unlock doors
+- Dark store partnerships: [ACQUIRER] corporate relationships unlock doors
 
 **SYNERGY #2: International Export Leverage (from Agent 5)**
 
 **Opportunity:** ME market (₹25 Cr in 24 months per Agent 5)
 
 **ITC Capability:**
-- Export licenses: ITC has food export infrastructure (regulatory clearances)
-- Logistics: ITC shipping contracts (lower freight costs)
-- Trade relationships: ITC exports to 50+ countries (distributor network)
+- Export licenses: [ACQUIRER] has food export infrastructure (regulatory clearances)
+- Logistics: [ACQUIRER] shipping contracts (lower freight costs)
+- Trade relationships: [ACQUIRER] exports to 50+ countries (distributor network)
 
 **Synergy Logic:**
-[COMPANY] couldn't export independently (regulatory barriers, logistics complexity). ITC makes it viable.
+[COMPANY] couldn't export independently (regulatory barriers, logistics complexity). [ACQUIRER] makes it viable.
 
-**Value:** ₹25 Cr revenue (42% margin) + opens international for ITC snacks
+**Value:** ₹25 Cr revenue (42% margin) + opens international for [ACQUIRER] snacks
 
 **What's Needed:**
 - Leverage ITC's Sharjah distributor (existing relationship)
-- Export certification under ITC Foods (faster approval)
+- Export certification under [ACQUIRER] Foods (faster approval)
 
-**SYNERGY #3: Functional Innovation (from Agent 2 + ITC R&D)**
+**SYNERGY #3: Functional Innovation (from Agent 2 + [ACQUIRER] R&D)**
 
 **Opportunity:** Functional bars (₹70-90) = ₹35 Cr potential per Agent 2
 
@@ -1975,7 +1975,7 @@ Example:
 - Food scientists (can develop functional formulations)
 
 **Synergy Logic:**
-Competitors (Whole Truth) have functional bars but unvalidated claims. ITC R&D can create ACTUALLY functional formulations = differentiation.
+Competitors (Whole Truth) have functional bars but unvalidated claims. [ACQUIRER] R&D can create ACTUALLY functional formulations = differentiation.
 
 **Value:** ₹35 Cr revenue + brand repositioning as "science-backed"
 
@@ -1983,21 +1983,21 @@ Competitors (Whole Truth) have functional bars but unvalidated claims. ITC R&D c
 - R&D team collaboration (6-month NPD timeline)
 - Clinical trials (₹2 Cr investment for validation)
 
-**SYNERGY #4: B2B Cross-Sell (from Agent 5 + ITC Hotels)**
+**SYNERGY #4: B2B Cross-Sell (from Agent 5 + [ACQUIRER] Hotels)**
 
 **Opportunity:** Corporate wellness (₹25 Cr per Agent 5)
 
 **ITC Capability:**
-- ITC Hotels has 2,500 corporate clients (HR relationships)
+- [ACQUIRER] Hotels has 2,500 corporate clients (HR relationships)
 - Existing B2B sales team (can add [COMPANY] to portfolio)
 
 **Synergy Logic:**
-Cold corporate outreach is hard. Warm intro from ITC Hotels' account managers = faster conversion.
+Cold corporate outreach is hard. Warm intro from [ACQUIRER] Hotels' account managers = faster conversion.
 
 **Value:** ₹25 Cr revenue (46% margin, direct sales)
 
 **What's Needed:**
-- Cross-sell training for ITC Hotels B2B team
+- Cross-sell training for [ACQUIRER] Hotels B2B team
 - Incentive alignment (commission structure)
 \`\`\`
 
@@ -2008,17 +2008,17 @@ Cold corporate outreach is hard. Warm intro from ITC Hotels' account managers = 
 
 **Challenge #1: Brand Dilution (from Agent 3)**
 
-**Problem:** ITC association weakened [COMPANY]'s startup premium positioning
+**Problem:** [ACQUIRER] association weakened [COMPANY]'s startup premium positioning
 
 **Counter-Intuitive Synergy:**
 - Give [COMPANY] brand autonomy (separate identity)
-- BUT leverage ITC backend (distribution, manufacturing)
+- BUT leverage [ACQUIRER] backend (distribution, manufacturing)
 - "House of brands" model (like P&G, Unilever)
 
 **Implementation:**
-- Packaging: Remove/shrink ITC logo
+- Packaging: Remove/shrink [ACQUIRER] logo
 - Communication: Position as "[COMPANY] - powered by ITC" NOT "ITC's [COMPANY]"
-- Team: Dedicated brand team, reports to [COMPANY] CEO (not ITC Foods head)
+- Team: Dedicated brand team, reports to [COMPANY] CEO (not [ACQUIRER] Foods head)
 
 **Value:** Reclaim premium positioning = pricing power (+₹5 per bar = 10% margin impact)
 
@@ -2040,7 +2040,7 @@ Cold corporate outreach is hard. Warm intro from ITC Hotels' account managers = 
 **Fix:**
 - Retention equity: 3-year vesting for key team (25% vested)
 - Startup perks: Flexible WFH, flat hierarchy, fast decision-making
-- Career paths: Rotate [COMPANY] talent into ITC Foods leadership (2-way street)
+- Career paths: Rotate [COMPANY] talent into [ACQUIRER] Foods leadership (2-way street)
 
 **Value:** Retain institutional knowledge, avoid rebuild costs
 \`\`\`
@@ -2084,7 +2084,7 @@ Cold corporate outreach is hard. Warm intro from ITC Hotels' account managers = 
 Your output must:
 1. **Synthesize insights from Agents 1-6** (connect dots, not repeat)
 2. **Assess what synergies are exhausted** vs **what's untapped**
-3. **Identify 4 NEXT-wave synergies** (specific, valued, with ITC capability match)
+3. **Identify 4 NEXT-wave synergies** (specific, valued, with [ACQUIRER] capability match)
 4. **Address integration challenges** honestly (culture, brand, speed)
 5. **Provide 24-month roadmap** with investment and value
 
@@ -2092,19 +2092,19 @@ Your output must:
 - ❌ Repeating Agent 1-6 content (synthesis, not summary)
 - ❌ Generic M&A synergy advice (could apply to any deal)
 - ❌ Ignoring that 3 years have passed (what's NEXT, not repeat)
-- ✅ Novel connections (QC = ITC portfolio learning)
+- ✅ Novel connections (QC = [ACQUIRER] portfolio learning)
 - ✅ Counter-intuitive insights (brand autonomy = better synergy)
 
 ---
 
-**Remember:** You're the SYNTHESIS agent. Agents 1-6 gave pieces. You assemble the puzzle and show HOW ITC should evolve the relationship 2026-2028 to capture the NEXT ₹100 Cr of value beyond basic operational synergies.
+**Remember:** You're the SYNTHESIS agent. Agents 1-6 gave pieces. You assemble the puzzle and show HOW [ACQUIRER] should evolve the relationship 2026-2028 to capture the NEXT ₹100 Cr of value beyond basic operational synergies.
 `,
 
   synopsis: `# EXECUTIVE SYNOPSIS
 
-You are the senior partner who has read every page of this report. You write two pages for Hemant and the ITC leadership team. You give the aggregated synthesis first — your conclusions, your narrative, your reading of the situation — and only after that do you attribute where each insight came from. The reader should understand the full strategic picture before they see the source attribution.
+You are the senior partner who has read every page of this report. You write two pages for Hemant and the [ACQUIRER] leadership team. You give the aggregated synthesis first — your conclusions, your narrative, your reading of the situation — and only after that do you attribute where each insight came from. The reader should understand the full strategic picture before they see the source attribution.
 
-**Tone:** ITC is playing offense. Yogabar is growing. Frame everything as acceleration and opportunity. Never write: "exhausted," "saturated," "broken," "collapsed," "risk," "concern," "weakness," "challenge," "problem," or any language implying difficulty. There are no negatives of the ITC acquisition — only untapped advantages. Every finding is an opportunity, every gap is a space to move into.
+**Tone:** [ACQUIRER] is playing offense. Yogabar is growing. Frame everything as acceleration and opportunity. Never write: "exhausted," "saturated," "broken," "collapsed," "risk," "concern," "weakness," "challenge," "problem," or any language implying difficulty. There are no negatives of the [ACQUIRER] acquisition — only untapped advantages. Every finding is an opportunity, every gap is a space to move into.
 
 **Numbers:** Every number from agent outputs. Cite the agent as source. If unavailable, write "not confirmed through available data." Do not invent.
 
@@ -2125,7 +2125,7 @@ Where Yogabar stands today — growth trajectory, channel mix, competitive posit
 One clear strategic direction for 2026–2028. One direction, stated as a narrative paragraph — not a list, not a framework, not "Yogabar should explore multiple avenues."
 
 THE RECOMMENDATION:
-[One paragraph. What ITC will do, which direction Yogabar grows, what the outcome looks like in 24 months. No investment figures. No timelines as constraints. ITC has no capital constraints — do not frame the strategy around cost.]
+[One paragraph. What [ACQUIRER] will do, which direction Yogabar grows, what the outcome looks like in 24 months. No investment figures. No timelines as constraints. [ACQUIRER] has no capital constraints — do not frame the strategy around cost.]
 
 ---
 
@@ -2139,20 +2139,20 @@ Paragraph 2 — The portfolio and brand story: Connect Agents 2 and 3. Don't sum
 
 Paragraph 3 — The growth and margin story: Connect Agents 4 and 5. These are not separate topics. Which growth moves improve margin and which ones compress it?
 
-Paragraph 4 — The ITC advantage: What Agent 7 found that no external buyer could have offered. Name the specific asset. What does Yogabar get from ITC that it could not have built independently?
+Paragraph 4 — The [ACQUIRER] advantage: What Agent 7 found that no external buyer could have offered. Name the specific asset. What does Yogabar get from [ACQUIRER] that it could not have built independently?
 
-Paragraph 5 (if warranted) — The international lens: What Agent 10's most relevant global analog reveals about where Yogabar is in its trajectory, and what it means for decisions ITC needs to make now.
+Paragraph 5 (if warranted) — The international lens: What Agent 10's most relevant global analog reveals about where Yogabar is in its trajectory, and what it means for decisions [ACQUIRER] needs to make now.
 
 ---
 
 **SIX INSIGHTS (after the narrative)**
 
-Six findings the leadership team would not arrive at without this report. Each insight is a ◉-tagged block — four to five sentences in prose: finding → why non-obvious → which agents' data supports it → what ITC should do.
+Six findings the leadership team would not arrive at without this report. Each insight is a ◉-tagged block — four to five sentences in prose: finding → why non-obvious → which agents' data supports it → what [ACQUIRER] should do.
 
 ◉ [INSIGHT TITLE IN CAPS]
 [Four to five sentences of dense prose. No sub-bullets within an insight.]
 
-Cover: the category opportunity, portfolio concentration, the margin lever, the competitive window, the ITC institutional advantage, the international precedent. Do not include Agent 9's platform thesis here — it stands alone as a separate section.
+Cover: the category opportunity, portfolio concentration, the margin lever, the competitive window, the [ACQUIRER] institutional advantage, the international precedent. Do not include Agent 9's platform thesis here — it stands alone as a separate section.
 
 ---
 
@@ -2160,13 +2160,13 @@ Cover: the category opportunity, portfolio concentration, the margin lever, the 
 
 **WHERE EACH INSIGHT COMES FROM**
 
-After the full synthesis, write one paragraph explicitly crediting the agents. Example structure: "The market sizing and competitive window draw from Agent 1's category analysis and Agent 6's competitive mapping. The portfolio and brand conclusions synthesise Agents 2 and 3. The margin lever comes from Agent 4's unit economics analysis, validated against Agent 5's channel findings. The ITC institutional advantage is from Agent 7, with international confirmation from Agent 10." Use your own words, but make clear where each major conclusion originated.
+After the full synthesis, write one paragraph explicitly crediting the agents. Example structure: "The market sizing and competitive window draw from Agent 1's category analysis and Agent 6's competitive mapping. The portfolio and brand conclusions synthesise Agents 2 and 3. The margin lever comes from Agent 4's unit economics analysis, validated against Agent 5's channel findings. The [ACQUIRER] institutional advantage is from Agent 7, with international confirmation from Agent 10." Use your own words, but make clear where each major conclusion originated.
 
 ---
 
 **CRITICAL SUCCESS FACTORS**
 
-Four things ITC will do to deliver this strategy. Written as actions in prose — not a bulleted list, not numbered standalone lines. "The first priority is [action], confirmed by [metric] at Month 6. The second..."
+Four things [ACQUIRER] will do to deliver this strategy. Written as actions in prose — not a bulleted list, not numbered standalone lines. "The first priority is [action], confirmed by [metric] at Month 6. The second..."
 
 Do not include founder retention. Focus on strategy execution and capability deployment.
 
@@ -2177,11 +2177,11 @@ Do not include founder retention. Focus on strategy execution and capability dep
 
 PROMPTS.platform = `# AGENT 9: PLATFORM EXPANSION & D2C BRAND INCUBATOR
 
-You are a senior strategy analyst. ITC is a ₹75,000 Cr conglomerate with no capital constraints. The question is not whether ITC can afford this. The question is whether [COMPANY]'s D2C brand-building capability is a platform ITC should activate to build new premium brands in categories where its legacy portfolio cannot compete.
+You are a senior strategy analyst. [ACQUIRER] is a ₹75,000 Cr conglomerate with no capital constraints. The question is not whether [ACQUIRER] can afford this. The question is whether [COMPANY]'s D2C brand-building capability is a platform [ACQUIRER] should activate to build new premium brands in categories where its legacy portfolio cannot compete.
 
-**The central question:** Should ITC use [COMPANY] not just as a nutrition bar company but as a D2C brand-building studio — incubating new premium brands in categories where ITC's offline heritage is a liability?
+**The central question:** Should [ACQUIRER] use [COMPANY] not just as a nutrition bar company but as a D2C brand-building studio — incubating new premium brands in categories where ITC's offline heritage is a liability?
 
-**Tone:** This is a growth proposal for a company playing offense. Frame it as the highest-value deployment of the D2C capability ITC has acquired — not as a risky experiment. Be direct, be confident, show the logic.
+**Tone:** This is a growth proposal for a company playing offense. Frame it as the highest-value deployment of the D2C capability [ACQUIRER] has acquired — not as a risky experiment. Be direct, be confident, show the logic.
 
 **Writing style:** Dense prose. No bullet points. No numbered lists. Tables only for category comparison and investment breakdown.
 
@@ -2198,7 +2198,7 @@ You are a senior strategy analyst. ITC is a ₹75,000 Cr conglomerate with no ca
 - functional wellness India market size 2024 2025
 - Oziva Wellbeing Nutrition revenue funding 2024
 - India D2C brand valuation multiples 2024
-- ITC Life Sciences Technology Centre R&D capabilities
+- [ACQUIRER] Life Sciences Technology Centre R&D capabilities
 - premium snacking India market size D2C brands 2024
 
 ---
@@ -2213,9 +2213,9 @@ Test this thesis against what you find in search: what do global FMCG acquirers 
 
 ## STEP 3: CATEGORY SELECTION — EVIDENCE FIRST
 
-For each category, search before recommending. All five criteria must be met: D2C brands demonstrably winning on economics (gross margin >45%, proven repeat purchase), ITC has a specific named activatable asset, ITC's existing brands cannot credibly compete in this space, TAM large enough to build ₹100–150 Cr brand within 3 years, consumer premiumisation trend demonstrated with data.
+For each category, search before recommending. All five criteria must be met: D2C brands demonstrably winning on economics (gross margin >45%, proven repeat purchase), [ACQUIRER] has a specific named activatable asset, [ACQUIRER]'s existing brands cannot credibly compete in this space, TAM large enough to build ₹100–150 Cr brand within 3 years, consumer premiumisation trend demonstrated with data.
 
-Evaluate Functional Wellness, Premium Snacking, and Functional Beverages. For each: state market size found through search (with source or estimation method), name the specific ITC advantage, give a Go/No-Go verdict with one-sentence reason grounded in evidence.
+Evaluate Functional Wellness, Premium Snacking, and Functional Beverages. For each: state market size found through search (with source or estimation method), name the specific [ACQUIRER] advantage, give a Go/No-Go verdict with one-sentence reason grounded in evidence.
 
 ---
 
@@ -2223,7 +2223,7 @@ Evaluate Functional Wellness, Premium Snacking, and Functional Beverages. For ea
 
 The recommendation is not "launch a new brand." It is: create a D2C Business Unit within ITC, with [COMPANY]'s team as the founding studio, operating with the speed and autonomy of a startup while drawing on ITC's ingredient sourcing, R&D validation, and distribution infrastructure when ready.
 
-New brands are independent identities with separate P&Ls — not sub-brands of [COMPANY] or ITC. No conflict with ITC's existing Foods portfolio — these are categories ITC is not in. The critical governance question: what level of autonomy must this unit have to move at D2C speed? Use the Marico/Beardo or HUL/Indulekha precedent if found.
+New brands are independent identities with separate P&Ls — not sub-brands of [COMPANY] or ITC. No conflict with [ACQUIRER]'s existing Foods portfolio — these are categories [ACQUIRER] is not in. The critical governance question: what level of autonomy must this unit have to move at D2C speed? Use the Marico/Beardo or HUL/Indulekha precedent if found.
 
 ---
 
@@ -2252,13 +2252,13 @@ Section 2: Category sequence and investment case — recommended categories with
 
 Do not describe the table in prose — output the raw HTML table.
 
-Section 3: The governance model — D2C Business Unit structure, autonomy required, how it draws on ITC infrastructure, how it avoids cannibalising ITC brands. Close with: the specific condition under which this creates exceptional value, and the condition under which it does not.`;
+Section 3: The governance model — D2C Business Unit structure, autonomy required, how it draws on [ACQUIRER] infrastructure, how it avoids cannibalising [ACQUIRER] brands. Close with: the specific condition under which this creates exceptional value, and the condition under which it does not.`;
 
 PROMPTS.intl = `# AGENT 10: INTERNATIONAL BENCHMARKS & GLOBAL PLAYBOOK
 
-You are a global strategy analyst. Find the two or three brands internationally that most closely mirror [COMPANY]'s current situation — a premium nutrition brand navigating the transition from D2C insurgency to omnichannel scale through Modern Trade and Quick Commerce. Extract lessons ITC can act on.
+You are a global strategy analyst. Find the two or three brands internationally that most closely mirror [COMPANY]'s current situation — a premium nutrition brand navigating the transition from D2C insurgency to omnichannel scale through Modern Trade and Quick Commerce. Extract lessons [ACQUIRER] can act on.
 
-**Context:** ITC acquired [COMPANY] in 2023. [COMPANY] grew >60% YoY on D2C, beginning MT expansion. It is 2026.
+**Context:** [ACQUIRER] acquired [COMPANY] in 2023. [COMPANY] grew >60% YoY on D2C, beginning MT expansion. It is 2026.
 
 **Writing style:** Dense prose. The brand stories are business journalism — not case study templates. The lessons are dense analytical paragraphs. No bullet points within stories or lessons.
 
@@ -2288,9 +2288,9 @@ Five non-overlapping dimensions: pricing architecture at MT entry, SKU rationali
 
 ---
 
-## STEP 4: WHAT ITC SHOULD DO DIFFERENTLY
+## STEP 4: WHAT [ACQUIRER] SHOULD DO DIFFERENTLY
 
-Two paragraphs. First: where international evidence validates ITC's current direction — name the specific plan element and the analog that supports it. Second: where evidence flags something ITC has not yet addressed or a move it should make — direct, named, specific. If the evidence entirely validates the current plan, say so.
+Two paragraphs. First: where international evidence validates ITC's current direction — name the specific plan element and the analog that supports it. Second: where evidence flags something [ACQUIRER] has not yet addressed or a move it should make — direct, named, specific. If the evidence entirely validates the current plan, say so.
 
 ---
 
@@ -2299,7 +2299,7 @@ Two paragraphs. First: where international evidence validates ITC's current dire
 ◉ INTERNATIONAL BENCHMARKS HOOK
 [Sentence 1: Most surprising finding — name the brand and the specific non-obvious insight]
 [Sentence 2: Most transferable lesson — stated as a specific action [COMPANY] should take now]
-[Sentence 3: The one thing evidence says ITC is at risk of getting wrong]
+[Sentence 3: The one thing evidence says [ACQUIRER] is at risk of getting wrong]
 [Sentence 4: Why the India strategy looks different after reading this section]
 
 ---
@@ -2730,22 +2730,34 @@ Competitive analysis shows Whole Truth hitting D2C ceiling (review velocity -38%
 5. Synergy tracking (weekly velocity dashboard)`,
 };
 
-function makePrompt(id, company, ctx, synthCtx) {
+function makePrompt(id, company, acquirer, ctx, synthCtx) {
   let prompt = PROMPTS[id] || "";
   prompt = prompt.replace(/\[COMPANY\]/g, company);
+
+  // Acquirer substitution — graceful fallback when blank
+  const acqName    = acquirer && acquirer.trim() ? acquirer.trim() : null;
+  const acqOrMgmt  = acqName || "the management team";
+  const acqOrOwner = acqName || "the parent company";
+  const hasAcquirer = !!acqName;
+  prompt = prompt.replace(/\[ACQUIRER\]/g, acqOrMgmt);
+  prompt = prompt.replace(/\[ACQUIRER_OR_OWNER\]/g, acqOrOwner);
+  prompt = prompt.replace(/\[HAS_ACQUIRER\]/g, hasAcquirer ? "yes" : "no");
   
-  const NARRATIVE_RULES = `VERIFIED FINANCIAL DATA — USE THESE EXACT NUMBERS, DO NOT CONTRADICT:
+  // Build dynamic preamble based on whether an acquirer is provided
+  const acquirerBlock = acqName ? `
+ACQUISITION CONTEXT:
+This is a post-acquisition analysis. [COMPANY] was acquired by ${acqName}. Frame every finding as an opportunity enabled by this acquisition. Do not write about acquisition risks or integration challenges — only advantages and actions.
+` : `
+COMPANY CONTEXT:
+This is a standalone company analysis — there is no acquirer. Focus purely on ${company}'s own growth levers, competitive position, and strategic options. Do not reference any parent company or acquirer.
+`;
 
-Yogabar revenue (verified, do not dispute or estimate differently):
-- FY24 (ending March 2024): ₹110 Cr
-- FY25 (ending March 2025): ₹201.66 Cr (+83% YoY)
-- FY26E (ending March 2026): ₹320–350 Cr projected (+60%+ YoY)
-
-Growth has ACCELERATED post-ITC acquisition — not decelerated. ITC's distribution support has driven 80%+ YoY growth. Do NOT write about growth deceleration, plateau, or slowdown. The trajectory is strongly upward.
+  const NARRATIVE_RULES = acquirerBlock + `VERIFIED FINANCIAL DATA:
+If specific revenue or financial figures are provided in the USER CONTEXT below, treat them as ground truth — do not contradict or estimate differently. If no figures are provided, find them through web search.
 
 For Indian companies and markets, use ₹ Cr. For international brands, keep figures in their original currency ($ USD) — do not convert. Never convert the same figure twice.
 
-Do NOT mention any individual person's name (e.g. Hemant, founders, executives) in your analysis. This is a company analysis, not a people analysis.
+Do NOT mention any individual person's name (e.g. founders, executives) in your analysis. This is a company analysis, not a people analysis.
 
 WRITING STYLE — MANDATORY FOR EVERY AGENT:
 
@@ -2753,7 +2765,7 @@ You write in dense, precise prose — not bullet points, not numbered lists, not
 
 Prose means: paragraphs. Each paragraph makes one argument, develops it with evidence, and lands on an implication. Numbers and data points appear inside sentences. "QC revenue is growing at 80% YoY" is not a bullet — it is a clause inside a sentence that explains what it means and what follows from it.
 
-Why no bullets: Bullet points fragment analysis. They hide the logic chain. A reader can scan bullets without understanding anything. Every sentence in this report should give Hemant a fact he did not have, explain what it means, or tell him what to do because of it.
+Why no bullets: Bullet points fragment analysis. They hide the logic chain. A reader can scan bullets without understanding anything. Every sentence in this report should give the reader a fact they did not have, explain what it means, or tell them what to do because of it.
 
 Never write bullet lists, numbered lists, or "Key findings:" headers. Write in paragraphs only. HTML tables permitted only for structured comparisons.
 
@@ -2791,14 +2803,14 @@ You are one of 10 specialist agents. Do not write about topics that belong to an
 - Margins and unit economics → Agent 4 (margins)
 - Channel strategy and GTM → Agent 5 (growth)
 - Competitor moves → Agent 6 (competitive)
-- ITC synergies and integration → Agent 7 (synergy)
+- Acquirer synergies and integration → Agent 7 (synergy)
 - D2C platform and new brands → Agent 8 (platform)
 - Global benchmarks → Agent 9 (intl)
 Stay strictly within your mandate. Cross-reference another agent only when directly relevant, in one sentence.
 
 NEVER SHOW YOUR REASONING PROCESS: Do not write sentences like "I'll conduct targeted searches", "Based on my research I can now", "Let me structure this", or "---" dividers. Begin immediately with analysis content. No preamble, no meta-commentary, no closing remarks.
 
-NO NEGATIVES ABOUT THE ITC ACQUISITION: Every finding must be an opportunity, advantage, or action. Do not write about risks, weaknesses, or challenges. Frame difficulties as "the priority investment area." ITC acquiring Yogabar is unambiguously positive.
+NO NEGATIVES ABOUT THE ACQUISITION: Every finding must be an opportunity, advantage, or action. Frame difficulties as "the priority investment area." The acquisition is unambiguously positive.
 
 `;
 
@@ -2957,6 +2969,7 @@ function md(text) {
 
 export default function AdvisorSprint() {
   const [company, setCompany] = useState("Yogabar");
+  const [acquirer, setAcquirer] = useState("ITC Limited");
   const [context, setContext] = useState(`Post-acquisition growth strategy for Yogabar. ITC acquired stake in 2023, progressively increasing ownership.
 
 Core challenge: How does ITC's institutional strength (4M+ outlets, manufacturing scale, brand-building expertise) accelerate Yogabar's digital-first growth (60%+ YoY) without diluting premium positioning?
@@ -3105,6 +3118,7 @@ Focus areas:
     } catch (e) { console.warn('wake-up ping:', e.message); }
 
     const co = company.trim();
+    const acq = acquirer.trim();
     const ctx = context.trim();
     
     gaEvent("sprint_launched", {
@@ -3132,7 +3146,7 @@ Focus areas:
 
         // synopsis gets all prior outputs; W2 agents get W1 outputs; W1 gets nothing
         const ctx_for_agent = (W2.includes(id) || id === 'synopsis') ? w1texts : {};
-        const prompt = makePrompt(id, co, ctx, ctx_for_agent);
+        const prompt = makePrompt(id, co, acq, ctx, ctx_for_agent);
         const text = await runAgent(id, prompt, signal, []);
         w1texts[id] = text;
 
@@ -3219,17 +3233,33 @@ Focus areas:
           
           {/* Input Section */}
           <div style={{ marginBottom: 32 }}>
-            <div style={{ marginBottom: 24 }}>
-              <label style={{ display: "block", fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, letterSpacing: ".05em", textTransform: "uppercase", color: P.inkMid, marginBottom: 8 }}>
-                Company Name
-              </label>
-              <input
-                type="text"
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-                disabled={appState === "running"}
-                style={{ width: "100%", padding: "10px 14px", border: `2px solid ${P.sand}`, borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 15, background: P.white }}
-              />
+            <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ display: "block", fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, letterSpacing: ".05em", textTransform: "uppercase", color: P.inkMid, marginBottom: 8 }}>
+                  Company Name
+                </label>
+                <input
+                  type="text"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                  disabled={appState === "running"}
+                  placeholder="e.g. Yogabar"
+                  style={{ width: "100%", padding: "10px 14px", border: `2px solid ${P.sand}`, borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 15, background: P.white }}
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ display: "block", fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, letterSpacing: ".05em", textTransform: "uppercase", color: P.inkMid, marginBottom: 8 }}>
+                  Acquirer <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0, color: P.inkFaint }}>(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={acquirer}
+                  onChange={(e) => setAcquirer(e.target.value)}
+                  disabled={appState === "running"}
+                  placeholder="e.g. ITC Limited — leave blank for standalone"
+                  style={{ width: "100%", padding: "10px 14px", border: `2px solid ${P.sand}`, borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 15, background: P.white }}
+                />
+              </div>
             </div>
 
             <div style={{ marginBottom: 24 }}>
@@ -3487,7 +3517,7 @@ Focus areas:
     </div>
     
     <p style={{ fontSize: 18, color: P.inkSoft, marginBottom: 12, fontWeight: 500 }}>
-      10-Agent Intelligence Analysis · Growth Strategy 2026–2028
+      {acquirer.trim() ? `Acquisition Analysis: ${acquirer.trim()} × ${company}` : `Strategic Intelligence Analysis: ${company}`} · 2026
     </p>
     
     <p style={{ fontSize: 13, color: P.inkFaint, marginBottom: 50 }}>
@@ -3536,10 +3566,8 @@ Focus areas:
         Key Contextual Assumptions
       </h3>
       <p style={{ fontSize: 10, lineHeight: 1.9, color: P.inkMid, margin: 0 }}>
-        ITC acquired {company} in 2022–23, with this analysis conducted three years post-acquisition (2026).
-        Selective Modern Trade distribution support is provided via ITC sales infrastructure.
-        Manufacturing remains with co-packers; no ITC plant transition is assumed.
-        {company} operates as a separate unit with institutional support from ITC.
+        {acquirer.trim() ? `${acquirer.trim()} acquired ${company} in 2022–23, with this analysis conducted three years post-acquisition (2026). ${company} operates as a separate unit with institutional support from ${acquirer.trim()}.` : `This is a standalone strategic analysis of ${company} conducted in 2026.`}
+        Manufacturing remains with co-packers unless otherwise stated in context.
         All market data and performance metrics are discovered through live web search at time of generation — figures reflect the best available public information and are labelled by confidence level throughout.
       </p>
     </div>
@@ -3725,7 +3753,7 @@ Focus areas:
               Executive Synopsis
             </h2>
             <p style={{ fontSize: 11, color: P.inkSoft, fontStyle: "italic", marginTop: 6, marginBottom: 0 }}>
-              Strategic synthesis of all 10 agents — Standalone decision brief
+              {acquirer.trim() ? `Strategic synthesis — Post-acquisition growth brief` : `Strategic synthesis — Standalone growth brief`}
             </p>
           </div>
         </div>
