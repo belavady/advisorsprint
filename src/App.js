@@ -3211,19 +3211,64 @@ function md(text) {
 export default function AdvisorSprint() {
   const [company, setCompany] = useState("Yogabar");
   const [acquirer, setAcquirer] = useState("ITC Limited");
-  const [context, setContext] = useState(`Post-acquisition growth strategy for Yogabar. ITC acquired stake in 2023, progressively increasing ownership.
+  const [context, setContext] = useState(`COMPANY: Yogabar
+ACQUIRER: ITC Limited
+ACQUISITION: 2022 (ITC acquired majority stake; full acquisition to be completed progressively)
+ANALYSIS DATE: 2026 — 3 years post-acquisition
 
-Core challenge: How does ITC's institutional strength (4M+ outlets, manufacturing scale, brand-building expertise) accelerate Yogabar's digital-first growth (60%+ YoY) without diluting premium positioning?
+VERIFIED FINANCIALS:
+- FY24 revenue: ₹110 Cr
+- FY25 revenue: ₹201 Cr (83% YoY growth — verified)
+- FY26 internal target: ₹350 Cr
+- Gross margin: ~45–48% (estimate — agents must verify)
+- Channel mix: ~65% E-commerce/D2C, ~30% Modern Trade, ~5% General Trade (estimate — agents to verify)
+- Quick Commerce (Blinkit, Zepto, Swiggy Instamart): growing fast, exact % unknown
+- Manufacturing: predominantly co-packers, some ITC plant trials underway
 
-Competitors: Whole Truth, Super You, True Elements, Rite Bite, Kellogg's
-Current model: 70% E-comm, 30% Modern Trade
+PORTFOLIO (verify current SKU count and performance through search):
+- Hero SKUs: Muesli, Protein Bars, Oats, Wholegrain Breakfast Biscuits
+- Price range: ₹35 (single bar) to ₹600+ (large format muesli)
+- Premium tier: Protein bars ₹80–120, Muesli ₹350–550
+- Workhorse tier: Oats, breakfast biscuits ₹80–200
 
-Focus areas:
-1. Portfolio optimization (which SKUs to scale/kill)
-2. Brand story evolution
-3. Margin improvement (COGS, channel mix)
-4. Distribution synergy (ITC's GT reach vs Yogabar's premium positioning)
-5. Growth acceleration (sustain 60%+ while improving margins)`);
+BRAND:
+- Positioning: "Real Ingredients, No Compromise" — clean label, functional nutrition
+- Core consumer: Urban millennial, 25–40, health-conscious, willing to pay premium
+- Built on D2C authenticity — founder story, ingredient transparency, community
+
+ITC INSTITUTIONAL ASSETS (agents should assess which are actually activatable):
+- 4M+ retail outlets (GT reach — but wrong channel for Yogabar's premium positioning)
+- Modern Trade relationships and shelf negotiation muscle
+- ITC Life Sciences & Technology Centre (R&D — clinical validation capability)
+- Agri Business Division (clean-label ingredient sourcing — cashews, oats, spices)
+- ITC Hotels (premium sampling/gifting channel)
+- ITC export infrastructure (GCC, UK, US — Indian diaspora markets)
+- Manufacturing scale (when volume justifies plant move)
+
+COMPETITORS (seeds only — Agent 1 must discover current set through research):
+Whole Truth Foods, True Elements, RiteBite Max Protein, Super You, MuscleBlaze,
+Kellogg's (Special K, muesli), Baggry's, Tata Consumer Products Soulfull
+
+SPECIFIC QUESTIONS (every agent should address their relevant piece):
+1. How does Yogabar sustain >60% growth?
+2. What is the portfolio for the future — what to kill, keep, and launch?
+3. What is the brand and selling story — the actual narrative, not a framework?
+4. How do we improve margins — COGS, channel mix, manufacturing?
+5. Where does growth come from — which channels, which formats, which geographies?
+6. Why should the leadership team believe each recommendation — show the logic chain?
+
+STRATEGIC CONTEXT:
+- QC (Blinkit/Zepto) is the fastest-growing channel and most margin-accretive
+- Modern Trade is critical for scale but risks brand dilution if priced down
+- D2C CAC rising — the pure D2C growth model is showing strain
+- General Trade largely untapped — ITC's core strength but wrong fit today
+
+OUTPUT STANDARD:
+- Every number must be sourced or estimated with methodology shown
+- Do not invent data — if unavailable, say so and show estimation logic
+- Logic chain mandatory: DATA → INSIGHT → RECOMMENDATION for every major point
+- No filler phrases: "compelling opportunity", "well-positioned", "significant potential"
+- Two dense pages per agent — stop when nothing non-obvious remains`);
 
   const [appState, setAppState] = useState("idle");
   const [results, setResults] = useState({});
