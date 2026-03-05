@@ -2730,6 +2730,190 @@ Competitive analysis shows Whole Truth hitting D2C ceiling (review velocity -38%
 5. Synergy tracking (weekly velocity dashboard)`,
 };
 
+// ─────────────────────────────────────────────────────────────
+// buildPDFHtml — generates standalone HTML for Puppeteer PDF
+// Called by generatePDF(); all charts rendered via CDN Chart.js
+// ─────────────────────────────────────────────────────────────
+function buildPDFHtml({ company, acquirer, results, dataBlocks, sources }) {
+  const acq = acquirer && acquirer.trim() ? acquirer.trim() : null;
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  const agentPages = [
+    { id: 'market',      num: '01', wave: '1', title: 'Market Position & Category Dynamics' },
+    { id: 'portfolio',   num: '02', wave: '1', title: 'Portfolio Strategy & SKU Rationalization' },
+    { id: 'brand',       num: '03', wave: '1', title: 'Brand Positioning & Storytelling' },
+    { id: 'margins',     num: '04', wave: '1', title: 'Margin Improvement & Unit Economics' },
+    { id: 'growth',      num: '05', wave: '1', title: 'Growth Strategy & Channel Orchestration' },
+    { id: 'competitive', num: '06', wave: '1', title: 'Competitive Battle Plan' },
+    { id: 'synergy',     num: '07', wave: '2', title: `${acq || 'Acquirer'} Synergy & Leverage Playbook` },
+    { id: 'platform',    num: '08', wave: '2', title: 'Platform Expansion & D2C Brand Incubator' },
+    { id: 'intl',        num: '09', wave: '2', title: 'International Benchmarks & Global Playbook' },
+  ];
+
+  const formatProse = (text) => {
+    if (!text) return '<p style="color:#999;font-style:italic;">Agent analysis not available.</p>';
+    return text
+      .replace(/\[HIGH CONFIDENCE[^\]]*\]/g, '<span style="background:#e8f5ee;color:#2d7a4f;font-size:6.5px;font-family:monospace;padding:1px 4px;border-radius:2px;font-weight:600;">●H</span>')
+      .replace(/\[MEDIUM CONFIDENCE[^\]]*\]/g, '<span style="background:#fef3e2;color:#c97d20;font-size:6.5px;font-family:monospace;padding:1px 4px;border-radius:2px;font-weight:600;">●M</span>')
+      .replace(/\[LOW CONFIDENCE[^\]]*\]/g, '<span style="background:#f0f0f0;color:#888;font-size:6.5px;font-family:monospace;padding:1px 4px;border-radius:2px;font-weight:600;">●L</span>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/^#{1,3}\s+(.+)$/gm, '<strong style="font-size:9px;color:#1a3a2a;display:block;margin:8px 0 4px;">$1</strong>')
+      .replace(/\n\n+/g, '</p><p>')
+      .replace(/^/, '<p>')
+      .replace(/$/, '</p>');
+  };
+
+  const header = (tag, rec) => \`
+    <div style="background:#1a3a2a;height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 50px;">
+      <div style="font-family:'Playfair Display',serif;font-size:13px;color:#faf7f2;letter-spacing:.03em;"><em>Advisor</em>Sprint</div>
+      <div style="font-family:monospace;font-size:7px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.9);font-weight:700;">\${tag}</div>
+      <div style="background:#b85c38;color:#fff;font-size:7px;font-weight:700;letter-spacing:.1em;padding:3px 9px;border-radius:9px;">\${rec || 'HARSHA BELAVADY'}</div>
+    </div>\`;
+
+  const footer = (pageNum) => \`
+    <div style="position:absolute;bottom:0;left:0;right:0;height:24px;border-top:1px solid #e0d8cc;display:flex;align-items:center;justify-content:space-between;padding:0 50px;background:#fff;">
+      <span style="font-size:7px;color:#999;font-family:monospace;">AdvisorSprint · Confidential · \${dateStr}</span>
+      <span style="font-size:7px;color:#999;font-family:monospace;">\${pageNum}</span>
+    </div>\`;
+
+  const agentPageHtml = agentPages.map((ag, i) => \`
+    <div style="width:794px;min-height:1122px;position:relative;background:#fff;page-break-after:always;overflow:hidden;">
+      \${header(\`AGENT \${ag.num} · \${ag.title.toUpperCase()}\`)}
+      <div style="padding:26px 50px 36px;">
+        <div style="font-family:monospace;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#b85c38;margin-bottom:4px;">Agent \${ag.num} of 09 · Wave \${ag.wave}</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">\${ag.title}</div>
+        <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:18px;"></div>
+        <div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:5px;padding:14px 16px 12px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="flex:1;height:1px;background:#e0d8cc;"></div>
+            <div style="font-family:monospace;font-size:6.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#999;">Analysis & Strategic Implications</div>
+            <div style="flex:1;height:1px;background:#e0d8cc;"></div>
+          </div>
+          <div style="columns:2;column-gap:22px;font-size:8px;line-height:1.75;color:#3a3a3a;">
+            \${formatProse(results[ag.id])}
+          </div>
+        </div>
+      </div>
+      \${footer(i + 3)}
+    </div>\`).join('');
+
+  const synopsisHtml = \`
+    <div style="width:794px;min-height:1122px;position:relative;background:#fff;page-break-after:always;overflow:hidden;">
+      \${header('EXECUTIVE SYNOPSIS · OPUS 4 SYNTHESIS')}
+      <div style="padding:26px 50px 36px;">
+        <div style="font-family:monospace;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#b85c38;margin-bottom:4px;">Wave 3 · Opus 4 · Full Synthesis</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">Executive Synopsis</div>
+        <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:18px;"></div>
+        <div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:5px;padding:14px 16px 12px;">
+          <div style="font-size:8.5px;line-height:1.8;color:#3a3a3a;">
+            \${formatProse(results.synopsis)}
+          </div>
+        </div>
+      </div>
+      \${footer(12)}
+    </div>\`;
+
+  const sourcesHtml = \`
+    <div style="width:794px;min-height:1122px;position:relative;background:#fff;page-break-after:always;overflow:hidden;">
+      \${header('SOURCES & RESEARCH METHODOLOGY')}
+      <div style="padding:26px 50px 36px;">
+        <div style="font-family:monospace;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#b85c38;margin-bottom:4px;">Research Transparency</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">Sources & Confidence Methodology</div>
+        <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:18px;"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#1a3a2a;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;">Confidence Framework</div>
+            <div style="padding:12px;background:#faf7f2;border-radius:5px;border:1px solid #e0d8cc;margin-bottom:10px;">
+              <div style="display:flex;gap:7px;margin-bottom:8px;"><span style="background:#e8f5ee;color:#2d7a4f;font-size:7px;font-family:monospace;padding:2px 5px;border-radius:3px;font-weight:600;flex-shrink:0;">● HIGH</span><div style="font-size:7.5px;color:#3a3a3a;">Directly cited from a named, datable source — filing, industry report, verified press</div></div>
+              <div style="display:flex;gap:7px;margin-bottom:8px;"><span style="background:#fef3e2;color:#c97d20;font-size:7px;font-family:monospace;padding:2px 5px;border-radius:3px;font-weight:600;flex-shrink:0;">● MED</span><div style="font-size:7.5px;color:#3a3a3a;">Triangulated from 2+ indirect signals — funding rounds, hiring patterns, e-commerce rankings</div></div>
+              <div style="display:flex;gap:7px;"><span style="background:#f0f0f0;color:#888;font-size:7px;font-family:monospace;padding:2px 5px;border-radius:3px;font-weight:600;flex-shrink:0;">● LOW</span><div style="font-size:7.5px;color:#3a3a3a;">Single unverified signal or logical extrapolation. Directional only — do not use for financial decisions.</div></div>
+            </div>
+            <div style="font-size:7.5px;color:#666;line-height:1.7;padding:10px;background:#fff8f5;border-left:3px solid #b85c38;border-radius:0 4px 4px 0;">
+              <strong style="color:#b85c38;">Note:</strong> ${company} is a private company. Revenue figures sourced from verified press. All margins, channel splits, and unit economics are estimated from industry benchmarks with explicit confidence labels.
+            </div>
+          </div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#1a3a2a;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;">Sources Cited</div>
+            <div style="font-size:7.5px;color:#666;line-height:2;">
+              \${(sources || []).slice(0, 20).map(s =>
+                \`<div style="padding:3px 0;border-bottom:1px solid #e0d8cc;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">\${s.title || s.url}</div>\`
+              ).join('') || '<div style="color:#999;font-style:italic;">Sources populated after live run</div>'}
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:18px;padding:13px;background:#1a3a2a;border-radius:5px;color:rgba(255,255,255,.7);font-size:7.5px;line-height:1.7;">
+          <strong style="color:#fff;">Disclaimer:</strong> Generated by AdvisorSprint's 10-agent AI system using live web search. Strategic thinking tool only — not a substitute for primary research or professional financial advice.
+        </div>
+      </div>
+      \${footer(2)}
+    </div>\`;
+
+  return \`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+@media print{@page{margin:0;size:A4 portrait;}.page{page-break-after:always;}}
+em{font-style:italic;}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div style="width:794px;height:1122px;background:#1a3a2a;position:relative;overflow:hidden;page-break-after:always;">
+  <div style="position:absolute;top:0;right:0;width:360px;height:360px;background:linear-gradient(135deg,rgba(184,92,56,.35) 0%,transparent 70%);border-radius:0 0 0 360px;"></div>
+  <div style="position:absolute;bottom:-50px;left:-50px;width:280px;height:280px;border:1px solid rgba(255,255,255,.07);border-radius:50%;"></div>
+  <div style="position:absolute;inset:0;padding:65px 50px;display:flex;flex-direction:column;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:auto;">
+      <div style="font-family:'Playfair Display',serif;font-size:15px;color:rgba(255,255,255,.9);letter-spacing:.04em;"><em>Advisor</em>Sprint</div>
+      <div style="text-align:right;">
+        <div style="font-family:monospace;font-size:7px;color:rgba(255,255,255,.4);letter-spacing:.1em;">Generated on \${dateStr}</div>
+        <div style="font-family:monospace;font-size:7px;color:rgba(255,255,255,.55);letter-spacing:.1em;margin-top:3px;" id="gen-time">In — Minutes</div>
+      </div>
+    </div>
+    <div style="margin-bottom:50px;">
+      <div style="font-family:monospace;font-size:8.5px;letter-spacing:.25em;text-transform:uppercase;color:#d4733f;margin-bottom:14px;">10-Agent Strategic Intelligence Report</div>
+      <div style="font-family:'Playfair Display',serif;font-size:52px;color:#fff;font-weight:900;line-height:.92;letter-spacing:-.02em;margin-bottom:12px;">\${company}</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.55);font-weight:300;letter-spacing:.05em;">\${acq ? \`Post-acquisition growth analysis &nbsp;·&nbsp; <strong style="color:rgba(255,255,255,.8);font-weight:500;">\${acq}</strong>\` : 'Standalone strategic analysis · 2026'}</div>
+    </div>
+    <div style="width:100%;">
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:rgba(255,255,255,.1);border-radius:6px;overflow:hidden;margin-bottom:12px;">
+        \${agentPages.map(ag => \`
+          <div style="background:rgba(255,255,255,\${ag.wave==='2'?'.07':'.05'});padding:12px 14px;">
+            <div style="font-family:monospace;font-size:6px;color:rgba(\${ag.wave==='2'?'184,92,56,.6':'255,255,255,.3'});letter-spacing:.14em;margin-bottom:6px;">AGENT \${ag.num} · WAVE \${ag.wave}</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.85);font-weight:600;line-height:1.3;">\${ag.title}</div>
+          </div>\`).join('')}
+        <div style="background:rgba(184,92,56,.18);padding:12px 14px;">
+          <div style="font-family:monospace;font-size:6px;color:rgba(184,92,56,.8);letter-spacing:.14em;margin-bottom:6px;">AGENT 10 · WAVE 3</div>
+          <div style="font-size:9px;color:#fff;font-weight:700;line-height:1.3;">Executive Synopsis</div>
+          <div style="font-size:7px;color:rgba(255,255,255,.4);margin-top:3px;">Opus 4 · Full synthesis</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:rgba(0,0,0,.2);border-radius:5px;border:1px solid rgba(255,255,255,.07);">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div><div style="font-family:monospace;font-size:6px;color:rgba(255,255,255,.3);letter-spacing:.1em;margin-bottom:2px;">MODELS</div><div style="font-size:8px;color:rgba(255,255,255,.6);font-weight:500;">Sonnet 4.5 × 8 · Opus 4 × 2</div></div>
+          <div style="width:1px;height:22px;background:rgba(255,255,255,.1);"></div>
+          <div><div style="font-family:monospace;font-size:6px;color:rgba(255,255,255,.3);letter-spacing:.1em;margin-bottom:2px;">WEB SEARCHES</div><div style="font-size:8px;color:rgba(255,255,255,.6);font-weight:500;">Up to 50 live searches</div></div>
+          <div style="width:1px;height:22px;background:rgba(255,255,255,.1);"></div>
+          <div><div style="font-family:monospace;font-size:6px;color:rgba(255,255,255,.3);letter-spacing:.1em;margin-bottom:2px;">PREPARED FOR</div><div style="font-size:8px;color:rgba(255,255,255,.6);font-weight:500;">HARSHA BELAVADY</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+\${sourcesHtml}
+\${synopsisHtml}
+\${agentPageHtml}
+
+</body>
+</html>\`;
+}
+
 function makePrompt(id, company, acquirer, ctx, synthCtx) {
   let prompt = PROMPTS[id] || "";
   prompt = prompt.replace(/\[COMPANY\]/g, company);
@@ -2812,7 +2996,49 @@ NEVER SHOW YOUR REASONING PROCESS: Do not write sentences like "I'll conduct tar
 
 NO NEGATIVES ABOUT THE ACQUISITION: Every finding must be an opportunity, advantage, or action. Frame difficulties as "the priority investment area." The acquisition is unambiguously positive.
 
-`;
+PROSE vs VISUAL — CRITICAL DIVISION OF LABOUR:
+
+Your response has two parts: a DATA_BLOCK (charts/numbers) and prose analysis. They must never duplicate each other.
+
+The DATA_BLOCK shows the WHAT — numbers, comparisons, growth rates, rankings. The reader sees those visually before reading prose.
+
+The prose explains the SO WHAT and THEREFORE — the reasoning, implication, non-obvious insight, strategic consequence.
+
+NEVER restate in prose any number already in your DATA_BLOCK. Instead explain: why the gap exists, whether it is widening or narrowing, what it means for the next 18 months, and what the right response is.
+
+The test for every sentence: if it could be replaced by pointing at a chart bar, delete it and write the insight the chart cannot show.
+
+Prose covers what charts cannot: the reasoning chain behind a trend; the structural force explaining the numbers; the specific action with timing; the caveat the chart flattens; the global analog that reframes the data; why this matters now not in 12 months.
+
+DATA_BLOCK — MANDATORY AT END OF EVERY RESPONSE:
+
+After your prose, append this block. It feeds the visual charts. Use exact delimiters. No code fences.
+
+<<<DATA_BLOCK>>>
+{
+  "agent": "[market|portfolio|brand|margins|growth|competitive|synergy|platform|intl|synopsis]",
+  "kpis": [
+    {"label": "short label", "value": "display value", "sub": "context", "trend": "up|down|flat|watch", "confidence": "H|M|L"}
+  ],
+  "verdictRow": {
+    "dimension": "your agent dimension",
+    "verdict": "STRONG|WATCH|OPTIMISE|UNDERDELIVERED|RISK",
+    "finding": "one sentence — single most important finding",
+    "confidence": "H|M|L"
+  },
+  "topActions": [
+    {"action": "specific action", "impact": 0, "speed": 0, "confidence": "H|M|L"}
+  ]
+}
+<<<END_DATA_BLOCK>>>
+
+Rules: numbers in DATA_BLOCK must match prose. topActions impact+speed are 0–100 for priority matrix. Use null for unknown fields — never invent.
+
+INTERNAL CONSISTENCY — MANDATORY:
+
+If you report individual brand growth rates of 40–80%+ AND a category CAGR of 24%, you must explain the discrepancy. The resolution: incumbents (Kellogg's, Britannia) hold 58% of market value and grow 8–15%, dragging the weighted average. The D2C insurgent sub-segment grows 45–55%. Yogabar at 83% leads the insurgent cohort. Never report both numbers without this framing.
+
+\`;
 
   if (ctx) {
     prompt = NARRATIVE_RULES + `USER CONTEXT:\n${ctx}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` + prompt;
@@ -2986,6 +3212,8 @@ Focus areas:
 
   const [appState, setAppState] = useState("idle");
   const [results, setResults] = useState({});
+  const [dataBlocks, setDataBlocks] = useState({});
+  const [pdfGenerating, setPdfGenerating] = useState(false);
   const [sources, setSources] = useState([]);
   const [statuses, setStatuses] = useState({});
   const [elapsed, setElapsed] = useState(0);
@@ -3080,7 +3308,16 @@ Focus areas:
     try {
       const text = await callClaude(prompt, id, signal);
       if (!signal.aborted) {
-        setResults(r => ({ ...r, [id]: text }));
+        // Strip DATA_BLOCK from display — keep only prose for reader
+        const dbMatch = text.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/);
+        const cleanText = text.replace(/<<<DATA_BLOCK>>>[\s\S]*?<<<END_DATA_BLOCK>>>/g, '').trim();
+        if (dbMatch) {
+          try {
+            const parsed = JSON.parse(dbMatch[1].trim());
+            setDataBlocks(d => ({ ...d, [id]: parsed }));
+          } catch(e) { console.warn('[DataBlock] parse failed:', id, e.message); }
+        }
+        setResults(r => ({ ...r, [id]: cleanText }));
         setStatuses(s => ({ ...s, [id]: "done" }));
         gaEvent("agent_completed", { agent: id, company, chars: text.length });
       }
@@ -3180,6 +3417,37 @@ Focus areas:
   const downloadPDF = () => {
     gaEvent("pdf_download", { company, user: "anonymous" });
     window.print();
+  };
+
+  const generatePDF = async () => {
+    if (pdfGenerating) return;
+    setPdfGenerating(true);
+    gaEvent("pdf_generate_puppeteer", { company });
+    try {
+      const html = buildPDFHtml({ company, acquirer, results, dataBlocks, sources });
+      const res = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ html, company, acquirer }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'PDF generation failed' }));
+        throw new Error(err.error || `Server error ${res.status}`);
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${company.replace(/\s+/g,'_')}_AdvisorSprint_${new Date().toISOString().slice(0,10)}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch(e) {
+      console.error('[PDF]', e.message);
+      alert(`PDF generation failed: ${e.message}\n\nFalling back to browser print.`);
+      window.print();
+    } finally {
+      setPdfGenerating(false);
+    }
   };
 
   const formatTime = (sec) => {
@@ -3291,9 +3559,19 @@ Focus areas:
               )}
 
               {appState === "done" && (
-                <button onClick={downloadPDF} style={{ padding: "12px 24px", background: P.gold, color: P.ink, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
-                  Download PDF
-                </button>
+                <div style={{ display: "flex", gap: 10 }}>
+                  <button
+                    onClick={generatePDF}
+                    disabled={pdfGenerating}
+                    style={{ padding: "12px 24px", background: pdfGenerating ? "#999" : P.terra, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: pdfGenerating ? "not-allowed" : "pointer" }}>
+                    {pdfGenerating ? "⟳ Generating PDF..." : "⬇ Download PDF"}
+                  </button>
+                  <button
+                    onClick={downloadPDF}
+                    style={{ padding: "12px 20px", background: "transparent", color: P.inkSoft, border: `1px solid ${P.inkFaint}`, borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 12, cursor: "pointer" }}>
+                    Browser Print
+                  </button>
+                </div>
               )}
             </div>
           </div>
