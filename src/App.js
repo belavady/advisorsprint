@@ -2764,25 +2764,25 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources }) {
       .replace(/$/, '</p>');
   };
 
-  const header = (tag, rec) => \`
+  const header = (tag, rec) => `
     <div style="background:#1a3a2a;height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 50px;">
       <div style="font-family:'Playfair Display',serif;font-size:13px;color:#faf7f2;letter-spacing:.03em;"><em>Advisor</em>Sprint</div>
-      <div style="font-family:monospace;font-size:7px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.9);font-weight:700;">\${tag}</div>
-      <div style="background:#b85c38;color:#fff;font-size:7px;font-weight:700;letter-spacing:.1em;padding:3px 9px;border-radius:9px;">\${rec || 'HARSHA BELAVADY'}</div>
-    </div>\`;
+      <div style="font-family:monospace;font-size:7px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.9);font-weight:700;">${tag}</div>
+      <div style="background:#b85c38;color:#fff;font-size:7px;font-weight:700;letter-spacing:.1em;padding:3px 9px;border-radius:9px;">${rec || 'HARSHA BELAVADY'}</div>
+    </div>`;
 
-  const footer = (pageNum) => \`
+  const footer = (pageNum) => `
     <div style="position:absolute;bottom:0;left:0;right:0;height:24px;border-top:1px solid #e0d8cc;display:flex;align-items:center;justify-content:space-between;padding:0 50px;background:#fff;">
-      <span style="font-size:7px;color:#999;font-family:monospace;">AdvisorSprint · Confidential · \${dateStr}</span>
-      <span style="font-size:7px;color:#999;font-family:monospace;">\${pageNum}</span>
-    </div>\`;
+      <span style="font-size:7px;color:#999;font-family:monospace;">AdvisorSprint · Confidential · ${dateStr}</span>
+      <span style="font-size:7px;color:#999;font-family:monospace;">${pageNum}</span>
+    </div>`;
 
-  const agentPageHtml = agentPages.map((ag, i) => \`
+  const agentPageHtml = agentPages.map((ag, i) => `
     <div style="width:794px;min-height:1122px;position:relative;background:#fff;page-break-after:always;overflow:hidden;">
-      \${header(\`AGENT \${ag.num} · \${ag.title.toUpperCase()}\`)}
+      ${header(`AGENT ${ag.num} · ${ag.title.toUpperCase()}`)}
       <div style="padding:26px 50px 36px;">
-        <div style="font-family:monospace;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#b85c38;margin-bottom:4px;">Agent \${ag.num} of 09 · Wave \${ag.wave}</div>
-        <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">\${ag.title}</div>
+        <div style="font-family:monospace;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#b85c38;margin-bottom:4px;">Agent ${ag.num} of 09 · Wave ${ag.wave}</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">${ag.title}</div>
         <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:18px;"></div>
         <div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:5px;padding:14px 16px 12px;">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -2791,32 +2791,32 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources }) {
             <div style="flex:1;height:1px;background:#e0d8cc;"></div>
           </div>
           <div style="columns:2;column-gap:22px;font-size:8px;line-height:1.75;color:#3a3a3a;">
-            \${formatProse(results[ag.id])}
+            ${formatProse(results[ag.id])}
           </div>
         </div>
       </div>
-      \${footer(i + 3)}
-    </div>\`).join('');
+      ${footer(i + 3)}
+    </div>`).join('');
 
-  const synopsisHtml = \`
+  const synopsisHtml = `
     <div style="width:794px;min-height:1122px;position:relative;background:#fff;page-break-after:always;overflow:hidden;">
-      \${header('EXECUTIVE SYNOPSIS · OPUS 4 SYNTHESIS')}
+      ${header('EXECUTIVE SYNOPSIS · OPUS 4 SYNTHESIS')}
       <div style="padding:26px 50px 36px;">
         <div style="font-family:monospace;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#b85c38;margin-bottom:4px;">Wave 3 · Opus 4 · Full Synthesis</div>
         <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">Executive Synopsis</div>
         <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:18px;"></div>
         <div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:5px;padding:14px 16px 12px;">
           <div style="font-size:8.5px;line-height:1.8;color:#3a3a3a;">
-            \${formatProse(results.synopsis)}
+            ${formatProse(results.synopsis)}
           </div>
         </div>
       </div>
-      \${footer(12)}
-    </div>\`;
+      ${footer(12)}
+    </div>`;
 
-  const sourcesHtml = \`
+  const sourcesHtml = `
     <div style="width:794px;min-height:1122px;position:relative;background:#fff;page-break-after:always;overflow:hidden;">
-      \${header('SOURCES & RESEARCH METHODOLOGY')}
+      ${header('SOURCES & RESEARCH METHODOLOGY')}
       <div style="padding:26px 50px 36px;">
         <div style="font-family:monospace;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#b85c38;margin-bottom:4px;">Research Transparency</div>
         <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">Sources & Confidence Methodology</div>
@@ -2836,8 +2836,8 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources }) {
           <div>
             <div style="font-size:9px;font-weight:700;color:#1a3a2a;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;">Sources Cited</div>
             <div style="font-size:7.5px;color:#666;line-height:2;">
-              \${(sources || []).slice(0, 20).map(s =>
-                \`<div style="padding:3px 0;border-bottom:1px solid #e0d8cc;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">\${s.title || s.url}</div>\`
+              ${(sources || []).slice(0, 20).map(s =>
+                `<div style="padding:3px 0;border-bottom:1px solid #e0d8cc;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${s.title || s.url}</div>`
               ).join('') || '<div style="color:#999;font-style:italic;">Sources populated after live run</div>'}
             </div>
           </div>
@@ -2846,10 +2846,10 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources }) {
           <strong style="color:#fff;">Disclaimer:</strong> Generated by AdvisorSprint's 10-agent AI system using live web search. Strategic thinking tool only — not a substitute for primary research or professional financial advice.
         </div>
       </div>
-      \${footer(2)}
-    </div>\`;
+      ${footer(2)}
+    </div>`;
 
-  return \`<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -2871,22 +2871,22 @@ em{font-style:italic;}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:auto;">
       <div style="font-family:'Playfair Display',serif;font-size:15px;color:rgba(255,255,255,.9);letter-spacing:.04em;"><em>Advisor</em>Sprint</div>
       <div style="text-align:right;">
-        <div style="font-family:monospace;font-size:7px;color:rgba(255,255,255,.4);letter-spacing:.1em;">Generated on \${dateStr}</div>
+        <div style="font-family:monospace;font-size:7px;color:rgba(255,255,255,.4);letter-spacing:.1em;">Generated on ${dateStr}</div>
         <div style="font-family:monospace;font-size:7px;color:rgba(255,255,255,.55);letter-spacing:.1em;margin-top:3px;" id="gen-time">In — Minutes</div>
       </div>
     </div>
     <div style="margin-bottom:50px;">
       <div style="font-family:monospace;font-size:8.5px;letter-spacing:.25em;text-transform:uppercase;color:#d4733f;margin-bottom:14px;">10-Agent Strategic Intelligence Report</div>
-      <div style="font-family:'Playfair Display',serif;font-size:52px;color:#fff;font-weight:900;line-height:.92;letter-spacing:-.02em;margin-bottom:12px;">\${company}</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.55);font-weight:300;letter-spacing:.05em;">\${acq ? \`Post-acquisition growth analysis &nbsp;·&nbsp; <strong style="color:rgba(255,255,255,.8);font-weight:500;">\${acq}</strong>\` : 'Standalone strategic analysis · 2026'}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:52px;color:#fff;font-weight:900;line-height:.92;letter-spacing:-.02em;margin-bottom:12px;">${company}</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.55);font-weight:300;letter-spacing:.05em;">${acq ? `Post-acquisition growth analysis &nbsp;·&nbsp; <strong style="color:rgba(255,255,255,.8);font-weight:500;">${acq}</strong>` : 'Standalone strategic analysis · 2026'}</div>
     </div>
     <div style="width:100%;">
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:rgba(255,255,255,.1);border-radius:6px;overflow:hidden;margin-bottom:12px;">
-        \${agentPages.map(ag => \`
-          <div style="background:rgba(255,255,255,\${ag.wave==='2'?'.07':'.05'});padding:12px 14px;">
-            <div style="font-family:monospace;font-size:6px;color:rgba(\${ag.wave==='2'?'184,92,56,.6':'255,255,255,.3'});letter-spacing:.14em;margin-bottom:6px;">AGENT \${ag.num} · WAVE \${ag.wave}</div>
-            <div style="font-size:9px;color:rgba(255,255,255,.85);font-weight:600;line-height:1.3;">\${ag.title}</div>
-          </div>\`).join('')}
+        ${agentPages.map(ag => `
+          <div style="background:rgba(255,255,255,${ag.wave==='2'?'.07':'.05'});padding:12px 14px;">
+            <div style="font-family:monospace;font-size:6px;color:rgba(${ag.wave==='2'?'184,92,56,.6':'255,255,255,.3'});letter-spacing:.14em;margin-bottom:6px;">AGENT ${ag.num} · WAVE ${ag.wave}</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.85);font-weight:600;line-height:1.3;">${ag.title}</div>
+          </div>`).join('')}
         <div style="background:rgba(184,92,56,.18);padding:12px 14px;">
           <div style="font-family:monospace;font-size:6px;color:rgba(184,92,56,.8);letter-spacing:.14em;margin-bottom:6px;">AGENT 10 · WAVE 3</div>
           <div style="font-size:9px;color:#fff;font-weight:700;line-height:1.3;">Executive Synopsis</div>
@@ -2906,12 +2906,12 @@ em{font-style:italic;}
   </div>
 </div>
 
-\${sourcesHtml}
-\${synopsisHtml}
-\${agentPageHtml}
+${sourcesHtml}
+${synopsisHtml}
+${agentPageHtml}
 
 </body>
-</html>\`;
+</html>`;
 }
 
 function makePrompt(id, company, acquirer, ctx, synthCtx) {
@@ -3032,7 +3032,15 @@ After your prose, append this block. It feeds the visual charts. Use exact delim
 }
 <<<END_DATA_BLOCK>>>
 
-Rules: numbers in DATA_BLOCK must match prose. topActions impact+speed are 0–100 for priority matrix. Use null for unknown fields — never invent.
+Rules:
+— DATA_BLOCK must be the absolute last thing in your response. Nothing after <<<END_DATA_BLOCK>>>.
+— Put a blank line before <<<DATA_BLOCK>>>.
+— Never wrap it in a code fence (no backticks).
+— Every field is required. Use null for unknown values — never omit a field.
+— numbers in DATA_BLOCK must exactly match prose.
+— topActions: impact and speed are integers 0–100. At least 3 actions required.
+— kpis: at least 4 KPIs required.
+— JSON must be valid. No trailing commas. No comments inside JSON.
 
 INTERNAL CONSISTENCY — MANDATORY:
 
@@ -3064,10 +3072,12 @@ If you report individual brand growth rates of 40–80%+ AND a category CAGR of 
     
     Object.entries(synthCtx).forEach(([agentId, result]) => {
       const agentName = agentNames[agentId] || agentId.toUpperCase();
-      // Trim each agent output to first 1200 chars to stay within rate limits
-      const trimmed = result.length > 1200
-        ? result.slice(0, 1200) + '\n[...truncated for rate limit — full analysis in PDF sections]'
-        : result;
+      // Strip DATA_BLOCK before passing to synopsis — saves tokens, synopsis doesn't need raw JSON
+      const withoutBlock = result.replace(/<<<DATA_BLOCK>>>[\s\S]*?<<<END_DATA_BLOCK>>>/g, '').trim();
+      // Trim to 1500 chars — enough for synthesis, safe for rate limits
+      const trimmed = withoutBlock.length > 1500
+        ? withoutBlock.slice(0, 1500) + '\n[...truncated — full analysis in report sections]'
+        : withoutBlock;
       priorContext += `${agentName}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${trimmed}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
     });
     
@@ -3249,13 +3259,15 @@ Focus areas:
       return MOCK[mockId] || MOCK.market;
     }
 
-    // Real mode — single attempt, no retry (retries multiply cost via re-running searches)
-    const res = await fetch(API_URL, {
+    // Real mode — retry once on rate limit only (rate limits are transient, not usage-multiplying)
+    const attemptFetch = () => fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-tool-name': 'advisor' },
       signal,
       body: JSON.stringify({ prompt, agentId }),
     });
+
+    let res = await attemptFetch();
     if (!res.ok) {
       const err = await res.text().catch(() => '');
       throw new Error(err || `Server error: ${res.status}`);
@@ -3309,13 +3321,19 @@ Focus areas:
       const text = await callClaude(prompt, id, signal);
       if (!signal.aborted) {
         // Strip DATA_BLOCK from display — keep only prose for reader
-        const dbMatch = text.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/);
+        const dbMatch = text.match(/<<<DATA_BLOCK>>>[\s\S]*?```json([\s\S]*?)```[\s\S]*?<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/);
         const cleanText = text.replace(/<<<DATA_BLOCK>>>[\s\S]*?<<<END_DATA_BLOCK>>>/g, '').trim();
         if (dbMatch) {
           try {
-            const parsed = JSON.parse(dbMatch[1].trim());
+            const raw = (dbMatch[1] || dbMatch[2] || '').trim();
+            // Strip any remaining code fences just in case
+            const cleaned = raw.replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'').trim();
+            const parsed = JSON.parse(cleaned);
             setDataBlocks(d => ({ ...d, [id]: parsed }));
+            console.log('[DataBlock] parsed OK:', id, Object.keys(parsed));
           } catch(e) { console.warn('[DataBlock] parse failed:', id, e.message); }
+        } else {
+          console.warn('[DataBlock] not found in response:', id);
         }
         setResults(r => ({ ...r, [id]: cleanText }));
         setStatuses(s => ({ ...s, [id]: "done" }));
@@ -3323,16 +3341,16 @@ Focus areas:
       }
       return text;
     } catch (e) {
-      if (e.name !== "AbortError") {
-        setStatuses(s => ({ ...s, [id]: "error" }));
-        setResults(r => ({ ...r, [id]: `Error: ${e.message}` }));
-      }
-      return "";
+      if (e.name === "AbortError") return "";
+      setStatuses(s => ({ ...s, [id]: "error" }));
+      setResults(r => ({ ...r, [id]: `Error: ${e.message}` }));
+      throw e; // propagate — sprint loop must know an agent failed
     }
   }, [company, callClaude]);
 
   const runSprint = async () => {
     if (!company.trim() || appState === "running") return;
+    if (abortRef.current) abortRef.current.abort(); // kill any zombie from previous run
 
     const ctrl = new AbortController();
     abortRef.current = ctrl;
@@ -3384,13 +3402,21 @@ Focus areas:
         // synopsis gets all prior outputs; W2 agents get W1 outputs; W1 gets nothing
         const ctx_for_agent = (W2.includes(id) || id === 'synopsis') ? w1texts : {};
         const prompt = makePrompt(id, co, acq, ctx, ctx_for_agent);
-        const text = await runAgent(id, prompt, signal, []);
+        let text = "";
+        try {
+          text = await runAgent(id, prompt, signal, []);
+        } catch(agentErr) {
+          // Agent failed — stop the sprint, don't run remaining agents
+          console.error(`[Sprint] Agent ${id} failed:`, agentErr.message);
+          setAppState("error");
+          return; // exits runSprint entirely — no more API calls
+        }
         w1texts[id] = text;
 
-        // 20s gap after each agent — keeps input tokens well under 30k/min
+        // Gap after each agent — keeps tokens under rate limit
         if (!signal.aborted && id !== 'synopsis') {
           setStatuses(s => ({ ...s, [id]: "done" }));
-          await new Promise(r => setTimeout(r, 60000)); // 60s — clears both input+output rate limit buckets
+          await new Promise(r => setTimeout(r, 60000));
         }
       }
 
@@ -3425,15 +3451,17 @@ Focus areas:
     gaEvent("pdf_generate_puppeteer", { company });
     try {
       const html = buildPDFHtml({ company, acquirer, results, dataBlocks, sources });
-      const res = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
+      const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ html, company, acquirer }),
+        signal: AbortSignal.timeout(120000), // 2 min timeout — Puppeteer needs time on cold start
       });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: 'PDF generation failed' }));
-        throw new Error(err.error || `Server error ${res.status}`);
+      if (!pdfRes.ok) {
+        const err = await pdfRes.json().catch(() => ({ error: 'PDF generation failed' }));
+        throw new Error(err.error || `Server error ${pdfRes.status}`);
       }
+      const res = pdfRes;
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
