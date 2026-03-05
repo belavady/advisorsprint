@@ -3046,10 +3046,15 @@ INTERNAL CONSISTENCY — MANDATORY:
 
 If you report individual brand growth rates of 40–80%+ AND a category CAGR of 24%, you must explain the discrepancy. The resolution: incumbents (Kellogg's, Britannia) hold 58% of market value and grow 8–15%, dragging the weighted average. The D2C insurgent sub-segment grows 45–55%. Yogabar at 83% leads the insurgent cohort. Never report both numbers without this framing.
 
-\`;
+`;
 
   if (ctx) {
-    prompt = NARRATIVE_RULES + `USER CONTEXT:\n${ctx}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` + prompt;
+    prompt = NARRATIVE_RULES + `USER CONTEXT:
+${ctx}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+` + prompt;
   } else {
     prompt = NARRATIVE_RULES + prompt;
   }
