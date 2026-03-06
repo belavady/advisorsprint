@@ -2758,9 +2758,9 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed
     if (!text) return '<p style="color:#999;font-style:italic;">Agent analysis not available.</p>';
     let t = text
       // Confidence badges
-      .replace(/\[HIGH CONFIDENCE[^\]]*\]/g, '<span style="background:#e8f5ee;color:#2d7a4f;font-size:6.5px;font-family:monospace;padding:1px 4px;border-radius:2px;font-weight:600;">●H</span>')
-      .replace(/\[MEDIUM CONFIDENCE[^\]]*\]/g, '<span style="background:#fef3e2;color:#c97d20;font-size:6.5px;font-family:monospace;padding:1px 4px;border-radius:2px;font-weight:600;">●M</span>')
-      .replace(/\[LOW CONFIDENCE[^\]]*\]/g, '<span style="background:#f0f0f0;color:#888;font-size:6.5px;font-family:monospace;padding:1px 4px;border-radius:2px;font-weight:600;">●L</span>')
+      .replace(/\[HIGH CONFIDENCE[^\]]*\]/g, '<span style="background:#e8f5ee;color:#2d7a4f;font-size:7px;font-family:monospace;padding:2px 5px;border-radius:2px;font-weight:600;">● High</span>')
+      .replace(/\[MEDIUM CONFIDENCE[^\]]*\]/g, '<span style="background:#fef3e2;color:#c97d20;font-size:7px;font-family:monospace;padding:2px 5px;border-radius:2px;font-weight:600;">● Medium</span>')
+      .replace(/\[LOW CONFIDENCE[^\]]*\]/g, '<span style="background:#fde8e8;color:#c0392b;font-size:7px;font-family:monospace;padding:2px 5px;border-radius:2px;font-weight:600;">● Low</span>')
       // Bold
       .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
       // ◉ section markers — turn into bold section headers
@@ -2901,11 +2901,17 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed
             </div>
           </div>
           <div>
-            <div style="font-size:9px;font-weight:700;color:#1a3a2a;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;">Sources Cited</div>
-            <div style="font-size:7.5px;color:#666;line-height:2;">
-              ${(sources || []).slice(0, 20).map(s =>
-                `<div style="padding:3px 0;border-bottom:1px solid #e0d8cc;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${s.title || s.url}</div>`
-              ).join('') || '<div style="color:#999;font-style:italic;">Sources populated after live run</div>'}
+            <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;">
+              <div style="font-size:9px;font-weight:700;color:#1a3a2a;text-transform:uppercase;letter-spacing:.06em;">Sources Cited</div>
+              <div style="font-family:monospace;font-size:7px;color:#b85c38;font-weight:600;">${(sources||[]).length} sources checked</div>
+            </div>
+            <div style="font-size:7.5px;color:#3a3a3a;line-height:1.4;">
+              ${(sources || []).slice(0, 30).map((s, i) =>
+                `<div style="display:flex;gap:6px;padding:4px 6px;background:${i%2===0?'#faf7f2':'#fff'};border-left:2px solid ${i%2===0?'#1a3a2a':'#e0d8cc'};">
+                  <span style="font-family:monospace;font-size:6.5px;color:#b85c38;font-weight:600;flex-shrink:0;width:14px;">${i+1}</span>
+                  <span style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${s.title || s.url}</span>
+                </div>`
+              ).join('') || '<div style="color:#999;font-style:italic;padding:8px;">Sources populated after live run</div>'}
             </div>
           </div>
         </div>
@@ -2926,6 +2932,13 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed
 body{font-family:'DM Sans',sans-serif;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
 @media print{@page{margin:0;size:A4 portrait;}.page{page-break-after:always;}}
 em{font-style:italic;}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:8px;}
+thead tr{background:#1a3a2a;color:#fff;}
+thead th{padding:7px 10px;text-align:left;font-weight:600;letter-spacing:.04em;border:1px solid #1a3a2a;}
+tbody tr:nth-child(even){background:#faf7f2;}
+tbody tr:nth-child(odd){background:#fff;}
+tbody td{padding:6px 10px;border:1px solid #e0d8cc;color:#3a3a3a;vertical-align:top;}
+tbody tr:hover{background:#f0ead8;}
 </style>
 </head>
 <body>
@@ -2935,17 +2948,19 @@ em{font-style:italic;}
   <div style="position:absolute;top:0;right:0;width:360px;height:360px;background:linear-gradient(135deg,rgba(184,92,56,.35) 0%,transparent 70%);border-radius:0 0 0 360px;"></div>
   <div style="position:absolute;bottom:-50px;left:-50px;width:280px;height:280px;border:1px solid rgba(255,255,255,.07);border-radius:50%;"></div>
   <div style="position:absolute;inset:0;padding:65px 50px;display:flex;flex-direction:column;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
       <div style="font-family:'Playfair Display',serif;font-size:15px;color:rgba(255,255,255,.9);letter-spacing:.04em;"><em>Advisor</em>Sprint</div>
       <div style="text-align:right;">
         <div style="font-family:monospace;font-size:7px;color:rgba(255,255,255,.4);letter-spacing:.1em;">Generated on ${dateStr}</div>
         <div style="font-family:monospace;font-size:7px;color:rgba(255,255,255,.55);letter-spacing:.1em;margin-top:3px;">${elapsedStr}</div>
       </div>
     </div>
-    <div style="margin-bottom:50px;">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;margin-bottom:20px;">
+    <div style="margin-bottom:40px;">
       <div style="font-family:monospace;font-size:8.5px;letter-spacing:.25em;text-transform:uppercase;color:#d4733f;margin-bottom:14px;">10-Agent Strategic Intelligence Report</div>
       <div style="font-family:'Playfair Display',serif;font-size:52px;color:#fff;font-weight:900;line-height:.92;letter-spacing:-.02em;margin-bottom:12px;">${company}</div>
       <div style="font-size:13px;color:rgba(255,255,255,.55);font-weight:300;letter-spacing:.05em;">${acq ? `Post-acquisition growth analysis &nbsp;·&nbsp; <strong style="color:rgba(255,255,255,.8);font-weight:500;">${acq}</strong>` : 'Standalone strategic analysis · 2026'}</div>
+    </div>
     </div>
     <div style="width:100%;">
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:rgba(255,255,255,.1);border-radius:6px;overflow:hidden;margin-bottom:12px;">
@@ -2957,7 +2972,7 @@ em{font-style:italic;}
         <div style="background:rgba(184,92,56,.18);padding:12px 14px;">
           <div style="font-family:monospace;font-size:6px;color:rgba(184,92,56,.8);letter-spacing:.14em;margin-bottom:6px;">AGENT 10 · WAVE 3</div>
           <div style="font-size:9px;color:#fff;font-weight:700;line-height:1.3;">Executive Synopsis</div>
-          <div style="font-size:7px;color:rgba(255,255,255,.4);margin-top:3px;">Opus 4 · Full synthesis</div>
+          <div style="font-size:7px;color:rgba(255,255,255,.4);margin-top:3px;">Opus 4.6 · Full synthesis</div>
         </div>
       </div>
 
@@ -4255,6 +4270,96 @@ OUTPUT STANDARD:
           style={{ fontSize: 11.5, lineHeight: 1.85, color: P.inkMid }} 
           dangerouslySetInnerHTML={{ __html: md(result) }} 
         />
+
+        {/* ── DataBlock Inspector ── diagnostic panel, screen-only ── */}
+        {(() => {
+          const db = dataBlocks[agent.id];
+          const [open, setOpen] = React.useState(false);
+          if (!db) return (
+            <div style={{ marginTop: 24, padding: '10px 14px', background: '#fff3cd', border: '1px solid #ffc107', borderRadius: 6, fontFamily: 'monospace', fontSize: 11 }}>
+              <span style={{ fontWeight: 700, color: '#856404' }}>⚠ DataBlock Inspector:</span>
+              <span style={{ color: '#856404', marginLeft: 8 }}>No DATA_BLOCK parsed for <strong>{agent.id}</strong> — agent did not output the schema or parsing failed.</span>
+            </div>
+          );
+          const verdict = db.verdictRow?.verdict || '—';
+          const verdictColor = { STRONG: '#28a745', WATCH: '#fd7e14', OPTIMISE: '#007bff', UNDERDELIVERED: '#dc3545', RISK: '#dc3545' }[verdict] || '#6c757d';
+          const agentFields = Object.keys(db).filter(k => !['agent','kpis','verdictRow','topActions'].includes(k));
+          const fieldStatuses = agentFields.map(field => {
+            const val = db[field];
+            const isEmpty = !val || (Array.isArray(val) && val.length === 0) ||
+              (Array.isArray(val) && val.every(item =>
+                typeof item === 'object' && Object.values(item).every(v => v === 0 || v === null || v === '' || v === 'H|M|L' || v === 'STRONG|WATCH|OPTIMISE|UNDERDELIVERED|RISK')
+              ));
+            return { field, isEmpty };
+          });
+          const allFilled = fieldStatuses.every(f => !f.isEmpty);
+          return (
+            <div style={{ marginTop: 24, border: '1px solid #dee2e6', borderRadius: 6, overflow: 'hidden', fontFamily: 'monospace' }}>
+              {/* Header bar — always visible */}
+              <div
+                onClick={() => setOpen(o => !o)}
+                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 14px', background: allFilled ? '#e8f5e9' : '#fff8e1', cursor: 'pointer', userSelect: 'none' }}
+              >
+                <span style={{ fontSize: 13 }}>{allFilled ? '✅' : '⚠️'}</span>
+                <span style={{ fontWeight: 700, fontSize: 11, color: '#333' }}>DataBlock Inspector — {agent.id}</span>
+                <span style={{ marginLeft: 6, fontSize: 11, background: verdictColor, color: '#fff', borderRadius: 10, padding: '1px 8px', fontWeight: 700 }}>{verdict}</span>
+                <span style={{ marginLeft: 6, fontSize: 10, color: '#666' }}>
+                  {db.kpis?.length || 0} KPIs · {agentFields.length} visual fields · {allFilled ? 'all populated' : `${fieldStatuses.filter(f=>f.isEmpty).length} field(s) empty/unfilled`}
+                </span>
+                <span style={{ marginLeft: 'auto', fontSize: 11, color: '#666' }}>{open ? '▲ hide' : '▼ inspect'}</span>
+              </div>
+
+              {open && (
+                <div style={{ padding: '12px 14px', background: '#f8f9fa', borderTop: '1px solid #dee2e6' }}>
+
+                  {/* KPI summary row */}
+                  <div style={{ marginBottom: 10 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: '#555', marginBottom: 4, letterSpacing: '.08em', textTransform: 'uppercase' }}>KPIs</div>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                      {(db.kpis || []).map((k, i) => (
+                        <div key={i} style={{ background: '#fff', border: '1px solid #dee2e6', borderRadius: 4, padding: '4px 8px', fontSize: 10 }}>
+                          <span style={{ color: '#888' }}>{k.label}: </span>
+                          <span style={{ fontWeight: 700, color: '#333' }}>{k.value}</span>
+                          <span style={{ marginLeft: 4, fontSize: 9, color: k.confidence === 'H' ? '#28a745' : k.confidence === 'M' ? '#fd7e14' : '#dc3545' }}>[{k.confidence}]</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Visual field status */}
+                  <div style={{ marginBottom: 10 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: '#555', marginBottom: 4, letterSpacing: '.08em', textTransform: 'uppercase' }}>Visual Fields</div>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      {fieldStatuses.map(({ field, isEmpty }) => (
+                        <span key={field} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 10, background: isEmpty ? '#fff3cd' : '#d4edda', color: isEmpty ? '#856404' : '#155724', border: `1px solid ${isEmpty ? '#ffc107' : '#c3e6cb'}` }}>
+                          {isEmpty ? '⚠' : '✓'} {field}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Verdict row */}
+                  <div style={{ marginBottom: 10 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: '#555', marginBottom: 4, letterSpacing: '.08em', textTransform: 'uppercase' }}>Verdict</div>
+                    <div style={{ fontSize: 11, color: '#333' }}>
+                      <span style={{ fontWeight: 700, color: verdictColor }}>{verdict}</span>
+                      <span style={{ marginLeft: 8 }}>{db.verdictRow?.finding || '—'}</span>
+                    </div>
+                  </div>
+
+                  {/* Raw JSON — collapsible */}
+                  <details style={{ marginTop: 8 }}>
+                    <summary style={{ fontSize: 10, color: '#666', cursor: 'pointer', fontWeight: 700 }}>Raw JSON (full DATA_BLOCK)</summary>
+                    <pre style={{ fontSize: 10, background: '#fff', border: '1px solid #dee2e6', borderRadius: 4, padding: 10, marginTop: 6, overflow: 'auto', maxHeight: 300, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                      {JSON.stringify(db, null, 2)}
+                    </pre>
+                  </details>
+                </div>
+              )}
+            </div>
+          );
+        })()}
+
       </div>
     );
   })}
