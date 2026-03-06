@@ -2734,6 +2734,731 @@ Competitive analysis shows Whole Truth hitting D2C ceiling (review velocity -38%
 // buildPDFHtml — generates standalone HTML for Puppeteer PDF
 // Called by generatePDF(); all charts rendered via CDN Chart.js
 // ─────────────────────────────────────────────────────────────
+
+// ── AGENT VISUAL RENDERERS ──────────────────────────────────────────────
+// ── VISUAL RENDERERS ── one per agent ──────────────────────────────────────
+
+const V = {
+  forest:'#1a3a2a', terra:'#b85c38', sand:'#e0d8cc', parchment:'#faf7f2',
+  ink:'#1a1a1a', inkMid:'#3a3a3a', inkSoft:'#666', inkFaint:'#999',
+  green:'#2d7a4f', amber:'#c97d20', blue:'#2563eb', red:'#c0392b',
+  greenBg:'#e8f5ee', amberBg:'#fef3e2', blueBg:'#eff6ff', redBg:'#fdf2f2',
+};
+
+const sectionLabel = (text) =>
+  `<div style="font-family:monospace;font-size:6.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:${V.inkFaint};margin-bottom:7px;">${text}</div>`;
+
+const verdictBadge = (verdict) => {
+  const map = {STRONG:[V.green,V.greenBg],WATCH:[V.amber,V.amberBg],OPTIMISE:[V.blue,V.blueBg],UNDERDELIVERED:[V.red,V.redBg],RISK:[V.red,V.redBg]};
+  const [fg,bg] = map[verdict]||['#666','#f0f0f0'];
+  return `<span style="display:inline-block;background:${bg};color:${fg};font-family:monospace;font-size:7px;font-weight:700;padding:3px 9px;border-radius:3px;border:1px solid ${fg}30;letter-spacing:.08em;">${verdict}</span>`;
+};
+
+const heatCell = (val) => {
+  const map = {H:[V.green,V.greenBg,'●●●'],M:[V.amber,V.amberBg,'●●○'],L:['#aaa','#f5f5f5','●○○']};
+  const [fg,bg,dots] = map[val]||['#ccc','#fafafa','○○○'];
+  return `<td style="background:${bg};color:${fg};font-size:8px;font-weight:700;text-align:center;padding:6px 4px;border:1px solid ${V.sand};">${dots}</td>`;
+};
+
+// ── KPI ROW — compact, no duplication ─────────────────────────────────────
+function renderKPIs(kpis) {
+  if (!kpis || !kpis.length) return '';
+  const confDot = c => `<span style="width:5px;height:5px;border-radius:50%;background:${c==='H'?V.green:c==='M'?V.amber:'#aaa'};display:inline-block;margin-left:4px;vertical-align:middle;"></span>`;
+  const trendIcon = t => t==='up'?`<span style="color:${V.green};font-size:8px;">↑</span>`:t==='down'?`<span style="color:${V.red};font-size:8px;">↓</span>`:t==='watch'?`<span style="color:${V.amber};font-size:8px;">⚠</span>`:`<span style="color:#aaa;font-size:8px;">→</span>`;
+  let h = `<div style="display:grid;grid-template-columns:repeat(${Math.min(kpis.length,4)},1fr);gap:6px;margin-bottom:12px;">`;
+  kpis.slice(0,4).forEach(k => {
+    h += `<div style="background:${V.parchment};border:1px solid ${V.sand};border-radius:4px;padding:9px 11px;position:relative;">`;
+    h += `<div style="font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:${V.forest};line-height:1.1;">${k.value||'—'} ${trendIcon(k.trend)}${confDot(k.confidence)}</div>`;
+    h += `<div style="font-size:7px;font-weight:600;color:${V.inkSoft};margin-top:3px;line-height:1.3;">${k.label||''}</div>`;
+    if (k.sub) h += `<div style="font-size:6.5px;color:${V.inkFaint};margin-top:2px;">${k.sub}</div>`;
+    h += '</div>';
+  });
+  h += '</div>';
+  return h;
+}
+
+// ── VERDICT ROW ───────────────────────────────────────────────────────────
+function renderVerdict(verdictRow) {
+  if (!verdictRow) return '';
+  const v = verdictRow;
+  return `<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:#fff;border:1px solid ${V.sand};border-radius:4px;margin-bottom:12px;">
+    ${verdictBadge(v.verdict)}
+    <span style="font-size:8px;color:${V.inkMid};line-height:1.4;flex:1;">${v.finding||''}</span>
+  </div>`;
+}
+
+// ── AGENT 1: MARKET — bubble chart + channel heatmap ─────────────────────
+function renderMarket(db) {
+  let h = '';
+
+  // Competitor bubble chart (SVG)
+  if (db.competitorBubbles && db.competitorBubbles.length) {
+    h += sectionLabel('Competitive Landscape — Revenue × Growth Rate × Brand Strength');
+    const W=560, H=160, PL=30, PR=20, PT=15, PB=30;
+    const cw=W-PL-PR, ch=H-PT-PB;
+    const all = db.competitorBubbles;
+    const maxRev = Math.max(...all.map(c=>c.revenueCr||1));
+    const maxGr  = Math.max(...all.map(c=>c.growthRate||1),1);
+    const maxBr  = Math.max(...all.map(c=>c.brandStrength||1),1);
+    let svg = `<svg width="${W}" height="${H}" style="overflow:visible;">`;
+    // Axes
+    svg += `<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+ch}" stroke="${V.sand}" stroke-width="1"/>`;
+    svg += `<line x1="${PL}" y1="${PT+ch}" x2="${PL+cw}" y2="${PT+ch}" stroke="${V.sand}" stroke-width="1"/>`;
+    svg += `<text x="${PL-4}" y="${PT+ch/2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle" transform="rotate(-90,${PL-4},${PT+ch/2})">Brand Strength</text>`;
+    svg += `<text x="${PL+cw/2}" y="${PT+ch+20}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">Growth Rate %</text>`;
+    all.forEach(c => {
+      const x = PL + (c.growthRate/maxGr)*cw;
+      const y = PT+ch - (c.brandStrength/maxBr)*ch;
+      const r = 5 + (c.revenueCr/maxRev)*22;
+      const fill = c.highlight ? V.terra : `${V.forest}50`;
+      const stroke = c.highlight ? V.terra : V.forest;
+      svg += `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${c.highlight?2:1}" opacity="${c.highlight?1:.7}"/>`;
+      svg += `<text x="${x}" y="${y+r+9}" fill="${c.highlight?V.terra:V.inkSoft}" font-size="${c.highlight?7:6}" text-anchor="middle" font-weight="${c.highlight?700:400}">${c.name}</text>`;
+      if (c.highlight) svg += `<text x="${x}" y="${y+4}" fill="#fff" font-size="6" text-anchor="middle" font-weight="700">₹${c.revenueCr}</text>`;
+    });
+    svg += '</svg>';
+    h += `<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:10px 14px;margin-bottom:10px;overflow:hidden;">${svg}</div>`;
+  }
+
+  // Channel heatmap
+  if (db.channelHeatmap && db.channelHeatmap.length) {
+    h += sectionLabel('Channel Opportunity Matrix');
+    h += `<table style="width:100%;border-collapse:collapse;font-size:7.5px;margin-bottom:10px;">`;
+    h += `<thead><tr><th style="background:${V.forest};color:#fff;padding:6px 10px;text-align:left;font-size:6.5px;letter-spacing:.08em;border:1px solid ${V.forest};">Channel</th><th style="background:${V.forest};color:#fff;padding:6px 8px;text-align:center;font-size:6.5px;letter-spacing:.08em;border:1px solid ${V.forest};">Yogabar Presence</th><th style="background:${V.forest};color:#fff;padding:6px 8px;text-align:center;font-size:6.5px;letter-spacing:.08em;border:1px solid ${V.forest};">Category Growth</th><th style="background:${V.forest};color:#fff;padding:6px 8px;text-align:center;font-size:6.5px;letter-spacing:.08em;border:1px solid ${V.forest};">Competitive Density</th></tr></thead><tbody>`;
+    db.channelHeatmap.forEach((row,i) => {
+      h += `<tr><td style="padding:6px 10px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-weight:600;color:${V.forest};font-size:7.5px;">${row.channel}</td>${heatCell(row.yogabarPresence)}${heatCell(row.categoryGrowth)}${heatCell(row.competitiveDensity)}</tr>`;
+    });
+    h += '</tbody></table>';
+  }
+  return h;
+}
+
+// ── AGENT 2: PORTFOLIO — BCG matrix + tier margins ───────────────────────
+function renderPortfolio(db) {
+  let h = '';
+
+  // BCG Matrix SVG
+  if (db.skuMatrix && db.skuMatrix.length) {
+    h += sectionLabel('Portfolio Matrix — Market Growth vs Competitive Position');
+    const W=560, H=180, PL=40, PR=20, PT=15, PB=30;
+    const cw=W-PL-PR, ch=H-PT-PB;
+    const maxGr=Math.max(...db.skuMatrix.map(s=>s.marketGrowth||1),1);
+    const maxPos=Math.max(...db.skuMatrix.map(s=>s.yogabarPosition||1),1);
+    const maxRev=Math.max(...db.skuMatrix.map(s=>s.revenueCr||1),1);
+    const quadColors = {STAR:`${V.terra}20`,CASHCOW:`${V.green}20`,QUESTION:`${V.amber}20`,DOG:`#f0f0f080`};
+    let svg = `<svg width="${W}" height="${H}" style="overflow:visible;">`;
+    // Quadrant backgrounds
+    svg += `<rect x="${PL}" y="${PT}" width="${cw/2}" height="${ch/2}" fill="${quadColors.STAR}" stroke="${V.sand}" stroke-width=".5"/>`;
+    svg += `<rect x="${PL+cw/2}" y="${PT}" width="${cw/2}" height="${ch/2}" fill="${quadColors.QUESTION}" stroke="${V.sand}" stroke-width=".5"/>`;
+    svg += `<rect x="${PL}" y="${PT+ch/2}" width="${cw/2}" height="${ch/2}" fill="${quadColors.CASHCOW}" stroke="${V.sand}" stroke-width=".5"/>`;
+    svg += `<rect x="${PL+cw/2}" y="${PT+ch/2}" width="${cw/2}" height="${ch/2}" fill="${quadColors.DOG}" stroke="${V.sand}" stroke-width=".5"/>`;
+    // Quadrant labels
+    const ql = [{t:'STARS',x:PL+8,y:PT+11},{t:'QUESTION MARKS',x:PL+cw/2+8,y:PT+11},{t:'CASH COWS',x:PL+8,y:PT+ch/2+11},{t:'DOGS',x:PL+cw/2+8,y:PT+ch/2+11}];
+    ql.forEach(q => svg += `<text x="${q.x}" y="${q.y}" fill="${V.inkFaint}" font-size="5.5" font-family="monospace" letter-spacing=".1em">${q.t}</text>`);
+    // Axes
+    svg += `<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+ch}" stroke="${V.inkFaint}" stroke-width="1"/>`;
+    svg += `<line x1="${PL}" y1="${PT+ch}" x2="${PL+cw}" y2="${PT+ch}" stroke="${V.inkFaint}" stroke-width="1"/>`;
+    svg += `<text x="${PL-6}" y="${PT+ch/2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle" transform="rotate(-90,${PL-6},${PT+ch/2})">Market Growth</text>`;
+    svg += `<text x="${PL+cw/2}" y="${PT+ch+20}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">Yogabar Position</text>`;
+    // SKU bubbles
+    const vColors = {STAR:V.terra,CASHCOW:V.green,QUESTION:V.amber,DOG:'#aaa'};
+    db.skuMatrix.forEach(s => {
+      const x = PL + (s.yogabarPosition/maxPos)*cw;
+      const y = PT+ch - (s.marketGrowth/maxGr)*ch;
+      const r = 6+(s.revenueCr/maxRev)*16;
+      const c = vColors[s.verdict]||V.forest;
+      svg += `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}90" stroke="${c}" stroke-width="1.5"/>`;
+      svg += `<text x="${x}" y="${y+r+8}" fill="${c}" font-size="6.5" text-anchor="middle" font-weight="600">${s.name}</text>`;
+    });
+    svg += '</svg>';
+    h += `<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:10px 14px;margin-bottom:10px;">${svg}</div>`;
+  }
+
+  // Tier margin bars
+  if (db.tierMargins && db.tierMargins.length) {
+    h += sectionLabel('Margin by Price Tier');
+    const verdictColor = {KILL:V.red,KEEP:V.amber,GROW:V.blue,BUILD:V.green};
+    const maxM = Math.max(...db.tierMargins.map(t=>t.grossMarginPct||0),1);
+    h += `<div style="display:grid;gap:5px;margin-bottom:10px;">`;
+    db.tierMargins.forEach(t => {
+      const pct = ((t.grossMarginPct||0)/maxM)*100;
+      const vc = verdictColor[t.verdict]||V.inkFaint;
+      h += `<div style="display:flex;align-items:center;gap:8px;">`;
+      h += `<div style="width:110px;font-size:7.5px;font-weight:600;color:${V.inkMid};flex-shrink:0;">${t.tier}</div>`;
+      h += `<div style="flex:1;height:18px;background:${V.parchment};border-radius:3px;border:1px solid ${V.sand};overflow:hidden;">`;
+      h += `<div style="width:${pct}%;height:100%;background:${vc}40;border-right:2px solid ${vc};display:flex;align-items:center;padding-left:6px;">`;
+      h += `<span style="font-size:7px;font-weight:700;color:${vc};">${t.grossMarginPct}%</span></div></div>`;
+      h += `<span style="font-size:6.5px;font-family:monospace;font-weight:700;color:${vc};width:36px;">${t.verdict}</span>`;
+      h += `<span style="font-size:7px;color:${V.inkFaint};width:28px;">${t.revenueSharePct}% rev</span>`;
+      h += '</div>';
+    });
+    h += '</div>';
+  }
+  return h;
+}
+
+// ── AGENT 3: BRAND — positioning map + perception gap ────────────────────
+function renderBrand(db) {
+  let h = '';
+
+  // Positioning map SVG
+  if (db.positioningMap && db.positioningMap.length) {
+    h += sectionLabel('Brand Positioning Map — Functional vs Emotional × Mass vs Premium');
+    const W=560, H=175, cx=W/2, cy=H/2;
+    let svg = `<svg width="${W}" height="${H}">`;
+    // Quadrant lines
+    svg += `<line x1="${cx}" y1="10" x2="${cx}" y2="${H-10}" stroke="${V.sand}" stroke-width="1" stroke-dasharray="3,3"/>`;
+    svg += `<line x1="10" y1="${cy}" x2="${W-10}" y2="${cy}" stroke="${V.sand}" stroke-width="1" stroke-dasharray="3,3"/>`;
+    // Axis labels
+    svg += `<text x="${cx}" y="8" fill="${V.inkFaint}" font-size="6.5" text-anchor="middle" font-family="monospace">EMOTIONAL</text>`;
+    svg += `<text x="${cx}" y="${H-2}" fill="${V.inkFaint}" font-size="6.5" text-anchor="middle" font-family="monospace">FUNCTIONAL</text>`;
+    svg += `<text x="4" y="${cy+2}" fill="${V.inkFaint}" font-size="6.5" text-anchor="start" font-family="monospace">MASS</text>`;
+    svg += `<text x="${W-6}" y="${cy+2}" fill="${V.inkFaint}" font-size="6.5" text-anchor="end" font-family="monospace">PREMIUM</text>`;
+    // Brands
+    db.positioningMap.forEach(b => {
+      const px = (b.premium/100)*(W-30)+15;
+      const py = (1-b.functional/100)*(H-30)+15;
+      const isY = b.highlight;
+      svg += `<circle cx="${px}" cy="${py}" r="${isY?9:6}" fill="${isY?V.terra:`${V.forest}40`}" stroke="${isY?V.terra:V.forest}" stroke-width="${isY?2:1}"/>`;
+      if (isY && b.arrowPremium !== undefined) {
+        const tx = (b.arrowPremium/100)*(W-30)+15;
+        const ty = (1-b.arrowFunctional/100)*(H-30)+15;
+        if (tx!==px||ty!==py) svg += `<line x1="${px}" y1="${py}" x2="${tx}" y2="${ty}" stroke="${V.terra}" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arr)"/>`;
+      }
+      svg += `<text x="${px}" y="${py+(isY?14:10)}" fill="${isY?V.terra:V.inkSoft}" font-size="${isY?7:6}" text-anchor="middle" font-weight="${isY?700:400}">${b.name}</text>`;
+    });
+    svg += `<defs><marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="${V.terra}"/></marker></defs>`;
+    svg += '</svg>';
+    h += `<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:10px 14px;margin-bottom:10px;">${svg}</div>`;
+  }
+
+  // Perception gap bars
+  if (db.perceptionGap && db.perceptionGap.length) {
+    h += sectionLabel('Perception Gap — Brand Says vs Customer Hears');
+    h += `<div style="display:grid;gap:6px;margin-bottom:10px;">`;
+    db.perceptionGap.forEach(p => {
+      const bs = p.brandSaysPct||0, ch2 = p.customerHearsPct||0;
+      h += `<div>`;
+      h += `<div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:7.5px;font-weight:600;color:${V.inkMid};">${p.dimension}</span><span style="font-size:7px;color:${V.inkFaint};">${bs}% ↔ ${ch2}%</span></div>`;
+      h += `<div style="display:flex;gap:3px;align-items:center;">`;
+      h += `<span style="font-size:6.5px;color:${V.forest};width:55px;font-family:monospace;">Brand says</span>`;
+      h += `<div style="flex:1;height:8px;background:${V.parchment};border-radius:2px;position:relative;border:1px solid ${V.sand};">`;
+      h += `<div style="position:absolute;left:0;top:0;height:100%;width:${bs}%;background:${V.forest}60;border-radius:2px;"></div>`;
+      h += `<div style="position:absolute;left:0;top:0;height:100%;width:${ch2}%;background:${V.terra}80;border-radius:2px;opacity:.7;"></div>`;
+      h += `</div>`;
+      h += `<span style="font-size:6.5px;color:${V.terra};width:65px;font-family:monospace;text-align:right;">Customer hears</span>`;
+      h += `</div></div>`;
+    });
+    h += '</div>';
+  }
+
+  // ITC association dial
+  if (db.itcAssociationDial) {
+    const d = db.itcAssociationDial;
+    const cur = d.currentPosition||0, rec = d.recommendedPosition||0;
+    const toAngle = v => (v/100)*180 - 90;
+    const toXY = (v, r) => {
+      const a = (toAngle(v)*Math.PI)/180;
+      return [90 + r*Math.sin(a), 80 - r*Math.cos(a)];
+    };
+    const [cx2,cy2]=[90,80], r=60;
+    const [curX,curY]=toXY(cur,r), [recX,recY]=toXY(rec,r);
+    h += sectionLabel('ITC Association Strategy');
+    let svg = `<svg width="280" height="95">`;
+    svg += `<path d="M ${cx2-r} ${cy2} A ${r} ${r} 0 0 1 ${cx2+r} ${cy2}" fill="none" stroke="${V.sand}" stroke-width="10"/>`;
+    const arcGrad = (from,to,color) => {
+      const [fx,fy]=toXY(from,r),[tx,ty]=toXY(to,r);
+      const large = (to-from)>50?1:0;
+      return `<path d="M ${fx} ${fy} A ${r} ${r} 0 ${large} 1 ${tx} ${ty}" fill="none" stroke="${color}" stroke-width="10" stroke-linecap="round"/>`;
+    };
+    svg += arcGrad(cur,rec,`${V.terra}50`);
+    svg += `<circle cx="${curX}" cy="${curY}" r="6" fill="${V.forest}" stroke="#fff" stroke-width="2"/>`;
+    svg += `<circle cx="${recX}" cy="${recY}" r="6" fill="${V.terra}" stroke="#fff" stroke-width="2"/>`;
+    svg += `<text x="${cx2-r-2}" y="${cy2+14}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">Hide ITC</text>`;
+    svg += `<text x="${cx2+r+2}" y="${cy2+14}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">Lead ITC</text>`;
+    svg += `<text x="${cx2}" y="${cy2-10}" fill="${V.inkSoft}" font-size="7" text-anchor="middle" font-weight="600">NOW: ${cur}</text>`;
+    svg += `<text x="${cx2}" y="${cy2+4}" fill="${V.terra}" font-size="7" text-anchor="middle" font-weight="700">→ REC: ${rec}</text>`;
+    if (d.note) svg += `<text x="${cx2}" y="92" fill="${V.inkFaint}" font-size="6" text-anchor="middle">${d.note.slice(0,55)}</text>`;
+    svg += '</svg>';
+    h += `<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:8px 14px;margin-bottom:10px;display:inline-block;">${svg}</div>`;
+  }
+  return h;
+}
+
+// ── AGENT 4: MARGINS — waterfall + channel margin bars ───────────────────
+function renderMargins(db) {
+  let h = '';
+
+  // Margin waterfall
+  if (db.marginWaterfall && db.marginWaterfall.length) {
+    h += sectionLabel('Margin Waterfall — % of Revenue');
+    const bars = db.marginWaterfall;
+    const W=560, H=130, PL=90, PR=20, PT=10, PB=24;
+    const bw = (W-PL-PR)/bars.length - 4;
+    let svg = `<svg width="${W}" height="${H}">`;
+    let running = 100;
+    const maxH = ch => H-PT-PB;
+    bars.forEach((bar,i) => {
+      const x = PL + i*((W-PL-PR)/bars.length) + 2;
+      const isTotal = bar.type==='total'||bar.type==='subtotal';
+      const isCost = bar.type==='cost';
+      const val = bar.valuePct||0;
+      if (isTotal) {
+        const barH = (Math.abs(running)/100)*(H-PT-PB);
+        const y = PT + (H-PT-PB) - barH;
+        const fill = bar.type==='total'?V.forest:`${V.forest}70`;
+        svg += `<rect x="${x}" y="${y}" width="${bw}" height="${barH}" fill="${fill}" rx="2"/>`;
+        svg += `<text x="${x+bw/2}" y="${y-3}" fill="${V.forest}" font-size="6.5" text-anchor="middle" font-weight="700">${running}%</text>`;
+      } else if (isCost) {
+        const drop = Math.abs(val);
+        const barH = (drop/100)*(H-PT-PB);
+        const y = PT + (H-PT-PB) - (running/100)*(H-PT-PB);
+        svg += `<rect x="${x}" y="${y}" width="${bw}" height="${barH}" fill="${V.terra}80" rx="2"/>`;
+        svg += `<text x="${x+bw/2}" y="${y+barH+9}" fill="${V.terra}" font-size="6" text-anchor="middle">${val}%</text>`;
+        running += val; // val is negative
+      } else {
+        running += val;
+      }
+      svg += `<text x="${x+bw/2}" y="${H-PB+12}" fill="${V.inkSoft}" font-size="6" text-anchor="middle" transform="rotate(-35,${x+bw/2},${H-PB+12})">${bar.label.length>12?bar.label.slice(0,11)+'…':bar.label}</text>`;
+    });
+    // Baseline
+    svg += `<line x1="${PL}" y1="${H-PB}" x2="${W-PR}" y2="${H-PB}" stroke="${V.sand}" stroke-width="1"/>`;
+    svg += '</svg>';
+    h += `<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:10px 14px;margin-bottom:10px;">${svg}</div>`;
+  }
+
+  // Channel margin comparison
+  if (db.channelMargins && db.channelMargins.length) {
+    h += sectionLabel('Gross & Contribution Margin by Channel');
+    const maxM = Math.max(...db.channelMargins.map(c=>Math.max(c.grossMarginPct||0,c.contributionMarginPct||0)),1);
+    h += `<div style="display:grid;gap:5px;margin-bottom:10px;">`;
+    db.channelMargins.forEach(c => {
+      const gp = ((c.grossMarginPct||0)/maxM)*100;
+      const cp = ((c.contributionMarginPct||0)/maxM)*100;
+      h += `<div style="display:flex;align-items:center;gap:8px;">`;
+      h += `<div style="width:85px;font-size:7.5px;font-weight:600;color:${V.inkMid};flex-shrink:0;">${c.channel}</div>`;
+      h += `<div style="flex:1;display:flex;flex-direction:column;gap:2px;">`;
+      h += `<div style="display:flex;align-items:center;gap:4px;"><div style="width:${gp}%;height:7px;background:${V.forest};border-radius:2px;min-width:2px;"></div><span style="font-size:6.5px;color:${V.forest};font-weight:700;">${c.grossMarginPct}%</span></div>`;
+      h += `<div style="display:flex;align-items:center;gap:4px;"><div style="width:${cp}%;height:5px;background:${V.terra}80;border-radius:2px;min-width:2px;"></div><span style="font-size:6px;color:${V.terra};">${c.contributionMarginPct}%</span></div>`;
+      h += `</div></div>`;
+    });
+    h += '</div>';
+    h += `<div style="display:flex;gap:14px;margin-bottom:8px;"><span style="font-size:6.5px;color:${V.inkFaint};"><span style="display:inline-block;width:10px;height:5px;background:${V.forest};border-radius:1px;vertical-align:middle;margin-right:3px;"></span>Gross Margin</span><span style="font-size:6.5px;color:${V.inkFaint};"><span style="display:inline-block;width:10px;height:5px;background:${V.terra}80;border-radius:1px;vertical-align:middle;margin-right:3px;"></span>Contribution Margin</span></div>`;
+  }
+
+  // Margin levers
+  if (db.marginLevers && db.marginLevers.length) {
+    h += sectionLabel('Margin Improvement Levers — Impact vs Investment');
+    const maxImp = Math.max(...db.marginLevers.map(l=>l.impactPoints||0),1);
+    h += `<div style="display:grid;gap:4px;margin-bottom:10px;">`;
+    db.marginLevers.forEach((l,i) => {
+      const w = ((l.impactPoints||0)/maxImp)*100;
+      h += `<div style="display:flex;align-items:center;gap:8px;">`;
+      h += `<div style="width:130px;font-size:7px;color:${V.inkMid};flex-shrink:0;line-height:1.3;">${l.lever}</div>`;
+      h += `<div style="flex:1;height:16px;background:${V.parchment};border-radius:3px;border:1px solid ${V.sand};overflow:hidden;position:relative;">`;
+      h += `<div style="position:absolute;left:0;top:0;height:100%;width:${w}%;background:${V.green}50;border-right:2px solid ${V.green};"></div>`;
+      h += `<span style="position:absolute;left:6px;top:50%;transform:translateY(-50%);font-size:6.5px;font-weight:700;color:${V.green};">+${l.impactPoints}pp</span>`;
+      h += `</div>`;
+      h += `<span style="font-size:6.5px;color:${V.inkFaint};white-space:nowrap;">₹${l.investmentCr}Cr · ${l.paybackMonths}mo</span>`;
+      h += '</div>';
+    });
+    h += '</div>';
+  }
+  return h;
+}
+
+// ── AGENT 5: GROWTH — revenue bridge waterfall + channel mix donuts ───────
+function renderGrowth(db) {
+  let h = '';
+
+  // Revenue bridge
+  if (db.revenueBridge && db.revenueBridge.length) {
+    h += sectionLabel('Revenue Bridge — FY25 to FY26 Target (₹ Cr)');
+    const bars = db.revenueBridge;
+    const W=560, H=140, PL=20, PR=20, PT=20, PB=30;
+    const bw = Math.floor((W-PL-PR)/bars.length) - 4;
+    const maxVal = Math.max(...bars.map(b=>Math.abs(b.valueCr||0)),1);
+    const scaleH = (v) => (Math.abs(v)/maxVal)*(H-PT-PB);
+    let svg = `<svg width="${W}" height="${H}">`;
+    let cursor = 0;
+    bars.forEach((bar,i) => {
+      const x = PL + i*((W-PL-PR)/bars.length) + 2;
+      const val = bar.valueCr||0;
+      if (bar.type==='start'||bar.type==='end') {
+        const bh = scaleH(val);
+        const y = PT + (H-PT-PB) - bh;
+        svg += `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" fill="${bar.type==='end'?V.forest:`${V.forest}60`}" rx="2"/>`;
+        svg += `<text x="${x+bw/2}" y="${y-4}" fill="${V.forest}" font-size="7" text-anchor="middle" font-weight="700">₹${val}</text>`;
+        cursor = val;
+      } else if (bar.type==='up') {
+        const bh = scaleH(val);
+        const base = cursor;
+        const y = PT + (H-PT-PB) - scaleH(base+val);
+        svg += `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" fill="${V.terra}90" rx="2"/>`;
+        svg += `<text x="${x+bw/2}" y="${y-4}" fill="${V.terra}" font-size="6.5" text-anchor="middle" font-weight="700">+${val}</text>`;
+        // connector line
+        if (i>0) svg += `<line x1="${x-2}" y1="${PT+(H-PT-PB)-scaleH(base)}" x2="${x}" y2="${PT+(H-PT-PB)-scaleH(base)}" stroke="${V.sand}" stroke-width=".8" stroke-dasharray="2,2"/>`;
+        cursor += val;
+      } else if (bar.type==='down') {
+        const bh = scaleH(Math.abs(val));
+        const y = PT + (H-PT-PB) - scaleH(cursor);
+        svg += `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" fill="${V.red}80" rx="2"/>`;
+        svg += `<text x="${x+bw/2}" y="${y-4}" fill="${V.red}" font-size="6.5" text-anchor="middle" font-weight="700">${val}</text>`;
+        cursor += val;
+      }
+      const label = bar.label.replace(/lever \d — /i,'').replace(/risk \d — /i,'');
+      const short = label.length>12?label.slice(0,11)+'…':label;
+      svg += `<text x="${x+bw/2}" y="${H-PB+12}" fill="${V.inkSoft}" font-size="5.5" text-anchor="middle" transform="rotate(-35,${x+bw/2},${H-PB+12})">${short}</text>`;
+    });
+    svg += `<line x1="${PL}" y1="${H-PB}" x2="${W-PR}" y2="${H-PB}" stroke="${V.sand}" stroke-width="1"/>`;
+    svg += '</svg>';
+    h += `<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:10px 14px;margin-bottom:10px;">${svg}</div>`;
+  }
+
+  // Channel mix — current vs target side by side donuts
+  if (db.channelMixCurrent && db.channelMixTarget) {
+    h += sectionLabel('Channel Mix — Current vs Target');
+    const renderDonut = (data, title, size=90) => {
+      const R=size/2-8, r=R*0.55, cx2=size/2, cy2=size/2;
+      const colors=[V.forest,V.terra,V.amber,V.blue,'#888'];
+      let startAngle=-Math.PI/2, svg=`<svg width="${size}" height="${size+20}">`;
+      svg+=`<text x="${cx2}" y="${size+14}" fill="${V.inkSoft}" font-size="7" text-anchor="middle">${title}</text>`;
+      data.forEach((seg,i) => {
+        const angle = (seg.pct/100)*2*Math.PI;
+        const x1=cx2+R*Math.cos(startAngle), y1=cy2+R*Math.sin(startAngle);
+        const x2=cx2+R*Math.cos(startAngle+angle), y2=cy2+R*Math.sin(startAngle+angle);
+        const large=angle>Math.PI?1:0;
+        svg+=`<path d="M ${cx2} ${cy2} L ${x1} ${y1} A ${R} ${R} 0 ${large} 1 ${x2} ${y2} Z" fill="${colors[i%colors.length]}" opacity=".85"/>`;
+        if (seg.pct>8) {
+          const lx=cx2+(R*0.7)*Math.cos(startAngle+angle/2), ly=cy2+(R*0.7)*Math.sin(startAngle+angle/2);
+          svg+=`<text x="${lx}" y="${ly+2}" fill="#fff" font-size="6" text-anchor="middle" font-weight="700">${seg.pct}%</text>`;
+        }
+        startAngle+=angle;
+      });
+      // donut hole
+      svg+=`<circle cx="${cx2}" cy="${cy2}" r="${r}" fill="#fff"/>`;
+      return svg+'</svg>';
+    };
+    h += `<div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:10px;">`;
+    h += `<div>${renderDonut(db.channelMixCurrent,'FY25 Current',110)}</div>`;
+    h += `<div>${renderDonut(db.channelMixTarget,'FY26 Target',110)}</div>`;
+    // Legend
+    const channels=[...db.channelMixCurrent];
+    const colors=[V.forest,V.terra,V.amber,V.blue,'#888'];
+    h += `<div style="display:grid;gap:5px;padding-top:8px;">`;
+    channels.forEach((c,i) => h+=`<div style="display:flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:2px;background:${colors[i%colors.length]};display:inline-block;flex-shrink:0;"></span><span style="font-size:7px;color:${V.inkMid};">${c.channel}</span></div>`);
+    h += `</div></div>`;
+  }
+  return h;
+}
+
+// ── AGENT 6: COMPETITIVE — threat heatmap + battle cards ─────────────────
+function renderCompetitive(db) {
+  let h = '';
+
+  // Threat heatmap
+  if (db.threatHeatmap && db.threatHeatmap.length) {
+    h += sectionLabel('Competitive Threat Matrix — Battleground Dimensions');
+    const dims = ['price','channel','product','brand','distribution','growth'];
+    const dimLabels = ['Price','Channel','Product','Brand','Distrib.','Growth'];
+    h += `<table style="width:100%;border-collapse:collapse;font-size:7.5px;margin-bottom:10px;">`;
+    h += `<thead><tr><th style="background:${V.forest};color:#fff;padding:6px 10px;text-align:left;font-size:6.5px;letter-spacing:.08em;border:1px solid ${V.forest};min-width:80px;">Competitor</th>`;
+    dimLabels.forEach(d => h += `<th style="background:${V.forest};color:#fff;padding:6px 6px;text-align:center;font-size:6.5px;letter-spacing:.06em;border:1px solid ${V.forest};">${d}</th>`);
+    h += '</tr></thead><tbody>';
+    db.threatHeatmap.forEach((row,i) => {
+      h += `<tr><td style="padding:6px 10px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-weight:600;color:${V.inkMid};font-size:7.5px;">${row.competitor}</td>`;
+      dims.forEach(d => h += heatCell(row[d]));
+      h += '</tr>';
+    });
+    h += '</tbody></table>';
+    h += `<div style="display:flex;gap:14px;margin-bottom:8px;">`;
+    [[V.green,V.greenBg,'●●● High threat'],[V.amber,V.amberBg,'●●○ Medium'],[`#aaa`,'#f5f5f5','●○○ Low']].forEach(([fg,bg,label])=>{
+      h+=`<span style="font-size:6.5px;background:${bg};color:${fg};padding:2px 7px;border-radius:10px;font-weight:600;">${label}</span>`;
+    });
+    h += '</div>';
+  }
+
+  // Battle cards
+  if (db.battleCards && db.battleCards.length) {
+    h += sectionLabel('Battle Plan');
+    const modeStyle = {ATTACK:[V.terra,`${V.terra}15`],DEFEND:[V.green,`${V.green}12`],MONITOR:[V.amber,`${V.amber}15`]};
+    h += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;">`;
+    db.battleCards.forEach(c => {
+      const [fg,bg] = modeStyle[c.mode]||['#666','#f0f0f0'];
+      h += `<div style="background:${bg};border:1px solid ${fg}40;border-radius:4px;padding:9px 11px;">`;
+      h += `<div style="font-family:monospace;font-size:6.5px;font-weight:700;color:${fg};letter-spacing:.12em;margin-bottom:5px;">${c.mode}</div>`;
+      h += `<div style="font-size:7px;font-weight:600;color:${V.inkMid};margin-bottom:3px;">${c.target}</div>`;
+      h += `<div style="font-size:7px;color:${V.inkSoft};line-height:1.5;">${c.move}</div>`;
+      h += `<div style="font-size:6.5px;color:${fg};margin-top:5px;font-family:monospace;">${c.timeline}</div>`;
+      h += '</div>';
+    });
+    h += '</div>';
+  }
+  return h;
+}
+
+// ── AGENT 7: SYNERGY — asset matrix bubble + roadmap ─────────────────────
+function renderSynergy(db) {
+  let h = '';
+
+  // Synergy matrix
+  if (db.synergyMatrix && db.synergyMatrix.length) {
+    h += sectionLabel('ITC Asset Activation — Value vs Ease of Capture');
+    const W=560, H=170, PL=30, PR=20, PT=15, PB=30;
+    const cw=W-PL-PR, ch=H-PT-PB;
+    const maxVal=Math.max(...db.synergyMatrix.map(s=>s.valueCr||1),1);
+    let svg = `<svg width="${W}" height="${H}">`;
+    svg += `<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+ch}" stroke="${V.sand}" stroke-width="1"/>`;
+    svg += `<line x1="${PL}" y1="${PT+ch}" x2="${PL+cw}" y2="${PT+ch}" stroke="${V.sand}" stroke-width="1"/>`;
+    svg += `<text x="${PL-4}" y="${PT+ch/2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle" transform="rotate(-90,${PL-4},${PT+ch/2})">Value (₹Cr)</text>`;
+    svg += `<text x="${PL+cw/2}" y="${PT+ch+20}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">Ease of Capture (0–100)</text>`;
+    const statusColor = {activated:V.green, partial:V.amber, untapped:V.forest};
+    db.synergyMatrix.forEach((s,i) => {
+      const x = PL + ((s.ease||0)/100)*cw;
+      const y = PT+ch - ((s.valueCr||0)/maxVal)*ch;
+      const r = 5 + ((s.valueCr||0)/maxVal)*16;
+      const fill = statusColor[s.status]||V.inkFaint;
+      svg += `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}50" stroke="${fill}" stroke-width="1.5"/>`;
+      const label = s.asset.split(' ')[0]+' '+s.asset.split(' ')[1]||'';
+      svg += `<text x="${x}" y="${y+r+8}" fill="${fill}" font-size="5.5" text-anchor="middle">${s.asset.length>20?s.asset.slice(0,19)+'…':s.asset}</text>`;
+    });
+    // Legend
+    [['activated',V.green],['partial',V.amber],['untapped',V.forest]].forEach(([k,c],i)=>{
+      svg+=`<circle cx="${PL+cw-80+i*55}" cy="${PT+5}" r="4" fill="${c}50" stroke="${c}" stroke-width="1.5"/>`;
+      svg+=`<text x="${PL+cw-80+i*55+7}" y="${PT+8}" fill="${V.inkFaint}" font-size="6">${k}</text>`;
+    });
+    svg += '</svg>';
+    h += `<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:10px 14px;margin-bottom:10px;">${svg}</div>`;
+  }
+
+  // Synergy roadmap
+  if (db.synergyRoadmap && db.synergyRoadmap.length) {
+    h += sectionLabel('Activation Roadmap');
+    const maxVal = Math.max(...db.synergyRoadmap.map(r=>r.valueCr||0),1);
+    h += `<div style="display:grid;gap:4px;margin-bottom:10px;">`;
+    db.synergyRoadmap.forEach(r => {
+      const w = ((r.valueCr||0)/maxVal)*100;
+      h += `<div style="display:flex;align-items:center;gap:8px;">`;
+      h += `<div style="font-family:monospace;font-size:7px;font-weight:600;color:${V.terra};width:45px;flex-shrink:0;">${r.quarter}</div>`;
+      h += `<div style="flex:1;font-size:7px;color:${V.inkMid};">${r.synergy}</div>`;
+      h += `<div style="width:80px;height:12px;background:${V.parchment};border-radius:2px;border:1px solid ${V.sand};flex-shrink:0;overflow:hidden;">`;
+      h += `<div style="width:${w}%;height:100%;background:${V.forest}60;border-right:2px solid ${V.forest};"></div>`;
+      h += `</div>`;
+      h += `<span style="font-size:7px;font-weight:700;color:${V.forest};width:35px;text-align:right;">₹${r.valueCr}Cr</span>`;
+      h += '</div>';
+    });
+    h += '</div>';
+  }
+  return h;
+}
+
+// ── AGENT 8: PLATFORM — opportunity bubbles + build/partner/acquire ───────
+function renderPlatform(db) {
+  let h = '';
+
+  // Opportunity bubble chart
+  if (db.opportunityBubbles && db.opportunityBubbles.length) {
+    h += sectionLabel('Platform Opportunities — ITC Fit × Market Growth × TAM');
+    const W=560, H=170, PL=30, PR=20, PT=15, PB=30;
+    const cw=W-PL-PR, ch=H-PT-PB;
+    const maxTam=Math.max(...db.opportunityBubbles.map(o=>o.tamCr||1),1);
+    const maxFit=Math.max(...db.opportunityBubbles.map(o=>o.itcFitScore||1),1);
+    const maxGr=Math.max(...db.opportunityBubbles.map(o=>o.marketGrowthPct||1),1);
+    let svg = `<svg width="${W}" height="${H}">`;
+    svg += `<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+ch}" stroke="${V.sand}" stroke-width="1"/>`;
+    svg += `<line x1="${PL}" y1="${PT+ch}" x2="${PL+cw}" y2="${PT+ch}" stroke="${V.sand}" stroke-width="1"/>`;
+    svg += `<text x="${PL-4}" y="${PT+ch/2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle" transform="rotate(-90,${PL-4},${PT+ch/2})">Market Growth %</text>`;
+    svg += `<text x="${PL+cw/2}" y="${PT+ch+20}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">ITC Fit Score</text>`;
+    db.opportunityBubbles.forEach((o,i) => {
+      const x = PL + ((o.itcFitScore||0)/maxFit)*cw;
+      const y = PT+ch - ((o.marketGrowthPct||0)/maxGr)*ch;
+      const r = 6+((o.tamCr||0)/maxTam)*20;
+      const colors=[V.forest,V.terra,V.amber,V.blue,'#888'];
+      const c=colors[i%colors.length];
+      svg += `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}50" stroke="${c}" stroke-width="1.5"/>`;
+      svg += `<text x="${x}" y="${y+r+9}" fill="${c}" font-size="6" text-anchor="middle" font-weight="600">${o.name.length>16?o.name.slice(0,15)+'…':o.name}</text>`;
+    });
+    svg += '</svg>';
+    h += `<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:10px 14px;margin-bottom:10px;">${svg}</div>`;
+  }
+
+  // Build / Partner / Acquire strip
+  if (db.buildPartnerAcquire && db.buildPartnerAcquire.length) {
+    h += sectionLabel('Strategic Mode — Build vs Partner vs Acquire');
+    const modeStyle = {build:[V.green,V.greenBg], partner:[V.blue,V.blueBg], acquire:[V.terra,`${V.terra}15`]};
+    h += `<div style="display:grid;gap:5px;margin-bottom:10px;">`;
+    db.buildPartnerAcquire.forEach(item => {
+      const mode = (item.recommendation||'').toLowerCase();
+      const [fg,bg] = modeStyle[mode]||['#666','#f0f0f0'];
+      h += `<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:${bg};border:1px solid ${fg}30;border-radius:4px;">`;
+      h += `<span style="font-family:monospace;font-size:6.5px;font-weight:700;color:${fg};text-transform:uppercase;width:50px;flex-shrink:0;">${item.recommendation}</span>`;
+      h += `<span style="font-size:7.5px;font-weight:600;color:${V.inkMid};width:120px;flex-shrink:0;">${item.opportunity}</span>`;
+      h += `<span style="font-size:7px;color:${V.inkSoft};flex:1;">${item.rationale}</span>`;
+      h += '</div>';
+    });
+    h += '</div>';
+  }
+  return h;
+}
+
+// ── AGENT 9: INTL — market radar + entry priority table ──────────────────
+function renderIntl(db) {
+  let h = '';
+
+  // Market radar (spider chart SVG)
+  if (db.marketRadar && db.marketRadar.axes && db.marketRadar.markets) {
+    h += sectionLabel('Market Entry Radar — 5-Dimension Comparison');
+    const axes=db.marketRadar.axes, markets=db.marketRadar.markets;
+    const N=axes.length, R=65, cx2=90, cy2=75, W=380, H=160;
+    const colors=[V.terra,V.forest,V.amber];
+    const toXY2=(score,axisIdx,maxScore=10)=>{
+      const angle=(2*Math.PI*axisIdx/N)-Math.PI/2;
+      const r2=(score/maxScore)*R;
+      return [cx2+r2*Math.cos(angle), cy2+r2*Math.sin(angle)];
+    };
+    let svg=`<svg width="${W}" height="${H}">`;
+    // Grid rings
+    [0.25,0.5,0.75,1].forEach(scale=>{
+      const pts=axes.map((_,i)=>{const[x,y]=toXY2(scale*10,i);return `${x},${y}`;}).join(' ');
+      svg+=`<polygon points="${pts}" fill="none" stroke="${V.sand}" stroke-width="${scale===1?1.5:.5}"/>`;
+    });
+    // Axis lines + labels
+    axes.forEach((ax,i)=>{
+      const[x,y]=toXY2(10,i);
+      svg+=`<line x1="${cx2}" y1="${cy2}" x2="${x}" y2="${y}" stroke="${V.sand}" stroke-width=".8"/>`;
+      const[lx,ly]=toXY2(11.5,i);
+      svg+=`<text x="${lx}" y="${ly+2}" fill="${V.inkSoft}" font-size="6" text-anchor="middle">${ax.length>12?ax.slice(0,11)+'…':ax}</text>`;
+    });
+    // Market polygons
+    markets.forEach((m,mi)=>{
+      const maxScore=Math.max(...m.scores);
+      const pts=m.scores.map((s,i)=>toXY2(s,i).join(',')).join(' ');
+      svg+=`<polygon points="${pts}" fill="${colors[mi%colors.length]}25" stroke="${colors[mi%colors.length]}" stroke-width="1.5"/>`;
+    });
+    // Legend
+    markets.forEach((m,mi)=>{
+      svg+=`<circle cx="${W-85}" cy="${20+mi*14}" r="4" fill="${colors[mi%colors.length]}40" stroke="${colors[mi%colors.length]}" stroke-width="1.5"/>`;
+      svg+=`<text x="${W-78}" y="${24+mi*14}" fill="${V.inkMid}" font-size="7">${m.name}</text>`;
+    });
+    svg+='</svg>';
+    h+=`<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:10px 14px;margin-bottom:10px;display:inline-block;">${svg}</div>`;
+  }
+
+  // Entry priority table
+  if (db.entryPriority && db.entryPriority.length) {
+    h += sectionLabel('Market Entry Priority');
+    h += `<table style="width:100%;border-collapse:collapse;font-size:7.5px;margin-bottom:10px;">`;
+    h += `<thead><tr>`;
+    ['#','Market','Entry Mode','Investment','Yr3 Revenue','Readiness'].forEach(col =>
+      h+=`<th style="background:${V.forest};color:#fff;padding:6px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;border:1px solid ${V.forest};">${col}</th>`
+    );
+    h += '</tr></thead><tbody>';
+    db.entryPriority.forEach((row,i) => {
+      const readyColor={H:V.green,M:V.amber,L:'#aaa'}[row.readiness]||'#aaa';
+      h += `<tr>`;
+      h += `<td style="padding:5px 8px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-family:monospace;font-weight:700;color:${V.terra};">${row.rank}</td>`;
+      h += `<td style="padding:5px 8px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-weight:600;color:${V.forest};">${row.market}</td>`;
+      h += `<td style="padding:5px 8px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};color:${V.inkMid};">${row.mode}</td>`;
+      h += `<td style="padding:5px 8px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-weight:600;color:${V.inkMid};">₹${row.investmentCr}Cr</td>`;
+      h += `<td style="padding:5px 8px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-weight:600;color:${V.forest};">₹${row.year3RevenueCr}Cr</td>`;
+      h += `<td style="padding:5px 8px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};"><span style="background:${readyColor}20;color:${readyColor};font-family:monospace;font-size:7px;font-weight:700;padding:2px 6px;border-radius:3px;">${row.readiness}</span></td>`;
+      h += '</tr>';
+    });
+    h += '</tbody></table>';
+  }
+  return h;
+}
+
+// ── SYNOPSIS — 9-cell verdict dashboard + top actions ────────────────────
+function renderSynopsis(db) {
+  let h = '';
+
+  // 3×3 agent verdict grid
+  if (db.agentVerdicts && db.agentVerdicts.length) {
+    h += sectionLabel('9-Agent Intelligence Dashboard');
+    const vColor = v => ({STRONG:V.green,WATCH:V.amber,OPTIMISE:V.blue,UNDERDELIVERED:V.red,RISK:V.red}[v]||'#666');
+    const vBg = v => ({STRONG:V.greenBg,WATCH:V.amberBg,OPTIMISE:V.blueBg,UNDERDELIVERED:V.redBg,RISK:V.redBg}[v]||'#f0f0f0');
+    h += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;">`;
+    db.agentVerdicts.forEach(av => {
+      const vc=vColor(av.verdict), vb=vBg(av.verdict);
+      h += `<div style="background:${vb};border:1px solid ${vc}40;border-radius:4px;padding:9px 11px;border-left:3px solid ${vc};">`;
+      h += `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">`;
+      h += `<span style="font-size:8px;font-weight:700;color:${V.forest};">${av.agent}</span>`;
+      h += `${verdictBadge(av.verdict)}`;
+      h += `</div>`;
+      h += `<div style="font-size:7px;color:${V.inkMid};line-height:1.45;">${av.oneLiner}</div>`;
+      h += '</div>';
+    });
+    h += '</div>';
+  }
+
+  // Top actions ranked strip
+  if (db.topActions && db.topActions.length) {
+    h += sectionLabel('Top Priority Actions — Ranked by Revenue Impact');
+    const maxRev = Math.max(...db.topActions.map(a=>a.revenueCr||0),1);
+    h += `<div style="display:grid;gap:5px;margin-bottom:12px;">`;
+    db.topActions.forEach((a,i) => {
+      const w = ((a.revenueCr||0)/maxRev)*100;
+      h += `<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:${i===0?`${V.terra}12`:V.parchment};border:1px solid ${i===0?`${V.terra}40`:V.sand};border-radius:4px;">`;
+      h += `<span style="font-family:monospace;font-size:9px;font-weight:700;color:${V.terra};width:16px;">${a.rank}</span>`;
+      h += `<span style="font-size:7.5px;font-weight:600;color:${V.forest};flex:1;">${a.action}</span>`;
+      h += `<div style="width:80px;height:10px;background:#fff;border-radius:2px;border:1px solid ${V.sand};overflow:hidden;">`;
+      h += `<div style="width:${w}%;height:100%;background:${V.terra}80;"></div>`;
+      h += `</div>`;
+      h += `<span style="font-size:6.5px;font-family:monospace;font-weight:700;color:${V.forest};width:40px;text-align:right;">₹${a.revenueCr}Cr</span>`;
+      h += `<span style="font-size:6.5px;color:${V.inkFaint};width:28px;">${a.quarter}</span>`;
+      h += '</div>';
+    });
+    h += '</div>';
+  }
+
+  // Risks & Opportunities
+  if ((db.risks||[]).length && (db.opportunities||[]).length) {
+    h += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">`;
+    h += `<div>`;
+    h += sectionLabel('Key Risks');
+    db.risks.forEach(r => {
+      const sev={H:V.red,M:V.amber,L:'#aaa'}[r.severity]||'#aaa';
+      h += `<div style="padding:6px 9px;background:${sev}12;border-left:3px solid ${sev};border-radius:0 4px 4px 0;margin-bottom:5px;">`;
+      h += `<div style="font-size:7.5px;font-weight:600;color:${V.inkMid};margin-bottom:2px;">${r.risk}</div>`;
+      h += `<div style="font-size:6.5px;color:${V.inkFaint};">${r.mitigation}</div>`;
+      h += '</div>';
+    });
+    h += '</div>';
+    h += `<div>`;
+    h += sectionLabel('Key Opportunities');
+    db.opportunities.forEach(o => {
+      h += `<div style="padding:6px 9px;background:${V.green}12;border-left:3px solid ${V.green};border-radius:0 4px 4px 0;margin-bottom:5px;">`;
+      h += `<div style="font-size:7.5px;font-weight:600;color:${V.inkMid};margin-bottom:2px;">${o.opportunity}</div>`;
+      h += `<div style="font-size:7px;font-weight:700;color:${V.green};">₹${o.valueCr}Cr potential</div>`;
+      h += '</div>';
+    });
+    h += '</div></div>';
+  }
+  return h;
+}
+
+// ── DISPATCHER ────────────────────────────────────────────────────────────
+function renderAgentVisuals(agentId, db) {
+  if (!db) return '';
+  let h = '';
+  h += renderKPIs(db.kpis);
+  switch(agentId) {
+    case 'market':      h += renderMarket(db); break;
+    case 'portfolio':   h += renderPortfolio(db); break;
+    case 'brand':       h += renderBrand(db); break;
+    case 'margins':     h += renderMargins(db); break;
+    case 'growth':      h += renderGrowth(db); break;
+    case 'competitive': h += renderCompetitive(db); break;
+    case 'synergy':     h += renderSynergy(db); break;
+    case 'platform':    h += renderPlatform(db); break;
+    case 'intl':        h += renderIntl(db); break;
+    case 'synopsis':    h += renderSynopsis(db); break;
+  }
+  h += renderVerdict(db.verdictRow);
+  return h;
+}
+
 function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed }) {
   const acq = acquirer && acquirer.trim() ? acquirer.trim() : null;
   const now = new Date();
@@ -2804,52 +3529,7 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed
         <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">${ag.title}</div>
         <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:14px;"></div>
 
-        ${(() => {
-          const db = dataBlocks[ag.id];
-          if (!db) return '';
-          let html = '';
-
-          // KPI tiles
-          if (db.kpis && db.kpis.length > 0) {
-            const confColor = c => c==='H'?'#2d7a4f':c==='M'?'#c97d20':'#888';
-            const trendArrow = t => t==='up'?'↑':t==='down'?'↓':t==='watch'?'⚠':'→';
-            html += '<div style="display:grid;grid-template-columns:repeat(' + Math.min(db.kpis.length,4) + ',1fr);gap:8px;margin-bottom:14px;">';
-            db.kpis.slice(0,4).forEach(k => {
-              html += '<div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:4px;padding:10px 12px;border-top:3px solid ' + confColor(k.confidence) + ';">';
-              html += '<div style="font-size:16px;font-family:serif;font-weight:700;color:#1a3a2a;line-height:1;">' + (k.value||'—') + ' <span style="font-size:11px;">' + trendArrow(k.trend) + '</span></div>';
-              html += '<div style="font-size:7.5px;font-weight:600;color:#555;margin-top:4px;">' + (k.label||'') + '</div>';
-              if (k.sub) html += '<div style="font-size:7px;color:#999;margin-top:2px;">' + k.sub + '</div>';
-              html += '</div>';
-            });
-            html += '</div>';
-          }
-
-          // Verdict row
-          if (db.verdictRow) {
-            const v = db.verdictRow;
-            const vColor = {'STRONG':'#2d7a4f','WATCH':'#c97d20','OPTIMISE':'#2563eb','UNDERDELIVERED':'#c0392b','RISK':'#c0392b'}[v.verdict]||'#666';
-            html += '<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#fff;border:1px solid #e0d8cc;border-radius:4px;margin-bottom:14px;">';
-            html += '<span style="background:' + vColor + ';color:#fff;font-size:7px;font-weight:700;padding:3px 8px;border-radius:3px;white-space:nowrap;">' + (v.verdict||'') + '</span>';
-            html += '<span style="font-size:8.5px;color:#3a3a3a;">' + (v.finding||'') + '</span>';
-            html += '</div>';
-          }
-
-          // Top actions
-          if (db.topActions && db.topActions.length > 0) {
-            html += '<div style="margin-bottom:14px;">';
-            html += '<div style="font-family:monospace;font-size:6.5px;font-weight:600;letter-spacing:.15em;color:#999;text-transform:uppercase;margin-bottom:6px;">Priority Actions</div>';
-            db.topActions.slice(0,4).forEach((a,idx) => {
-              const w = a.impact||0;
-              html += '<div style="display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid #f0ead8;">';
-              html += '<span style="font-family:monospace;font-size:7px;color:#b85c38;font-weight:700;width:16px;">' + (idx+1) + '</span>';
-              html += '<span style="font-size:8px;color:#1a3a2a;flex:1;">' + (a.action||'') + '</span>';
-              html += '<div style="width:60px;height:4px;background:#e0d8cc;border-radius:2px;"><div style="width:' + w + '%;height:4px;background:#1a3a2a;border-radius:2px;"></div></div>';
-              html += '</div>';
-            });
-            html += '</div>';
-          }
-          return html;
-        })()}
+        ${renderAgentVisuals(ag.id, dataBlocks[ag.id])}
 
         <div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:5px;padding:14px 16px 12px;">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
