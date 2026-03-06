@@ -2878,29 +2878,26 @@ function renderPortfolio(db) {
     // Axes labels
     svg += `<text x="${PL-5}" y="${PT+ch/2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle" transform="rotate(-90,${PL-5},${PT+ch/2})">Market Growth</text>`;
     svg += `<text x="${PL+cw/2}" y="${H-2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">Yogabar Position</text>`;
-    // Bubbles — label inside if r>14, connector+label outside if small
+    // Bubbles — numbered circles, legend below
+    const nums = ['①','②','③','④','⑤','⑥','⑦','⑧'];
     db.skuMatrix.forEach((s,si) => {
       const x = PL + ((s.yogabarPosition||0)/maxPos)*cw;
       const y = PT+ch - ((s.marketGrowth||0)/maxGr)*ch;
-      const r = Math.max(6, 6+((s.revenueCr||0)/maxRev)*14);
+      const r = Math.max(8, 6+((s.revenueCr||0)/maxRev)*14);
       const c = vColors[s.verdict]||V.forest;
-      const short = s.name.length>9?s.name.slice(0,8)+'…':s.name;
       svg += `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}70" stroke="${c}" stroke-width="1.5"/>`;
-      if (r >= 14) {
-        // Large bubble: label inside
-        svg += `<text x="${x}" y="${y+3}" fill="#fff" font-size="6" text-anchor="middle" font-weight="700">${short}</text>`;
-      } else {
-        // Small bubble: connector line + label offset outward, alternating up/down
-        const offY = (si%2===0) ? y-r-14 : y+r+14;
-        const midY = (si%2===0) ? y-r-2 : y+r+2;
-        svg += `<line x1="${x}" y1="${midY}" x2="${x}" y2="${offY+3}" stroke="${c}" stroke-width=".8" opacity=".6"/>`;
-        svg += `<text x="${x}" y="${offY}" fill="${c}" font-size="6" text-anchor="middle" font-weight="600">${short}</text>`;
-      }
+      svg += `<text x="${x}" y="${y+3}" fill="${V.ink}" font-size="7" text-anchor="middle" font-weight="800">${si+1}</text>`;
     });
     svg += `<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+ch}" stroke="${V.inkFaint}" stroke-width=".8"/>`;
     svg += `<line x1="${PL}" y1="${PT+ch}" x2="${PL+cw}" y2="${PT+ch}" stroke="${V.inkFaint}" stroke-width=".8"/>`;
     svg += '</svg>';
-    h += `<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:8px 12px;margin-bottom:8px;">${svg}</div>`;
+    // HTML legend — 2 columns below chart
+    const legendItems = db.skuMatrix.map((s,si) => {
+      const c = vColors[s.verdict]||V.forest;
+      return `<div style="display:flex;align-items:center;gap:5px;"><span style="width:16px;height:16px;border-radius:50%;background:${c}70;border:1.5px solid ${c};display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff;flex-shrink:0;">${si+1}</span><span style="font-size:7px;color:${V.inkMid};">${s.name}</span><span style="font-size:6.5px;font-family:monospace;font-weight:700;color:${c};margin-left:auto;">${s.verdict||''}</span></div>`;
+    }).join('');
+    h += `<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:8px 12px;margin-bottom:4px;">${svg}</div>`;
+    h += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 16px;padding:6px 12px;background:${V.parchment};border:1px solid ${V.sand};border-radius:4px;margin-bottom:8px;">${legendItems}</div>`;
   }
 
   // Tier margins — horizontal bar table
@@ -3009,7 +3006,7 @@ function renderBrand(db) {
     const ocx=120,ocy=65,R=52;
     const [curX,curY]=toXY(cur,R,ocx,ocy),[recX,recY]=toXY(rec,R,ocx,ocy);
     // Wider canvas: arc left, clean legend right
-    const W2=420, H2=100, arcCX=110, arcCY=78, arcR=60;
+    const W2=420, H2=125, arcCX=110, arcCY=75, arcR=58;
     const toXY2=(v,r)=>{const a=((v/100)*180-90)*Math.PI/180;return[arcCX+r*Math.sin(a),arcCY-r*Math.cos(a)];};
     const [curX2,curY2]=toXY2(cur,arcR),[recX2,recY2]=toXY2(rec,arcR);
     const a1b=((cur/100)*180-90)*Math.PI/180, a2b=((rec/100)*180-90)*Math.PI/180;
@@ -3025,8 +3022,8 @@ function renderBrand(db) {
     svg+=`<circle cx="${curX2}" cy="${curY2}" r="6" fill="${V.forest}" stroke="#fff" stroke-width="2"/>`;
     svg+=`<circle cx="${recX2}" cy="${recY2}" r="6" fill="${V.terra}" stroke="#fff" stroke-width="2"/>`;
     // Axis end labels — below arc ends only
-    svg+=`<text x="${arcCX-arcR}" y="${arcCY+16}" fill="${V.inkFaint}" font-size="6.5" text-anchor="middle" font-family="monospace">HIDE ITC</text>`;
-    svg+=`<text x="${arcCX+arcR}" y="${arcCY+16}" fill="${V.inkFaint}" font-size="6.5" text-anchor="middle" font-family="monospace">LEAD ITC</text>`;
+    svg+=`<text x="${arcCX-arcR}" y="${arcCY+22}" fill="${V.inkFaint}" font-size="6.5" text-anchor="middle" font-family="monospace">HIDE ITC</text>`;
+    svg+=`<text x="${arcCX+arcR}" y="${arcCY+22}" fill="${V.inkFaint}" font-size="6.5" text-anchor="middle" font-family="monospace">LEAD ITC</text>`;
     // Clean legend box — right side, no overlap with arc
     const lx=arcCX+arcR+20;
     svg+=`<rect x="${lx}" y="10" width="140" height="75" fill="${V.parchment}" stroke="${V.sand}" stroke-width="1" rx="3"/>`;
@@ -3320,21 +3317,18 @@ function renderPlatform(db) {
     db.opportunityBubbles.forEach((o,i)=>{
       const x=PL+((o.itcFitScore||0)/maxFit)*cw;
       const y=PT+ch-((o.marketGrowthPct||0)/maxGr)*ch;
-      const r=Math.max(6,6+((o.tamCr||0)/maxTam)*18);
+      const r=Math.max(8,6+((o.tamCr||0)/maxTam)*18);
       const c=colors[i%colors.length];
-      const short=o.name.length>10?o.name.slice(0,9)+'…':o.name;
       svg+=`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}50" stroke="${c}" stroke-width="1.5"/>`;
-      if (r >= 14) {
-        svg+=`<text x="${x}" y="${y+3}" fill="#fff" font-size="6" text-anchor="middle" font-weight="700">${short}</text>`;
-      } else {
-        const offY = (i%2===0) ? y-r-14 : y+r+14;
-        const midY = (i%2===0) ? y-r-2 : y+r+2;
-        svg+=`<line x1="${x}" y1="${midY}" x2="${x}" y2="${offY+3}" stroke="${c}" stroke-width=".8" opacity=".6"/>`;
-        svg+=`<text x="${x}" y="${offY}" fill="${c}" font-size="6" text-anchor="middle" font-weight="600">${short}</text>`;
-      }
+      svg+=`<text x="${x}" y="${y+3}" fill="${V.ink}" font-size="7" text-anchor="middle" font-weight="800">${i+1}</text>`;
     });
     svg+='</svg>';
-    h+=`<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:8px 12px;margin-bottom:8px;">${svg}</div>`;
+    const platLegend = db.opportunityBubbles.map((o,i)=>{
+      const c=colors[i%colors.length];
+      return `<div style="display:flex;align-items:center;gap:5px;"><span style="width:16px;height:16px;border-radius:50%;background:${c}50;border:1.5px solid ${c};display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff;flex-shrink:0;">${i+1}</span><span style="font-size:7px;color:${V.inkMid};">${o.name}</span><span style="font-size:6.5px;color:${V.inkFaint};margin-left:auto;">TAM ₹${o.tamCr}Cr</span></div>`;
+    }).join('');
+    h+=`<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:8px 12px;margin-bottom:4px;">${svg}</div>`;
+    h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 16px;padding:6px 12px;background:${V.parchment};border:1px solid ${V.sand};border-radius:4px;margin-bottom:8px;">${platLegend}</div>`;
   }
 
   if (db.buildPartnerAcquire && db.buildPartnerAcquire.length) {
