@@ -2878,14 +2878,24 @@ function renderPortfolio(db) {
     // Axes labels
     svg += `<text x="${PL-5}" y="${PT+ch/2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle" transform="rotate(-90,${PL-5},${PT+ch/2})">Market Growth</text>`;
     svg += `<text x="${PL+cw/2}" y="${H-2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">Yogabar Position</text>`;
-    // Bubbles
-    db.skuMatrix.forEach(s => {
+    // Bubbles — label inside if r>14, connector+label outside if small
+    db.skuMatrix.forEach((s,si) => {
       const x = PL + ((s.yogabarPosition||0)/maxPos)*cw;
       const y = PT+ch - ((s.marketGrowth||0)/maxGr)*ch;
       const r = Math.max(6, 6+((s.revenueCr||0)/maxRev)*14);
       const c = vColors[s.verdict]||V.forest;
+      const short = s.name.length>9?s.name.slice(0,8)+'…':s.name;
       svg += `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}70" stroke="${c}" stroke-width="1.5"/>`;
-      svg += `<text x="${x}" y="${y+3}" fill="#fff" font-size="6" text-anchor="middle" font-weight="700">${s.name.length>8?s.name.slice(0,7)+'…':s.name}</text>`;
+      if (r >= 14) {
+        // Large bubble: label inside
+        svg += `<text x="${x}" y="${y+3}" fill="#fff" font-size="6" text-anchor="middle" font-weight="700">${short}</text>`;
+      } else {
+        // Small bubble: connector line + label offset outward, alternating up/down
+        const offY = (si%2===0) ? y-r-14 : y+r+14;
+        const midY = (si%2===0) ? y-r-2 : y+r+2;
+        svg += `<line x1="${x}" y1="${midY}" x2="${x}" y2="${offY+3}" stroke="${c}" stroke-width=".8" opacity=".6"/>`;
+        svg += `<text x="${x}" y="${offY}" fill="${c}" font-size="6" text-anchor="middle" font-weight="600">${short}</text>`;
+      }
     });
     svg += `<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+ch}" stroke="${V.inkFaint}" stroke-width=".8"/>`;
     svg += `<line x1="${PL}" y1="${PT+ch}" x2="${PL+cw}" y2="${PT+ch}" stroke="${V.inkFaint}" stroke-width=".8"/>`;
@@ -2998,27 +3008,37 @@ function renderBrand(db) {
     const toXY=(v,r,ocx=120,ocy=65)=>{const a=((v/100)*180-90)*Math.PI/180;return[ocx+r*Math.sin(a),ocy-r*Math.cos(a)];};
     const ocx=120,ocy=65,R=52;
     const [curX,curY]=toXY(cur,R,ocx,ocy),[recX,recY]=toXY(rec,R,ocx,ocy);
-    let svg=`<svg width="${W}" height="${H}">`;
-    svg+=`<path d="M ${ocx-R} ${ocy} A ${R} ${R} 0 0 1 ${ocx+R} ${ocy}" fill="none" stroke="${V.sand}" stroke-width="8" stroke-linecap="round"/>`;
-    const a1=((cur/100)*180-90)*Math.PI/180, a2=((rec/100)*180-90)*Math.PI/180;
-    const [x1,y1]=[ocx+R*Math.sin(a1),ocy-R*Math.cos(a1)],[x2,y2]=[ocx+R*Math.sin(a2),ocy-R*Math.cos(a2)];
-    const large=Math.abs(rec-cur)>50?1:0;
-    svg+=`<path d="M ${x1} ${y1} A ${R} ${R} 0 ${large} ${rec>cur?1:0} ${x2} ${y2}" fill="none" stroke="${V.terra}60" stroke-width="8" stroke-linecap="round"/>`;
-    svg+=`<circle cx="${curX}" cy="${curY}" r="5" fill="${V.forest}" stroke="#fff" stroke-width="1.5"/>`;
-    svg+=`<circle cx="${recX}" cy="${recY}" r="5" fill="${V.terra}" stroke="#fff" stroke-width="1.5"/>`;
-    svg+=`<text x="${ocx-R-4}" y="${ocy+14}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">Hide ITC</text>`;
-    svg+=`<text x="${ocx+R+4}" y="${ocy+14}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">Lead ITC</text>`;
-    svg+=`<text x="${ocx}" y="${ocy-18}" fill="${V.inkSoft}" font-size="7" text-anchor="middle" font-weight="600">Now: ${cur}</text>`;
-    svg+=`<text x="${ocx}" y="${ocy-8}" fill="${V.terra}" font-size="7" text-anchor="middle" font-weight="700">Rec: ${rec}</text>`;
-    // Legend
-    svg+=`<circle cx="${W-60}" cy="20" r="4" fill="${V.forest}" stroke="#fff" stroke-width="1.5"/>`;
-    svg+=`<text x="${W-52}" y="24" fill="${V.inkSoft}" font-size="6.5">Current</text>`;
-    svg+=`<circle cx="${W-60}" cy="38" r="4" fill="${V.terra}" stroke="#fff" stroke-width="1.5"/>`;
-    svg+=`<text x="${W-52}" y="42" fill="${V.inkSoft}" font-size="6.5">Target</text>`;
-    if(d.note)svg+=`<text x="${ocx}" y="${H-2}" fill="${V.inkFaint}" font-size="5.5" text-anchor="middle">${d.note.slice(0,60)}</text>`;
+    // Wider canvas: arc left, clean legend right
+    const W2=420, H2=100, arcCX=110, arcCY=78, arcR=60;
+    const toXY2=(v,r)=>{const a=((v/100)*180-90)*Math.PI/180;return[arcCX+r*Math.sin(a),arcCY-r*Math.cos(a)];};
+    const [curX2,curY2]=toXY2(cur,arcR),[recX2,recY2]=toXY2(rec,arcR);
+    const a1b=((cur/100)*180-90)*Math.PI/180, a2b=((rec/100)*180-90)*Math.PI/180;
+    const [x1b,y1b]=[arcCX+arcR*Math.sin(a1b),arcCY-arcR*Math.cos(a1b)];
+    const [x2b,y2b]=[arcCX+arcR*Math.sin(a2b),arcCY-arcR*Math.cos(a2b)];
+    const largeb=Math.abs(rec-cur)>50?1:0;
+    let svg=`<svg width="${W2}" height="${H2}">`;
+    // Track
+    svg+=`<path d="M ${arcCX-arcR} ${arcCY} A ${arcR} ${arcR} 0 0 1 ${arcCX+arcR} ${arcCY}" fill="none" stroke="${V.sand}" stroke-width="10" stroke-linecap="round"/>`;
+    // Highlighted arc
+    svg+=`<path d="M ${x1b} ${y1b} A ${arcR} ${arcR} 0 ${largeb} ${rec>cur?1:0} ${x2b} ${y2b}" fill="none" stroke="${V.terra}70" stroke-width="10" stroke-linecap="round"/>`;
+    // Dots
+    svg+=`<circle cx="${curX2}" cy="${curY2}" r="6" fill="${V.forest}" stroke="#fff" stroke-width="2"/>`;
+    svg+=`<circle cx="${recX2}" cy="${recY2}" r="6" fill="${V.terra}" stroke="#fff" stroke-width="2"/>`;
+    // Axis end labels — below arc ends only
+    svg+=`<text x="${arcCX-arcR}" y="${arcCY+16}" fill="${V.inkFaint}" font-size="6.5" text-anchor="middle" font-family="monospace">HIDE ITC</text>`;
+    svg+=`<text x="${arcCX+arcR}" y="${arcCY+16}" fill="${V.inkFaint}" font-size="6.5" text-anchor="middle" font-family="monospace">LEAD ITC</text>`;
+    // Clean legend box — right side, no overlap with arc
+    const lx=arcCX+arcR+20;
+    svg+=`<rect x="${lx}" y="10" width="140" height="75" fill="${V.parchment}" stroke="${V.sand}" stroke-width="1" rx="3"/>`;
+    svg+=`<circle cx="${lx+14}" cy="30" r="5" fill="${V.forest}" stroke="#fff" stroke-width="1.5"/>`;
+    svg+=`<text x="${lx+24}" y="34" fill="${V.inkMid}" font-size="7.5" font-weight="600">Current position: ${cur}</text>`;
+    svg+=`<circle cx="${lx+14}" cy="52" r="5" fill="${V.terra}" stroke="#fff" stroke-width="1.5"/>`;
+    svg+=`<text x="${lx+24}" y="56" fill="${V.terra}" font-size="7.5" font-weight="700">Recommended: ${rec}</text>`;
+    svg+=`<text x="${lx+14}" y="74" fill="${V.inkFaint}" font-size="6">0=hide · 50=equal · 100=lead</text>`;
     svg+='</svg>';
     h+=sectionLabel('ITC Association Strategy — Integration Dial');
-    h+=`<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:8px 12px;margin-bottom:8px;display:inline-block;">${svg}</div>`;
+    const noteText = d.note ? `<div style="font-size:6.5px;color:${V.inkFaint};margin-top:4px;">${d.note}</div>` : '';
+    h+=`<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:8px 12px;margin-bottom:8px;">${svg}${noteText}</div>`;
   }
   return h;
 }
@@ -3302,8 +3322,16 @@ function renderPlatform(db) {
       const y=PT+ch-((o.marketGrowthPct||0)/maxGr)*ch;
       const r=Math.max(6,6+((o.tamCr||0)/maxTam)*18);
       const c=colors[i%colors.length];
+      const short=o.name.length>10?o.name.slice(0,9)+'…':o.name;
       svg+=`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}50" stroke="${c}" stroke-width="1.5"/>`;
-      svg+=`<text x="${x}" y="${y+3}" fill="#fff" font-size="6" text-anchor="middle" font-weight="700">${o.name.length>10?o.name.slice(0,9)+'…':o.name}</text>`;
+      if (r >= 14) {
+        svg+=`<text x="${x}" y="${y+3}" fill="#fff" font-size="6" text-anchor="middle" font-weight="700">${short}</text>`;
+      } else {
+        const offY = (i%2===0) ? y-r-14 : y+r+14;
+        const midY = (i%2===0) ? y-r-2 : y+r+2;
+        svg+=`<line x1="${x}" y1="${midY}" x2="${x}" y2="${offY+3}" stroke="${c}" stroke-width=".8" opacity=".6"/>`;
+        svg+=`<text x="${x}" y="${offY}" fill="${c}" font-size="6" text-anchor="middle" font-weight="600">${short}</text>`;
+      }
     });
     svg+='</svg>';
     h+=`<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:8px 12px;margin-bottom:8px;">${svg}</div>`;
@@ -3546,7 +3574,7 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed
 
         ${renderAgentVisuals(ag.id, dataBlocks[ag.id])}
 
-        <div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:5px;padding:14px 16px 12px;">
+        <div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:5px;padding:14px 16px 48px;">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
             <div style="flex:1;height:1px;background:#e0d8cc;"></div>
             <div style="font-family:monospace;font-size:6.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#999;">Analysis & Strategic Implications</div>
