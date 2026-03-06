@@ -2775,7 +2775,7 @@ function renderKPIs(kpis) {
   kpis.slice(0,4).forEach(k => {
     h += `<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:8px 10px;border-left:3px solid ${k.confidence==='H'?V.green:k.confidence==='M'?V.amber:'#ddd'};">`;
     h += `<div style="display:flex;align-items:baseline;gap:2px;flex-wrap:wrap;">`;
-    h += `<span style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:${V.forest};line-height:1.1;">${k.value||'—'}</span>`;
+    h += `<span style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:800;color:${V.forest};line-height:1.1;letter-spacing:-.01em;">${k.value||'—'}</span>`;
     h += trendIcon(k.trend) + confDot(k.confidence);
     h += `</div>`;
     h += `<div style="font-size:6.5px;font-weight:700;color:${V.inkSoft};margin-top:3px;text-transform:uppercase;letter-spacing:.04em;line-height:1.3;">${k.label||''}</div>`;
@@ -3541,7 +3541,6 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed
     <div style="width:794px;min-height:1122px;position:relative;background:#fff;page-break-after:always;overflow:hidden;">
       ${header(`AGENT ${ag.num} · ${ag.title.toUpperCase()}`)}
       <div style="padding:26px 50px 36px;">
-        <div style="font-family:monospace;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#b85c38;margin-bottom:4px;">Agent ${ag.num} of 09 · Wave ${ag.wave}</div>
         <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">${ag.title}</div>
         <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:14px;"></div>
 
@@ -3565,10 +3564,15 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed
     <div style="width:794px;min-height:1122px;position:relative;background:#fff;page-break-after:always;overflow:hidden;">
       ${header('EXECUTIVE SYNOPSIS · OPUS 4 SYNTHESIS')}
       <div style="padding:26px 50px 36px;">
-        <div style="font-family:monospace;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#b85c38;margin-bottom:4px;">Wave 3 · Opus 4 · Full Synthesis</div>
         <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">Executive Synopsis</div>
-        <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:18px;"></div>
-        <div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:5px;padding:14px 16px 12px;">
+        <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:14px;"></div>
+        ${renderAgentVisuals('synopsis', dataBlocks['synopsis'])}
+        <div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:5px;padding:14px 16px 12px;margin-top:10px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="flex:1;height:1px;background:#e0d8cc;"></div>
+            <div style="font-family:monospace;font-size:6.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#999;">Strategic Synthesis</div>
+            <div style="flex:1;height:1px;background:#e0d8cc;"></div>
+          </div>
           <div style="font-size:9px;line-height:1.85;color:#3a3a3a;">
             ${formatProse(results.synopsis)}
           </div>
@@ -3646,16 +3650,18 @@ tbody tr:hover{background:#f0ead8;}
   <div style="position:absolute;inset:0;padding:65px 50px;display:flex;flex-direction:column;">
     <div style="display:flex;align-items:center;justify-content:space-between;">
       <div style="font-family:'Playfair Display',serif;font-size:15px;color:rgba(255,255,255,.9);letter-spacing:.04em;"><em>Advisor</em>Sprint</div>
-      <div style="text-align:right;">
-        <div style="font-family:monospace;font-size:7px;color:rgba(255,255,255,.4);letter-spacing:.1em;">Generated on ${dateStr}</div>
-        <div style="font-family:monospace;font-size:7px;color:rgba(255,255,255,.55);letter-spacing:.1em;margin-top:3px;">${elapsedStr}</div>
-      </div>
+      <div></div>
     </div>
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center;margin-bottom:20px;">
     <div style="margin-bottom:40px;">
       <div style="font-family:monospace;font-size:8.5px;letter-spacing:.25em;text-transform:uppercase;color:#d4733f;margin-bottom:14px;">10-Agent Strategic Intelligence Report</div>
       <div style="font-family:'Playfair Display',serif;font-size:52px;color:#fff;font-weight:900;line-height:.92;letter-spacing:-.02em;margin-bottom:12px;">${company}</div>
       <div style="font-size:13px;color:rgba(255,255,255,.55);font-weight:300;letter-spacing:.05em;">${acq ? `Post-acquisition growth analysis &nbsp;·&nbsp; <strong style="color:rgba(255,255,255,.8);font-weight:500;">${acq}</strong>` : 'Standalone strategic analysis · 2026'}</div>
+      <div style="margin-top:18px;display:flex;gap:20px;align-items:center;">
+        <div style="font-family:monospace;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.08em;">Generated ${dateStr}</div>
+        <div style="width:1px;height:14px;background:rgba(255,255,255,.2);"></div>
+        <div style="font-family:monospace;font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.08em;font-weight:600;">${elapsedStr}</div>
+      </div>
     </div>
     </div>
     <div style="width:100%;">
