@@ -3865,6 +3865,27 @@ OUTPUT STANDARD:
               </div>
             </div>
           )}
+
+          {/* DataBlock Inspector — visible on screen after agents complete */}
+          {Object.keys(dataBlocks).length > 0 && (
+            <div style={{ marginTop: 40 }}>
+              <div style={{ fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", color: P.inkMid, marginBottom: 12, paddingBottom: 8, borderBottom: `2px solid ${P.sand}` }}>
+                DataBlock Inspector — Visual Data Verification
+              </div>
+              <div style={{ display: "grid", gap: 8 }}>
+                {AGENTS.map((agent) => (
+                  dataBlocks[agent.id]
+                    ? <DataBlockInspector key={agent.id} agentId={agent.id} agentLabel={agent.label} db={dataBlocks[agent.id]} />
+                    : statuses[agent.id] === "done"
+                      ? <div key={agent.id} style={{ padding: "8px 14px", background: "#fff3cd", border: "1px solid #ffc107", borderRadius: 6, fontFamily: "monospace", fontSize: 11, color: "#856404" }}>
+                          ⚠ {agent.id} — completed but no DATA_BLOCK parsed
+                        </div>
+                      : null
+                ))}
+              </div>
+            </div>
+          )}
+
         </div>
       </div>
 
