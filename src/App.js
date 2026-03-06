@@ -3283,6 +3283,103 @@ function md(text) {
   return rendered;
 }
 
+// ── DataBlock Inspector — diagnostic component, screen-only ──────────────────
+function DataBlockInspector({ agentId, agentLabel, db }) {
+  const [open, setOpen] = useState(false);
+
+  if (!db) return (
+    <div style={{ marginTop: 24, padding: '10px 14px', background: '#fff3cd', border: '1px solid #ffc107', borderRadius: 6, fontFamily: 'monospace', fontSize: 11 }}>
+      <span style={{ fontWeight: 700, color: '#856404' }}>⚠ DataBlock Inspector:</span>
+      <span style={{ color: '#856404', marginLeft: 8 }}>No DATA_BLOCK parsed for <strong>{agentId}</strong> — agent did not output the schema or parsing failed.</span>
+    </div>
+  );
+
+  const verdict = db.verdictRow?.verdict || '—';
+  const verdictColor = { STRONG: '#28a745', WATCH: '#fd7e14', OPTIMISE: '#007bff', UNDERDELIVERED: '#dc3545', RISK: '#dc3545' }[verdict] || '#6c757d';
+  const agentFields = Object.keys(db).filter(k => !['agent','kpis','verdictRow','topActions'].includes(k));
+  const fieldStatuses = agentFields.map(field => {
+    const val = db[field];
+    const isEmpty = !val || (Array.isArray(val) && val.length === 0) ||
+      (Array.isArray(val) && val.every(item =>
+        typeof item === 'object' && Object.values(item).every(v =>
+          v === 0 || v === null || v === '' ||
+          v === 'H|M|L' || v === 'STRONG|WATCH|OPTIMISE|UNDERDELIVERED|RISK' ||
+          v === 'channel|product|campaign|strategic' || v === 'build|partner|acquire' ||
+          v === 'activated|partial|untapped' || v === 'STAR|CASHCOW|QUESTION|DOG' ||
+          v === 'KILL|KEEP|GROW|BUILD'
+        )
+      ));
+    return { field, isEmpty };
+  });
+  const allFilled = fieldStatuses.every(f => !f.isEmpty);
+
+  return (
+    <div style={{ marginTop: 24, border: '1px solid #dee2e6', borderRadius: 6, overflow: 'hidden', fontFamily: 'monospace' }}>
+      {/* Header — always visible */}
+      <div
+        onClick={() => setOpen(o => !o)}
+        style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 14px', background: allFilled ? '#e8f5e9' : '#fff8e1', cursor: 'pointer', userSelect: 'none' }}
+      >
+        <span style={{ fontSize: 13 }}>{allFilled ? '✅' : '⚠️'}</span>
+        <span style={{ fontWeight: 700, fontSize: 11, color: '#333' }}>DataBlock Inspector — {agentId}</span>
+        <span style={{ marginLeft: 6, fontSize: 11, background: verdictColor, color: '#fff', borderRadius: 10, padding: '1px 8px', fontWeight: 700 }}>{verdict}</span>
+        <span style={{ marginLeft: 6, fontSize: 10, color: '#666' }}>
+          {db.kpis?.length || 0} KPIs · {agentFields.length} visual fields · {allFilled ? 'all populated' : `${fieldStatuses.filter(f => f.isEmpty).length} field(s) empty/unfilled`}
+        </span>
+        <span style={{ marginLeft: 'auto', fontSize: 11, color: '#666' }}>{open ? '▲ hide' : '▼ inspect'}</span>
+      </div>
+
+      {open && (
+        <div style={{ padding: '12px 14px', background: '#f8f9fa', borderTop: '1px solid #dee2e6' }}>
+
+          {/* KPIs */}
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#555', marginBottom: 4, letterSpacing: '.08em', textTransform: 'uppercase' }}>KPIs</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {(db.kpis || []).map((k, i) => (
+                <div key={i} style={{ background: '#fff', border: '1px solid #dee2e6', borderRadius: 4, padding: '4px 8px', fontSize: 10 }}>
+                  <span style={{ color: '#888' }}>{k.label}: </span>
+                  <span style={{ fontWeight: 700, color: '#333' }}>{k.value}</span>
+                  <span style={{ marginLeft: 4, fontSize: 9, color: k.confidence === 'H' ? '#28a745' : k.confidence === 'M' ? '#fd7e14' : '#dc3545' }}>[{k.confidence}]</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Visual field status */}
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#555', marginBottom: 4, letterSpacing: '.08em', textTransform: 'uppercase' }}>Visual Fields</div>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              {fieldStatuses.map(({ field, isEmpty }) => (
+                <span key={field} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 10, background: isEmpty ? '#fff3cd' : '#d4edda', color: isEmpty ? '#856404' : '#155724', border: `1px solid ${isEmpty ? '#ffc107' : '#c3e6cb'}` }}>
+                  {isEmpty ? '⚠' : '✓'} {field}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Verdict */}
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#555', marginBottom: 4, letterSpacing: '.08em', textTransform: 'uppercase' }}>Verdict</div>
+            <div style={{ fontSize: 11, color: '#333' }}>
+              <span style={{ fontWeight: 700, color: verdictColor }}>{verdict}</span>
+              <span style={{ marginLeft: 8 }}>{db.verdictRow?.finding || '—'}</span>
+            </div>
+          </div>
+
+          {/* Raw JSON */}
+          <details style={{ marginTop: 8 }}>
+            <summary style={{ fontSize: 10, color: '#666', cursor: 'pointer', fontWeight: 700 }}>Raw JSON (full DATA_BLOCK)</summary>
+            <pre style={{ fontSize: 10, background: '#fff', border: '1px solid #dee2e6', borderRadius: 4, padding: 10, marginTop: 6, overflow: 'auto', maxHeight: 300, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+              {JSON.stringify(db, null, 2)}
+            </pre>
+          </details>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdvisorSprint() {
   const [company, setCompany] = useState("Yogabar");
   const [acquirer, setAcquirer] = useState("ITC Limited");
@@ -4272,93 +4369,7 @@ OUTPUT STANDARD:
         />
 
         {/* ── DataBlock Inspector ── diagnostic panel, screen-only ── */}
-        {(() => {
-          const db = dataBlocks[agent.id];
-          const [open, setOpen] = React.useState(false);
-          if (!db) return (
-            <div style={{ marginTop: 24, padding: '10px 14px', background: '#fff3cd', border: '1px solid #ffc107', borderRadius: 6, fontFamily: 'monospace', fontSize: 11 }}>
-              <span style={{ fontWeight: 700, color: '#856404' }}>⚠ DataBlock Inspector:</span>
-              <span style={{ color: '#856404', marginLeft: 8 }}>No DATA_BLOCK parsed for <strong>{agent.id}</strong> — agent did not output the schema or parsing failed.</span>
-            </div>
-          );
-          const verdict = db.verdictRow?.verdict || '—';
-          const verdictColor = { STRONG: '#28a745', WATCH: '#fd7e14', OPTIMISE: '#007bff', UNDERDELIVERED: '#dc3545', RISK: '#dc3545' }[verdict] || '#6c757d';
-          const agentFields = Object.keys(db).filter(k => !['agent','kpis','verdictRow','topActions'].includes(k));
-          const fieldStatuses = agentFields.map(field => {
-            const val = db[field];
-            const isEmpty = !val || (Array.isArray(val) && val.length === 0) ||
-              (Array.isArray(val) && val.every(item =>
-                typeof item === 'object' && Object.values(item).every(v => v === 0 || v === null || v === '' || v === 'H|M|L' || v === 'STRONG|WATCH|OPTIMISE|UNDERDELIVERED|RISK')
-              ));
-            return { field, isEmpty };
-          });
-          const allFilled = fieldStatuses.every(f => !f.isEmpty);
-          return (
-            <div style={{ marginTop: 24, border: '1px solid #dee2e6', borderRadius: 6, overflow: 'hidden', fontFamily: 'monospace' }}>
-              {/* Header bar — always visible */}
-              <div
-                onClick={() => setOpen(o => !o)}
-                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 14px', background: allFilled ? '#e8f5e9' : '#fff8e1', cursor: 'pointer', userSelect: 'none' }}
-              >
-                <span style={{ fontSize: 13 }}>{allFilled ? '✅' : '⚠️'}</span>
-                <span style={{ fontWeight: 700, fontSize: 11, color: '#333' }}>DataBlock Inspector — {agent.id}</span>
-                <span style={{ marginLeft: 6, fontSize: 11, background: verdictColor, color: '#fff', borderRadius: 10, padding: '1px 8px', fontWeight: 700 }}>{verdict}</span>
-                <span style={{ marginLeft: 6, fontSize: 10, color: '#666' }}>
-                  {db.kpis?.length || 0} KPIs · {agentFields.length} visual fields · {allFilled ? 'all populated' : `${fieldStatuses.filter(f=>f.isEmpty).length} field(s) empty/unfilled`}
-                </span>
-                <span style={{ marginLeft: 'auto', fontSize: 11, color: '#666' }}>{open ? '▲ hide' : '▼ inspect'}</span>
-              </div>
-
-              {open && (
-                <div style={{ padding: '12px 14px', background: '#f8f9fa', borderTop: '1px solid #dee2e6' }}>
-
-                  {/* KPI summary row */}
-                  <div style={{ marginBottom: 10 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#555', marginBottom: 4, letterSpacing: '.08em', textTransform: 'uppercase' }}>KPIs</div>
-                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                      {(db.kpis || []).map((k, i) => (
-                        <div key={i} style={{ background: '#fff', border: '1px solid #dee2e6', borderRadius: 4, padding: '4px 8px', fontSize: 10 }}>
-                          <span style={{ color: '#888' }}>{k.label}: </span>
-                          <span style={{ fontWeight: 700, color: '#333' }}>{k.value}</span>
-                          <span style={{ marginLeft: 4, fontSize: 9, color: k.confidence === 'H' ? '#28a745' : k.confidence === 'M' ? '#fd7e14' : '#dc3545' }}>[{k.confidence}]</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Visual field status */}
-                  <div style={{ marginBottom: 10 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#555', marginBottom: 4, letterSpacing: '.08em', textTransform: 'uppercase' }}>Visual Fields</div>
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                      {fieldStatuses.map(({ field, isEmpty }) => (
-                        <span key={field} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 10, background: isEmpty ? '#fff3cd' : '#d4edda', color: isEmpty ? '#856404' : '#155724', border: `1px solid ${isEmpty ? '#ffc107' : '#c3e6cb'}` }}>
-                          {isEmpty ? '⚠' : '✓'} {field}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Verdict row */}
-                  <div style={{ marginBottom: 10 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#555', marginBottom: 4, letterSpacing: '.08em', textTransform: 'uppercase' }}>Verdict</div>
-                    <div style={{ fontSize: 11, color: '#333' }}>
-                      <span style={{ fontWeight: 700, color: verdictColor }}>{verdict}</span>
-                      <span style={{ marginLeft: 8 }}>{db.verdictRow?.finding || '—'}</span>
-                    </div>
-                  </div>
-
-                  {/* Raw JSON — collapsible */}
-                  <details style={{ marginTop: 8 }}>
-                    <summary style={{ fontSize: 10, color: '#666', cursor: 'pointer', fontWeight: 700 }}>Raw JSON (full DATA_BLOCK)</summary>
-                    <pre style={{ fontSize: 10, background: '#fff', border: '1px solid #dee2e6', borderRadius: 4, padding: 10, marginTop: 6, overflow: 'auto', maxHeight: 300, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                      {JSON.stringify(db, null, 2)}
-                    </pre>
-                  </details>
-                </div>
-              )}
-            </div>
-          );
-        })()}
+        <DataBlockInspector agentId={agent.id} agentLabel={agent.label} db={dataBlocks[agent.id]} />
 
       </div>
     );
