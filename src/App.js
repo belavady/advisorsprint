@@ -4123,6 +4123,7 @@ OUTPUT STANDARD:
 - Two dense pages per agent — stop when nothing non-obvious remains`);
 
   const [appState, setAppState] = useState("idle");
+  const [testMode, setTestMode] = useState(false); // TEST MODE: runs only Agent 1 (market) to verify visuals cheaply
   const [results, setResults] = useState({});
   const [dataBlocks, setDataBlocks] = useState({});
   const [pdfGenerating, setPdfGenerating] = useState(false);
@@ -4309,7 +4310,9 @@ OUTPUT STANDARD:
       
       // All agents run sequentially — one at a time with gap to respect 30k/min rate limit
       const w1texts = {};
-      const ALL_AGENTS_ORDERED = [...W1, ...W2, 'synopsis'];
+      const ALL_AGENTS_ORDERED = testMode
+        ? ['market']  // TEST MODE: single agent to verify visuals cheaply
+        : [...W1, ...W2, 'synopsis'];
 
       for (const id of ALL_AGENTS_ORDERED) {
         if (signal.aborted) break;
@@ -4492,10 +4495,24 @@ OUTPUT STANDARD:
               <button
                 onClick={runSprint}
                 disabled={!company.trim() || appState === "running"}
-                style={{ padding: "12px 24px", background: appState === "running" ? P.inkFaint : P.forest, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: appState === "running" ? "not-allowed" : "pointer" }}
+                style={{ padding: "12px 24px", background: appState === "running" ? P.inkFaint : testMode ? P.gold : P.forest, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: appState === "running" ? "not-allowed" : "pointer" }}
               >
-                {appState === "running" ? `Running... ${formatTime(elapsed)}` : "Run Analysis"}
+                {appState === "running" ? `Running... ${formatTime(elapsed)}` : testMode ? "▶ Test Run (Agent 1 only)" : "Run Analysis"}
               </button>
+
+              {/* Test mode toggle */}
+              <div
+                onClick={() => appState !== "running" && setTestMode(m => !m)}
+                style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 12px", background: testMode ? `${P.gold}20` : P.parchment, border: `1px solid ${testMode ? P.gold : P.sand}`, borderRadius: 4, cursor: appState === "running" ? "not-allowed" : "pointer", userSelect: "none" }}
+                title="Test mode: runs only Agent 1 (Market) to verify visuals cheaply before a full run"
+              >
+                <div style={{ width: 28, height: 16, background: testMode ? P.gold : P.sand, borderRadius: 8, position: "relative", transition: "background .2s" }}>
+                  <div style={{ position: "absolute", top: 2, left: testMode ? 14 : 2, width: 12, height: 12, background: "#fff", borderRadius: "50%", transition: "left .2s" }} />
+                </div>
+                <span style={{ fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, color: testMode ? P.gold : P.inkFaint }}>
+                  Test mode
+                </span>
+              </div>
 
               {appState === "running" && (
                 <button onClick={cancel} style={{ padding: "12px 24px", background: P.terra, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
