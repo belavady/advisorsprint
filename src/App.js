@@ -2825,7 +2825,7 @@ function renderMarket(db) {
       h += `</div>`;
     });
     h += `</div>`;
-    h += `<div style="font-size:6.5px;color:${V.inkFaint};margin-bottom:8px;">Bubble size = revenue. Growth rate shown right. Source: est. FY25.</div>`;
+    h += `<div style="font-size:6.5px;color:${V.inkFaint};margin-bottom:8px;">Revenue (₹Cr) shown in bars. YoY growth rate shown right. Source: est. FY25.</div>`;
   }
 
   // Channel heatmap — tighter
@@ -3658,9 +3658,9 @@ tbody tr:hover{background:#f0ead8;}
       <div style="font-family:'Playfair Display',serif;font-size:52px;color:#fff;font-weight:900;line-height:.92;letter-spacing:-.02em;margin-bottom:12px;">${company}</div>
       <div style="font-size:13px;color:rgba(255,255,255,.55);font-weight:300;letter-spacing:.05em;">${acq ? `Post-acquisition growth analysis &nbsp;·&nbsp; <strong style="color:rgba(255,255,255,.8);font-weight:500;">${acq}</strong>` : 'Standalone strategic analysis · 2026'}</div>
       <div style="margin-top:18px;display:flex;gap:20px;align-items:center;">
-        <div style="font-family:monospace;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.08em;">Generated ${dateStr}</div>
+        <div style="font-family:monospace;font-size:11px;color:rgba(255,255,255,.65);letter-spacing:.06em;font-weight:600;">Generated ${dateStr}</div>
         <div style="width:1px;height:14px;background:rgba(255,255,255,.2);"></div>
-        <div style="font-family:monospace;font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.08em;font-weight:600;">${elapsedStr}</div>
+        <div style="font-family:monospace;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.08em;">${elapsedStr}</div>
       </div>
     </div>
     </div>
