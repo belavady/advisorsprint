@@ -2756,15 +2756,31 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed
 
   const formatProse = (text) => {
     if (!text) return '<p style="color:#999;font-style:italic;">Agent analysis not available.</p>';
-    return text
+    let t = text
+      // Confidence badges
       .replace(/\[HIGH CONFIDENCE[^\]]*\]/g, '<span style="background:#e8f5ee;color:#2d7a4f;font-size:6.5px;font-family:monospace;padding:1px 4px;border-radius:2px;font-weight:600;">●H</span>')
       .replace(/\[MEDIUM CONFIDENCE[^\]]*\]/g, '<span style="background:#fef3e2;color:#c97d20;font-size:6.5px;font-family:monospace;padding:1px 4px;border-radius:2px;font-weight:600;">●M</span>')
       .replace(/\[LOW CONFIDENCE[^\]]*\]/g, '<span style="background:#f0f0f0;color:#888;font-size:6.5px;font-family:monospace;padding:1px 4px;border-radius:2px;font-weight:600;">●L</span>')
+      // Bold
       .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-      .replace(/^#{1,3}\s+(.+)$/gm, '<strong style="font-size:9px;color:#1a3a2a;display:block;margin:8px 0 4px;">$1</strong>')
-      .replace(/\n\n+/g, '</p><p>')
-      .replace(/^/, '<p>')
-      .replace(/$/, '</p>');
+      // ◉ section markers — turn into bold section headers
+      .replace(/^◉\s*(.+)$/gm, '<strong style="font-size:10px;color:#1a3a2a;display:block;margin:14px 0 6px;border-bottom:1px solid #e0d8cc;padding-bottom:4px;">$1</strong>')
+      // ## headers
+      .replace(/^#{1,3}\s+(.+)$/gm, '<strong style="font-size:10px;color:#1a3a2a;display:block;margin:14px 0 6px;">$1</strong>')
+      // Em-dash list items — render as indented blocks
+      .replace(/^—\s+(.+)$/gm, '<div style="padding:2px 0 2px 14px;border-left:2px solid #e0d8cc;margin:3px 0;color:#555;">$1</div>')
+      // Horizontal rules
+      .replace(/^─+$/gm, '<hr style="border:none;border-top:1px solid #e0d8cc;margin:10px 0;"/>')
+      .replace(/^━+$/gm, '');
+
+    // Split into paragraphs and wrap each
+    const paras = t.split(/\n\n+/).map(p => p.trim()).filter(p => p.length > 0);
+    return paras.map(p => {
+      // Already an HTML block element — don't wrap in <p>
+      if (p.startsWith('<strong') || p.startsWith('<div') || p.startsWith('<hr')) return p;
+      // Single newlines within a paragraph become <br>
+      return '<p style="margin:0 0 8px 0;">' + p.replace(/\n/g, ' ') + '</p>';
+    }).join('\n');
   };
 
   const header = (tag, rec) => `
@@ -2786,7 +2802,55 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed
       <div style="padding:26px 50px 36px;">
         <div style="font-family:monospace;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#b85c38;margin-bottom:4px;">Agent ${ag.num} of 09 · Wave ${ag.wave}</div>
         <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">${ag.title}</div>
-        <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:18px;"></div>
+        <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:14px;"></div>
+
+        ${(() => {
+          const db = dataBlocks[ag.id];
+          if (!db) return '';
+          let html = '';
+
+          // KPI tiles
+          if (db.kpis && db.kpis.length > 0) {
+            const confColor = c => c==='H'?'#2d7a4f':c==='M'?'#c97d20':'#888';
+            const trendArrow = t => t==='up'?'↑':t==='down'?'↓':t==='watch'?'⚠':'→';
+            html += '<div style="display:grid;grid-template-columns:repeat(' + Math.min(db.kpis.length,4) + ',1fr);gap:8px;margin-bottom:14px;">';
+            db.kpis.slice(0,4).forEach(k => {
+              html += '<div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:4px;padding:10px 12px;border-top:3px solid ' + confColor(k.confidence) + ';">';
+              html += '<div style="font-size:16px;font-family:serif;font-weight:700;color:#1a3a2a;line-height:1;">' + (k.value||'—') + ' <span style="font-size:11px;">' + trendArrow(k.trend) + '</span></div>';
+              html += '<div style="font-size:7.5px;font-weight:600;color:#555;margin-top:4px;">' + (k.label||'') + '</div>';
+              if (k.sub) html += '<div style="font-size:7px;color:#999;margin-top:2px;">' + k.sub + '</div>';
+              html += '</div>';
+            });
+            html += '</div>';
+          }
+
+          // Verdict row
+          if (db.verdictRow) {
+            const v = db.verdictRow;
+            const vColor = {'STRONG':'#2d7a4f','WATCH':'#c97d20','OPTIMISE':'#2563eb','UNDERDELIVERED':'#c0392b','RISK':'#c0392b'}[v.verdict]||'#666';
+            html += '<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#fff;border:1px solid #e0d8cc;border-radius:4px;margin-bottom:14px;">';
+            html += '<span style="background:' + vColor + ';color:#fff;font-size:7px;font-weight:700;padding:3px 8px;border-radius:3px;white-space:nowrap;">' + (v.verdict||'') + '</span>';
+            html += '<span style="font-size:8.5px;color:#3a3a3a;">' + (v.finding||'') + '</span>';
+            html += '</div>';
+          }
+
+          // Top actions
+          if (db.topActions && db.topActions.length > 0) {
+            html += '<div style="margin-bottom:14px;">';
+            html += '<div style="font-family:monospace;font-size:6.5px;font-weight:600;letter-spacing:.15em;color:#999;text-transform:uppercase;margin-bottom:6px;">Priority Actions</div>';
+            db.topActions.slice(0,4).forEach((a,idx) => {
+              const w = a.impact||0;
+              html += '<div style="display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid #f0ead8;">';
+              html += '<span style="font-family:monospace;font-size:7px;color:#b85c38;font-weight:700;width:16px;">' + (idx+1) + '</span>';
+              html += '<span style="font-size:8px;color:#1a3a2a;flex:1;">' + (a.action||'') + '</span>';
+              html += '<div style="width:60px;height:4px;background:#e0d8cc;border-radius:2px;"><div style="width:' + w + '%;height:4px;background:#1a3a2a;border-radius:2px;"></div></div>';
+              html += '</div>';
+            });
+            html += '</div>';
+          }
+          return html;
+        })()}
+
         <div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:5px;padding:14px 16px 12px;">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
             <div style="flex:1;height:1px;background:#e0d8cc;"></div>
@@ -3005,9 +3069,11 @@ The test for every sentence: if it could be replaced by pointing at a chart bar,
 
 Prose covers what charts cannot: the reasoning chain behind a trend; the structural force explaining the numbers; the specific action with timing; the caveat the chart flattens; the global analog that reframes the data; why this matters now not in 12 months.
 
-DATA_BLOCK — MANDATORY AT END OF EVERY RESPONSE:
+DATA_BLOCK — WRITE THIS FIRST, BEFORE YOUR PROSE:
 
-After your prose, append this block. It feeds the visual charts. Use exact delimiters. No code fences.
+Begin your response with this block. Write the JSON, then write your prose analysis after it.
+Why first: if your response is long, the block must not get cut off. Writing it first guarantees it is always present.
+Use exact delimiters. No code fences. No backticks around the block.
 
 <<<DATA_BLOCK>>>
 {
@@ -3027,15 +3093,14 @@ After your prose, append this block. It feeds the visual charts. Use exact delim
 }
 <<<END_DATA_BLOCK>>>
 
-Rules:
-— DATA_BLOCK must be the absolute last thing in your response. Nothing after <<<END_DATA_BLOCK>>>.
-— Put a blank line before <<<DATA_BLOCK>>>.
-— Never wrap it in a code fence (no backticks).
-— Every field is required. Use null for unknown values — never omit a field.
-— numbers in DATA_BLOCK must exactly match prose.
-— topActions: impact and speed are integers 0–100. At least 3 actions required.
-— kpis: at least 4 KPIs required.
+DATA_BLOCK rules:
+— Write it first. Your prose analysis comes after <<<END_DATA_BLOCK>>>.
+— Never wrap in a code fence. No backticks.
+— Every field required. Use null for unknown values — never omit a field.
+— topActions: impact and speed are integers 0–100. Minimum 3 actions.
+— kpis: minimum 4 KPIs. Values must match what you will say in prose.
 — JSON must be valid. No trailing commas. No comments inside JSON.
+— Do not repeat or summarise the DATA_BLOCK in your prose.
 
 INTERNAL CONSISTENCY — MANDATORY:
 
@@ -3371,14 +3436,29 @@ OUTPUT STANDARD:
         if (dbMatch) {
           try {
             const raw = (dbMatch[1] || dbMatch[2] || '').trim();
-            // Strip any remaining code fences just in case
             const cleaned = raw.replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'').trim();
             const parsed = JSON.parse(cleaned);
             setDataBlocks(d => ({ ...d, [id]: parsed }));
-            console.log('[DataBlock] parsed OK:', id, Object.keys(parsed));
-          } catch(e) { console.warn('[DataBlock] parse failed:', id, e.message); }
+            console.log('[DataBlock] parsed OK:', id);
+          } catch(e) {
+            console.warn('[DataBlock] parse failed:', id, e.message);
+            // Fallback: create minimal dataBlock so visuals still render
+            setDataBlocks(d => ({ ...d, [id]: {
+              agent: id,
+              kpis: [{ label: 'Analysis', value: '✓', sub: 'See prose below', trend: 'flat', confidence: 'M' }],
+              verdictRow: { dimension: id, verdict: 'WATCH', finding: 'DATA_BLOCK parse failed — see full analysis below', confidence: 'L' },
+              topActions: [{ action: 'Review full analysis below', impact: 50, speed: 50, confidence: 'L' }]
+            }}));
+          }
         } else {
           console.warn('[DataBlock] not found in response:', id);
+          // Fallback: minimal block so page still renders
+          setDataBlocks(d => ({ ...d, [id]: {
+            agent: id,
+            kpis: [{ label: 'Analysis Complete', value: '✓', sub: 'Data block not generated', trend: 'flat', confidence: 'L' }],
+            verdictRow: { dimension: id, verdict: 'WATCH', finding: 'Structured data not available — full analysis in prose below', confidence: 'L' },
+            topActions: [{ action: 'Review full prose analysis below', impact: 50, speed: 50, confidence: 'L' }]
+          }}));
         }
         setResults(r => ({ ...r, [id]: cleanText }));
         setStatuses(s => ({ ...s, [id]: "done" }));
