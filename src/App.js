@@ -2734,10 +2734,13 @@ Competitive analysis shows Whole Truth hitting D2C ceiling (review velocity -38%
 // buildPDFHtml — generates standalone HTML for Puppeteer PDF
 // Called by generatePDF(); all charts rendered via CDN Chart.js
 // ─────────────────────────────────────────────────────────────
-function buildPDFHtml({ company, acquirer, results, dataBlocks, sources }) {
+function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed }) {
   const acq = acquirer && acquirer.trim() ? acquirer.trim() : null;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+  const mins = Math.floor((elapsed||0) / 60);
+  const secs = ((elapsed||0) % 60).toString().padStart(2,'0');
+  const elapsedStr = mins > 0 ? `In ${mins} Minutes ${secs} Seconds` : `In ${secs} Seconds`;
 
   const agentPages = [
     { id: 'market',      num: '01', wave: '1', title: 'Market Position & Category Dynamics' },
@@ -2790,7 +2793,7 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources }) {
             <div style="font-family:monospace;font-size:6.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#999;">Analysis & Strategic Implications</div>
             <div style="flex:1;height:1px;background:#e0d8cc;"></div>
           </div>
-          <div style="columns:2;column-gap:22px;font-size:8px;line-height:1.75;color:#3a3a3a;">
+          <div style="font-size:9px;line-height:1.8;color:#3a3a3a;">
             ${formatProse(results[ag.id])}
           </div>
         </div>
@@ -2806,7 +2809,7 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources }) {
         <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">Executive Synopsis</div>
         <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:18px;"></div>
         <div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:5px;padding:14px 16px 12px;">
-          <div style="font-size:8.5px;line-height:1.8;color:#3a3a3a;">
+          <div style="font-size:9px;line-height:1.85;color:#3a3a3a;">
             ${formatProse(results.synopsis)}
           </div>
         </div>
@@ -2821,7 +2824,7 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources }) {
         <div style="font-family:monospace;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#b85c38;margin-bottom:4px;">Research Transparency</div>
         <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">Sources & Confidence Methodology</div>
         <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:18px;"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div style="display:grid;grid-template-columns:1fr;gap:16px;">
           <div>
             <div style="font-size:9px;font-weight:700;color:#1a3a2a;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;">Confidence Framework</div>
             <div style="padding:12px;background:#faf7f2;border-radius:5px;border:1px solid #e0d8cc;margin-bottom:10px;">
@@ -2872,7 +2875,7 @@ em{font-style:italic;}
       <div style="font-family:'Playfair Display',serif;font-size:15px;color:rgba(255,255,255,.9);letter-spacing:.04em;"><em>Advisor</em>Sprint</div>
       <div style="text-align:right;">
         <div style="font-family:monospace;font-size:7px;color:rgba(255,255,255,.4);letter-spacing:.1em;">Generated on ${dateStr}</div>
-        <div style="font-family:monospace;font-size:7px;color:rgba(255,255,255,.55);letter-spacing:.1em;margin-top:3px;" id="gen-time">In — Minutes</div>
+        <div style="font-family:monospace;font-size:7px;color:rgba(255,255,255,.55);letter-spacing:.1em;margin-top:3px;">${elapsedStr}</div>
       </div>
     </div>
     <div style="margin-bottom:50px;">
@@ -2893,15 +2896,7 @@ em{font-style:italic;}
           <div style="font-size:7px;color:rgba(255,255,255,.4);margin-top:3px;">Opus 4 · Full synthesis</div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:rgba(0,0,0,.2);border-radius:5px;border:1px solid rgba(255,255,255,.07);">
-        <div style="display:flex;align-items:center;gap:16px;">
-          <div><div style="font-family:monospace;font-size:6px;color:rgba(255,255,255,.3);letter-spacing:.1em;margin-bottom:2px;">MODELS</div><div style="font-size:8px;color:rgba(255,255,255,.6);font-weight:500;">Sonnet 4.5 × 8 · Opus 4 × 2</div></div>
-          <div style="width:1px;height:22px;background:rgba(255,255,255,.1);"></div>
-          <div><div style="font-family:monospace;font-size:6px;color:rgba(255,255,255,.3);letter-spacing:.1em;margin-bottom:2px;">WEB SEARCHES</div><div style="font-size:8px;color:rgba(255,255,255,.6);font-weight:500;">Up to 50 live searches</div></div>
-          <div style="width:1px;height:22px;background:rgba(255,255,255,.1);"></div>
-          <div><div style="font-family:monospace;font-size:6px;color:rgba(255,255,255,.3);letter-spacing:.1em;margin-bottom:2px;">PREPARED FOR</div><div style="font-size:8px;color:rgba(255,255,255,.6);font-weight:500;">HARSHA BELAVADY</div></div>
-        </div>
-      </div>
+
     </div>
   </div>
 </div>
@@ -3500,7 +3495,7 @@ OUTPUT STANDARD:
     setPdfGenerating(true);
     gaEvent("pdf_generate_puppeteer", { company });
     try {
-      const html = buildPDFHtml({ company, acquirer, results, dataBlocks, sources });
+      const html = buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed });
       const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
