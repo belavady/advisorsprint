@@ -4302,7 +4302,8 @@ OUTPUT STANDARD:
     });
 
     const initStatus = {};
-    AGENTS.forEach(a => initStatus[a.id] = "queued");
+    const agentsToRun = testMode ? ['market'] : AGENTS.map(a => a.id);
+    AGENTS.forEach(a => initStatus[a.id] = agentsToRun.includes(a.id) ? "queued" : "idle");
     setStatuses(initStatus);
 
     try {
@@ -4333,10 +4334,10 @@ OUTPUT STANDARD:
         }
         w1texts[id] = text;
 
-        // Gap after each agent — keeps tokens under rate limit
+        // Gap after each agent — keeps tokens under rate limit (skip in test mode)
         if (!signal.aborted && id !== 'synopsis') {
           setStatuses(s => ({ ...s, [id]: "done" }));
-          await new Promise(r => setTimeout(r, 60000));
+          if (!testMode) await new Promise(r => setTimeout(r, 60000));
         }
       }
 
