@@ -2244,9 +2244,9 @@ Section 1: The strategic case — why [COMPANY] specifically is the platform, gr
 Section 2: Category sequence and investment case — recommended categories with evidence, revenue projections benchmarked, investment built bottom-up, valuation using India multiples found through search. You MUST present candidate category scoring as an HTML table. Output it EXACTLY like this, replacing values:
 
 <table>
-<thead><tr><th>Category</th><th>Strategic Fit (1-5)</th><th>Market Readiness (1-5)</th><th>ITC Leverage (1-5)</th><th>Revenue Potential (${CUR}${UNIT})</th><th>Priority</th></tr></thead>
+<thead><tr><th>Category</th><th>Strategic Fit (1-5)</th><th>Market Readiness (1-5)</th><th>ITC Leverage (1-5)</th><th>Revenue Potential</th><th>Priority</th></tr></thead>
 <tbody>
-<tr><td>Example Category</td><td>4</td><td>3</td><td>5</td><td>₹80–120 Cr</td><td>1</td></tr>
+<tr><td>Example Category</td><td>4</td><td>3</td><td>5</td><td>80–120</td><td>1</td></tr>
 </tbody>
 </table>
 
@@ -2765,6 +2765,11 @@ const heatCell = (val) => {
   const [fg,bg,label] = map[val]||['#ccc','#fafafa','—'];
   return `<td style="background:${bg};color:${fg};font-size:7px;font-weight:700;text-align:center;padding:5px 6px;border:1px solid ${V.sand};letter-spacing:.04em;">${label}</td>`;
 };
+
+// ── CURRENCY HELPERS — set by renderAgentVisuals before any render call ──
+let CUR = '₹';
+let UNIT = 'Cr';
+const fmtMoney = (val) => val != null ? `${CUR}${val}${UNIT}` : 'N/A';
 
 // ── KPI ROW — 4 tiles, compact ────────────────────────────────────────────
 function renderKPIs(kpis) {
@@ -3478,9 +3483,9 @@ function renderSynopsis(db) {
 
 // ── DISPATCHER ───────────────────────────────────────────────────────────
 function renderAgentVisuals(agentId, db, market="India") {
-  const CUR = (market === "US" || market === "Global") ? "$" : "₹";
-  const UNIT = (market === "US" || market === "Global") ? "M" : "Cr";
-  const fmtMoney = (val) => val != null ? `${CUR}${val}${UNIT}` : "N/A";
+  // Set module-level currency vars so all sub-renderers pick them up
+  CUR = (market === "US" || market === "Global") ? "$" : "₹";
+  UNIT = (market === "US" || market === "Global") ? "M" : "Cr";
   if (!db) return '';
   let h = '';
   h += renderKPIs(db.kpis);
@@ -3500,7 +3505,7 @@ function renderAgentVisuals(agentId, db, market="India") {
   return h;
 }
 
-function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed }) {
+function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed, market="India" }) {
   const acq = acquirer && acquirer.trim() ? acquirer.trim() : null;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -4456,7 +4461,7 @@ OUTPUT STANDARD:
     setPdfGenerating(true);
     gaEvent("pdf_generate_puppeteer", { company });
     try {
-      const html = buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed });
+      const html = buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed, market });
       const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
