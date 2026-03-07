@@ -4387,8 +4387,7 @@ OUTPUT STANDARD:
         if (id === 'synopsis') {
           const trimmed = {};
           Object.entries(w1texts).forEach(([k, v]) => {
-            trimmed[k] = typeof v === 'string' ? v.slice(0, 2500) + (v.length > 2500 ? '
-[...truncated for synthesis...]' : '') : v;
+            trimmed[k] = typeof v === 'string' ? v.slice(0, 2500) + (v.length > 2500 ? ' [...truncated for synthesis...]' : '') : v;
           });
           ctx_for_agent = trimmed;
         } else if (W2.includes(id)) {
