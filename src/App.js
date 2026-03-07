@@ -2244,7 +2244,7 @@ Section 1: The strategic case — why [COMPANY] specifically is the platform, gr
 Section 2: Category sequence and investment case — recommended categories with evidence, revenue projections benchmarked, investment built bottom-up, valuation using India multiples found through search. You MUST present candidate category scoring as an HTML table. Output it EXACTLY like this, replacing values:
 
 <table>
-<thead><tr><th>Category</th><th>Strategic Fit (1-5)</th><th>Market Readiness (1-5)</th><th>ITC Leverage (1-5)</th><th>Revenue Potential (₹Cr)</th><th>Priority</th></tr></thead>
+<thead><tr><th>Category</th><th>Strategic Fit (1-5)</th><th>Market Readiness (1-5)</th><th>ITC Leverage (1-5)</th><th>Revenue Potential (${CUR}${UNIT})</th><th>Priority</th></tr></thead>
 <tbody>
 <tr><td>Example Category</td><td>4</td><td>3</td><td>5</td><td>₹80–120 Cr</td><td>1</td></tr>
 </tbody>
@@ -2817,15 +2817,15 @@ function renderMarket(db) {
       h += `<div style="width:75px;font-size:7.5px;font-weight:${isY?700:500};color:${labelColor};flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.name}</div>`;
       h += `<div style="flex:1;height:18px;background:${V.parchment};border-radius:3px;overflow:hidden;border:1px solid ${V.sand};position:relative;">`;
       h += `<div style="width:${pct}%;height:100%;background:${barColor};border-radius:3px;display:flex;align-items:center;padding:0 6px;">`;
-      if (pct > 15) h += `<span style="font-size:7px;font-weight:700;color:#fff;">₹${c.revenueCr}Cr</span>`;
+      if (pct > 15) h += `<span style="font-size:7px;font-weight:700;color:#fff;">${fmtMoney(c.revenueCr)}</span>`;
       h += `</div>`;
-      if (pct <= 15) h += `<span style="position:absolute;left:${pct+1}%;top:50%;transform:translateY(-50%);font-size:7px;font-weight:700;color:${labelColor};">₹${c.revenueCr}Cr</span>`;
+      if (pct <= 15) h += `<span style="position:absolute;left:${pct+1}%;top:50%;transform:translateY(-50%);font-size:7px;font-weight:700;color:${labelColor};">${fmtMoney(c.revenueCr)}</span>`;
       h += `</div>`;
       h += `<div style="width:52px;flex-shrink:0;text-align:right;font-size:7px;font-weight:700;color:${(c.growthRate||0)>50?V.terra:V.green};">+${c.growthRate||0}% YoY</div>`;
       h += `</div>`;
     });
     h += `</div>`;
-    h += `<div style="font-size:6.5px;color:${V.inkFaint};margin-bottom:8px;">Revenue (₹Cr) shown in bars. YoY growth rate shown right. Source: est. FY25.</div>`;
+    h += `<div style="font-size:6.5px;color:${V.inkFaint};margin-bottom:8px;">Revenue (${CUR}${UNIT}) shown in bars. YoY growth rate shown right. Source: est. FY25.</div>`;
   }
 
   // Channel heatmap — tighter
@@ -2834,7 +2834,7 @@ function renderMarket(db) {
     h += `<table style="width:100%;border-collapse:collapse;font-size:7.5px;margin-bottom:6px;">`;
     h += `<thead><tr>
       <th style="background:${V.forest};color:#fff;padding:5px 10px;text-align:left;font-size:6.5px;letter-spacing:.06em;border:1px solid ${V.forest};">Channel</th>
-      <th style="background:${V.forest};color:#fff;padding:5px 8px;text-align:center;font-size:6.5px;letter-spacing:.06em;border:1px solid ${V.forest};">Yogabar Presence</th>
+      <th style="background:${V.forest};color:#fff;padding:5px 8px;text-align:center;font-size:6.5px;letter-spacing:.06em;border:1px solid ${V.forest};">Co. Presence</th>
       <th style="background:${V.forest};color:#fff;padding:5px 8px;text-align:center;font-size:6.5px;letter-spacing:.06em;border:1px solid ${V.forest};">Category Growth</th>
       <th style="background:${V.forest};color:#fff;padding:5px 8px;text-align:center;font-size:6.5px;letter-spacing:.06em;border:1px solid ${V.forest};">Competitive Density</th>
     </tr></thead><tbody>`;
@@ -3112,7 +3112,7 @@ function renderMargins(db) {
       h+=`<div style="position:absolute;left:0;top:0;height:100%;width:${w}%;background:${V.green}50;border-right:2px solid ${V.green};"></div>`;
       h+=`<span style="position:absolute;left:5px;top:50%;transform:translateY(-50%);font-size:6px;font-weight:700;color:${V.green};">+${l.impactPoints}pp</span>`;
       h+=`</div>`;
-      h+=`<span style="font-size:6px;color:${V.inkFaint};white-space:nowrap;width:55px;text-align:right;">₹${l.investmentCr}Cr · ${l.paybackMonths}mo</span>`;
+      h+=`<span style="font-size:6px;color:${V.inkFaint};white-space:nowrap;width:55px;text-align:right;">${fmtMoney(l.investmentCr)} · ${l.paybackMonths}mo</span>`;
       h+=`</div>`;
     });
     h+=`</div>`;
@@ -3141,7 +3141,7 @@ function renderGrowth(db) {
         const bh=scaleH(val);
         const y=PT+(H-PT-PB)-bh;
         svg+=`<rect x="${x}" y="${y}" width="${bw}" height="${bh}" fill="${bar.type==='end'?V.forest:`${V.forest}55`}" rx="2"/>`;
-        svg+=`<text x="${x+bw/2}" y="${y-3}" fill="${V.forest}" font-size="7" text-anchor="middle" font-weight="700">₹${val}</text>`;
+        svg+=`<text x="${x+bw/2}" y="${y-3}" fill="${V.forest}" font-size="7" text-anchor="middle" font-weight="700">${CUR}${val}</text>`;
         cursor=val;
       } else if(bar.type==='up'){
         const bh=scaleH(val);
@@ -3268,7 +3268,7 @@ function renderSynergy(db) {
       h+=`<div style="display:flex;align-items:center;gap:7px;padding:5px 8px;background:${sb};border:1px solid ${sc}30;border-radius:3px;border-left:3px solid ${sc};">`;
       h+=`<div style="flex:1;font-size:7px;font-weight:600;color:${V.inkMid};">${s.asset.length>30?s.asset.slice(0,29)+'…':s.asset}</div>`;
       h+=`<div style="width:70px;flex-shrink:0;">`;
-      h+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:1px;"><div style="width:${vw}%;max-width:70px;height:5px;background:${sc};border-radius:2px;min-width:2px;"></div><span style="font-size:6px;color:${sc};font-weight:700;">₹${s.valueCr}Cr</span></div>`;
+      h+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:1px;"><div style="width:${vw}%;max-width:70px;height:5px;background:${sc};border-radius:2px;min-width:2px;"></div><span style="font-size:6px;color:${sc};font-weight:700;">${fmtMoney(s.valueCr)}</span></div>`;
       h+=`<div style="display:flex;align-items:center;gap:3px;"><div style="width:${ew}%;max-width:70px;height:3px;background:${sc}60;border-radius:2px;min-width:2px;"></div><span style="font-size:5.5px;color:${V.inkFaint};">ease:${s.ease}</span></div>`;
       h+=`</div>`;
       h+=`<span style="font-family:monospace;font-size:6px;font-weight:700;color:${sc};width:52px;text-align:right;flex-shrink:0;">${(s.status||'').toUpperCase()}</span>`;
@@ -3289,7 +3289,7 @@ function renderSynergy(db) {
       h+=`<div style="width:70px;height:12px;background:${V.parchment};border-radius:2px;border:1px solid ${V.sand};flex-shrink:0;overflow:hidden;">`;
       h+=`<div style="width:${w}%;height:100%;background:${V.forest}60;border-right:2px solid ${V.forest};"></div>`;
       h+=`</div>`;
-      h+=`<span style="font-size:7px;font-weight:700;color:${V.forest};width:34px;text-align:right;">₹${r.valueCr}Cr</span>`;
+      h+=`<span style="font-size:7px;font-weight:700;color:${V.forest};width:34px;text-align:right;">${fmtMoney(r.valueCr)}</span>`;
       h+=`</div>`;
     });
     h+=`</div>`;
@@ -3325,7 +3325,7 @@ function renderPlatform(db) {
     svg+='</svg>';
     const platLegend = db.opportunityBubbles.map((o,i)=>{
       const c=colors[i%colors.length];
-      return `<div style="display:flex;align-items:center;gap:5px;"><span style="width:16px;height:16px;border-radius:50%;background:${c}50;border:1.5px solid ${c};display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff;flex-shrink:0;">${i+1}</span><span style="font-size:7px;color:${V.inkMid};">${o.name}</span><span style="font-size:6.5px;color:${V.inkFaint};margin-left:auto;">TAM ₹${o.tamCr}Cr</span></div>`;
+      return `<div style="display:flex;align-items:center;gap:5px;"><span style="width:16px;height:16px;border-radius:50%;background:${c}50;border:1.5px solid ${c};display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff;flex-shrink:0;">${i+1}</span><span style="font-size:7px;color:${V.inkMid};">${o.name}</span><span style="font-size:6.5px;color:${V.inkFaint};margin-left:auto;">TAM ${fmtMoney(o.tamCr)}</span></div>`;
     }).join('');
     h+=`<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:8px 12px;margin-bottom:4px;">${svg}</div>`;
     h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 16px;padding:6px 12px;background:${V.parchment};border:1px solid ${V.sand};border-radius:4px;margin-bottom:8px;">${platLegend}</div>`;
@@ -3403,8 +3403,8 @@ function renderIntl(db) {
         <td style="padding:5px 8px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-family:monospace;font-weight:700;color:${V.terra};">${row.rank}</td>
         <td style="padding:5px 8px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-weight:600;color:${V.forest};">${row.market}</td>
         <td style="padding:5px 8px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};color:${V.inkMid};">${row.mode}</td>
-        <td style="padding:5px 8px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-weight:600;">₹${row.investmentCr}Cr</td>
-        <td style="padding:5px 8px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-weight:600;color:${V.forest};">₹${row.year3RevenueCr}Cr</td>
+        <td style="padding:5px 8px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-weight:600;">${fmtMoney(row.investmentCr)}</td>
+        <td style="padding:5px 8px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-weight:600;color:${V.forest};">${fmtMoney(row.year3RevenueCr)}</td>
         <td style="padding:5px 8px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};"><span style="background:${rc}20;color:${rc};font-family:monospace;font-size:7px;font-weight:700;padding:2px 5px;border-radius:3px;">${row.readiness}</span></td>
       </tr>`;
     });
@@ -3447,7 +3447,7 @@ function renderSynopsis(db) {
       h+=`<div style="width:70px;height:9px;background:${V.parchment};border-radius:2px;border:1px solid ${V.sand};overflow:hidden;">`;
       h+=`<div style="width:${w}%;height:100%;background:${V.terra}80;"></div>`;
       h+=`</div>`;
-      h+=`<span style="font-size:6.5px;font-family:monospace;font-weight:700;color:${V.forest};width:38px;text-align:right;">₹${a.revenueCr}Cr</span>`;
+      h+=`<span style="font-size:6.5px;font-family:monospace;font-weight:700;color:${V.forest};width:38px;text-align:right;">${fmtMoney(a.revenueCr)}</span>`;
       h+=`<span style="font-size:6px;color:${V.inkFaint};width:26px;">${a.quarter}</span>`;
       h+=`</div>`;
     });
@@ -3468,7 +3468,7 @@ function renderSynopsis(db) {
     db.opportunities.forEach(o=>{
       h+=`<div style="padding:5px 8px;background:${V.green}10;border-left:3px solid ${V.green};margin-bottom:4px;border-radius:0 3px 3px 0;">`;
       h+=`<div style="font-size:7px;font-weight:600;color:${V.inkMid};margin-bottom:1px;">${o.opportunity}</div>`;
-      h+=`<div style="font-size:7px;font-weight:700;color:${V.green};">₹${o.valueCr}Cr potential</div>`;
+      h+=`<div style="font-size:7px;font-weight:700;color:${V.green};">${fmtMoney(o.valueCr)} potential</div>`;
       h+=`</div>`;
     });
     h+=`</div></div>`;
@@ -3477,7 +3477,10 @@ function renderSynopsis(db) {
 }
 
 // ── DISPATCHER ───────────────────────────────────────────────────────────
-function renderAgentVisuals(agentId, db) {
+function renderAgentVisuals(agentId, db, market="India") {
+  const CUR = (market === "US" || market === "Global") ? "$" : "₹";
+  const UNIT = (market === "US" || market === "Global") ? "M" : "Cr";
+  const fmtMoney = (val) => val != null ? `${CUR}${val}${UNIT}` : "N/A";
   if (!db) return '';
   let h = '';
   h += renderKPIs(db.kpis);
@@ -3566,7 +3569,7 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed
         <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">${ag.title}</div>
         <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:14px;"></div>
 
-        ${renderAgentVisuals(ag.id, dataBlocks[ag.id])}
+        ${renderAgentVisuals(ag.id, dataBlocks[ag.id], market)}
 
         <div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:5px;padding:14px 16px 48px;">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -3588,7 +3591,7 @@ function buildPDFHtml({ company, acquirer, results, dataBlocks, sources, elapsed
       <div style="padding:26px 50px 36px;">
         <div style="font-family:'Playfair Display',serif;font-size:18px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">Executive Synopsis</div>
         <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:14px;"></div>
-        ${renderAgentVisuals('synopsis', dataBlocks['synopsis'])}
+        ${renderAgentVisuals('synopsis', dataBlocks['synopsis'], market)}
         <div style="background:#faf7f2;border:1px solid #e0d8cc;border-radius:5px;padding:14px 16px 12px;margin-top:10px;">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
             <div style="flex:1;height:1px;background:#e0d8cc;"></div>
@@ -3712,7 +3715,7 @@ ${agentPageHtml}
 </html>`;
 }
 
-function makePrompt(id, company, acquirer, ctx, synthCtx) {
+function makePrompt(id, company, acquirer, ctx, synthCtx, market="India") {
   let prompt = PROMPTS[id] || "";
   prompt = prompt.replace(/\[COMPANY\]/g, company);
 
@@ -3734,10 +3737,20 @@ COMPANY CONTEXT:
 This is a standalone company analysis — there is no acquirer. Focus purely on ${company}'s own growth levers, competitive position, and strategic options. Do not reference any parent company or acquirer.
 `;
 
+  const isYogabar = company.toLowerCase().includes('yogabar') || company.toLowerCase().includes('yoga bar');
+  const currencyLabel = market === 'US' ? '$M (USD millions)' : market === 'Global' ? '$M (USD millions)' : '₹ Cr (Indian Rupees Crore)';
+  const currencySymbol = market === 'US' || market === 'Global' ? '$' : '₹';
+  const currencyUnit = market === 'US' || market === 'Global' ? 'M' : 'Cr';
+  const channelTerms = market === 'US'
+    ? 'E-commerce / Mass Retail (Walmart, Target, Costco) / Club / Convenience / Foodservice / DTC / Quick Commerce (Instacart, DoorDash)'
+    : market === 'Global'
+    ? 'E-commerce / Modern Trade / General Trade / DTC / Foodservice / Export'
+    : 'Modern Trade / General Trade / Quick Commerce (Blinkit, Zepto, Swiggy Instamart) / D2C / E-commerce / Institutional';
+
   const NARRATIVE_RULES = acquirerBlock + `VERIFIED FINANCIAL DATA:
 If specific revenue or financial figures are provided in the USER CONTEXT below, treat them as ground truth — do not contradict or estimate differently. If no figures are provided, find them through web search.
 
-For Indian companies and markets, use ₹ Cr. For international brands, keep figures in their original currency ($ USD) — do not convert. Never convert the same figure twice.
+MARKET & CURRENCY: This analysis is for the ${market} market. Use ${currencyLabel} for ALL revenue figures throughout. Never mix currencies. Channel terminology for this market: ${channelTerms}. Do not reference channels, competitors, or metrics from other markets unless explicitly comparing.
 
 Do NOT mention any individual person's name (e.g. founders, executives) in your analysis. This is a company analysis, not a people analysis.
 
@@ -3843,7 +3856,7 @@ DATA_BLOCK rules:
 
 INTERNAL CONSISTENCY — MANDATORY:
 
-If you report individual brand growth rates of 40–80%+ AND a category CAGR of 24%, you must explain the discrepancy. The resolution: incumbents (Kellogg's, Britannia) hold 58% of market value and grow 8–15%, dragging the weighted average. The D2C insurgent sub-segment grows 45–55%. Yogabar at 83% leads the insurgent cohort. Never report both numbers without this framing.
+If you report individual brand growth rates that differ significantly from a category CAGR, you must explain the discrepancy. Show what segment or cohort the company competes in vs the broader category. Never report two conflicting growth numbers without explaining which segment each belongs to.
 
 `;
 
@@ -4167,7 +4180,8 @@ OUTPUT STANDARD:
 - Two dense pages per agent — stop when nothing non-obvious remains`);
 
   const [appState, setAppState] = useState("idle");
-  const [testMode, setTestMode] = useState(false); // TEST MODE: runs only Agent 1 (market) to verify visuals cheaply
+  const [testMode, setTestMode] = useState(false);
+  const [market, setMarket] = useState("India"); // India | US | Global // TEST MODE: runs only Agent 1 (market) to verify visuals cheaply
   const [results, setResults] = useState({});
   const [dataBlocks, setDataBlocks] = useState({});
   const [pdfGenerating, setPdfGenerating] = useState(false);
@@ -4216,7 +4230,7 @@ OUTPUT STANDARD:
         'Connection': 'keep-alive',
       },
       signal,
-      body: JSON.stringify({ prompt, agentId }),
+      body: JSON.stringify({ prompt, agentId, market }),
     });
 
     let res;
@@ -4393,7 +4407,7 @@ OUTPUT STANDARD:
         } else if (W2.includes(id)) {
           ctx_for_agent = w1texts;
         }
-        const prompt = makePrompt(id, co, acq, ctx, ctx_for_agent);
+        const prompt = makePrompt(id, co, acq, ctx, ctx_for_agent, market);
         let text = "";
         try {
           text = await runAgent(id, prompt, signal, []);
@@ -4547,6 +4561,32 @@ OUTPUT STANDARD:
                   placeholder="e.g. ITC Limited — leave blank for standalone"
                   style={{ width: "100%", padding: "10px 14px", border: `2px solid ${P.sand}`, borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 15, background: P.white }}
                 />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: "block", fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, letterSpacing: ".05em", textTransform: "uppercase", color: P.inkMid, marginBottom: 8 }}>
+                Market
+              </label>
+              <div style={{ display: "flex", gap: 8 }}>
+                {["India", "US", "Global"].map(m => (
+                  <button
+                    key={m}
+                    onClick={() => appState !== "running" && setMarket(m)}
+                    style={{
+                      padding: "9px 20px",
+                      border: `2px solid ${market === m ? P.forest : P.sand}`,
+                      borderRadius: 4,
+                      background: market === m ? P.forest : P.white,
+                      color: market === m ? P.white : P.inkMid,
+                      fontFamily: "'Instrument Sans'",
+                      fontSize: 13,
+                      fontWeight: market === m ? 700 : 400,
+                      cursor: appState === "running" ? "not-allowed" : "pointer",
+                      letterSpacing: ".04em",
+                    }}
+                  >{m}</button>
+                ))}
               </div>
             </div>
 
