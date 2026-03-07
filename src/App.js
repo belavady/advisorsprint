@@ -4206,15 +4206,31 @@ OUTPUT STANDARD:
       return MOCK[mockId] || MOCK.market;
     }
 
-    // Real mode — retry once on rate limit only (rate limits are transient, not usage-multiplying)
+    // Real mode — retry once on network error or rate limit
+    // Synopsis uses Opus and takes 3-4 min — QUIC protocol errors are common on long streams
     const attemptFetch = () => fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-tool-name': 'advisor' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-tool-name': 'advisor',
+        'Connection': 'keep-alive',
+      },
       signal,
       body: JSON.stringify({ prompt, agentId }),
     });
 
-    let res = await attemptFetch();
+    let res;
+    try {
+      res = await attemptFetch();
+    } catch (networkErr) {
+      // Network error (ERR_QUIC_PROTOCOL_ERROR etc) — wait 8s and retry once
+      if (signal.aborted) throw networkErr;
+      console.warn(`[${agentId}] Network error, retrying in 8s:`, networkErr.message);
+      setStatuses(s => ({ ...s, [agentId]: 'retrying…' }));
+      await new Promise(r => setTimeout(r, 8000));
+      if (signal.aborted) throw networkErr;
+      res = await attemptFetch();
+    }
     if (!res.ok) {
       const err = await res.text().catch(() => '');
       throw new Error(err || `Server error: ${res.status}`);
@@ -4365,7 +4381,19 @@ OUTPUT STANDARD:
         setStatuses(s => ({ ...s, [id]: "running" }));
 
         // synopsis gets all prior outputs; W2 agents get W1 outputs; W1 gets nothing
-        const ctx_for_agent = (W2.includes(id) || id === 'synopsis') ? w1texts : {};
+        // For synopsis: trim each agent output to 2500 chars to reduce prompt size
+        // and avoid QUIC timeout on very long Opus requests
+        let ctx_for_agent = {};
+        if (id === 'synopsis') {
+          const trimmed = {};
+          Object.entries(w1texts).forEach(([k, v]) => {
+            trimmed[k] = typeof v === 'string' ? v.slice(0, 2500) + (v.length > 2500 ? '
+[...truncated for synthesis...]' : '') : v;
+          });
+          ctx_for_agent = trimmed;
+        } else if (W2.includes(id)) {
+          ctx_for_agent = w1texts;
+        }
         const prompt = makePrompt(id, co, acq, ctx, ctx_for_agent);
         let text = "";
         try {
