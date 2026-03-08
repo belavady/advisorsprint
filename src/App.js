@@ -114,28 +114,14 @@ const W2 = AGENTS.filter(a => a.wave === 2).map(a => a.id);
 
 const PROMPTS = {
   market: `# AGENT 1: MARKET POSITION & CATEGORY DYNAMICS
-## POST-ACQUISITION GROWTH STRATEGY (3 YEARS IN)
 
-**Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
-
-**Critical Context:** [ACQUIRER] acquired [COMPANY] in 2023. We're now in 2026—**3 years post-acquisition**.
+[ACQUISITION_PREAMBLE]
 
 ---
 
-## WHAT [ACQUIRER] HAS ALREADY DONE (2023-2026)
+## WHAT HAS HAPPENED SINCE FOUNDING / ACQUISITION
 
-**Distribution Support — PARTIAL LEVERAGE:**
-- ✅ Expanded from 150 MT stores → 800-1,200 stores (ITC relationships helped BUT field team focused on [ACQUIRER]'s premium portfolio, not full muscle for Yogabar)
-- ⚠️ General Trade: Limited penetration (ITC field team bandwidth constraint)
-- ✅ Marketing spend 2x higher with [ACQUIRER] backing (but not 3x—separate unit with own budget)
-- ❌ Manufacturing: NOT moved to original co-packer facilities (no capacity constraints, Yogabar continues with co-packers)
-- ⚠️ Procurement: Minimal leverage (Yogabar operates separately, limited [ACQUIRER] vendor access)
-
-**The Challenge NOW:**
-- **Current performance unknown** - Search for 2024-2025 revenue/growth data
-- **Post-ITC trajectory assessment needed** - Has momentum continued, accelerated, or slowed?
-- **Next growth drivers** - What's needed BEYOND the selective MT support already provided?
-- **Field team bandwidth** - [ACQUIRER]'s field team focused on own premium portfolio, so Yogabar needs strategies that don't depend heavily on [ACQUIRER] field resources
+Note [COMPANY]'s current channel footprint, growth trajectory, and what institutional support (if any) has been provided. Search for actual data — do not invent specifics. Focus on what has been built and what remains to be unlocked.
 
 ---
 
@@ -358,11 +344,8 @@ Before finishing, verify:
 `,
 
   portfolio: `# AGENT 2: PORTFOLIO STRATEGY & SKU RATIONALIZATION
-## POST-ACQUISITION OPTIMIZATION (3 YEARS IN)
 
-**Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
-
-**Critical Context:** [ACQUIRER] acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
+[ACQUISITION_PREAMBLE]
 
 ---
 
@@ -630,11 +613,8 @@ Your output must answer:
 `,
 
   brand: `# AGENT 3: BRAND POSITIONING & STORYTELLING
-## POST-ACQUISITION BRAND EVOLUTION (3 YEARS IN)
 
-**Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
-
-**Critical Context:** [ACQUIRER] acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
+[ACQUISITION_PREAMBLE]
 
 ---
 
@@ -952,11 +932,8 @@ Your output must answer:
 `,
 
   margins: `# AGENT 4: MARGIN IMPROVEMENT & UNIT ECONOMICS
-## POST-ACQUISITION OPTIMIZATION (3 YEARS IN)
 
-**Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
-
-**Critical Context:** [ACQUIRER] acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
+[ACQUISITION_PREAMBLE]
 
 ---
 
@@ -1294,9 +1271,11 @@ Your output must answer:
 
   growth: `# AGENT 5: GROWTH STRATEGY & CHANNEL ORCHESTRATION
 
+[ACQUISITION_PREAMBLE]
+
 You are a senior channel strategist. Your mandate is STRICTLY channel development and new revenue streams — not brand, not portfolio, not margins (those belong to other agents).
 
-[ACQUIRER] acquired [COMPANY] in 2022-23. Three years in, the distribution buildout is largely complete. Your job is to identify what comes NEXT — the growth levers that do not depend on adding more retail touchpoints.
+Your job is to identify the highest-value growth levers for [COMPANY] — channels, customer segments, and revenue streams that are not yet fully captured. If [ACQUIRER] has provided distribution support, the foundational buildout is likely underway — identify what comes NEXT beyond basic channel expansion.
 
 **Do not repeat:** market sizing (Agent 1), portfolio mix (Agent 2), brand positioning (Agent 3), margin structure (Agent 4). Reference them only when directly relevant, in one sentence.
 
@@ -1325,11 +1304,8 @@ Close with a brief one-paragraph summary of the combined revenue impact across a
 **Length:** 700–900 words total. Complete all four sections. Do not truncate.`,
 
   competitive: `# AGENT 6: COMPETITIVE BATTLE PLAN
-## POST-ACQUISITION COMPETITIVE RESET (3 YEARS IN)
 
-**Model:** Claude Sonnet 4.6 (\`claude-sonnet-4-6-20250514\`)
-
-**Critical Context:** [ACQUIRER] acquired [COMPANY] in 2023. We're in 2026—**3 years post-acquisition**.
+[ACQUISITION_PREAMBLE]
 
 ---
 
@@ -1647,679 +1623,198 @@ Your output must answer:
 **Remember:** Competitive landscape changed DRAMATICALLY 2023-2026. [ACQUIRER] gave [COMPANY] distribution dominance BUT competitors evolved (functional, QC, international). Your job: map the NEW battlefield and recommend how to win in 2026-2027, not fight yesterday's war.
 `,
 
-  synergy: `# AGENT 7: SYNERGY PLAYBOOK
-## POST-ACQUISITION REALITY CHECK (3 YEARS IN)
+  synergy: `# AGENT 7: STRATEGIC LEVERAGE & GROWTH ENABLERS
 
-**Model:** Claude Opus 4.6 (\`claude-opus-4-6-20250514\`)
-
-**Critical Context:** [ACQUIRER] acquired [COMPANY] in 2023. We're in 2026—**3 YEARS post-acquisition**.
+[ACQUISITION_PREAMBLE]
 
 ---
 
-## SYNERGIES ALREADY CAPTURED (2023-2026)
+## STEP 1: SEARCH
 
-**What [ACQUIRER] Promised (2023):**
-- Distribution leverage (4M outlets)
-- Manufacturing optimization (original co-packer facilities)
-- Procurement scale (vendor leverage)
-- Brand-building muscle (marketing spend)
-- Institutional credibility (ITC halo)
+Always search before writing. Adapt queries to context:
 
-**What Actually Happened (2023-2026):**
-- ✅ Distribution: 150 → 800-1,200 MT stores (16x growth) ✅ DELIVERED
-- ✅ Manufacturing: Moved to original co-packer facilities, COGS optimization limited (no manufacturing synergy) ✅ DELIVERED
-- ✅ Procurement: Vendor leverage captured, 5-8% savings ✅ DELIVERED
-- ⚠️ Brand: Marketing spend up 3x BUT growth slowing (diminishing returns)
-- ⚠️ GT reach: Added 5,000 stores BUT velocity low (distribution ≠ sales)
+IF ACQUIRED:
+- "[ACQUIRER] [COMPANY] integration synergies 2024 2025"
+- "[ACQUIRER] distribution reach India 2025"
+- "[COMPANY] revenue growth post acquisition [ACQUIRER]"
+- "[ACQUIRER] [category] portfolio strategy"
 
-**Synergy Value Captured (Est.):**
-- Cost synergies: ₹12-15 Cr annual (COGS + procurement)
-- Revenue synergies: ₹80 Cr (FY24-25 incremental from distribution)
-- **Total: ₹92-95 Cr value creation** in 3 years
-
-**BUT:**
-- Growth trajectory (to be discovered from dataion: 60% YoY → [search for actual data] (momentum lost)
-- Margin plateau: 41% gross (target was 45%+)
-- Integration friction: [COMPANY] team attrition (startup→corporate culture shock)
+IF STANDALONE:
+- "[COMPANY] strategic partnerships 2024 2025"
+- "[COMPANY] investors distribution partners"
+- "[category] India strategic alliances 2025"
+- "[COMPANY] channel expansion plan"
 
 ---
 
-## YOUR MISSION
+## STEP 2: ANALYSE
 
-Based on Agents 1-6 analysis, synthesize:
-1. **What synergies are NOW exhausted?** (Don't double-count)
-2. **What NEXT-wave synergies exist?** (Beyond distribution/manufacturing)
-3. **Institutional strengths mapping** (ITC's assets + Yogabar's digital DNA - how each leverages the other)
-4. **What integration issues are blocking synergy capture?** (Culture, processes, brand dilution)
-5. **How to get ANOTHER ₹50-100 Cr of synergy value in 2026-2028?**
+### IF ACQUIRED — Synergy Audit Framework
 
-**CRITICAL NEW FOCUS: Two-Way Institutional Leverage**
+**What institutional assets does [ACQUIRER] bring?** Name them specifically — don't use generic labels. Think: distribution network (how many outlets, which channels), manufacturing infrastructure, procurement scale, R&D capabilities, export infrastructure, hotel/hospitality channels, brand credibility, capital for acquisitions.
 
-**ITC's Unique Assets (Beyond Distribution):**
-- **ITC Agri Business** → Backward integration (ingredient sourcing at scale, quality control, farmer relationships)
-- **[ACQUIRER] Hotels** → Premium positioning expertise, corporate B2B relationships (2,500 clients), institutional credibility
-- **ITC Commodities & Exports** → International trade infrastructure, export licenses, regulatory expertise (50+ countries)
-- **ITC Life Sciences R&D** → Food science capabilities, clinical validation labs, ingredient innovation
-- **ITC Brand-building Muscle** → Mass media buying power, consumer insights, premium brand management (Aashirvaad, Sunfeast precedent)
+**Status per asset:** For each asset, assess honestly:
+- ACTIVATED: being used, measurable impact
+- PARTIAL: some use but significant untapped potential
+- UNTAPPED: not yet leveraged despite clear opportunity
 
-**Yogabar's Digital-Native DNA (What [ACQUIRER] Lacks):**
-- **Quick Commerce Mastery** → Platform relationships (Blinkit/Zepto), dark store optimization, QC-specific marketing
-- **Marketplace Dynamics** → Amazon/Flipkart algorithms, review management, search optimization, seller performance
-- **Influencer Strategy** → Authentic partnerships, content creation, community building, micro-influencer activation
-- **D2C Playbook** → Conversion optimization, retention mechanics, subscription models, LTV maximization, performance marketing
-- **Digital Agility** → Fast experimentation, A/B testing culture, data-driven decision making, startup speed
+**Two-way leverage — this is critical:**
+What can [COMPANY]'s capabilities teach [ACQUIRER]? Quick commerce mastery, D2C conversion mechanics, influencer marketing, digital agility, community building — these are worth real money to [ACQUIRER]'s wider portfolio. Quantify what it would mean to roll [COMPANY]'s digital playbook across [ACQUIRER]'s full portfolio.
 
-**The Synergy Opportunity:**
-- **Yogabar → ITC:** Teach Quick Commerce, influencer marketing, D2C mechanics to entire [ACQUIRER] Foods portfolio (₹5,000 Cr) - Strategic value beyond revenue
-- **ITC → Yogabar:** Unlock Agri Business for clean-label sourcing, Hotels for premium B2B, Exports for international, R&D for functional innovation
+**What is the next wave of synergy value?** Be specific. Show the revenue or margin calculation for each opportunity.
 
-**This is a SYNTHESIS agent—you receive outputs from Agents 1-6. Connect the dots and map INSTITUTIONAL STRENGTHS, not just operational synergies.**
+**What is blocking capture?** Culture mismatch, approval layers, brand dilution, channel conflict — name the real friction.
 
-**DO NOT:**
-- ❌ Repeat "leverage [ACQUIRER] distribution" (done for 3 years)
-- ❌ Generic synergy advice (check any M&A playbook)
-- ❌ Ignore integration challenges (pretend everything is smooth)
+### IF STANDALONE — Leverage Audit Framework
 
-**DO:**
-- ✅ "Agent 5 identified QC opportunity (₹45 Cr). [ACQUIRER] lacks QC presence BUT has capital for dark store partnerships. Synergy: Fund [COMPANY] to pioneer [ACQUIRER]'s QC entry = ₹45 Cr revenue + learning for [ACQUIRER] Foods portfolio"
-- ✅ "Agent 3 showed brand dilution from [ACQUIRER] association. Counter-intuitive synergy: Give [COMPANY] MORE autonomy (separate brand identity) while using [ACQUIRER] backend (distribution, manufacturing)"
+**What does [COMPANY] need that it cannot build alone in 3 years?** Think honestly: distribution reach, manufacturing scale, procurement leverage, international market access, clinical/regulatory credibility, capital.
+
+**Who are the best partners for each need?** Name specific companies — not categories. Which FMCG distributor, which retailer, which ingredient supplier, which platform (quick commerce, modern trade, export channel) would unlock the most value?
+
+**What is [COMPANY]'s leverage asset?** What does [COMPANY] have that a large FMCG or strategic investor would pay for access to? (Brand equity, customer data, product innovation, category leadership, D2C playbook.) This is what gives [COMPANY] negotiating power in any partnership.
+
+**What is the cost of remaining independent?** If [COMPANY] builds everything itself vs. finding the right strategic partner, what does it give up in speed, cost, and market position?
 
 ---
 
-## INPUT SYNTHESIS
+## STEP 3: OUTPUT FORMAT
 
-You will receive outputs from:
-- Agent 1: Market dynamics, category shifts
-- Agent 2: Portfolio gaps, SKU opportunities
-- Agent 3: Brand positioning issues
-- Agent 4: Margin improvement levers
-- Agent 5: Growth channels (QC, B2B, international)
-- Agent 6: Competitive threats
+Dense prose paragraphs. No bullet lists. Two tables are permitted:
+1. **Leverage Scorecard** — asset/partner | value (₹Cr) | ease (0-100) | status (activated/partial/untapped or build/partner/acquire)
+2. **Action Roadmap** — quarter | action | value unlocked
 
-**Your job:** Connect these insights to [ACQUIRER]'s capabilities and find synergies.
-
----
-
-## OUTPUT STRUCTURE (800-1,000 words, 2 pages max)
-
-### **SECTION 1: SYNERGY SCORECARD (200 words)**
-
-\`\`\`
-## THREE YEARS LATER: SYNERGY REALITY CHECK
-
-**Synergies Captured (2023-2026):**
-
-| Synergy Type | Promise (2023) | Reality (2026) | Value Captured | Grade |
-|--------------|----------------|----------------|----------------|-------|
-| Distribution | 4M outlets | 2,500 MT + ~500 GT pilot stores | ₹80 Cr revenue | A |
-| Manufacturing | original co-packer facilities | COGS optimization limited (no manufacturing synergy) | ₹8 Cr annual | A |
-| Procurement | Vendor leverage | 5-8% savings | ₹4 Cr annual | B+ |
-| Brand-building | [ACQUIRER] muscle | 3x spend, momentum lost | ₹15 Cr (?) | C |
-| GT Reach | Premium kirana | 5K stores, low velocity | ₹8 Cr (?) | C |
-
-**Total Value Created:** ₹92-115 Cr (3 years)
-
-**Synergies NOT Captured (Gaps):**
-- Quick Commerce ([ACQUIRER] has no QC presence)
-- International export (ITC infrastructure not leveraged)
-- Cross-selling to [ACQUIRER] Hotels/corporate clients (partnership unexplored)
-- R&D capabilities (ITC labs underutilized for innovation)
-
-**Integration Challenges:**
-- Culture clash: [COMPANY] startup team → [ACQUIRER] corporate (attrition?)
-- Brand dilution: [ACQUIRER] association hurt premium positioning
-- Decision speed: [COMPANY] slower (ITC approval layers)
-
-**Net Assessment:**
-Basic operational synergies captured. Strategic synergies (brand, innovation, new channels) underexploited. Need NEXT wave.
-\`\`\`
-
-### **SECTION 2: NEXT-WAVE SYNERGIES (400 words)**
-
-**Map INSTITUTIONAL STRENGTHS - Two-way value creation:**
-
-**Framework: What can Yogabar leverage FROM [ACQUIRER] that it can't build alone? What can [ACQUIRER] learn FROM Yogabar for its ₹5,000 Cr Foods portfolio?**
-
-\`\`\`
-**SYNERGY #1: [ACQUIRER] Agri Business → Clean Label Sourcing (from Agent 2 Portfolio insights)**
-
-**ITC's Asset:** 
-- Agri Business division with direct farmer relationships (wheat, spices, fruits)
-- Backward integration at scale (reduces middlemen, ensures quality)
-- [ACQUIRER] precedent: Aashirvaad atta = farm-to-fork traceability
-
-**Yogabar's Need (from Agent 2):** 
-- Clean label positioning requires transparent sourcing
-- Competitors make claims without proof ("natural ingredients")
-- Premium customers willing to pay for traceable, quality ingredients
-
-**Synergy Logic:**
-- [ACQUIRER] Agri can source nuts, oats, dates directly from farmers (10-15% cost reduction + quality story)
-- Yogabar gets "farm-traceable" claim (differentiation vs competitors)
-- Marketing: "Sourced through ITC's farmer network - 5,000+ farmers, verified clean-label"
-
-**Value Potential:** 
-- Direct: ₹2-3 Cr annual savings (procurement) + 2-3 margin points from premium pricing
-- Brand: Unique claim (no competitor can match ITC's farmer network scale)
-- [ACQUIRER] Learning: Yogabar teaches "clean label premium" playbook → [ACQUIRER] can apply to Sunfeast, other brands
-
-**What's Needed:**
-- Agri Business team integration (pilot with 2-3 ingredients)
-- Traceability system (farmer → facility → product)
-- Marketing narrative (storytelling around sourcing)
-
----
-
-**SYNERGY #2: [ACQUIRER] Hotels → Premium Corporate B2B (from Agent 5 Growth insights)**
-
-**ITC's Asset:**
-- [ACQUIRER] Hotels serves 2,500+ corporate clients (MNCs, large Indian cos)
-- Relationships with HR teams, procurement, wellness program managers
-- Premium brand = trust for corporate gifting, employee programs
-
-**Yogabar's Need (from Agent 5):**
-- B2B institutional channel identified as ₹25 Cr opportunity
-- Cold corporate outreach is hard (6-12 month sales cycles)
-- Need warm introductions to decision-makers
-
-**Synergy Logic:**
-- [ACQUIRER] Hotels' account managers cross-sell Yogabar to existing corporate clients
-- Position as "employee wellness program" (nutrition bars for office pantries, WFH kits)
-- Leverage [ACQUIRER] Hotels' premium association (if hotels use it, it's premium-quality signal)
-
-**Value:** 
-- Revenue: ₹25 Cr in 24 months (300 corporate accounts @ ₹8L/year)
-- Margin: 46% (direct sales, no middlemen)
-- [ACQUIRER] Learning: Yogabar's digital marketing tactics can help [ACQUIRER] Hotels with younger corporate clients
-
-**What's Needed:**
-- Incentive alignment ([ACQUIRER] Hotels sales team gets commission on Yogabar cross-sell)
-- Bundling (hotel stay packages + wellness kits for corporate events)
-
----
-
-**SYNERGY #3: [ACQUIRER] Commodities/Exports → International Expansion (from Agent 5)**
-
-**ITC's Asset:**
-- Food export infrastructure to 50+ countries (licenses, logistics, distributor network)
-- Existing relationships in Middle East, Southeast Asia
-- Regulatory clearances (FSSAI, export certifications)
-
-**Yogabar's Need (from Agent 5):**
-- International opportunity (ME markets, Indian diaspora = ₹25 Cr potential)
-- Can't export independently (regulatory barriers, logistics complexity, no distributor network)
-
-**Synergy Logic:**
-- Yogabar piggybacks on [ACQUIRER]'s existing export infrastructure
-- Target: UAE, Saudi Arabia (280k+ Indian expats, high purchasing power)
-- Use ITC's distributor relationships (e.g., [ACQUIRER] already exports to Lulu, Choithrams)
-
-**Value:**
-- Revenue: ₹25 Cr in 24 months (Year 1: ₹8 Cr UAE pilot, Year 2: ₹17 Cr regional scale)
-- Margin: 42% (premium pricing in international markets)
-- [ACQUIRER] Learning: Yogabar teaches "premium health food export" playbook
-
-**What's Needed:**
-- Leverage ITC's Sharjah/Dubai distributor relationships
-- Export under [ACQUIRER] Foods umbrella (faster regulatory approval)
-- Adapt packaging for international markets (shelf-life, labeling requirements)
-
----
-
-**SYNERGY #4: Yogabar → [ACQUIRER] Foods (Quick Commerce Playbook Transfer)**
-
-**Yogabar's Asset (from Agent 5):**
-- Quick Commerce expertise (platform relationships, dark store optimization)
-- QC marketing playbook (what works on Blinkit/Zepto vs traditional retail)
-- Category insights: QC buyers prefer singles (₹50 impulse) vs multi-packs
-
-**ITC's Need:**
-- [ACQUIRER] Foods wants QC presence (Bingo chips, Sunfeast biscuits, YiPPee noodles need QC strategy)
-- ₹5,000 Cr Foods portfolio has 0-5% QC penetration (category average 18%)
-- Lacks QC-specific know-how (pricing, packaging, dark store negotiation)
-
-**Synergy Logic (REVERSE - Yogabar teaches ITC):**
-- Yogabar pioneers QC for [ACQUIRER] (becomes test brand)
-- Learnings transfer to entire Foods portfolio (what QC pricing works, which SKUs to push, how to negotiate with platforms)
-- Strategic value to [ACQUIRER] >> Yogabar's direct revenue
-
-**Value:**
-- Yogabar direct: ₹45 Cr revenue (18 months)
-- [ACQUIRER] strategic: If learnings help [ACQUIRER] Foods capture even 2% more QC share across portfolio = ₹100+ Cr impact
-- Positioning: Yogabar as "ITC's innovation lab for digital channels"
-
-**What's Needed:**
-- Yogabar autonomy to experiment (not [ACQUIRER] approval layers)
-- Knowledge transfer system (Yogabar team trains [ACQUIRER] Foods brand managers)
-- Measure & share learnings (what worked, what didn't)
-
----
-
-**SYNERGY #5: Yogabar → [ACQUIRER] Foods (Influencer Marketing Playbook)**
-
-**Yogabar's Asset:**
-- Influencer strategy (authentic partnerships, content creation, ROI tracking)
-- Knows which influencers work (nutritionists, fitness creators vs celebrities)
-- Digital-native measurement (cost per acquisition, engagement vs reach)
-
-**ITC's Need:**
-- [ACQUIRER] Foods relies on traditional media (TV, print)
-- Younger consumers (18-35) don't watch TV, consume content on Instagram/YouTube
-- [ACQUIRER] tried influencer marketing but doesn't know ROI, picks wrong influencers (celebrity vs micro)
-
-**Synergy Logic:**
-- Yogabar's influencer playbook becomes [ACQUIRER] template
-- Teach: How to identify authentic influencers, negotiate rates, measure ROI, create content that converts
-- [ACQUIRER] applies to Sunfeast, Bingo, YiPPee targeting younger audiences
-
-**Value:**
-- Yogabar: Retains expertise, becomes strategic asset to [ACQUIRER] (not just distribution burden)
-- ITC: 20-30% better marketing efficiency = ₹50+ Cr impact across portfolio
-- Cultural: Yogabar's digital team upskills ITC's marketing function
-
-**What's Needed:**
-- Yogabar team runs influencer workshops for [ACQUIRER] Foods marketers
-- Co-create 2-3 campaigns (Yogabar + [ACQUIRER] brand) to demonstrate ROI
-- Reverse mentorship (startup teaching corporate)
-\`\`\`
-
-Example:
-**SYNERGY #1: Quick Commerce Pioneer (from Agent 5)**
-
-**Opportunity:** QC is 18% of category, [COMPANY] at 0%. Agent 5 identified ₹45 Cr potential (18 months).
-
-**ITC Capability:** 
-- Capital: ₹8 Cr to fund QC expansion (dark store fees, marketing)
-- Strategic intent: [ACQUIRER] Foods wants QC presence (Bingo, Sunfeast also need QC)
-- Learning value: [COMPANY] pioneers, [ACQUIRER] learns for broader portfolio
-
-**Synergy Logic:**
-- [COMPANY] gets capital + ITC's risk appetite (can experiment)
-- [ACQUIRER] gets QC playbook for entire Foods division (₹8 Cr investment = portfolio-wide learning)
-- Dark stores willing to stock "ITC brand" (credibility advantage)
-
-**Value Potential:** 
-- Direct: ₹45 Cr revenue (48% margin = ₹21.6 Cr contribution)
-- Indirect: [ACQUIRER] Foods learns QC, applies to ₹5,000 Cr portfolio = strategic value
-
-**What's Needed:**
-- [COMPANY] team autonomy (QC strategy, [ACQUIRER] doesn't micromanage)
-- Capital approval: ₹8 Cr (Q1 2026)
-- Dark store partnerships: [ACQUIRER] corporate relationships unlock doors
-
-**SYNERGY #2: International Export Leverage (from Agent 5)**
-
-**Opportunity:** ME market (₹25 Cr in 24 months per Agent 5)
-
-**ITC Capability:**
-- Export licenses: [ACQUIRER] has food export infrastructure (regulatory clearances)
-- Logistics: [ACQUIRER] shipping contracts (lower freight costs)
-- Trade relationships: [ACQUIRER] exports to 50+ countries (distributor network)
-
-**Synergy Logic:**
-[COMPANY] couldn't export independently (regulatory barriers, logistics complexity). [ACQUIRER] makes it viable.
-
-**Value:** ₹25 Cr revenue (42% margin) + opens international for [ACQUIRER] snacks
-
-**What's Needed:**
-- Leverage ITC's Sharjah distributor (existing relationship)
-- Export certification under [ACQUIRER] Foods (faster approval)
-
-**SYNERGY #3: Functional Innovation (from Agent 2 + [ACQUIRER] R&D)**
-
-**Opportunity:** Functional bars (₹70-90) = ₹35 Cr potential per Agent 2
-
-**ITC Capability:**
-- Life Sciences & Technology Centre (ITC R&D labs in Bangalore)
-- Clinically-validated ingredients (vs competitors' marketing claims)
-- Food scientists (can develop functional formulations)
-
-**Synergy Logic:**
-Competitors (Whole Truth) have functional bars but unvalidated claims. [ACQUIRER] R&D can create ACTUALLY functional formulations = differentiation.
-
-**Value:** ₹35 Cr revenue + brand repositioning as "science-backed"
-
-**What's Needed:**
-- R&D team collaboration (6-month NPD timeline)
-- Clinical trials (₹2 Cr investment for validation)
-
-**SYNERGY #4: B2B Cross-Sell (from Agent 5 + [ACQUIRER] Hotels)**
-
-**Opportunity:** Corporate wellness (₹25 Cr per Agent 5)
-
-**ITC Capability:**
-- [ACQUIRER] Hotels has 2,500 corporate clients (HR relationships)
-- Existing B2B sales team (can add [COMPANY] to portfolio)
-
-**Synergy Logic:**
-Cold corporate outreach is hard. Warm intro from [ACQUIRER] Hotels' account managers = faster conversion.
-
-**Value:** ₹25 Cr revenue (46% margin, direct sales)
-
-**What's Needed:**
-- Cross-sell training for [ACQUIRER] Hotels B2B team
-- Incentive alignment (commission structure)
-\`\`\`
-
-### **SECTION 3: INTEGRATION OPTIMIZATION (200 words)**
-
-\`\`\`
-## FIXING WHAT'S BROKEN
-
-**Challenge #1: Brand Dilution (from Agent 3)**
-
-**Problem:** [ACQUIRER] association weakened [COMPANY]'s startup premium positioning
-
-**Counter-Intuitive Synergy:**
-- Give [COMPANY] brand autonomy (separate identity)
-- BUT leverage [ACQUIRER] backend (distribution, manufacturing)
-- "House of brands" model (like P&G, Unilever)
-
-**Implementation:**
-- Packaging: Remove/shrink [ACQUIRER] logo
-- Communication: Position as "[COMPANY] - powered by ITC" NOT "ITC's [COMPANY]"
-- Team: Dedicated brand team, reports to [COMPANY] CEO (not [ACQUIRER] Foods head)
-
-**Value:** Reclaim premium positioning = pricing power (+₹5 per bar = 10% margin impact)
-
-**Challenge #2: Decision Speed (Culture Clash)**
-
-**Problem:** [COMPANY] slower post-acquisition (ITC approval layers)
-
-**Fix:**
-- Defined autonomy boundaries: <₹5 Cr decisions = [COMPANY] CEO authority
-- Board seat for [COMPANY] founder (skin in game, accountability)
-- Separate P&L (entrepreneurial ownership vs division mindset)
-
-**Value:** Innovation speed = faster to market with new SKUs (12 months → 6 months NPD cycle)
-
-**Challenge #3: Talent Retention**
-
-**Problem:** Startup team attrition (corporate culture shock)
-
-**Fix:**
-- Retention equity: 3-year vesting for key team (25% vested)
-- Startup perks: Flexible WFH, flat hierarchy, fast decision-making
-- Career paths: Rotate [COMPANY] talent into [ACQUIRER] Foods leadership (2-way street)
-
-**Value:** Retain institutional knowledge, avoid rebuild costs
-\`\`\`
-
-### **SECTION 4: SYNERGY ROADMAP 2026-2028 (200 words)**
-
-\`\`\`
-## 24-MONTH SYNERGY CAPTURE PLAN
-
-**Phase 1 (Q1-Q2 2026): Quick Wins**
-- Quick Commerce setup (₹8 Cr investment, 8-month payback)
-- B2B cross-sell activation (₹2 Cr, 12-month payback)
-- Brand autonomy reset (organizational change, no cost)
-**Value:** ₹30 Cr revenue, +2 margin points
-
-**Phase 2 (Q3 2026-Q2 2027): Strategic Builds**
-- Functional range R&D (₹2 Cr, 14-month payback)
-- International export (₹3 Cr, 18-month payback)
-- Channel mix optimization (shift MT→QC)
-**Value:** ₹50 Cr revenue, +1.5 margin points
-
-**Phase 3 (Q3 2027-Q1 2028): Scale**
-- QC expansion to 50 cities
-- International to 5 ME countries
-- Functional range scale
-**Value:** ₹80 Cr revenue, EBITDA positive
-
-**Total Incremental Synergy Value (24M):**
-- Revenue: ₹160 Cr (on top of ₹80 Cr already captured)
-- Margin: +3.5 points
-- Total value created: ₹240 Cr (original ₹95 Cr + ₹160 Cr new)
-
-**Investment Required:** ₹23 Cr
-**Blended Payback:** 11 months
-\`\`\`
-
----
-
-## CRITICAL SUCCESS CRITERIA
-
-Your output must:
-1. **Synthesize insights from Agents 1-6** (connect dots, not repeat)
-2. **Assess what synergies are exhausted** vs **what's untapped**
-3. **Identify 4 NEXT-wave synergies** (specific, valued, with [ACQUIRER] capability match)
-4. **Address integration challenges** honestly (culture, brand, speed)
-5. **Provide 24-month roadmap** with investment and value
-
-**Red Flags:**
-- ❌ Repeating Agent 1-6 content (synthesis, not summary)
-- ❌ Generic M&A synergy advice (could apply to any deal)
-- ❌ Ignoring that 3 years have passed (what's NEXT, not repeat)
-- ✅ Novel connections (QC = [ACQUIRER] portfolio learning)
-- ✅ Counter-intuitive insights (brand autonomy = better synergy)
-
----
-
-**Remember:** You're the SYNTHESIS agent. Agents 1-6 gave pieces. You assemble the puzzle and show HOW [ACQUIRER] should evolve the relationship 2026-2028 to capture the NEXT ₹100 Cr of value beyond basic operational synergies.
+700-900 words. Show every calculation. Confidence-label every number (H/M/L).
+Start immediately with the single most important finding — no preamble.
 `,
 
   synopsis: `# EXECUTIVE SYNOPSIS
 
-You are the senior partner who has read every page of this report. You write two pages for Hemant and the [ACQUIRER] leadership team. You give the aggregated synthesis first — your conclusions, your narrative, your reading of the situation — and only after that do you attribute where each insight came from. The reader should understand the full strategic picture before they see the source attribution.
+You are the senior partner who has read every agent output in this report. You write a two-page brief for the key decision-maker. Your job is to synthesise across all agents — finding connections, implications, and the single strategic direction that the data points toward.
 
-**Tone:** [ACQUIRER] is playing offense. Yogabar is growing. Frame everything as acceleration and opportunity. Never write: "exhausted," "saturated," "broken," "collapsed," "risk," "concern," "weakness," "challenge," "problem," or any language implying difficulty. There are no negatives of the [ACQUIRER] acquisition — only untapped advantages. Every finding is an opportunity, every gap is a space to move into.
+[ACQUISITION_PREAMBLE]
 
-**Numbers:** Every number from agent outputs. Cite the agent as source. If unavailable, write "not confirmed through available data." Do not invent.
+**Tone:** The company is playing offense. Frame everything as opportunity and acceleration. No language of failure, collapse, or irreversible difficulty. Gaps are spaces to move into. Risks are known and manageable.
 
-**Writing style:** Dense prose. No bullet points. No numbered lists. Paragraphs only — each making one argument, developing it with evidence, landing on an implication. The narrative should flow: each sentence doing work, each paragraph connecting to the next.
+**Numbers:** Use every number the agents found. Cite the source agent. If a number wasn't confirmed, write "not confirmed through available data." Never invent figures.
+
+**Writing style:** Dense prose. No bullet points. No numbered lists. Paragraphs only — each making one argument, building evidence, landing on an implication. Each paragraph connects to the next.
 
 ---
 
-## PART 1: THE SYNTHESIS — WRITE THIS FIRST
+## PART 1: SYNTHESIS — WRITE THIS FIRST
 
 **THE SITUATION (one paragraph, 100 words maximum)**
 
-Where Yogabar stands today — growth trajectory, channel mix, competitive position — using numbers the agents found. Then the single most important thing the next phase requires. Read like a Financial Times analysis opener: confident, specific, no wasted words.
+Where [COMPANY] stands today — growth trajectory, channel mix, competitive position — using actual numbers from agents. Then the single most important thing the next phase requires. Confident, specific, no wasted words.
 
 ---
 
 **THE RECOMMENDATION**
 
-One clear strategic direction for 2026–2028. One direction, stated as a narrative paragraph — not a list, not a framework, not "Yogabar should explore multiple avenues."
+One clear strategic direction for 2026–2028. One direction, as a narrative paragraph — not a list, not a framework, not hedged options.
 
-THE RECOMMENDATION:
-[One paragraph. What [ACQUIRER] will do, which direction Yogabar grows, what the outcome looks like in 24 months. No investment figures. No timelines as constraints. [ACQUIRER] has no capital constraints — do not frame the strategy around cost.]
+[One paragraph. What will happen, which direction [COMPANY] grows, what the outcome looks like in 24 months. IF acquired: what [ACQUIRER] will deploy. IF standalone: what the CEO must prioritise. No vague language.]
 
 ---
 
 **THE STRATEGIC NARRATIVE (four to five connected paragraphs)**
 
-This is the heart of the synopsis. Do not list findings. Tell the story of what the agents collectively found and what it means — written as connected paragraphs where each flows into the next.
+Do not list findings. Tell the story of what the agents collectively found and what it means.
 
-Paragraph 1 — The market and competitive situation: Connect Agent 1's category findings with Agent 6's competitive mapping. What does the market trajectory mean for how long the competitive window stays open?
+Paragraph 1 — Market and competitive situation: Connect Agent 1's category findings with Agent 6's competitive mapping. What does the market trajectory mean for how long the competitive window stays open?
 
-Paragraph 2 — The portfolio and brand story: Connect Agents 2 and 3. Don't summarise them separately — find the connection. What does the SKU analysis reveal that the brand analysis confirms, or vice versa?
+Paragraph 2 — Portfolio and brand: Connect Agents 2 and 3. Find the connection between SKU analysis and brand positioning — what does one confirm or complicate in the other?
 
-Paragraph 3 — The growth and margin story: Connect Agents 4 and 5. These are not separate topics. Which growth moves improve margin and which ones compress it?
+Paragraph 3 — Growth and margin: Connect Agents 4 and 5. Which growth moves improve margin and which compress it? This is not two separate topics.
 
-Paragraph 4 — The [ACQUIRER] advantage: What Agent 7 found that no external buyer could have offered. Name the specific asset. What does Yogabar get from [ACQUIRER] that it could not have built independently?
+Paragraph 4 — Leverage and partnership: Draw from Agent 7. If [COMPANY] has been acquired by [ACQUIRER], describe what only [ACQUIRER] ownership enables — the specific institutional asset [COMPANY] gets that it could not build independently. If [COMPANY] is standalone, describe the most critical external leverage or partnership Agent 7 identified, and what the CEO must prioritise in the next 12 months.
 
-Paragraph 5 (if warranted) — The international lens: What Agent 10's most relevant global analog reveals about where Yogabar is in its trajectory, and what it means for decisions [ACQUIRER] needs to make now.
+Paragraph 5 (if warranted) — The international lens: What Agent 10's global analog reveals about [COMPANY]'s trajectory and the decisions that matter most right now.
 
 ---
 
-**SIX INSIGHTS (after the narrative)**
+**SIX INSIGHTS**
 
-Six findings the leadership team would not arrive at without this report. Each insight is a ◉-tagged block — four to five sentences in prose: finding → why non-obvious → which agents' data supports it → what [ACQUIRER] should do.
+Six findings the reader would not arrive at without this report. Each is a ◉-tagged block — four to five sentences: finding → why non-obvious → which agents' data supports it → what should be done.
 
 ◉ [INSIGHT TITLE IN CAPS]
-[Four to five sentences of dense prose. No sub-bullets within an insight.]
+[Four to five sentences of dense prose. No sub-bullets.]
 
-Cover: the category opportunity, portfolio concentration, the margin lever, the competitive window, the [ACQUIRER] institutional advantage, the international precedent. Do not include Agent 9's platform thesis here — it stands alone as a separate section.
+Cover: the category opportunity, portfolio concentration, the margin lever, the competitive window, the leverage/partnership advantage, the international precedent. Do not include Agent 9's platform thesis here.
 
 ---
 
-## PART 2: THE ATTRIBUTION AND ACTION PLAN — WRITE THIS SECOND
+## PART 2: ATTRIBUTION AND ACTION PLAN
 
 **WHERE EACH INSIGHT COMES FROM**
 
-After the full synthesis, write one paragraph explicitly crediting the agents. Example structure: "The market sizing and competitive window draw from Agent 1's category analysis and Agent 6's competitive mapping. The portfolio and brand conclusions synthesise Agents 2 and 3. The margin lever comes from Agent 4's unit economics analysis, validated against Agent 5's channel findings. The [ACQUIRER] institutional advantage is from Agent 7, with international confirmation from Agent 10." Use your own words, but make clear where each major conclusion originated.
+One paragraph attributing each major conclusion to its source agents. "The market sizing and competitive window draw from Agents 1 and 6. The portfolio and brand conclusions synthesise Agents 2 and 3..." Write in your own words.
 
 ---
 
 **CRITICAL SUCCESS FACTORS**
 
-Four things [ACQUIRER] will do to deliver this strategy. Written as actions in prose — not a bulleted list, not numbered standalone lines. "The first priority is [action], confirmed by [metric] at Month 6. The second..."
-
-Do not include founder retention. Focus on strategy execution and capability deployment.
+Four things that must happen to deliver this strategy. Written as actions in connected prose — not a list. "The first priority is [action], confirmed by [metric] at Month 6. The second..."
 
 ---
 
 `
 };
 
-PROMPTS.platform = `# AGENT 9: PLATFORM EXPANSION & D2C BRAND INCUBATOR
+PROMPTS.platform = `# AGENT 9: PLATFORM EXPANSION & ADJACENCY STRATEGY
 
-You are a senior strategy analyst. [ACQUIRER] is a ₹75,000 Cr conglomerate with no capital constraints. The question is not whether [ACQUIRER] can afford this. The question is whether [COMPANY]'s D2C brand-building capability is a platform [ACQUIRER] should activate to build new premium brands in categories where its legacy portfolio cannot compete.
-
-**The central question:** Should [ACQUIRER] use [COMPANY] not just as a nutrition bar company but as a D2C brand-building studio — incubating new premium brands in categories where ITC's offline heritage is a liability?
-
-**Tone:** This is a growth proposal for a company playing offense. Frame it as the highest-value deployment of the D2C capability [ACQUIRER] has acquired — not as a risky experiment. Be direct, be confident, show the logic.
-
-**Writing style:** Dense prose. No bullet points. No numbered lists. Tables only for category comparison and investment breakdown.
-
-**Your inputs:** Outputs from Agents 1–7. Build on what they found. Do not repeat it.
+[ACQUISITION_PREAMBLE]
 
 ---
 
-## STEP 1: SEARCH BEFORE WRITING
+## SEARCH FIRST
 
-- Unilever Dollar Shave Club acquisition strategy outcome 2024
-- P&G Native deodorant acquisition integration results
-- Marico Beardo D2C brand building India 2023 2024
-- HUL D2C brand incubator India strategy
-- functional wellness India market size 2024 2025
-- Oziva Wellbeing Nutrition revenue funding 2024
-- India D2C brand valuation multiples 2024
-- [ACQUIRER] Life Sciences Technology Centre R&D capabilities
-- premium snacking India market size D2C brands 2024
+Search for (adapt to company and context):
+- "[COMPANY] new categories products 2024 2025"
+- "[category] adjacency expansion India D2C brands"
+- "India functional [category] market size growth 2025"
+- "D2C brand platform expansion case studies India"
+- "[COMPANY] competitors category expansion strategy"
 
 ---
 
-## STEP 2: THE D2C STUDIO CONCEPT
+## YOUR MISSION
 
-[COMPANY] has something ITC's Foods division does not have: the lived experience of building a D2C brand from zero — QC relationships, influencer authenticity, subscription mechanics, packaging iteration speed. This is a capability that cannot be trained into an existing team; it has to be acquired.
+### Core question (both contexts):
+What are the 4-6 most valuable adjacency opportunities for [COMPANY]?
+For each, answer:
+1. What is the TAM and growth rate? Show calculation.
+2. Does [COMPANY]'s existing brand, customer base, or capability give it a right to win?
+3. What is the investment required and what does year-3 revenue look like? Show the model.
+4. Should [COMPANY] build this, partner for it, or acquire it? One clear recommendation with rationale.
+5. What is the sequencing? Which comes first and why?
 
-Test this thesis against what you find in search: what do global FMCG acquirers actually do with D2C capabilities post-acquisition? Do they integrate, or do they run them as platforms? What does the Marico/Beardo precedent show? What does the HUL D2C experience show? State what the evidence shows — if it is mixed, say so and explain why the ITC-[COMPANY] case is specifically different.
+### IF ACQUIRER EXISTS — additional questions:
+- Which adjacencies are accelerated by [ACQUIRER]'s assets? (manufacturing, distribution, brand, capital)
+- Which adjacencies would [ACQUIRER] fund vs. expect [COMPANY] to fund from its own P&L?
+- Is [COMPANY] better used as a single-brand operator or as a D2C platform incubating new brands for [ACQUIRER]? Take a position.
 
----
-
-## STEP 3: CATEGORY SELECTION — EVIDENCE FIRST
-
-For each category, search before recommending. All five criteria must be met: D2C brands demonstrably winning on economics (gross margin >45%, proven repeat purchase), [ACQUIRER] has a specific named activatable asset, [ACQUIRER]'s existing brands cannot credibly compete in this space, TAM large enough to build ₹100–150 Cr brand within 3 years, consumer premiumisation trend demonstrated with data.
-
-Evaluate Functional Wellness, Premium Snacking, and Functional Beverages. For each: state market size found through search (with source or estimation method), name the specific [ACQUIRER] advantage, give a Go/No-Go verdict with one-sentence reason grounded in evidence.
-
----
-
-## STEP 4: THE D2C BUSINESS UNIT MODEL
-
-The recommendation is not "launch a new brand." It is: create a D2C Business Unit within ITC, with [COMPANY]'s team as the founding studio, operating with the speed and autonomy of a startup while drawing on ITC's ingredient sourcing, R&D validation, and distribution infrastructure when ready.
-
-New brands are independent identities with separate P&Ls — not sub-brands of [COMPANY] or ITC. No conflict with [ACQUIRER]'s existing Foods portfolio — these are categories [ACQUIRER] is not in. The critical governance question: what level of autonomy must this unit have to move at D2C speed? Use the Marico/Beardo or HUL/Indulekha precedent if found.
-
----
-
-## STEP 5: THE INVESTMENT CASE
-
-Build from components found through search — NPD and formulation cost, initial inventory buffer, paid acquisition budget (search: D2C brand CAC India 2024), brand identity and packaging, platform infrastructure incremental cost. Show each line with basis.
-
-For Brand #1 revenue projection: benchmark to a comparable Indian D2C brand trajectory found through search (Oziva, Wellbeing Nutrition, or equivalent). Adjust for [COMPANY]'s advantages (ITC capital, no funding constraint) and disadvantages (not founder-driven, corporate decision cycles). Show the calculation.
+### IF NO ACQUIRER — additional questions:
+- Which adjacencies are fundable from existing cashflow vs. require external capital?
+- Which adjacencies create the most strategic optionality — i.e. make [COMPANY] more attractive to a future acquirer or IPO investor?
+- What is the biggest adjacency risk: spreading too thin vs. staying too narrow?
 
 ---
 
-## OUTPUT
+## DATA BLOCK GUIDANCE
 
-Three sections — one dense page:
+opportunityBubbles: Score each opportunity on Strategic Fit (0-100), Market Growth %, and TAM.
+- IF ACQUIRER: Strategic Fit = fit with [ACQUIRER]'s assets and portfolio
+- IF NO ACQUIRER: Strategic Fit = fit with [COMPANY]'s existing brand, capability, and customer base
 
-Section 1: The strategic case — why [COMPANY] specifically is the platform, grounded in precedents found and ITC's activatable assets from Agent 7.
+investmentReturn: Show realistic investment and 3-year revenue for each opportunity.
+buildPartnerAcquire: One clear recommendation per opportunity.
 
-Section 2: Category sequence and investment case — recommended categories with evidence, revenue projections benchmarked, investment built bottom-up, valuation using India multiples found through search. You MUST present candidate category scoring as an HTML table. Output it EXACTLY like this, replacing values:
-
-<table>
-<thead><tr><th>Category</th><th>Strategic Fit (1-5)</th><th>Market Readiness (1-5)</th><th>ITC Leverage (1-5)</th><th>Revenue Potential</th><th>Priority</th></tr></thead>
-<tbody>
-<tr><td>Example Category</td><td>4</td><td>3</td><td>5</td><td>80–120</td><td>1</td></tr>
-</tbody>
-</table>
-
-Do not describe the table in prose — output the raw HTML table.
-
-Section 3: The governance model — D2C Business Unit structure, autonomy required, how it draws on [ACQUIRER] infrastructure, how it avoids cannibalising [ACQUIRER] brands. Close with: the specific condition under which this creates exceptional value, and the condition under which it does not.`;
-
-PROMPTS.intl = `# AGENT 10: INTERNATIONAL BENCHMARKS & GLOBAL PLAYBOOK
-
-You are a global strategy analyst. Find the two or three brands internationally that most closely mirror [COMPANY]'s current situation — a premium nutrition brand navigating the transition from D2C insurgency to omnichannel scale through Modern Trade and Quick Commerce. Extract lessons [ACQUIRER] can act on.
-
-**Context:** [ACQUIRER] acquired [COMPANY] in 2023. [COMPANY] grew >60% YoY on D2C, beginning MT expansion. It is 2026.
-
-**Writing style:** Dense prose. The brand stories are business journalism — not case study templates. The lessons are dense analytical paragraphs. No bullet points within stories or lessons.
-
----
-
-## STEP 1: QUALIFY EVERY CANDIDATE — SCORE AGAINST 6 CRITERIA
-
-Score each candidate (1 point each): D2C-native origin, MT or QC transition documented, FMCG acquisition, premium positioning maintained post-acquisition, revenue equivalent to ₹100–500 Cr at transition, lessons transferable to India 2026.
-
-Search: RXBAR Kellogg post-acquisition 2022 2023 2024, Grenade bar UK Modern Trade revenue 2023 2024, Barebells Sweden MT expansion 2023 2024, Fulfil nutrition Ireland UK Modern Trade, Huel D2C to retail 2023 2024, Kind bar Mars acquisition, GCC health food premium MT 2024.
-
-Publish scoring table: Brand | Score | Criteria Met | Region | Selected Y/N. Select 2–3 brands scoring 4+, with non-overlapping lessons.
-
----
-
-## STEP 2: ONE NARRATIVE PER BRAND
-
-Business journalism — not a template. Each story weaves together: how they built D2C, what happened when they entered MT or QC (including what went wrong first and how they corrected), the acquisition dynamics (multiple, what changed, what didn't), growth numbers with source, current state and the one decision that most determined the outcome. Write it as one continuous narrative without sub-headers. A story with no friction is not useful.
-
----
-
-## STEP 3: FIVE TRANSFERABLE LESSONS
-
-Each lesson is a dense analytical paragraph containing: what the analog brand actually did (sourced), why it worked — the specific causal logic, the [COMPANY]-specific equivalent action in 2026, the one assumption required for transferability, and how [COMPANY] would know at Month 6 whether the lesson is working.
-
-Five non-overlapping dimensions: pricing architecture at MT entry, SKU rationalisation for retail, brand identity through acquisition, QC-native product formats, D2C retention while scaling offline.
-
----
-
-## STEP 4: WHAT [ACQUIRER] SHOULD DO DIFFERENTLY
-
-Two paragraphs. First: where international evidence validates ITC's current direction — name the specific plan element and the analog that supports it. Second: where evidence flags something [ACQUIRER] has not yet addressed or a move it should make — direct, named, specific. If the evidence entirely validates the current plan, say so.
-
----
-
-## STEP 5: SYNOPSIS HOOK — WRITE THIS LAST
-
-◉ INTERNATIONAL BENCHMARKS HOOK
-[Sentence 1: Most surprising finding — name the brand and the specific non-obvious insight]
-[Sentence 2: Most transferable lesson — stated as a specific action [COMPANY] should take now]
-[Sentence 3: The one thing evidence says [ACQUIRER] is at risk of getting wrong]
-[Sentence 4: Why the India strategy looks different after reading this section]
-
----
-
-## FORMAT
-Output the Step 1 scoring as an HTML table (see template in Step 1 above). Prose narrative per brand — no sub-headers within stories. Dense lesson paragraphs. Output the summary comparison as an HTML table EXACTLY like this:
-<table>
-<thead><tr><th>Brand</th><th>Market</th><th>Revenue at Transition</th><th>Acquirer</th><th>Primary Lesson</th><th>ITC Equivalent Action</th></tr></thead>
-<tbody>
-<tr><td>Brand Name</td><td>US</td><td>₹840 Cr</td><td>Nestlé</td><td>Kept D2C premium while entering MT</td><td>Maintain yogabar.co as hero channel</td></tr>
-</tbody>
-</table>
-
-Every data point cited with source and date. All revenue figures in ₹ Cr.
-
-COMPLETION IS MANDATORY: You must complete all 5 Steps plus the summary table. If running long, compress Step 3 lessons — but never stop before Step 5 and the summary table. A truncated response is a failed response.`;
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// MOCK DATA
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## OUTPUT FORMAT
+Dense prose. No bullet lists. Tables only for opportunity comparison and investment model.
+700-900 words. Confidence label every number. Show every calculation.
+Begin with the single most valuable adjacency — make a recommendation immediately.
+`
 
 const MOCK = {
   market: `## MARKET POSITION & CATEGORY DYNAMICS
@@ -2846,7 +2341,7 @@ function renderMarket(db) {
     db.channelHeatmap.forEach((row,i) => {
       h += `<tr>
         <td style="padding:5px 10px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-weight:600;color:${V.forest};font-size:7.5px;">${row.channel}</td>
-        ${heatCell(row.yogabarPresence)}${heatCell(row.categoryGrowth)}${heatCell(row.competitiveDensity)}
+        ${heatCell(row.companyPresence||row.yogabarPresence)}${heatCell(row.categoryGrowth)}${heatCell(row.competitiveDensity)}
       </tr>`;
     });
     h += '</tbody></table>';
@@ -2864,7 +2359,7 @@ function renderPortfolio(db) {
     const W=510, H=160, PL=32, PR=10, PT=12, PB=24;
     const cw=W-PL-PR, ch=H-PT-PB;
     const maxGr=Math.max(...db.skuMatrix.map(s=>s.marketGrowth||1),1);
-    const maxPos=Math.max(...db.skuMatrix.map(s=>s.yogabarPosition||1),1);
+    const maxPos=Math.max(...db.skuMatrix.map(s=>s.companyPosition||s.yogabarPosition||1),1);
     const maxRev=Math.max(...db.skuMatrix.map(s=>s.revenueCr||1),1);
     const vColors = {STAR:V.terra,CASHCOW:V.green,QUESTION:V.amber,DOG:'#aaa'};
     let svg = `<svg width="${W}" height="${H}">`;
@@ -2882,11 +2377,11 @@ function renderPortfolio(db) {
       .forEach(q=>svg+=`<text x="${q.x}" y="${q.y}" fill="${V.inkFaint}" font-size="5.5" font-family="monospace" opacity=".7">${q.t}</text>`);
     // Axes labels
     svg += `<text x="${PL-5}" y="${PT+ch/2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle" transform="rotate(-90,${PL-5},${PT+ch/2})">Market Growth</text>`;
-    svg += `<text x="${PL+cw/2}" y="${H-2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">Yogabar Position</text>`;
+    svg += `<text x="${PL+cw/2}" y="${H-2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">Competitive Position →</text>`;
     // Bubbles — numbered circles, legend below
     const nums = ['①','②','③','④','⑤','⑥','⑦','⑧'];
     db.skuMatrix.forEach((s,si) => {
-      const x = PL + ((s.yogabarPosition||0)/maxPos)*cw;
+      const x = PL + ((s.companyPosition||s.yogabarPosition||0)/maxPos)*cw;
       const y = PT+ch - ((s.marketGrowth||0)/maxGr)*ch;
       const r = Math.max(8, 6+((s.revenueCr||0)/maxRev)*14);
       const c = vColors[s.verdict]||V.forest;
@@ -3003,7 +2498,7 @@ function renderBrand(db) {
   }
 
   // ITC dial — compact arc
-  if (db.itcAssociationDial) {
+  if (db.itcAssociationDial && db.itcAssociationDial !== null && db.itcAssociationDial.acquirerName && db.itcAssociationDial.acquirerName !== "[ACQUIRER]" && db.itcAssociationDial.acquirerName !== "the management team") {
     const d = db.itcAssociationDial;
     const cur = d.currentPosition||0, rec = d.recommendedPosition||0;
     const W=300, H=80;
@@ -3027,8 +2522,8 @@ function renderBrand(db) {
     svg+=`<circle cx="${curX2}" cy="${curY2}" r="6" fill="${V.forest}" stroke="#fff" stroke-width="2"/>`;
     svg+=`<circle cx="${recX2}" cy="${recY2}" r="6" fill="${V.terra}" stroke="#fff" stroke-width="2"/>`;
     // Axis end labels — below arc ends only
-    svg+=`<text x="${arcCX-arcR}" y="${arcCY+22}" fill="${V.inkFaint}" font-size="6.5" text-anchor="middle" font-family="monospace">HIDE ITC</text>`;
-    svg+=`<text x="${arcCX+arcR}" y="${arcCY+22}" fill="${V.inkFaint}" font-size="6.5" text-anchor="middle" font-family="monospace">LEAD ITC</text>`;
+    svg+=`<text x="${arcCX-arcR}" y="${arcCY+22}" fill="${V.inkFaint}" font-size="6.5" text-anchor="middle" font-family="monospace">HIDE ACQUIRER</text>`;
+    svg+=`<text x="${arcCX+arcR}" y="${arcCY+22}" fill="${V.inkFaint}" font-size="6.5" text-anchor="middle" font-family="monospace">LEAD ACQUIRER</text>`;
     // Clean legend box — right side, no overlap with arc
     const lx=arcCX+arcR+20;
     svg+=`<rect x="${lx}" y="10" width="140" height="75" fill="${V.parchment}" stroke="${V.sand}" stroke-width="1" rx="3"/>`;
@@ -3038,7 +2533,7 @@ function renderBrand(db) {
     svg+=`<text x="${lx+24}" y="56" fill="${V.terra}" font-size="7.5" font-weight="700">Recommended: ${rec}</text>`;
     svg+=`<text x="${lx+14}" y="74" fill="${V.inkFaint}" font-size="6">0=hide · 50=equal · 100=lead</text>`;
     svg+='</svg>';
-    h+=sectionLabel('ITC Association Strategy — Integration Dial');
+    h+=sectionLabel((db.itcAssociationDial&&db.itcAssociationDial.acquirerName?db.itcAssociationDial.acquirerName:'Acquirer')+' Association Strategy — Integration Dial');
     const noteText = d.note ? `<div style="font-size:6.5px;color:${V.inkFaint};margin-top:4px;">${d.note}</div>` : '';
     h+=`<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:8px 12px;margin-bottom:8px;">${svg}${noteText}</div>`;
   }
@@ -3260,7 +2755,11 @@ function renderSynergy(db) {
   let h = '';
 
   if (db.synergyMatrix && db.synergyMatrix.length) {
-    h += sectionLabel('ITC Asset Activation Scorecard');
+    const synAcqName = db.synergyMatrix && db.synergyMatrix[0] && db.synergyMatrix[0].acquirerName;
+    const synLabel = (synAcqName && synAcqName !== 'the management team' && synAcqName !== 'the acquirer' && synAcqName !== '[ACQUIRER]')
+      ? synAcqName + ' Asset Activation Scorecard'
+      : 'Strategic Leverage Scorecard';
+    h += sectionLabel(synLabel);
     const statusColor={activated:V.green,partial:V.amber,untapped:V.inkFaint};
     const statusBg={activated:V.greenBg,partial:V.amberBg,untapped:V.parchment};
     const maxVal=Math.max(...db.synergyMatrix.map(s=>s.valueCr||0),1);
@@ -3307,20 +2806,20 @@ function renderPlatform(db) {
   let h = '';
 
   if (db.opportunityBubbles && db.opportunityBubbles.length) {
-    h += sectionLabel('Platform Opportunities — ITC Fit × Market Growth × TAM');
+    h += sectionLabel('Platform Opportunities — Strategic Fit × Market Growth × TAM');
     const W=510, H=150, PL=28, PR=10, PT=12, PB=22;
     const cw=W-PL-PR, ch=H-PT-PB;
     const maxTam=Math.max(...db.opportunityBubbles.map(o=>o.tamCr||1),1);
-    const maxFit=Math.max(...db.opportunityBubbles.map(o=>o.itcFitScore||1),1);
+    const maxFit=Math.max(...db.opportunityBubbles.map(o=>o.strategicFitScore||o.itcFitScore||1),1);
     const maxGr=Math.max(...db.opportunityBubbles.map(o=>o.marketGrowthPct||1),1);
     const colors=[V.forest,V.terra,V.amber,V.blue,'#888'];
     let svg=`<svg width="${W}" height="${H}">`;
     svg+=`<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+ch}" stroke="${V.sand}" stroke-width="1"/>`;
     svg+=`<line x1="${PL}" y1="${PT+ch}" x2="${PL+cw}" y2="${PT+ch}" stroke="${V.sand}" stroke-width="1"/>`;
     svg+=`<text x="${PL-4}" y="${PT+ch/2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle" transform="rotate(-90,${PL-4},${PT+ch/2})">Mkt Growth %</text>`;
-    svg+=`<text x="${PL+cw/2}" y="${H-2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">ITC Fit Score</text>`;
+    svg+=`<text x="${PL+cw/2}" y="${H-2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">Strategic Fit Score</text>`;
     db.opportunityBubbles.forEach((o,i)=>{
-      const x=PL+((o.itcFitScore||0)/maxFit)*cw;
+      const x=PL+((o.strategicFitScore||o.itcFitScore||0)/maxFit)*cw;
       const y=PT+ch-((o.marketGrowthPct||0)/maxGr)*ch;
       const r=Math.max(8,6+((o.tamCr||0)/maxTam)*18);
       const c=colors[i%colors.length];
@@ -3733,13 +3232,19 @@ function makePrompt(id, company, acquirer, ctx, synthCtx, market="India") {
   prompt = prompt.replace(/\[ACQUIRER_OR_OWNER\]/g, acqOrOwner);
   prompt = prompt.replace(/\[HAS_ACQUIRER\]/g, hasAcquirer ? "yes" : "no");
   
+  // Resolve [ACQUISITION_PREAMBLE] — a clean, readable context block for the model
+  const acqPreamble = acqName
+    ? `## CONTEXT: POST-ACQUISITION ANALYSIS\nAcquirer: ${acqName}. ${company} was acquired. Frame every finding in terms of what ${acqName} has provided or can still unlock.`
+    : `## CONTEXT: STANDALONE COMPANY ANALYSIS\n${company} is fully independent — NO acquirer, NO parent company. Do NOT mention any acquirer or external owner. Analyse purely on ${company}'s own capital, capabilities, and strategic choices.`;
+  prompt = prompt.replace(/\[ACQUISITION_PREAMBLE\]/g, acqPreamble);
+  
   // Build dynamic preamble based on whether an acquirer is provided
   const acquirerBlock = acqName ? `
 ACQUISITION CONTEXT:
-This is a post-acquisition analysis. [COMPANY] was acquired by ${acqName}. Frame every finding as an opportunity enabled by this acquisition. Do not write about acquisition risks or integration challenges — only advantages and actions.
+This is a post-acquisition analysis. ${company} was acquired by ${acqName}. Frame every finding as an opportunity enabled by this acquisition. Do not write about acquisition risks or integration challenges — only advantages and actions.
 ` : `
 COMPANY CONTEXT:
-This is a standalone company analysis — there is no acquirer. Focus purely on ${company}'s own growth levers, competitive position, and strategic options. Do not reference any parent company or acquirer.
+This is a standalone company analysis of ${company} — there is NO acquirer and NO parent company. Do NOT reference any acquirer, parent, or external owner. Analyse ${company} purely on its own merits: its own capital, its own capabilities, its own competitive position, its own strategic choices. Never say "the management team" as a substitute for an acquirer.
 `;
 
   const isYogabar = company.toLowerCase().includes('yogabar') || company.toLowerCase().includes('yoga bar');
@@ -3803,14 +3308,14 @@ You are one of 10 specialist agents. Do not write about topics that belong to an
 - Margins and unit economics → Agent 4 (margins)
 - Channel strategy and GTM → Agent 5 (growth)
 - Competitor moves → Agent 6 (competitive)
-- Acquirer synergies and integration → Agent 7 (synergy)
-- D2C platform and new brands → Agent 8 (platform)
-- Global benchmarks → Agent 9 (intl)
+- Strategic leverage, synergies, and partnership → Agent 7 (synergy)
+- Platform expansion and adjacency → Agent 9 (platform)
+- Global benchmarks and international → Agent 10 (intl)
 Stay strictly within your mandate. Cross-reference another agent only when directly relevant, in one sentence.
 
 NEVER SHOW YOUR REASONING PROCESS: Do not write sentences like "I'll conduct targeted searches", "Based on my research I can now", "Let me structure this", or "---" dividers. Begin immediately with analysis content. No preamble, no meta-commentary, no closing remarks.
 
-NO NEGATIVES ABOUT THE ACQUISITION: Every finding must be an opportunity, advantage, or action. Frame difficulties as "the priority investment area." The acquisition is unambiguously positive.
+${acqName ? 'NO NEGATIVES ABOUT THE ACQUISITION: Every finding must be an opportunity, advantage, or action. Frame difficulties as "the priority investment area." The acquisition is unambiguously positive.' : 'BALANCED ANALYSIS: Present findings honestly. Strengths and advantages first, then the 1-2 most important risks or gaps with specific mitigations. Do not catastrophise, but do not hide real challenges — the reader needs actionable truth.'}
 
 PROSE vs VISUAL — CRITICAL DIVISION OF LABOUR:
 
@@ -3865,15 +3370,18 @@ If you report individual brand growth rates that differ significantly from a cat
 
 `;
 
+  // Prepend COMPANY/ACQUIRER prefix so server.js schema substitution can reliably find them
+  const metaPrefix = `COMPANY: ${company}\n` + (acqName ? `ACQUIRER: ${acqName}\n` : '') + `\n`;
+  
   if (ctx) {
-    prompt = NARRATIVE_RULES + `USER CONTEXT:
+    prompt = metaPrefix + NARRATIVE_RULES + `USER CONTEXT:
 ${ctx}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ` + prompt;
   } else {
-    prompt = NARRATIVE_RULES + prompt;
+    prompt = metaPrefix + NARRATIVE_RULES + prompt;
   }
   
   if (synthCtx && Object.keys(synthCtx).length > 0) {
@@ -4041,16 +3549,20 @@ function DataBlockInspector({ agentId, agentLabel, db }) {
   const agentFields = Object.keys(db).filter(k => !['agent','kpis','verdictRow','topActions'].includes(k));
   const fieldStatuses = agentFields.map(field => {
     const val = db[field];
-    const isEmpty = !val || (Array.isArray(val) && val.length === 0) ||
+    const isPlaceholder = v =>
+      v === 0 || v === null || v === '' ||
+      v === 'H|M|L' || v === 'STRONG|WATCH|OPTIMISE|UNDERDELIVERED|RISK' ||
+      v === 'channel|product|campaign|strategic' || v === 'build|partner|acquire' ||
+      v === 'activated|partial|untapped' || v === 'STAR|CASHCOW|QUESTION|DOG' ||
+      v === 'KILL|KEEP|GROW|BUILD';
+    const isEmpty = !val ||
+      (Array.isArray(val) && val.length === 0) ||
       (Array.isArray(val) && val.every(item =>
-        typeof item === 'object' && Object.values(item).every(v =>
-          v === 0 || v === null || v === '' ||
-          v === 'H|M|L' || v === 'STRONG|WATCH|OPTIMISE|UNDERDELIVERED|RISK' ||
-          v === 'channel|product|campaign|strategic' || v === 'build|partner|acquire' ||
-          v === 'activated|partial|untapped' || v === 'STAR|CASHCOW|QUESTION|DOG' ||
-          v === 'KILL|KEEP|GROW|BUILD'
-        )
-      ));
+        typeof item === 'object' && Object.values(item).every(isPlaceholder)
+      )) ||
+      // For plain objects (e.g. itcAssociationDial) — empty if all values are placeholders or null
+      (!Array.isArray(val) && typeof val === 'object' &&
+        Object.values(val).every(v => isPlaceholder(v) || (typeof v === 'number' && v === 0)));
     return { field, isEmpty };
   });
   const allFilled = fieldStatuses.every(f => !f.isEmpty);
