@@ -1871,7 +1871,7 @@ function buildPDFHtml({ company, acquirer, parentCo="", parentSince="", companyM
       // "What's Missing" paragraph — style distinctly
       if (p.toLowerCase().startsWith('what this analysis could not confirm') || p.toLowerCase().startsWith('**what this analysis could not confirm')) {
         const cleaned = p.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
-        return \`<div style="margin:14px 0 4px;padding:10px 14px;background:#faf7f2;border-left:3px solid #c97d20;border-radius:0 3px 3px 0;font-size:9px;line-height:1.65;color:#3d3020;">\${cleaned}</div>\`;
+        return `<div style="margin:14px 0 4px;padding:10px 14px;background:#faf7f2;border-left:3px solid #c97d20;border-radius:0 3px 3px 0;font-size:9px;line-height:1.65;color:#3d3020;">${cleaned}</div>`;
       }
       // Single newlines within a paragraph become <br>
       return '<p style="margin:0 0 8px 0;">' + p.replace(/\n/g, ' ') + '</p>';
