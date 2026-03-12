@@ -1161,7 +1161,7 @@ function renderMarket(db) {
     db.channelHeatmap.forEach((row,i) => {
       h += `<tr>
         <td style="padding:5px 10px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-weight:600;color:${V.forest};font-size:7.5px;">${row.channel}</td>
-        ${heatCell(row.companyPresence||row.[company]Presence)}${heatCell(row.categoryGrowth)}${heatCell(row.competitiveDensity)}
+        ${heatCell(row.companyPresence||row.brandPresence||0)}${heatCell(row.categoryGrowth)}${heatCell(row.competitiveDensity)}
       </tr>`;
     });
     h += '</tbody></table>';
@@ -1179,7 +1179,7 @@ function renderPortfolio(db) {
     const W=510, H=160, PL=32, PR=10, PT=12, PB=24;
     const cw=W-PL-PR, ch=H-PT-PB;
     const maxGr=Math.max(...db.skuMatrix.map(s=>s.marketGrowth||1),1);
-    const maxPos=Math.max(...db.skuMatrix.map(s=>s.companyPosition||s.[company]Position||1),1);
+    const maxPos=Math.max(...db.skuMatrix.map(s=>s.companyPosition||s.brandPosition||1),1);
     const maxRev=Math.max(...db.skuMatrix.map(s=>s.revenueCr||1),1);
     const vColors = {STAR:V.terra,CASHCOW:V.green,QUESTION:V.amber,DOG:'#aaa'};
     let svg = `<svg width="${W}" height="${H}">`;
@@ -1201,7 +1201,7 @@ function renderPortfolio(db) {
     // Bubbles — numbered circles, legend below
     const nums = ['①','②','③','④','⑤','⑥','⑦','⑧'];
     db.skuMatrix.forEach((s,si) => {
-      const x = PL + ((s.companyPosition||s.[company]Position||0)/maxPos)*cw;
+      const x = PL + ((s.companyPosition||s.brandPosition||0)/maxPos)*cw;
       const y = PT+ch - ((s.marketGrowth||0)/maxGr)*ch;
       const r = Math.max(8, 6+((s.revenueCr||0)/maxRev)*14);
       const c = vColors[s.verdict]||V.forest;
