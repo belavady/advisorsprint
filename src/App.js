@@ -2140,7 +2140,6 @@ function makePrompt(id, company, acquirer, ctx, synthCtx, market="India", parent
     : "";
 
   // Token substitutions used inside individual agent prompts
- used inside individual agent prompts
   prompt = prompt.replace(/\[ACQUIRER\]/g,         ownerName || "the management team");
   prompt = prompt.replace(/\[ACQUIRER_OR_OWNER\]/g, ownerName || "the company itself");
   prompt = prompt.replace(/\[HAS_ACQUIRER\]/g,     acqName   ? "yes" : "no");
@@ -2405,10 +2404,10 @@ function md(text) {
     const contraMatch = fixedText.match(/##\s*PART\s*2[:\s—]*CONTRADICTIONS[\s\S]*?\n([\s\S]+?)(?=\n##\s*PART|$)/i);
     if (contraMatch) {
       const contraParas = contraMatch[1].trim().split(/\n\n+/).filter(p => p.trim());
-      html += \`<div style="margin:14px 0;">
+      html += `<div style="margin:14px 0;">
         <div style="font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#b85c38;margin-bottom:8px;padding-bottom:5px;border-bottom:2px solid #b85c38;">CONTRADICTIONS & TENSIONS</div>
-        \${contraParas.map(p => \`<div style="padding:10px 14px;background:#fff8f5;border-left:3px solid #b85c38;margin-bottom:6px;font-size:9px;line-height:1.65;color:#3d3020;border-radius:0 3px 3px 0;">\${p.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')}</div>\`).join('')}
-      </div>\`;
+        ${contraParas.map(p => `<div style="padding:10px 14px;background:#fff8f5;border-left:3px solid #b85c38;margin-bottom:6px;font-size:9px;line-height:1.65;color:#3d3020;border-radius:0 3px 3px 0;">${p.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')}</div>`).join('')}
+      </div>`;
     }
 
     // Extract TWO FUTURES (## PART 3)
@@ -2416,23 +2415,23 @@ function md(text) {
     if (futuresMatch) {
       const futureParas = futuresMatch[1].trim().split(/\n\n+/).filter(p => p.trim());
       const colors = ['#e8f5ee:#2d7a4f', '#fdf2f2:#c0392b'];
-      html += \`<div style="margin:14px 0;">
+      html += `<div style="margin:14px 0;">
         <div style="font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#1a3325;margin-bottom:8px;padding-bottom:5px;border-bottom:2px solid #1a3325;">TWO FUTURES</div>
-        \${futureParas.slice(0,2).map((p,i) => {
+        ${futureParas.slice(0,2).map((p,i) => {
           const [bg, border] = colors[i].split(':');
-          return \`<div style="padding:10px 14px;background:\${bg};border-left:3px solid \${border};margin-bottom:6px;font-size:9px;line-height:1.65;color:#3d3020;border-radius:0 3px 3px 0;">\${p.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')}</div>\`;
+          return `<div style="padding:10px 14px;background:${bg};border-left:3px solid ${border};margin-bottom:6px;font-size:9px;line-height:1.65;color:#3d3020;border-radius:0 3px 3px 0;">${p.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')}</div>`;
         }).join('')}
-      </div>\`;
+      </div>`;
     }
 
     // Extract ANALYST'S GUT CALL (## PART 4)
     const gutMatch = fixedText.match(/##\s*PART\s*4[:\s—]*.*GUT[\s\S]*?\n([\s\S]+?)(?=\n##|$)/i);
     if (gutMatch) {
       const gutText = gutMatch[1].trim().replace(/\n/g,' ');
-      html += \`<div style="margin:14px 0;padding:14px 18px;background:#1a3325;border-radius:4px;">
+      html += `<div style="margin:14px 0;padding:14px 18px;background:#1a3325;border-radius:4px;">
         <div style="font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:8px;">THE ANALYST'S GUT CALL</div>
-        <p style="font-size:10px;line-height:1.7;color:rgba(255,255,255,.9);font-style:italic;margin:0;">\${gutText.replace(/\*\*(.+?)\*\*/g,'<strong style=\"color:#fff\">$1</strong>')}</p>
-      </div>\`;
+        <p style="font-size:10px;line-height:1.7;color:rgba(255,255,255,.9);font-style:italic;margin:0;">${gutText.replace(/\*\*(.+?)\*\*/g,'<strong style="color:#fff">$1</strong>')}</p>
+      </div>`;
     }
     
     // Extract all ◉ sections
