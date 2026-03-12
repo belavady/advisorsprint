@@ -2617,134 +2617,157 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
 
   // ── Occasion Wheel SVG ───────────────────────────────────────────────
   function renderOccasionWheel(occs) {
-    if (!occs.length) return '<div style="height:220px;display:flex;align-items:center;justify-content:center;color:#999;font-size:10px;">No occasion data</div>';
-    const W = 420, H = 240, CX = 160, CY = 120, R_INNER = 35, R_OUTER = 95;
-    const LABEL_R = 118; // fixed label ring radius
+    if (!occs.length) return '<div style="height:240px;display:flex;align-items:center;justify-content:center;color:#999;font-size:10px;">No occasion data</div>';
+
+    // Layout constants — wheel sits left, labels get a clear zone, legend sits far right
+    // Key insight: right-side labels need ~80px clearance before legend starts
+    // CX=130 keeps wheel left, LABEL_R=122 gives spoke reach, LEGEND_X=310 keeps legend clear
+    const W = 420, H = 250;
+    const CX = 128, CY = 122;          // wheel centre — shifted left
+    const R_INNER = 32, R_OUTER = 88;  // slightly tighter ring
+    const LABEL_R = 114;               // spoke endpoint — kept modest
+    const LEGEND_X = 308;              // legend left edge — well clear of right-side labels
+    // Right-side labels: CX + LABEL_R = 128 + 114 = 242
+    // Longest label text ~60px wide from x=242 → ends ~302 → 6px gap to legend at 308 ✓
+    // Left-side labels: anchor=end, so text extends left from x = CX - LABEL_R = 14 → fine
+
     const n = occs.length;
     const angleStep = (2 * Math.PI) / n;
-    const statusFill = { owned: C.owned, partial: C.partial, absent: '#e8e0d5' };
+    const statusFill   = { owned: C.owned, partial: C.partial, absent: '#e8e0d5' };
     const statusStroke = { owned: '#1a5c35', partial: '#a06010', absent: '#b85c38' };
     const growthOpacity = { high: '1', medium: '0.75', low: '0.5' };
 
-    let svg = `<svg width="${W}" height="${H}" style="overflow:visible">`;
-    // defs for gradient
-    svg += `<defs><radialGradient id="hubGrad" cx="50%" cy="50%"><stop offset="0%" stop-color="${C.forest}"/><stop offset="100%" stop-color="#0d1f17"/></radialGradient></defs>`;
+    let svg = `<svg width="${W}" height="${H}" style="overflow:visible;display:block;">`;
+    svg += `<defs><radialGradient id="hubGrad2" cx="50%" cy="50%"><stop offset="0%" stop-color="${C.forest}"/><stop offset="100%" stop-color="#0d1f17"/></radialGradient></defs>`;
 
-    // Segments
+    // ── Segments ─────────────────────────────────────────────────────
     const segs = occs.map((occ, i) => {
       const startAngle = i * angleStep - Math.PI / 2;
       const endAngle   = (i + 1) * angleStep - Math.PI / 2;
-      const fill       = statusFill[occ.status] || '#e8e0d5';
-      const stroke     = statusStroke[occ.status] || '#999';
-      const opacity    = growthOpacity[occ.growth] || '0.7';
-      const x1i = CX + R_INNER * Math.cos(startAngle);
-      const y1i = CY + R_INNER * Math.sin(startAngle);
-      const x1o = CX + R_OUTER * Math.cos(startAngle);
-      const y1o = CY + R_OUTER * Math.sin(startAngle);
-      const x2i = CX + R_INNER * Math.cos(endAngle);
-      const y2i = CY + R_INNER * Math.sin(endAngle);
-      const x2o = CX + R_OUTER * Math.cos(endAngle);
-      const y2o = CY + R_OUTER * Math.sin(endAngle);
-      const large = angleStep > Math.PI ? 1 : 0;
+      const fill    = statusFill[occ.status]   || '#e8e0d5';
+      const stroke  = statusStroke[occ.status] || '#999';
+      const opacity = growthOpacity[occ.growth] || '0.7';
+      const large   = angleStep > Math.PI ? 1 : 0;
+      const x1i = CX + R_INNER * Math.cos(startAngle), y1i = CY + R_INNER * Math.sin(startAngle);
+      const x1o = CX + R_OUTER * Math.cos(startAngle), y1o = CY + R_OUTER * Math.sin(startAngle);
+      const x2i = CX + R_INNER * Math.cos(endAngle),   y2i = CY + R_INNER * Math.sin(endAngle);
+      const x2o = CX + R_OUTER * Math.cos(endAngle),   y2o = CY + R_OUTER * Math.sin(endAngle);
       const path = `M${x1i},${y1i} L${x1o},${y1o} A${R_OUTER},${R_OUTER} 0 ${large},1 ${x2o},${y2o} L${x2i},${y2i} A${R_INNER},${R_INNER} 0 ${large},0 ${x1i},${y1i} Z`;
-      // Size ring band
       const sizeR = R_INNER + (R_OUTER - R_INNER) * Math.min(1, (occ.sizeCr || 50) / 300);
-      const sx1 = CX + R_INNER * Math.cos(startAngle);
-      const sy1 = CY + R_INNER * Math.sin(startAngle);
-      const sx2 = CX + sizeR  * Math.cos(startAngle);
-      const sy2 = CY + sizeR  * Math.sin(startAngle);
-      const ex1 = CX + sizeR  * Math.cos(endAngle);
-      const ey1 = CY + sizeR  * Math.sin(endAngle);
-      const ex2 = CX + R_INNER * Math.cos(endAngle);
-      const ey2 = CY + R_INNER * Math.sin(endAngle);
+      const sx1 = CX + R_INNER * Math.cos(startAngle), sy1 = CY + R_INNER * Math.sin(startAngle);
+      const sx2 = CX + sizeR   * Math.cos(startAngle), sy2 = CY + sizeR   * Math.sin(startAngle);
+      const ex1 = CX + sizeR   * Math.cos(endAngle),   ey1 = CY + sizeR   * Math.sin(endAngle);
+      const ex2 = CX + R_INNER * Math.cos(endAngle),   ey2 = CY + R_INNER * Math.sin(endAngle);
       const sizePath = `M${sx1},${sy1} L${sx2},${sy2} A${sizeR},${sizeR} 0 ${large},1 ${ex1},${ey1} L${ex2},${ey2} A${R_INNER},${R_INNER} 0 ${large},0 ${sx1},${sy1} Z`;
-      return { path, sizePath, fill, stroke, opacity, occ, startAngle, endAngle, i };
+      return { path, sizePath, fill, stroke, opacity, occ, startAngle, endAngle };
     });
 
     segs.forEach(s => {
       svg += `<path d="${s.path}" fill="${s.fill}" fill-opacity="${s.opacity}" stroke="${s.stroke}" stroke-width="1.5"/>`;
-      svg += `<path d="${s.sizePath}" fill="${s.fill}" fill-opacity="0.25" stroke="none"/>`;
+      svg += `<path d="${s.sizePath}" fill="${s.fill}" fill-opacity="0.2" stroke="none"/>`;
     });
 
-    // Hub
-    svg += `<circle cx="${CX}" cy="${CY}" r="${R_INNER}" fill="url(#hubGrad)" stroke="${C.forest}" stroke-width="1.5"/>`;
-    svg += `<text x="${CX}" y="${CY-6}" text-anchor="middle" font-size="7" font-weight="800" fill="white" letter-spacing="0.08em">OCCASION</text>`;
-    svg += `<text x="${CX}" y="${CY+7}" text-anchor="middle" font-size="7" font-weight="800" fill="white" letter-spacing="0.08em">COVERAGE</text>`;
+    // ── Hub ───────────────────────────────────────────────────────────
+    svg += `<circle cx="${CX}" cy="${CY}" r="${R_INNER}" fill="url(#hubGrad2)" stroke="${C.forest}" stroke-width="1.5"/>`;
+    svg += `<text x="${CX}" y="${CY-5}" text-anchor="middle" font-size="6.5" font-weight="800" fill="white" letter-spacing="0.08em">OCCASION</text>`;
+    svg += `<text x="${CX}" y="${CY+6}" text-anchor="middle" font-size="6.5" font-weight="800" fill="white" letter-spacing="0.08em">COVERAGE</text>`;
 
-    // Labels — on fixed ring with collision avoidance
-    // Compute label angles and enforce min spacing
+    // ── Label angle computation with collision avoidance ──────────────
+    // Use segment midpoint angles, then iteratively push apart if too close
     let labelAngles = segs.map(s => (s.startAngle + s.endAngle) / 2);
-    // Enforce min 0.38 rad gap between labels
-    const MIN_GAP = 0.38;
-    for (let iter = 0; iter < 3; iter++) {
+    const MIN_GAP = 0.40; // radians — ~23 degrees minimum between adjacent labels
+    for (let iter = 0; iter < 5; iter++) {
       for (let i = 0; i < labelAngles.length; i++) {
         const next = (i + 1) % labelAngles.length;
-        let diff = labelAngles[next] - labelAngles[i];
-        while (diff < 0) diff += 2 * Math.PI;
+        let diff = ((labelAngles[next] - labelAngles[i]) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
         if (diff < MIN_GAP) {
-          labelAngles[i]    -= MIN_GAP / 2;
-          labelAngles[next] += MIN_GAP / 2;
+          const push = (MIN_GAP - diff) / 2;
+          labelAngles[i]    -= push;
+          labelAngles[next] += push;
         }
       }
     }
 
+    // ── Labels + spokes ───────────────────────────────────────────────
     segs.forEach((s, i) => {
-      const midAngle = labelAngles[i];
-      const lx = CX + LABEL_R * Math.cos(midAngle);
-      const ly = CY + LABEL_R * Math.sin(midAngle);
-      // Spoke from outer ring to label
-      const spokeX = CX + (R_OUTER + 4) * Math.cos(midAngle);
-      const spokeY = CY + (R_OUTER + 4) * Math.sin(midAngle);
-      svg += `<line x1="${spokeX}" y1="${spokeY}" x2="${lx}" y2="${ly}" stroke="#ccc" stroke-width="0.5"/>`;
-      // Label — split at space if > 14 chars
-      const name = (s.occ.occasion || '').slice(0, 20);
-      const words = name.split(' ');
-      const isRight = lx >= CX;
-      const anchor = isRight ? 'start' : 'end';
-      const offsetX = isRight ? 3 : -3;
+      const angle = labelAngles[i];
+      const lx = CX + LABEL_R * Math.cos(angle);
+      const ly = CY + LABEL_R * Math.sin(angle);
+
+      // Spoke: from outer ring edge to just before the dot
+      const spokeStartX = CX + (R_OUTER + 3) * Math.cos(angle);
+      const spokeStartY = CY + (R_OUTER + 3) * Math.sin(angle);
+      const spokeEndX   = CX + (LABEL_R - 8)  * Math.cos(angle);
+      const spokeEndY   = CY + (LABEL_R - 8)  * Math.sin(angle);
+      svg += `<line x1="${spokeStartX}" y1="${spokeStartY}" x2="${spokeEndX}" y2="${spokeEndY}" stroke="#ccc" stroke-width="0.6"/>`;
+
+      // Determine side — right side: anchor start; left side: anchor end
+      const isRight  = Math.cos(angle) >= 0;
+      const anchor   = isRight ? 'start' : 'end';
+      const dotOffX  = isRight ? -5 : 5;   // dot sits between spoke end and text
+      const textOffX = isRight ?  3 : -3;
+
       // Status dot
-      svg += `<circle cx="${lx + (isRight ? -6 : 6)}" cy="${ly}" r="3" fill="${s.fill}" stroke="${s.stroke}" stroke-width="1"/>`;
-      if (words.length > 1 && name.length > 12) {
-        const mid = Math.ceil(words.length / 2);
-        const line1 = words.slice(0, mid).join(' ');
-        const line2 = words.slice(mid).join(' ');
-        svg += `<text x="${lx + offsetX}" y="${ly - 4}" text-anchor="${anchor}" font-size="7.5" font-weight="600" fill="${C.forest}">${line1}</text>`;
-        svg += `<text x="${lx + offsetX}" y="${ly + 5}" text-anchor="${anchor}" font-size="7.5" font-weight="600" fill="${C.forest}">${line2}</text>`;
+      svg += `<circle cx="${lx + dotOffX}" cy="${ly}" r="2.5" fill="${s.fill}" stroke="${s.stroke}" stroke-width="1"/>`;
+
+      // Label text — truncate to 18 chars, wrap at natural word boundary if > 11 chars
+      const raw   = (s.occ.occasion || '').slice(0, 18);
+      const words = raw.split(' ');
+
+      // Wrap only if multi-word AND long enough to benefit
+      if (words.length >= 2 && raw.length > 11) {
+        // Find best split point — roughly equal halves by character count
+        let bestSplit = 1, bestDiff = Infinity;
+        for (let k = 1; k < words.length; k++) {
+          const l1 = words.slice(0, k).join(' ').length;
+          const l2 = words.slice(k).join(' ').length;
+          const diff = Math.abs(l1 - l2);
+          if (diff < bestDiff) { bestDiff = diff; bestSplit = k; }
+        }
+        const line1 = words.slice(0, bestSplit).join(' ');
+        const line2 = words.slice(bestSplit).join(' ');
+        svg += `<text x="${lx + textOffX}" y="${ly - 3}" text-anchor="${anchor}" font-size="7" font-weight="700" fill="${C.forest}">${line1}</text>`;
+        svg += `<text x="${lx + textOffX}" y="${ly + 6}" text-anchor="${anchor}" font-size="7" font-weight="700" fill="${C.forest}">${line2}</text>`;
       } else {
-        svg += `<text x="${lx + offsetX}" y="${ly + 3}" text-anchor="${anchor}" font-size="7.5" font-weight="600" fill="${C.forest}">${name}</text>`;
+        svg += `<text x="${lx + textOffX}" y="${ly + 3}" text-anchor="${anchor}" font-size="7" font-weight="700" fill="${C.forest}">${raw}</text>`;
       }
-      // Size label inside segment
-      if (s.occ.sizeCr > 0) {
-        const midR = (R_INNER + R_OUTER) / 2;
+
+      // ₹Cr label inside segment — only if segment is wide enough
+      if (s.occ.sizeCr > 0 && n <= 12) {
+        const midR   = (R_INNER + R_OUTER) / 2;
         const segMid = (s.startAngle + s.endAngle) / 2;
         const sx = CX + midR * Math.cos(segMid);
         const sy = CY + midR * Math.sin(segMid);
-        svg += `<text x="${sx}" y="${sy + 3}" text-anchor="middle" font-size="6.5" font-weight="700" fill="white">${s.occ.sizeCr > 999 ? Math.round(s.occ.sizeCr/100)/10+'K' : s.occ.sizeCr}Cr</text>`;
+        const valStr = s.occ.sizeCr >= 1000 ? (Math.round(s.occ.sizeCr / 100) / 10) + 'K' : String(s.occ.sizeCr);
+        svg += `<text x="${sx}" y="${sy + 3}" text-anchor="middle" font-size="6" font-weight="700" fill="white">${valStr}</text>`;
       }
     });
 
-    // Legend
-    const legendItems = [
-      { label: 'Owned',   fill: C.owned,   stroke: '#1a5c35' },
-      { label: 'Partial', fill: C.partial, stroke: '#a06010' },
-      { label: 'Absent',  fill: '#e8e0d5', stroke: C.absentBorder },
+    // ── Legend — far right, clear of all labels ───────────────────────
+    const LX  = LEGEND_X;
+    const LY0 = CY - 55;
+
+    svg += `<text x="${LX}" y="${LY0}" font-size="6.5" font-weight="800" fill="${C.forest}" letter-spacing="0.08em">PRESENCE</text>`;
+    const presItems = [
+      { label: 'Owned',   fill: C.owned,    stroke: '#1a5c35' },
+      { label: 'Partial', fill: C.partial,  stroke: '#a06010' },
+      { label: 'Absent',  fill: '#e8e0d5',  stroke: C.absentBorder },
     ];
-    let lx = CX + R_OUTER + 30;
-    const ly0 = CY - 20;
-    svg += `<text x="${lx}" y="${ly0 - 8}" font-size="7" font-weight="800" fill="${C.forest}" letter-spacing="0.08em">PRESENCE</text>`;
-    legendItems.forEach((item, i) => {
-      svg += `<rect x="${lx}" y="${ly0 + i * 14}" width="10" height="10" fill="${item.fill}" stroke="${item.stroke}" stroke-width="1" rx="2"/>`;
-      svg += `<text x="${lx + 13}" y="${ly0 + i * 14 + 8}" font-size="7.5" font-weight="600" fill="${C.forest}">${item.label}</text>`;
+    presItems.forEach((item, i) => {
+      svg += `<rect x="${LX}" y="${LY0 + 4 + i * 14}" width="9" height="9" fill="${item.fill}" stroke="${item.stroke}" stroke-width="1" rx="1.5"/>`;
+      svg += `<text x="${LX + 12}" y="${LY0 + 4 + i * 14 + 7}" font-size="7" font-weight="600" fill="${C.forest}">${item.label}</text>`;
     });
-    svg += `<text x="${lx}" y="${ly0 + 3 * 14 + 10}" font-size="7" font-weight="800" fill="${C.forest}" letter-spacing="0.08em">GROWTH</text>`;
-    const growthItems = [
-      { label: 'High', opacity: '1' },
-      { label: 'Medium', opacity: '0.65' },
-      { label: 'Low', opacity: '0.35' },
+
+    const LY1 = LY0 + 4 + 3 * 14 + 10;
+    svg += `<text x="${LX}" y="${LY1}" font-size="6.5" font-weight="800" fill="${C.forest}" letter-spacing="0.08em">GROWTH</text>`;
+    const growItems = [
+      { label: 'High',   opacity: '1'    },
+      { label: 'Medium', opacity: '0.6'  },
+      { label: 'Low',    opacity: '0.3'  },
     ];
-    growthItems.forEach((item, i) => {
-      svg += `<rect x="${lx}" y="${ly0 + 3 * 14 + 14 + i * 14}" width="10" height="10" fill="${C.owned}" fill-opacity="${item.opacity}" stroke="#1a5c35" stroke-width="1" rx="2"/>`;
-      svg += `<text x="${lx + 13}" y="${ly0 + 3 * 14 + 14 + i * 14 + 8}" font-size="7.5" font-weight="600" fill="${C.forest}">${item.label}</text>`;
+    growItems.forEach((item, i) => {
+      svg += `<rect x="${LX}" y="${LY1 + 4 + i * 14}" width="9" height="9" fill="${C.owned}" fill-opacity="${item.opacity}" stroke="#1a5c35" stroke-width="1" rx="1.5"/>`;
+      svg += `<text x="${LX + 12}" y="${LY1 + 4 + i * 14 + 7}" font-size="7" font-weight="600" fill="${C.forest}">${item.label}</text>`;
     });
 
     svg += '</svg>';
@@ -3620,6 +3643,7 @@ export default function AdvisorSprint() {
           const event = JSON.parse(line.slice(6));
           if (event.type === 'chunk')     fullText += event.text;
           if (event.type === 'searching') setStatuses(s => ({ ...s, [agentId]: `searching: ${event.query.slice(0,40)}…` }));
+          if (event.type === 'retrying')  setStatuses(s => ({ ...s, [agentId]: event.message || 'API overloaded — retrying…' }));
           if (event.type === 'done') {
             fullText = event.text || fullText;
           }
