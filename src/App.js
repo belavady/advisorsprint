@@ -103,6 +103,7 @@ const AGENTS = [
   { id: "platform", wave: 2, icon: "◉", label: "Platform Expansion & D2C Brand Incubator", sub: "Strategic portfolio transformation" },
   { id: "intl",     wave: 2, icon: "◎", label: "International Benchmarks & Global Playbook", sub: "Global analogs, MT/QC transitions, transferable lessons" },
   { id: "synopsis", wave: 3, icon: "◉", label: "Executive Synopsis",                        sub: "Strategic synthesis of all 10 agents" },
+  { id: "brief",    wave: 4, icon: "◈", label: "CEO Opportunity Brief",                       sub: "2-page visual brief: gaps, occasions, trends, 18-month moves" },
 ];
 
 const W1 = AGENTS.filter(a => a.wave === 1).map(a => a.id);
@@ -635,6 +636,211 @@ Dense prose. No bullet lists. Tables only for opportunity comparison and investm
 700-900 words. Confidence label every number. Show every calculation.
 Begin with the single most valuable adjacency — make a recommendation immediately.
 `
+
+PROMPTS.brief = `# AGENT 11: CEO OPPORTUNITY BRIEF
+
+You are the most senior strategist on this engagement. You have read every agent output, the full synopsis, and all structured DATA_BLOCKs. Your job is to produce one document: a 2-page visual brief for a Divisional CEO that is sharper, more foresighted, and more actionable than anything the brand's own team will present.
+
+[ACQUISITION_PREAMBLE]
+
+## YOUR ADVANTAGE OVER THE BRAND TEAM
+
+The brand team has Nielsen, custom surveys, and retailer offtake data. They know what has happened. You know what is coming.
+
+Your brief covers exactly three things their data cannot see:
+1. International trend signals — what is mainstream in Korea/Japan/SEA/US/UK/DE/AU today lands in Indian urban markets in 12-24 months
+2. Cross-category occasion threats — competitors from adjacent categories colonising occasions this brand does not yet defend
+3. Sub-scale challenger movements — brands under ₹50 Cr that Nielsen undercounts but QC platform data reveals as the next ₹200 Cr threat
+
+Do not replicate what the brand team will show. Surface what they cannot.
+
+## COMPANY GTM PROFILE — INFER FROM PRIOR AGENTS
+
+Before writing anything, extract from the prior agent outputs:
+- Distribution reach and primary channels (e.g. 4M GT outlets, QC-first, D2C-only, premium MT)
+- Core organisational strength (mass market velocity, premium positioning, manufacturing scale, community brand-building)
+- Speed-to-market capability (large parent = slower processes; D2C standalone = fast)
+- Capital availability signal (backed by large parent = capital-rich; bootstrapped = capital-constrained)
+
+This GTM Profile governs the PLAY TYPE classification of every gap and move.
+
+## PLAY TYPE FRAMEWORK — APPLY TO EVERY GAP AND MOVE
+
+Every gap and every recommended move must be classified as exactly one of three Play Types. This is the most important output of this brief — it tells the CEO not just WHAT to do but HOW to organise to do it.
+
+**SCALE PLAY**
+When to apply: Gap is ≥₹300 Cr addressable via existing distribution infrastructure. Win through velocity, distribution density, and price architecture. The company's existing go-to-market machine is the weapon.
+What CEO must do: Activate the full organisational machine — sales force, retail execution, supply chain scale. This is where size is an advantage.
+Badge colour: Forest green.
+
+**D2C PLAY**
+When to apply: Gap is real and growing (≥₹80 Cr, ≥25% YoY growth) but requires premium channel, community building, QC-first launch, or test-and-learn before scaling. The existing distribution machine will kill this if it touches it too early.
+What CEO must do: Ring-fence from core business. Separate P&L, separate small team (8-15 people), separate success metrics (NPS and repeat rate, not volume), different timeline (24 months to prove, not 12). Resist the urge to plug into the mothership prematurely.
+Critical rule: Do NOT recommend the D2C Play for a company that is already D2C-native. For D2C companies, this is their default mode — name the scale pathway instead.
+Badge colour: Blue.
+
+**CATEGORY CREATION PLAY**
+When to apply: No existing Indian category. Strong international signal (mainstream in KR/JP/SEA, emerging in US/UK). India penetration <2%. Estimated category size ₹500 Cr+ in 3-5 years if the right player defines it. First-mover advantage is decisive — the category creator sets price anchors, consumer education, and shelf space norms.
+What CEO must do: Treat as a ₹30-80 Cr venture bet, not a brand extension. Move at D2C speed. Do not wait for Nielsen to validate — by the time Nielsen shows it, the window has closed. The company that moves 18 months early owns the category. The company that waits for proof arrives at a commodity.
+Badge colour: Coral/amber.
+
+## SCALE THRESHOLD — RUTHLESS EXCLUSION
+
+Only include gaps and moves that meet at least one threshold:
+- SCALE PLAY: ≥₹300 Cr addressable via existing channels within 36 months
+- D2C PLAY: ≥₹80 Cr addressable, ≥25% YoY growth signal, clear premium channel pathway
+- CATEGORY CREATION: Strong international signal in ≥2 reference markets + plausible ₹500 Cr Indian TAM in 5 years
+
+Gaps below all three thresholds: exclude entirely. Do not include them as footnotes, watch lists, or caveats. The brief only shows what the company should act on.
+
+## SYNTHESIS APPROACH
+
+Step 1 — Extract from prior agents. Read every agent output systematically:
+- Agent 1 (Market): TAM, brand's capture rate, underpenetrated segments → GAP SIZING
+- Agent 2 (Portfolio): SKU performance, format gaps → OCCASION MAPPING  
+- Agent 3 (Brand): Occasions owned vs absent, consumer perception → OCCASION WHEEL DATA
+- Agent 4 (Margins): Which gaps are worth chasing (margin-accretive vs dilutive) → MOVE FILTER
+- Agent 5 (Growth): Channel and distribution gaps + GTM Profile → HOW TO SCALE
+- Agent 6 (Competitive): Occasions competitors own that this brand doesn't → THREAT MAP
+- Agent 9 (Platform): Format and flavour adjacencies → TREND SIGNALS
+- Agent 10 (International): KR, JP, SEA, US, UK, DE, AU trend signals → 18-MONTH FORECAST
+
+Step 2 — Critical gap search. After extracting, if specific occasion data, flavour trend data, or international signals are missing — and only then — conduct targeted searches (maximum 3). Do not re-search what agents found.
+
+Step 3 — Apply Play Type + Scale Threshold to every candidate gap. Exclude below-threshold. Classify survivors.
+
+Step 4 — Select The 3 Moves. Apply the move selection filters:
+- FILTER A: ₹Cr opportunity × speed to revenue (biggest and fastest)
+- FILTER B: Biggest gap × strongest right to win (absent but unfair advantage)
+- FILTER C: Trend-timed (window closing in 18 months — move now or lose it)
+Each move must satisfy at least 2 of 3 filters AND pass the Scale Threshold AND have a Play Type. Aim for moves that span all three Play Types if the data supports it — one SCALE, one D2C, one CATEGORY CREATION is the ideal brief.
+
+## WRITING RULES — NON-NEGOTIABLE
+
+COMPRESSION TEST: Every label, number, sentence must survive: "Does removing this change what the reader understands or does?" If no — cut it.
+
+SPECIFICITY RULE: No generic descriptors. "Strong growth" is forbidden. "47% YoY in post-workout occasion, three challenger entries under ₹30 in last 8 months" is required.
+
+SO-WHAT OBLIGATION: Every data point must carry its implication for this brand specifically.
+
+THE MALIK TEST: You are writing for a CEO who has seen 200 brand presentations. He will skip any sentence that sounds like one. Write only what makes him stop, re-read, and reach for a pen.
+
+PROSE LIMIT: The entire brief contains fewer than 80 words of prose. Everything else is numbers, labels, colours, and structure.
+
+## DATA BLOCK — WRITE THIS FIRST
+
+This DATA_BLOCK is the source of truth for the visual renderer. Every visual element is built from this JSON. Be precise — wrong values here produce wrong charts.
+
+<<<DATA_BLOCK>>>
+{
+  "agent": "brief",
+  "verdictRow": {
+    "dimension": "CEO Opportunity Brief",
+    "verdict": "STRONG",
+    "finding": "one sentence: the single biggest gap this brand is not exploiting",
+    "confidence": "H|M|L"
+  },
+  "kpis": [
+    {"label": "TAM", "value": "₹X Cr", "sub": "total addressable market", "trend": "up", "confidence": "H"},
+    {"label": "Captured", "value": "X%", "sub": "brand's current share of TAM", "trend": "flat", "confidence": "M"},
+    {"label": "Gap", "value": "₹X Cr", "sub": "revenue not yet captured", "trend": "up", "confidence": "M"},
+    {"label": "Trend Window", "value": "18mo", "sub": "time before window closes", "trend": "down", "confidence": "H"}
+  ],
+  "occasionWheel": [
+    {
+      "occasion": "Morning Snack",
+      "sizeCr": 0,
+      "status": "owned|partial|absent",
+      "growth": "high|medium|low",
+      "owner": "Brand name or blank if owned"
+    }
+  ],
+  "gapTable": [
+    {
+      "occasion": "occasion name",
+      "categorySizeCr": 0,
+      "brandShare": "X%",
+      "owner": "competitor name",
+      "playType": "SCALE|D2C|CATEGORY CREATION",
+      "scalingMechanism": "e.g. GT 4M outlets|QC-first|Separate D2C|New category",
+      "confidence": "H|M|L"
+    }
+  ],
+  "flavourTrends": [
+    {
+      "trend": "trend name (max 20 chars)",
+      "nowSignal": "evidence string (max 40 chars)",
+      "momentum": "accelerating|building|mainstream|emerging|declining",
+      "months18": "accelerating|building|mainstream|emerging|declining",
+      "sourceMarket": "IN|KR|JP|SEA|US|UK|DE|AU",
+      "headroomPct": 65,
+      "playType": "SCALE|D2C|CATEGORY CREATION"
+    }
+  ],
+  "radarAxes": [
+    {"axis": "Occasion Coverage", "today": 0, "future": 0},
+    {"axis": "Trend Alignment", "today": 0, "future": 0},
+    {"axis": "Channel Reach", "today": 0, "future": 0},
+    {"axis": "Format Range", "today": 0, "future": 0},
+    {"axis": "Price Architecture", "today": 0, "future": 0},
+    {"axis": "Competitive Moat", "today": 0, "future": 0}
+  ],
+  "moves": [
+    {
+      "title": "4 words max",
+      "occasion": "occasion or trend captured",
+      "opportunityCr": 0,
+      "playType": "SCALE|D2C|CATEGORY CREATION",
+      "scalingMechanism": "how this company specifically reaches scale — name the channel/model",
+      "orgInstruction": "what CEO must organise differently — e.g. separate P&L, ring-fence team, use full machine",
+      "confidence": "CONFIRMED|DERIVED|ESTIMATED|SIGNAL ONLY",
+      "timeToRevenue": "Q1 26",
+      "filters": ["A", "B"],
+      "rationale": "one sentence, max 120 chars",
+      "evidence": "one line of evidence, source cited, max 80 chars"
+    }
+  ],
+  "internationalSignals": [
+    {
+      "market": "KR|JP|SEA|US|UK|DE|AU",
+      "trend": "trend name (max 35 chars)",
+      "indiaInflection": "Q3 2026",
+      "confidence": "H|M|L",
+      "signal": "one evidence line (max 60 chars)"
+    }
+  ],
+  "boldStatement": "One sentence. Max 140 chars. Names the specific occasion or trend window, the competitor who will own it if this brand doesn't move, and the timeframe. Makes the reader feel urgency without using the word urgency.",
+  "page3": {
+    "needed": false,
+    "challengerBrands": [
+      {"name": "brand name", "revenueEst": "₹X Cr", "occasion": "occasion targeting", "threat": "Q3 2026", "confidence": "M"}
+    ],
+    "internationalDeep": [
+      {"market": "KR", "fullSignal": "2-3 sentence deep signal (max 200 chars)"}
+    ],
+    "questionBank": [
+      "Question for Hemant to ask brand team (max 100 chars)"
+    ],
+    "trendEvidenceLog": [
+      {"trend": "trend name", "evidence": "specific data point with source"}
+    ]
+  },
+  "topActions": [
+    {"action": "specific action", "impact": 0, "speed": 0, "confidence": "H|M|L"}
+  ]
+}
+<<<END_DATA_BLOCK>>>
+
+## AFTER THE DATA BLOCK — WRITE THE BOLD STATEMENT ONLY
+
+After the DATA_BLOCK, write exactly this and nothing else:
+
+**BOLD STATEMENT:**
+[Your one sentence here]
+
+Do not write prose analysis. Do not write section headers. Do not write a summary. The DATA_BLOCK is the brief. The Bold Statement is the closing line. That is the complete output of this agent.
+`;
+
 
 const MOCK = {
   market: `## MARKET POSITION & CATEGORY DYNAMICS
@@ -2357,6 +2563,710 @@ ${ctx}
   return prompt;
 }
 
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// buildBriefHtml — CEO Opportunity Brief — standalone 2-page PDF
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalone", results, dataBlocks, market="India" }) {
+  const db = dataBlocks['brief'] || {};
+  const raw = results['brief'] || '';
+
+  // ── Extract bold statement ───────────────────────────────────────────
+  const boldMatch = raw.match(/BOLD STATEMENT[:\s]*\n([^\n]+)/i);
+  const boldStatement = boldMatch ? boldMatch[1].trim().replace(/^\*+|\*+$/g,'') : (db.boldStatement || '');
+
+  // ── Safe accessors ───────────────────────────────────────────────────
+  const occasions   = Array.isArray(db.occasionWheel)      ? db.occasionWheel      : [];
+  const gapTable    = Array.isArray(db.gapTable)           ? db.gapTable           : [];
+  const flavours    = Array.isArray(db.flavourTrends)      ? db.flavourTrends      : [];
+  const radarAxes   = Array.isArray(db.radarAxes)          ? db.radarAxes          : [];
+  const moves       = Array.isArray(db.moves)              ? db.moves              : [];
+  const intl        = Array.isArray(db.internationalSignals) ? db.internationalSignals : [];
+  const kpis        = Array.isArray(db.kpis)               ? db.kpis               : [];
+  const p3          = db.page3 || {};
+  const needsPage3  = p3.needed === true;
+
+  // ── Colour system ────────────────────────────────────────────────────
+  const C = {
+    forest:    '#1a3325',
+    amber:     '#c97d20',
+    coral:     '#b85c38',
+    blue:      '#2563eb',
+    parchment: '#f5f0e8',
+    lightGrey: '#f0f0f0',
+    owned:     '#2d7a4f',
+    partial:   '#c97d20',
+    absent:    '#e8e0d5',
+    absentBorder: '#b85c38',
+    high:      '#2d7a4f',
+    medium:    '#c97d20',
+    low:       '#e8e0d5',
+  };
+
+  // ── Contrast-safe text colour ────────────────────────────────────────
+  function textOn(bg) {
+    const map = {
+      [C.forest]: '#fff', [C.amber]: '#fff', [C.coral]: '#fff',
+      [C.blue]: '#fff', [C.owned]: '#fff', [C.partial]: '#fff',
+      [C.parchment]: C.forest, [C.lightGrey]: '#333',
+      [C.absent]: '#666', [C.absentBorder]: '#fff',
+    };
+    return map[bg] || '#fff';
+  }
+
+  // ── Occasion Wheel SVG ───────────────────────────────────────────────
+  function renderOccasionWheel(occs) {
+    if (!occs.length) return '<div style="height:220px;display:flex;align-items:center;justify-content:center;color:#999;font-size:10px;">No occasion data</div>';
+    const W = 420, H = 240, CX = 160, CY = 120, R_INNER = 35, R_OUTER = 95;
+    const LABEL_R = 118; // fixed label ring radius
+    const n = occs.length;
+    const angleStep = (2 * Math.PI) / n;
+    const statusFill = { owned: C.owned, partial: C.partial, absent: '#e8e0d5' };
+    const statusStroke = { owned: '#1a5c35', partial: '#a06010', absent: '#b85c38' };
+    const growthOpacity = { high: '1', medium: '0.75', low: '0.5' };
+
+    let svg = `<svg width="${W}" height="${H}" style="overflow:visible">`;
+    // defs for gradient
+    svg += `<defs><radialGradient id="hubGrad" cx="50%" cy="50%"><stop offset="0%" stop-color="${C.forest}"/><stop offset="100%" stop-color="#0d1f17"/></radialGradient></defs>`;
+
+    // Segments
+    const segs = occs.map((occ, i) => {
+      const startAngle = i * angleStep - Math.PI / 2;
+      const endAngle   = (i + 1) * angleStep - Math.PI / 2;
+      const fill       = statusFill[occ.status] || '#e8e0d5';
+      const stroke     = statusStroke[occ.status] || '#999';
+      const opacity    = growthOpacity[occ.growth] || '0.7';
+      const x1i = CX + R_INNER * Math.cos(startAngle);
+      const y1i = CY + R_INNER * Math.sin(startAngle);
+      const x1o = CX + R_OUTER * Math.cos(startAngle);
+      const y1o = CY + R_OUTER * Math.sin(startAngle);
+      const x2i = CX + R_INNER * Math.cos(endAngle);
+      const y2i = CY + R_INNER * Math.sin(endAngle);
+      const x2o = CX + R_OUTER * Math.cos(endAngle);
+      const y2o = CY + R_OUTER * Math.sin(endAngle);
+      const large = angleStep > Math.PI ? 1 : 0;
+      const path = `M${x1i},${y1i} L${x1o},${y1o} A${R_OUTER},${R_OUTER} 0 ${large},1 ${x2o},${y2o} L${x2i},${y2i} A${R_INNER},${R_INNER} 0 ${large},0 ${x1i},${y1i} Z`;
+      // Size ring band
+      const sizeR = R_INNER + (R_OUTER - R_INNER) * Math.min(1, (occ.sizeCr || 50) / 300);
+      const sx1 = CX + R_INNER * Math.cos(startAngle);
+      const sy1 = CY + R_INNER * Math.sin(startAngle);
+      const sx2 = CX + sizeR  * Math.cos(startAngle);
+      const sy2 = CY + sizeR  * Math.sin(startAngle);
+      const ex1 = CX + sizeR  * Math.cos(endAngle);
+      const ey1 = CY + sizeR  * Math.sin(endAngle);
+      const ex2 = CX + R_INNER * Math.cos(endAngle);
+      const ey2 = CY + R_INNER * Math.sin(endAngle);
+      const sizePath = `M${sx1},${sy1} L${sx2},${sy2} A${sizeR},${sizeR} 0 ${large},1 ${ex1},${ey1} L${ex2},${ey2} A${R_INNER},${R_INNER} 0 ${large},0 ${sx1},${sy1} Z`;
+      return { path, sizePath, fill, stroke, opacity, occ, startAngle, endAngle, i };
+    });
+
+    segs.forEach(s => {
+      svg += `<path d="${s.path}" fill="${s.fill}" fill-opacity="${s.opacity}" stroke="${s.stroke}" stroke-width="1.5"/>`;
+      svg += `<path d="${s.sizePath}" fill="${s.fill}" fill-opacity="0.25" stroke="none"/>`;
+    });
+
+    // Hub
+    svg += `<circle cx="${CX}" cy="${CY}" r="${R_INNER}" fill="url(#hubGrad)" stroke="${C.forest}" stroke-width="1.5"/>`;
+    svg += `<text x="${CX}" y="${CY-6}" text-anchor="middle" font-size="7" font-weight="800" fill="white" letter-spacing="0.08em">OCCASION</text>`;
+    svg += `<text x="${CX}" y="${CY+7}" text-anchor="middle" font-size="7" font-weight="800" fill="white" letter-spacing="0.08em">COVERAGE</text>`;
+
+    // Labels — on fixed ring with collision avoidance
+    // Compute label angles and enforce min spacing
+    let labelAngles = segs.map(s => (s.startAngle + s.endAngle) / 2);
+    // Enforce min 0.38 rad gap between labels
+    const MIN_GAP = 0.38;
+    for (let iter = 0; iter < 3; iter++) {
+      for (let i = 0; i < labelAngles.length; i++) {
+        const next = (i + 1) % labelAngles.length;
+        let diff = labelAngles[next] - labelAngles[i];
+        while (diff < 0) diff += 2 * Math.PI;
+        if (diff < MIN_GAP) {
+          labelAngles[i]    -= MIN_GAP / 2;
+          labelAngles[next] += MIN_GAP / 2;
+        }
+      }
+    }
+
+    segs.forEach((s, i) => {
+      const midAngle = labelAngles[i];
+      const lx = CX + LABEL_R * Math.cos(midAngle);
+      const ly = CY + LABEL_R * Math.sin(midAngle);
+      // Spoke from outer ring to label
+      const spokeX = CX + (R_OUTER + 4) * Math.cos(midAngle);
+      const spokeY = CY + (R_OUTER + 4) * Math.sin(midAngle);
+      svg += `<line x1="${spokeX}" y1="${spokeY}" x2="${lx}" y2="${ly}" stroke="#ccc" stroke-width="0.5"/>`;
+      // Label — split at space if > 14 chars
+      const name = (s.occ.occasion || '').slice(0, 20);
+      const words = name.split(' ');
+      const isRight = lx >= CX;
+      const anchor = isRight ? 'start' : 'end';
+      const offsetX = isRight ? 3 : -3;
+      // Status dot
+      svg += `<circle cx="${lx + (isRight ? -6 : 6)}" cy="${ly}" r="3" fill="${s.fill}" stroke="${s.stroke}" stroke-width="1"/>`;
+      if (words.length > 1 && name.length > 12) {
+        const mid = Math.ceil(words.length / 2);
+        const line1 = words.slice(0, mid).join(' ');
+        const line2 = words.slice(mid).join(' ');
+        svg += `<text x="${lx + offsetX}" y="${ly - 4}" text-anchor="${anchor}" font-size="7.5" font-weight="600" fill="${C.forest}">${line1}</text>`;
+        svg += `<text x="${lx + offsetX}" y="${ly + 5}" text-anchor="${anchor}" font-size="7.5" font-weight="600" fill="${C.forest}">${line2}</text>`;
+      } else {
+        svg += `<text x="${lx + offsetX}" y="${ly + 3}" text-anchor="${anchor}" font-size="7.5" font-weight="600" fill="${C.forest}">${name}</text>`;
+      }
+      // Size label inside segment
+      if (s.occ.sizeCr > 0) {
+        const midR = (R_INNER + R_OUTER) / 2;
+        const segMid = (s.startAngle + s.endAngle) / 2;
+        const sx = CX + midR * Math.cos(segMid);
+        const sy = CY + midR * Math.sin(segMid);
+        svg += `<text x="${sx}" y="${sy + 3}" text-anchor="middle" font-size="6.5" font-weight="700" fill="white">${s.occ.sizeCr > 999 ? Math.round(s.occ.sizeCr/100)/10+'K' : s.occ.sizeCr}Cr</text>`;
+      }
+    });
+
+    // Legend
+    const legendItems = [
+      { label: 'Owned',   fill: C.owned,   stroke: '#1a5c35' },
+      { label: 'Partial', fill: C.partial, stroke: '#a06010' },
+      { label: 'Absent',  fill: '#e8e0d5', stroke: C.absentBorder },
+    ];
+    let lx = CX + R_OUTER + 30;
+    const ly0 = CY - 20;
+    svg += `<text x="${lx}" y="${ly0 - 8}" font-size="7" font-weight="800" fill="${C.forest}" letter-spacing="0.08em">PRESENCE</text>`;
+    legendItems.forEach((item, i) => {
+      svg += `<rect x="${lx}" y="${ly0 + i * 14}" width="10" height="10" fill="${item.fill}" stroke="${item.stroke}" stroke-width="1" rx="2"/>`;
+      svg += `<text x="${lx + 13}" y="${ly0 + i * 14 + 8}" font-size="7.5" font-weight="600" fill="${C.forest}">${item.label}</text>`;
+    });
+    svg += `<text x="${lx}" y="${ly0 + 3 * 14 + 10}" font-size="7" font-weight="800" fill="${C.forest}" letter-spacing="0.08em">GROWTH</text>`;
+    const growthItems = [
+      { label: 'High', opacity: '1' },
+      { label: 'Medium', opacity: '0.65' },
+      { label: 'Low', opacity: '0.35' },
+    ];
+    growthItems.forEach((item, i) => {
+      svg += `<rect x="${lx}" y="${ly0 + 3 * 14 + 14 + i * 14}" width="10" height="10" fill="${C.owned}" fill-opacity="${item.opacity}" stroke="#1a5c35" stroke-width="1" rx="2"/>`;
+      svg += `<text x="${lx + 13}" y="${ly0 + 3 * 14 + 14 + i * 14 + 8}" font-size="7.5" font-weight="600" fill="${C.forest}">${item.label}</text>`;
+    });
+
+    svg += '</svg>';
+    return svg;
+  }
+
+  // ── Gap Table ────────────────────────────────────────────────────────
+  function renderGapTable(gaps) {
+    if (!gaps.length) return '';
+    const confColour = { H: C.owned, M: C.amber, L: '#999' };
+    const playColour = { 'SCALE': C.forest, 'D2C': C.blue, 'CATEGORY CREATION': C.coral };
+    const playShort  = { 'SCALE': 'SCALE', 'D2C': 'D2C', 'CATEGORY CREATION': 'CAT. CREATE' };
+    let h = `<table style="width:100%;border-collapse:collapse;font-size:8px;">
+      <thead><tr>
+        <th style="padding:5px 8px;background:${C.forest};color:#fff;font-weight:700;text-align:left;letter-spacing:.05em;">OCCASION</th>
+        <th style="padding:5px 8px;background:${C.forest};color:#fff;font-weight:700;text-align:right;">₹Cr</th>
+        <th style="padding:5px 8px;background:${C.forest};color:#fff;font-weight:700;text-align:right;">SHARE</th>
+        <th style="padding:5px 8px;background:${C.forest};color:#fff;font-weight:700;text-align:center;">PLAY</th>
+        <th style="padding:5px 8px;background:${C.forest};color:#fff;font-weight:700;text-align:center;">CONF</th>
+      </tr></thead><tbody>`;
+    gaps.slice(0, 7).forEach((g, i) => {
+      const bg = i % 2 ? '#faf7f2' : '#fff';
+      const conf = g.confidence || 'M';
+      const cc = confColour[conf] || C.amber;
+      const play = g.playType || '';
+      const pc = playColour[play] || C.forest;
+      const ps = playShort[play] || play.slice(0,10);
+      const shareText = g.brandShare === '0%' || !g.brandShare ? '<span style="color:#b85c38;font-weight:700;">ABSENT</span>' : g.brandShare;
+      const isAbsent = g.brandShare === '0%' || !g.brandShare;
+      h += `<tr>
+        <td style="padding:4px 8px;background:${bg};border-left:3px solid ${isAbsent ? C.coral : C.amber};">
+          <div style="font-weight:700;color:${C.forest};font-size:8px;">${(g.occasion||'').slice(0,26)}</div>
+          ${g.scalingMechanism ? `<div style="font-size:6.5px;color:#888;margin-top:1px;">via: ${(g.scalingMechanism||'').slice(0,32)}</div>` : ''}
+        </td>
+        <td style="padding:4px 8px;background:${bg};text-align:right;font-weight:700;font-size:9px;">₹${g.categorySizeCr||'—'}</td>
+        <td style="padding:4px 8px;background:${bg};text-align:right;">${shareText}</td>
+        <td style="padding:4px 8px;background:${bg};text-align:center;">
+          ${ps ? `<span style="background:${pc};color:#fff;font-size:6px;font-weight:800;padding:2px 4px;border-radius:2px;letter-spacing:.04em;white-space:nowrap;">${ps}</span>` : ''}
+        </td>
+        <td style="padding:4px 8px;background:${bg};text-align:center;"><span style="background:${cc};color:#fff;font-size:6.5px;font-weight:700;padding:1px 4px;border-radius:2px;">${conf}</span></td>
+      </tr>`;
+    });
+    h += '</tbody></table>';
+    return h;
+  }
+
+  // ── Flavour Trend Heatmap ────────────────────────────────────────────
+  function renderFlavourTrends(trends) {
+    if (!trends.length) return '';
+    const momentumColour = {
+      accelerating: '#1a5c35', building: C.owned, mainstream: C.amber,
+      emerging: C.blue, declining: '#c0392b'
+    };
+    const momentumWidth = { accelerating: 100, building: 80, mainstream: 65, emerging: 45, declining: 25 };
+    const marketPill = { KR:'#c0392b', JP:'#b85c38', SEA:'#2563eb', US:'#1a5c35', UK:'#6b21a8', DE:'#374151', AU:'#92400e', IN: C.forest };
+
+    const playColour = { 'SCALE': C.forest, 'D2C': C.blue, 'CATEGORY CREATION': C.coral };
+    const playShort  = { 'SCALE': 'SCALE', 'D2C': 'D2C', 'CATEGORY CREATION': 'CAT' };
+    let h = `<div style="margin:0;">
+      <div style="display:grid;grid-template-columns:120px 80px 1fr 80px 50px 52px;gap:0;font-size:7px;background:${C.forest};color:#fff;font-weight:700;letter-spacing:.05em;">
+        <div style="padding:5px 8px;">TREND</div>
+        <div style="padding:5px 8px;">SIGNAL</div>
+        <div style="padding:5px 8px;">NOW MOMENTUM</div>
+        <div style="padding:5px 8px;">18 MONTHS</div>
+        <div style="padding:5px 8px;text-align:center;">MKT</div>
+        <div style="padding:5px 8px;text-align:center;">PLAY</div>
+      </div>`;
+    trends.slice(0, 8).forEach((t, i) => {
+      const bg = i % 2 ? '#faf7f2' : '#fff';
+      const nowCol = momentumColour[t.momentum] || C.amber;
+      const nowW   = momentumWidth[t.momentum] || 50;
+      const futCol = momentumColour[t.months18] || C.amber;
+      const futW   = momentumWidth[t.months18] || 50;
+      const mkCol  = marketPill[t.sourceMarket] || C.forest;
+      const trend  = (t.trend || '').slice(0, 18);
+      const sig    = (t.nowSignal || '').slice(0, 34);
+      const rising = (momentumWidth[t.months18] || 50) > (momentumWidth[t.momentum] || 50);
+      const arrow  = rising ? '↑' : (futW < nowW ? '↓' : '→');
+      const headroom = typeof t.headroomPct === 'number' ? t.headroomPct : null;
+      const play = t.playType || '';
+      const pc = playColour[play] || C.forest;
+      const ps = playShort[play] || '';
+      h += `<div style="display:grid;grid-template-columns:120px 80px 1fr 80px 50px 52px;gap:0;background:${bg};border-bottom:1px solid #e8e0d5;align-items:center;">
+        <div style="padding:5px 8px;">
+          <div style="font-weight:700;color:${C.forest};font-size:8px;">${trend}</div>
+          ${headroom !== null ? `<div style="margin-top:3px;background:#e8e0d5;border-radius:2px;height:4px;"><div style="background:${C.blue};width:${Math.min(headroom,100)}%;height:4px;border-radius:2px;"></div></div><div style="font-size:6px;color:${C.blue};margin-top:1px;">${headroom}% headroom</div>` : ''}
+        </div>
+        <div style="padding:5px 8px;color:#555;font-size:7px;line-height:1.3;">${sig}</div>
+        <div style="padding:5px 8px;">
+          <div style="background:#e8e0d5;border-radius:2px;height:8px;">
+            <div style="background:${nowCol};width:${nowW}%;height:8px;border-radius:2px;"></div>
+          </div>
+          <div style="font-size:6.5px;color:${nowCol};font-weight:700;margin-top:2px;text-transform:uppercase;">${t.momentum||''}</div>
+        </div>
+        <div style="padding:5px 8px;">
+          <div style="background:#e8e0d5;border-radius:2px;height:8px;">
+            <div style="background:${futCol};width:${futW}%;height:8px;border-radius:2px;"></div>
+          </div>
+          <div style="font-size:6.5px;color:${futCol};font-weight:700;margin-top:2px;">${arrow} ${t.months18||''}</div>
+        </div>
+        <div style="padding:5px 8px;text-align:center;">
+          <span style="background:${mkCol};color:#fff;font-size:6.5px;font-weight:800;padding:2px 4px;border-radius:3px;letter-spacing:.05em;">${t.sourceMarket||'IN'}</span>
+        </div>
+        <div style="padding:5px 8px;text-align:center;">
+          ${ps ? `<span style="background:${pc};color:#fff;font-size:6px;font-weight:800;padding:2px 3px;border-radius:2px;letter-spacing:.03em;">${ps}</span>` : ''}
+        </div>
+      </div>`;
+    });
+    h += '</div>';
+    return h;
+  }
+
+  // ── Radar Chart ──────────────────────────────────────────────────────
+  function renderRadar(axes) {
+    if (!axes.length) return '';
+    const W = 240, H = 220, CX = 120, CY = 110, R = 85;
+    const n = axes.length;
+    const angleStep = (2 * Math.PI) / n;
+    const levels = [0.25, 0.5, 0.75, 1.0];
+    let svg = `<svg width="${W}" height="${H}" style="overflow:visible">`;
+
+    // Grid rings
+    levels.forEach(l => {
+      const pts = axes.map((_, i) => {
+        const a = i * angleStep - Math.PI / 2;
+        return `${CX + R * l * Math.cos(a)},${CY + R * l * Math.sin(a)}`;
+      }).join(' ');
+      svg += `<polygon points="${pts}" fill="none" stroke="#ddd" stroke-width="${l === 1 ? 1.5 : 0.75}"/>`;
+    });
+
+    // Axes
+    axes.forEach((_, i) => {
+      const a = i * angleStep - Math.PI / 2;
+      svg += `<line x1="${CX}" y1="${CY}" x2="${CX + R * Math.cos(a)}" y2="${CY + R * Math.sin(a)}" stroke="#ddd" stroke-width="0.75"/>`;
+    });
+
+    // Today polygon
+    const todayPts = axes.map((ax, i) => {
+      const a = i * angleStep - Math.PI / 2;
+      const v = Math.min(1, Math.max(0, (ax.today || 0) / 100));
+      return `${CX + R * v * Math.cos(a)},${CY + R * v * Math.sin(a)}`;
+    }).join(' ');
+    svg += `<polygon points="${todayPts}" fill="${C.forest}" fill-opacity="0.25" stroke="${C.forest}" stroke-width="2"/>`;
+
+    // Future polygon
+    const futurePts = axes.map((ax, i) => {
+      const a = i * angleStep - Math.PI / 2;
+      const v = Math.min(1, Math.max(0, (ax.future || 0) / 100));
+      return `${CX + R * v * Math.cos(a)},${CY + R * v * Math.sin(a)}`;
+    }).join(' ');
+    svg += `<polygon points="${futurePts}" fill="${C.amber}" fill-opacity="0.15" stroke="${C.amber}" stroke-width="2" stroke-dasharray="4,2"/>`;
+
+    // Gap fill between today and future
+    svg += `<polygon points="${futurePts}" fill="${C.amber}" fill-opacity="0.08" stroke="none"/>`;
+
+    // Dots
+    axes.forEach((ax, i) => {
+      const a = i * angleStep - Math.PI / 2;
+      const vt = Math.min(1, Math.max(0, (ax.today || 0) / 100));
+      const vf = Math.min(1, Math.max(0, (ax.future || 0) / 100));
+      svg += `<circle cx="${CX + R * vt * Math.cos(a)}" cy="${CY + R * vt * Math.sin(a)}" r="3.5" fill="${C.forest}" stroke="#fff" stroke-width="1"/>`;
+      svg += `<circle cx="${CX + R * vf * Math.cos(a)}" cy="${CY + R * vf * Math.sin(a)}" r="3.5" fill="${C.amber}" stroke="#fff" stroke-width="1"/>`;
+    });
+
+    // Axis labels — viewport-aware positioning
+    axes.forEach((ax, i) => {
+      const a = i * angleStep - Math.PI / 2;
+      // Place label beyond the outer ring with padding
+      const LABEL_R = R + 18;
+      const lx = CX + LABEL_R * Math.cos(a);
+      const ly = CY + LABEL_R * Math.sin(a);
+      const isRight = lx > CX + 5;
+      const isLeft  = lx < CX - 5;
+      const anchor  = isRight ? 'start' : isLeft ? 'end' : 'middle';
+      const label   = (ax.axis || '').slice(0, 18);
+      const words   = label.split(' ');
+      // Score labels
+      const todayScore  = Math.round(ax.today || 0);
+      const futureScore = Math.round(ax.future || 0);
+      const delta = futureScore - todayScore;
+      const deltaStr = delta > 0 ? `+${delta}` : `${delta}`;
+      const deltaCol = delta > 0 ? C.owned : '#c0392b';
+      if (words.length > 1) {
+        svg += `<text x="${lx}" y="${ly - 4}" text-anchor="${anchor}" font-size="7.5" font-weight="700" fill="${C.forest}">${words[0]}</text>`;
+        svg += `<text x="${lx}" y="${ly + 5}" text-anchor="${anchor}" font-size="7.5" font-weight="700" fill="${C.forest}">${words.slice(1).join(' ')}</text>`;
+        svg += `<text x="${lx}" y="${ly + 15}" text-anchor="${anchor}" font-size="7" fill="${deltaCol}" font-weight="700">${todayScore}→${futureScore} (${deltaStr})</text>`;
+      } else {
+        svg += `<text x="${lx}" y="${ly + 3}" text-anchor="${anchor}" font-size="7.5" font-weight="700" fill="${C.forest}">${label}</text>`;
+        svg += `<text x="${lx}" y="${ly + 13}" text-anchor="${anchor}" font-size="7" fill="${deltaCol}" font-weight="700">${todayScore}→${futureScore} (${deltaStr})</text>`;
+      }
+    });
+
+    // Legend
+    svg += `<rect x="${CX - 55}" y="${H - 22}" width="10" height="10" fill="${C.forest}" fill-opacity="0.4" stroke="${C.forest}" stroke-width="1.5" rx="1"/>`;
+    svg += `<text x="${CX - 42}" y="${H - 13}" font-size="7.5" fill="${C.forest}" font-weight="600">Today</text>`;
+    svg += `<rect x="${CX + 5}" y="${H - 22}" width="10" height="10" fill="${C.amber}" fill-opacity="0.25" stroke="${C.amber}" stroke-width="1.5" stroke-dasharray="3,1.5" rx="1"/>`;
+    svg += `<text x="${CX + 18}" y="${H - 13}" font-size="7.5" fill="${C.amber}" font-weight="600">18 Months</text>`;
+
+    svg += '</svg>';
+    return svg;
+  }
+
+  // ── Move Cards ───────────────────────────────────────────────────────
+  function renderMoveCards(moves) {
+    if (!moves.length) return '';
+    const confColour  = { CONFIRMED: C.owned, DERIVED: C.blue, ESTIMATED: C.amber, 'SIGNAL ONLY': '#999' };
+    const filterLabels = { A: 'BIGGEST×FASTEST', B: 'RIGHT TO WIN', C: 'WINDOW CLOSING' };
+    const filterColour = { A: C.forest, B: C.blue, C: C.coral };
+    const playConfig  = {
+      'SCALE':             { colour: C.forest,  label: 'SCALE PLAY',       icon: '⚡', sub: 'Use the full machine' },
+      'D2C':               { colour: C.blue,    label: 'D2C PLAY',         icon: '◎', sub: 'Ring-fence. Separate P&L.' },
+      'CATEGORY CREATION': { colour: C.coral,   label: 'CATEGORY CREATION',icon: '◈', sub: 'Move before Nielsen sees it' },
+    };
+    return `<div style="display:grid;grid-template-columns:repeat(${Math.min(moves.length, 3)},1fr);gap:8px;">` +
+      moves.slice(0, 3).map((m, i) => {
+        const numLabel = ['①', '②', '③'][i];
+        const conf     = m.confidence || 'ESTIMATED';
+        const cc       = confColour[conf] || C.amber;
+        const filters  = Array.isArray(m.filters) ? m.filters : [];
+        const title    = (m.title || 'Move ' + (i+1)).slice(0, 28);
+        const play     = m.playType || '';
+        const pcfg     = playConfig[play] || { colour: C.forest, label: play, icon: '◆', sub: '' };
+        const orgInstr = (m.orgInstruction || '').slice(0, 90);
+        const scaling  = (m.scalingMechanism || '').slice(0, 50);
+        return `<div style="background:#fff;border:1.5px solid ${pcfg.colour};border-radius:4px;overflow:hidden;display:flex;flex-direction:column;">
+          <!-- Play Type Banner -->
+          <div style="background:${pcfg.colour};padding:4px 10px;display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:7px;font-weight:800;color:#fff;letter-spacing:.1em;">${pcfg.icon} ${pcfg.label}</span>
+            <span style="font-size:6.5px;color:rgba(255,255,255,.7);font-style:italic;">${pcfg.sub}</span>
+          </div>
+          <!-- Title bar -->
+          <div style="background:${pcfg.colour}22;padding:7px 10px;display:flex;align-items:center;gap:6px;border-bottom:1px solid ${pcfg.colour}33;">
+            <span style="font-size:13px;color:${pcfg.colour};">${numLabel}</span>
+            <span style="font-size:9px;font-weight:800;color:${C.forest};letter-spacing:.03em;flex:1;line-height:1.2;">${title}</span>
+          </div>
+          <!-- Body -->
+          <div style="padding:8px 10px;flex:1;display:flex;flex-direction:column;gap:4px;">
+            <div style="font-size:7px;color:#666;font-style:italic;line-height:1.3;">${(m.occasion||'').slice(0,45)}</div>
+            <!-- Opportunity -->
+            <div style="display:flex;align-items:baseline;gap:3px;">
+              <span style="font-size:18px;font-weight:900;color:${C.forest};line-height:1;">₹${m.opportunityCr||'?'}</span>
+              <span style="font-size:7px;color:#888;">Cr opp.</span>
+              <span style="background:${cc};color:#fff;font-size:6px;font-weight:700;padding:1px 4px;border-radius:2px;margin-left:4px;">${conf}</span>
+            </div>
+            <!-- Revenue timeline -->
+            <div style="font-size:7px;color:#888;">First revenue: <strong style="color:${C.forest};">${m.timeToRevenue||'TBD'}</strong></div>
+            <!-- Rationale -->
+            <div style="font-size:7.5px;color:${C.forest};font-weight:600;line-height:1.4;border-left:2px solid ${pcfg.colour};padding-left:5px;">${(m.rationale||'').slice(0,120)}</div>
+            <!-- Org instruction — the key new element -->
+            ${orgInstr ? `<div style="background:${pcfg.colour}11;border:1px solid ${pcfg.colour}44;border-radius:3px;padding:4px 6px;">
+              <div style="font-size:6px;font-weight:800;letter-spacing:.08em;color:${pcfg.colour};margin-bottom:2px;">HOW TO ORGANISE</div>
+              <div style="font-size:7px;color:#444;line-height:1.4;">${orgInstr}</div>
+            </div>` : ''}
+            <!-- Scaling mechanism -->
+            ${scaling ? `<div style="font-size:6.5px;color:#777;line-height:1.3;"><span style="font-weight:700;color:#555;">Path to scale:</span> ${scaling}</div>` : ''}
+            <!-- Evidence -->
+            <div style="font-size:7px;color:#999;border-top:1px solid #f0ece6;padding-top:4px;line-height:1.3;margin-top:auto;">${(m.evidence||'').slice(0,80)}</div>
+            <!-- Filter tags -->
+            <div style="display:flex;gap:3px;flex-wrap:wrap;">
+              ${filters.map(f => `<span style="background:${filterColour[f]||C.forest}22;color:${filterColour[f]||C.forest};border:1px solid ${filterColour[f]||C.forest}55;font-size:6px;font-weight:700;padding:1px 4px;border-radius:2px;letter-spacing:.03em;">${filterLabels[f]||f}</span>`).join('')}
+            </div>
+          </div>
+        </div>`;
+      }).join('') + '</div>';
+  }
+
+  // ── International Signal Strip ───────────────────────────────────────
+  function renderIntlStrip(signals) {
+    if (!signals.length) return '';
+    const mktColour = { KR:'#c0392b', JP:'#b85c38', SEA:'#2563eb', US:'#1a5c35', UK:'#6b21a8', DE:'#374151', AU:'#92400e', IN: C.forest };
+    const confDot = { H: C.owned, M: C.amber, L: '#ccc' };
+    return `<div style="display:grid;grid-template-columns:repeat(${Math.min(signals.length,6)},1fr);gap:6px;">` +
+      signals.slice(0, 6).map(s => {
+        const mc = mktColour[s.market] || C.forest;
+        const cd = confDot[s.confidence] || C.amber;
+        return `<div style="background:#fff;border:1px solid #e8e0d5;border-radius:3px;padding:7px 8px;border-top:3px solid ${mc};">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+            <span style="background:${mc};color:#fff;font-size:7px;font-weight:800;padding:2px 6px;border-radius:2px;letter-spacing:.08em;">${s.market}</span>
+            <span style="font-size:7.5px;color:#888;">${s.indiaInflection||''}</span>
+          </div>
+          <div style="font-size:8px;font-weight:700;color:${C.forest};margin-bottom:3px;line-height:1.3;">${(s.trend||'').slice(0,35)}</div>
+          <div style="font-size:7px;color:#666;line-height:1.3;">${(s.signal||'').slice(0,60)}</div>
+          <div style="margin-top:4px;display:flex;align-items:center;gap:3px;">
+            <span style="width:6px;height:6px;border-radius:50%;background:${cd};display:inline-block;"></span>
+            <span style="font-size:6.5px;color:#888;">Signal confidence</span>
+          </div>
+        </div>`;
+      }).join('') + '</div>';
+  }
+
+  // ── KPI strip ────────────────────────────────────────────────────────
+  function renderKPIs(kpis) {
+    if (!kpis.length) return '';
+    const trendArrow = { up: '↑', down: '↓', flat: '→', watch: '⚠' };
+    const trendCol   = { up: C.owned, down: '#c0392b', flat: '#888', watch: C.amber };
+    const confCol    = { H: C.owned, M: C.amber, L: '#999' };
+    return `<div style="display:grid;grid-template-columns:repeat(${Math.min(kpis.length,4)},1fr);gap:6px;margin-bottom:14px;">` +
+      kpis.slice(0, 4).map(k => {
+        const tc = trendCol[k.trend] || '#888';
+        const ta = trendArrow[k.trend] || '→';
+        const cc = confCol[k.confidence] || C.amber;
+        return `<div style="background:#fff;border:1px solid #e8e0d5;border-radius:3px;padding:8px 10px;border-left:3px solid ${C.forest};">
+          <div style="font-size:7px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:3px;">${(k.label||'').slice(0,18)}</div>
+          <div style="font-size:16px;font-weight:900;color:${C.forest};line-height:1;">${k.value||'—'} <span style="font-size:11px;color:${tc};">${ta}</span></div>
+          <div style="font-size:7px;color:#888;margin-top:3px;">${(k.sub||'').slice(0,30)}</div>
+          <div style="margin-top:4px;"><span style="background:${cc};color:#fff;font-size:6px;font-weight:700;padding:1px 4px;border-radius:2px;">${k.confidence||'M'}</span></div>
+        </div>`;
+      }).join('') + '</div>';
+  }
+
+  // ── Page 3 content ───────────────────────────────────────────────────
+  function renderPage3(p3) {
+    let html = '';
+
+    // Challenger brands
+    if (Array.isArray(p3.challengerBrands) && p3.challengerBrands.length) {
+      html += `<div style="margin-bottom:16px;">
+        <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.coral};margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid ${C.coral};">CHALLENGER BRAND WATCH</div>
+        <div style="display:grid;grid-template-columns:repeat(${Math.min(p3.challengerBrands.length,3)},1fr);gap:8px;">
+          ${p3.challengerBrands.slice(0,3).map(b => `
+            <div style="background:#fff;border:1.5px solid #e8e0d5;border-radius:4px;padding:8px 10px;border-top:3px solid ${C.coral};">
+              <div style="font-size:9px;font-weight:800;color:${C.forest};">${(b.name||'').slice(0,22)}</div>
+              <div style="font-size:14px;font-weight:900;color:${C.coral};margin:3px 0;">${b.revenueEst||'?'}</div>
+              <div style="font-size:7.5px;color:#555;margin-bottom:3px;">Targeting: ${(b.occasion||'').slice(0,30)}</div>
+              <div style="font-size:7px;color:#888;">Threat timeline: ${b.threat||'TBD'}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+    }
+
+    // Question bank
+    if (Array.isArray(p3.questionBank) && p3.questionBank.length) {
+      html += `<div style="margin-bottom:16px;">
+        <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid ${C.forest};">QUESTIONS FOR THE BRAND TEAM</div>
+        ${p3.questionBank.slice(0,5).map((q,i) => `
+          <div style="display:flex;gap:8px;margin-bottom:6px;align-items:flex-start;">
+            <span style="background:${C.forest};color:#fff;font-size:7px;font-weight:800;padding:2px 5px;border-radius:2px;flex-shrink:0;">Q${i+1}</span>
+            <span style="font-size:8.5px;font-weight:600;color:${C.forest};line-height:1.4;">${(q||'').slice(0,100)}</span>
+          </div>`).join('')}
+      </div>`;
+    }
+
+    // International deep
+    if (Array.isArray(p3.internationalDeep) && p3.internationalDeep.length) {
+      const mktCol = { KR:'#c0392b', JP:'#b85c38', SEA:'#2563eb', US:'#1a5c35', UK:'#6b21a8', DE:'#374151', AU:'#92400e' };
+      html += `<div style="margin-bottom:16px;">
+        <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.blue};margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid ${C.blue};">INTERNATIONAL SIGNAL DETAIL</div>
+        ${p3.internationalDeep.slice(0,6).map(s => `
+          <div style="display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;">
+            <span style="background:${mktCol[s.market]||C.forest};color:#fff;font-size:7px;font-weight:800;padding:2px 6px;border-radius:2px;flex-shrink:0;letter-spacing:.05em;">${s.market||'?'}</span>
+            <span style="font-size:8px;color:#444;line-height:1.5;">${(s.fullSignal||'').slice(0,200)}</span>
+          </div>`).join('')}
+      </div>`;
+    }
+
+    // Trend evidence log
+    if (Array.isArray(p3.trendEvidenceLog) && p3.trendEvidenceLog.length) {
+      html += `<div>
+        <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #ddd;">TREND EVIDENCE LOG</div>
+        <table style="width:100%;border-collapse:collapse;font-size:7.5px;">
+          <thead><tr>
+            <th style="padding:4px 8px;background:#f0f0f0;color:${C.forest};font-weight:700;text-align:left;width:30%;">TREND</th>
+            <th style="padding:4px 8px;background:#f0f0f0;color:${C.forest};font-weight:700;text-align:left;">EVIDENCE & SOURCE</th>
+          </tr></thead><tbody>
+          ${p3.trendEvidenceLog.slice(0,8).map((e,i) => `
+            <tr style="background:${i%2?'#faf7f2':'#fff'};">
+              <td style="padding:4px 8px;font-weight:600;color:${C.forest};">${(e.trend||'').slice(0,28)}</td>
+              <td style="padding:4px 8px;color:#555;">${(e.evidence||'').slice(0,120)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+    }
+
+    return html;
+  }
+
+  // ── Page structure ───────────────────────────────────────────────────
+  const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  const subtitleLine = companyMode === 'parent' && parentCo ? `Brand within ${parentCo}` : companyMode === 'acquired' && acquirer ? `Post-acquisition · ${acquirer}` : 'Strategic Opportunity Brief';
+
+  const pageStyle = `width:794px;min-height:1123px;padding:32px 36px;box-sizing:border-box;background:#faf7f2;font-family:'Instrument Sans',sans-serif;page-break-after:always;position:relative;`;
+
+  // ── Assemble HTML ────────────────────────────────────────────────────
+  return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #eee; }
+  @page { size: A4; margin: 0; }
+  @media print {
+    body { background: white; }
+    .page { page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 -->
+<div class="page" style="${pageStyle}">
+
+  <!-- Header -->
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;padding-bottom:12px;border-bottom:3px solid ${C.forest};">
+    <div>
+      <div style="font-size:8px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:${C.coral};margin-bottom:4px;">OPPORTUNITY BRIEF</div>
+      <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:${C.forest};line-height:1;">${company}</div>
+      <div style="font-size:9px;color:#888;margin-top:3px;">${subtitleLine}</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:7px;color:#aaa;letter-spacing:.08em;margin-bottom:3px;">${dateStr}</div>
+      <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:6px;">
+        <div style="display:flex;align-items:center;gap:3px;"><div style="width:10px;height:10px;background:${C.owned};border-radius:2px;"></div><span style="font-size:7px;color:#666;">Owned</span></div>
+        <div style="display:flex;align-items:center;gap:3px;"><div style="width:10px;height:10px;background:${C.partial};border-radius:2px;"></div><span style="font-size:7px;color:#666;">Partial</span></div>
+        <div style="display:flex;align-items:center;gap:3px;"><div style="width:10px;height:10px;background:#e8e0d5;border:1.5px solid ${C.coral};border-radius:2px;"></div><span style="font-size:7px;color:#666;">Absent</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Strip -->
+  ${renderKPIs(kpis)}
+
+  <!-- Two-column: Occasion Wheel + Gap Table -->
+  <div style="display:grid;grid-template-columns:420px 1fr;gap:16px;margin-bottom:14px;">
+    <div>
+      <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:8px;">OCCASION COVERAGE MAP</div>
+      ${renderOccasionWheel(occasions)}
+    </div>
+    <div>
+      <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:8px;">GAP PRIORITY TABLE</div>
+      ${renderGapTable(gapTable)}
+    </div>
+  </div>
+
+  <!-- Flavour Trend Heatmap -->
+  <div>
+    <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:8px;">FLAVOUR & FORMAT TREND TRAJECTORY</div>
+    ${renderFlavourTrends(flavours)}
+  </div>
+
+  <!-- Footer -->
+  <div style="position:absolute;bottom:18px;left:36px;right:36px;display:flex;justify-content:space-between;align-items:center;">
+    <div style="font-size:6.5px;color:#aaa;letter-spacing:.06em;">ADVISORSPRINT INTELLIGENCE · CONFIDENTIAL</div>
+    <div style="font-size:6.5px;color:#aaa;">PAGE 1 OF ${needsPage3 ? '3' : '2'}</div>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" style="${pageStyle}">
+
+  <!-- Header -->
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid ${C.forest};">
+    <div>
+      <div style="font-size:8px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:${C.coral};">18-MONTH TRANSFORMATION</div>
+      <div style="font-size:16px;font-weight:800;color:${C.forest};">${company} · Where to Play, How to Win</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
+      <div style="font-size:7px;color:#aaa;letter-spacing:.06em;">PAGE 2 OF ${needsPage3 ? '3' : '2'}</div>
+      <div style="display:flex;gap:5px;align-items:center;">
+        <span style="background:${C.forest};color:#fff;font-size:6.5px;font-weight:800;padding:2px 6px;border-radius:2px;">⚡ SCALE PLAY</span>
+        <span style="background:${C.blue};color:#fff;font-size:6.5px;font-weight:800;padding:2px 6px;border-radius:2px;">◎ D2C PLAY</span>
+        <span style="background:${C.coral};color:#fff;font-size:6.5px;font-weight:800;padding:2px 6px;border-radius:2px;">◈ CATEGORY CREATION</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Radar + Before/After State -->
+  <div style="display:grid;grid-template-columns:260px 1fr;gap:16px;margin-bottom:14px;">
+    <div>
+      <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:6px;">STRATEGIC POSITION GAP</div>
+      <div style="font-size:7px;color:#888;margin-bottom:8px;"><span style="color:${C.forest};font-weight:700;">■</span> Today &nbsp; <span style="color:${C.amber};font-weight:700;">▪</span> 18 Months (if 3 moves executed)</div>
+      ${renderRadar(radarAxes)}
+    </div>
+    <div>
+      <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:8px;">THE 3 MOVES</div>
+      ${renderMoveCards(moves)}
+    </div>
+  </div>
+
+  <!-- International Signal Strip -->
+  <div style="margin-bottom:14px;">
+    <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:8px;">INTERNATIONAL SIGNALS → INDIA TIMELINE</div>
+    ${renderIntlStrip(intl)}
+  </div>
+
+  <!-- Bold Statement -->
+  ${boldStatement ? `
+  <div style="background:${C.forest};border-radius:4px;padding:16px 20px;margin-bottom:14px;">
+    <div style="font-size:7.5px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px;">THE VERDICT</div>
+    <div style="font-size:${boldStatement.length > 100 ? '11' : '13'}px;font-weight:700;color:#fff;line-height:1.5;font-style:italic;">${boldStatement}</div>
+  </div>` : ''}
+
+  <!-- Footer -->
+  <div style="position:absolute;bottom:18px;left:36px;right:36px;display:flex;justify-content:space-between;align-items:center;">
+    <div style="font-size:6.5px;color:#aaa;letter-spacing:.06em;">ADVISORSPRINT INTELLIGENCE · CONFIDENTIAL · FOR INTERNAL USE ONLY</div>
+    <div style="font-size:6.5px;color:#aaa;">NUMBERS MARKED ESTIMATED/SIGNAL ONLY ARE DIRECTIONAL — VERIFY BEFORE PRESENTING</div>
+  </div>
+</div>
+
+${needsPage3 ? `
+<!-- PAGE 3 -->
+<div class="page" style="${pageStyle}">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid ${C.forest};">
+    <div>
+      <div style="font-size:8px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:${C.coral};">SUPPLEMENTARY INTELLIGENCE</div>
+      <div style="font-size:16px;font-weight:800;color:${C.forest};">${company} · Deep Evidence & Questions</div>
+    </div>
+    <div style="font-size:7px;color:#aaa;">PAGE 3 OF 3</div>
+  </div>
+  ${renderPage3(p3)}
+  <div style="position:absolute;bottom:18px;left:36px;right:36px;display:flex;justify-content:space-between;">
+    <div style="font-size:6.5px;color:#aaa;">ADVISORSPRINT INTELLIGENCE · CONFIDENTIAL</div>
+    <div style="font-size:6.5px;color:#aaa;">PAGE 3 OF 3</div>
+  </div>
+</div>` : ''}
+
+</body>
+</html>`;
+}
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // MAIN COMPONENT
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -2622,6 +3532,7 @@ export default function AdvisorSprint() {
   const [results, setResults] = useState({});
   const [dataBlocks, setDataBlocks] = useState({});
   const [pdfGenerating, setPdfGenerating] = useState(false);
+  const [briefPdfGenerating, setBriefPdfGenerating] = useState(false);
   const [sources, setSources] = useState([]);
   const [statuses, setStatuses] = useState({});
   const [elapsed, setElapsed] = useState(0);
@@ -2652,7 +3563,8 @@ export default function AdvisorSprint() {
         (a.id === 'synergy'     && prompt.includes('SYNERGY')) ||
         (a.id === 'synopsis'    && prompt.includes('EXECUTIVE SYNOPSIS')) ||
         (a.id === 'platform'    && prompt.includes('D2C BRAND INCUBATOR')) ||
-        (a.id === 'intl'        && prompt.includes('INTERNATIONAL BENCHMARKS'))
+        (a.id === 'intl'        && prompt.includes('INTERNATIONAL BENCHMARKS')) ||
+        (a.id === 'brief'       && prompt.includes('CEO OPPORTUNITY BRIEF'))
       )?.id || 'market';
       return MOCK[mockId] || MOCK.market;
     }
@@ -2777,6 +3689,32 @@ export default function AdvisorSprint() {
     }
   }, [company, callClaude]);
 
+  const generateBriefPDF = async () => {
+    if (briefPdfGenerating || !results['brief']) return;
+    setBriefPdfGenerating(true);
+    gaEvent("brief_pdf_generate", { company });
+    try {
+      const html = buildBriefHtml({ company, acquirer, parentCo, companyMode, results, dataBlocks, market });
+      const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ html, filename: `${company.replace(/\s+/g,'-')}-CEO-Brief.pdf` }),
+      });
+      if (!pdfRes.ok) throw new Error('Brief PDF generation failed');
+      const blob = await pdfRes.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${company.replace(/\s+/g,'-')}-CEO-Brief.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert('Brief PDF failed: ' + e.message);
+    } finally {
+      setBriefPdfGenerating(false);
+    }
+  };
+
   const runSprint = async () => {
     if (!company.trim() || appState === "running") return;
     if (abortRef.current) abortRef.current.abort(); // kill any zombie from previous run
@@ -2824,7 +3762,7 @@ export default function AdvisorSprint() {
       const w1texts = {};
       const ALL_AGENTS_ORDERED = testMode
         ? ['market']  // TEST MODE: single agent to verify visuals cheaply
-        : [...W1, ...W2, 'synopsis'];
+        : [...W1, ...W2, 'synopsis', 'brief'];
 
       for (const id of ALL_AGENTS_ORDERED) {
         if (signal.aborted) break;
@@ -2835,7 +3773,9 @@ export default function AdvisorSprint() {
         // For synopsis: trim each agent output to 2500 chars to reduce prompt size
         // and avoid QUIC timeout on very long Opus requests
         let ctx_for_agent = {};
-        if (id === 'synopsis') {
+        if (id === 'brief') {
+          ctx_for_agent = w1texts; // brief receives all agent outputs INCLUDING synopsis
+        } else if (id === 'synopsis') {
           ctx_for_agent = w1texts; // Full outputs passed — makePrompt handles per-agent trimming
         } else if (W2.includes(id)) {
           ctx_for_agent = w1texts;
@@ -3092,13 +4032,21 @@ export default function AdvisorSprint() {
               )}
 
               {appState === "done" && (
-                <div style={{ display: "flex", gap: 10 }}>
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                   <button
                     onClick={generatePDF}
                     disabled={pdfGenerating}
                     style={{ padding: "12px 24px", background: pdfGenerating ? "#999" : P.terra, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: pdfGenerating ? "not-allowed" : "pointer" }}>
-                    {pdfGenerating ? "⟳ Generating PDF..." : "⬇ Download PDF"}
+                    {pdfGenerating ? "⟳ Generating PDF..." : "⬇ Download Full Report"}
                   </button>
+                  {results['brief'] && (
+                    <button
+                      onClick={generateBriefPDF}
+                      disabled={briefPdfGenerating}
+                      style={{ padding: "12px 24px", background: briefPdfGenerating ? "#999" : P.forest, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: briefPdfGenerating ? "not-allowed" : "pointer" }}>
+                      {briefPdfGenerating ? "⟳ Generating Brief..." : "⬇ CEO Opportunity Brief"}
+                    </button>
+                  )}
                   <button
                     onClick={downloadPDF}
                     style={{ padding: "12px 20px", background: "transparent", color: P.inkSoft, border: `1px solid ${P.inkFaint}`, borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 12, cursor: "pointer" }}>
