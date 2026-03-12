@@ -403,6 +403,14 @@ IF ACQUIRED:
 - "[ACQUIRER] [COMPANY] integration synergies [current year]"
 - "[ACQUIRER] distribution reach [market] [current year]"
 
+IF BRAND WITHIN PARENT (tightly integrated, ≥18 months):
+- "[COMPANY] market share distribution performance [current year]"
+- "[COMPANY] [PARENT] brand revenue channel performance [current year]"
+
+IF BRAND WITHIN PARENT (still integrating, <18 months):
+- "[PARENT] [COMPANY] integration distribution rollout [current year]"
+- "[COMPANY] [PARENT] brand strategy 2024 2025"
+
 IF STANDALONE:
 - "[COMPANY] strategic partnerships [current year]"
 - "[COMPANY] investors distribution partners [current year]"
@@ -418,6 +426,24 @@ Two-way leverage — this is critical: What can [COMPANY]'s capabilities teach [
 What is the next wave of synergy value — the assets not yet activated? Be specific. Show the revenue or margin calculation for each opportunity.
 
 What is blocking capture? Culture mismatch, approval layers, brand dilution, channel conflict — name the real friction.
+
+### IF BRAND WITHIN PARENT — Integration Audit
+
+**The preamble above specifies the integration status. Apply the correct frame.**
+
+**If tightly integrated (≥18 months inside parent):**
+The parent's infrastructure IS the operating model. Do not treat it as a future opportunity to unlock — audit how well the integration is actually performing.
+
+First: what is [PARENT]'s infrastructure delivering in hard numbers today? Distribution reach achieved vs. target, manufacturing cost vs. independent benchmark, procurement savings realised. Search for evidence — do not assume benefits are captured just because the assets exist.
+
+Second: where is integration underperforming? Identify specific gaps — distribution velocity below category benchmarks, margin compression from internal transfer pricing, quality variance from parent manufacturing, brand dilution from mass-channel overexposure, innovation slowdown from approval layers. Name what the data suggests is not working.
+
+Third: where does [PARENT]'s system actively constrain [COMPANY]? Portfolio prioritisation that deprioritises [COMPANY]'s SKUs, internal competition for shelf space or marketing budget, processes that slow speed-to-market relative to independent competitors. These constraints are as important as the assets.
+
+Fourth: what capability does [COMPANY] bring that [PARENT]'s other brands lack? Quick commerce mastery, D2C conversion intelligence, community brand-building, premium consumer data. Quantify what [COMPANY] contributes back to [PARENT]'s portfolio — and whether [PARENT] is extracting that value effectively.
+
+**If still integrating (<18 months inside parent):**
+Map the state of each major asset: already transferred and operational, in transition, or not yet started. For each in-transition item, assess whether the timeline is realistic and what happens if it slips. For what is already operational, assess whether it is performing as expected. Recommend no more than 2 forward moves until integration baseline is established.
 
 ### IF STANDALONE — Leverage Audit
 
@@ -563,12 +589,32 @@ For each, answer:
 4. Should [COMPANY] build this, partner for it, or acquire it? One clear recommendation with rationale.
 5. What is the sequencing? Which comes first and why?
 
-### IF ACQUIRER EXISTS — additional questions:
+### IF ACQUIRED — additional questions:
 - Which adjacencies are accelerated by [ACQUIRER]'s assets? (manufacturing, distribution, brand, capital)
 - Which adjacencies would [ACQUIRER] fund vs. expect [COMPANY] to fund from its own P&L?
-- Is [COMPANY] better used as a single-brand operator or as a D2C platform incubating new brands for [ACQUIRER]? Take a position.
+- Is [COMPANY] better used as a single-brand operator or as a platform incubating new brands for [ACQUIRER]? Take a position.
 
-### IF NO ACQUIRER — additional questions:
+### IF BRAND WITHIN PARENT — additional questions:
+
+**The preamble specifies integration status (≥18 months = tightly integrated). Apply the correct frame.**
+
+**If tightly integrated (≥18 months inside parent):**
+[PARENT]'s infrastructure is the full operating reality. The adjacency question is what [COMPANY] can do *within* that system.
+
+Which adjacencies can [COMPANY] own distinctly within [PARENT]'s portfolio — where no sibling brand competes and [COMPANY]'s brand equity gives it a credible right to win? Map the white space specifically.
+
+Which adjacencies would [PARENT] fund at portfolio level vs. which must [COMPANY] justify from its own P&L? Be specific about what gets parent capital vs. what is a self-funded bet.
+
+Which adjacencies would [PARENT] actively block — portfolio conflict, channel conflict, brand dilution, sibling brand competition for shelf or budget? Name these explicitly and do not recommend them.
+
+Has [COMPANY]'s position inside [PARENT] opened any adjacency impossible independently — international distribution, clinical validation, new manufacturing formats, institutional channel access? If yes, name it and what it unlocks.
+
+Is [COMPANY] better as a focused category leader in its core, or as a platform for [PARENT] to expand into adjacent segments using [COMPANY]'s brand equity? Take a position with rationale.
+
+**If still integrating (<18 months inside parent):**
+Adjacency decisions before core integration is complete carry high execution risk. Recommend at most 1–2 adjacencies that can be built independently of integration milestones. Flag the risk explicitly. Prioritise completing integration before expanding scope.
+
+### IF STANDALONE — additional questions:
 - Which adjacencies are fundable from existing cashflow vs. require external capital?
 - Which adjacencies create the most strategic optionality — i.e. make [COMPANY] more attractive to a future acquirer or IPO investor?
 - What is the biggest adjacency risk: spreading too thin vs. staying too narrow?
@@ -1778,7 +1824,7 @@ function renderAgentVisuals(agentId, db, market="India") {
   return h;
 }
 
-function buildPDFHtml({ company, acquirer, parentCo="", companyMode="standalone", results, dataBlocks, sources, elapsed, market="India" }) {
+function buildPDFHtml({ company, acquirer, parentCo="", parentSince="", companyMode="standalone", results, dataBlocks, sources, elapsed, market="India" }) {
   const acq = acquirer && acquirer.trim() ? acquirer.trim() : null;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -2067,7 +2113,7 @@ ${agentPageHtml}
 </html>`;
 }
 
-function makePrompt(id, company, acquirer, ctx, synthCtx, market="India", parentCo="", companyMode="standalone") {
+function makePrompt(id, company, acquirer, ctx, synthCtx, market="India", parentCo="", companyMode="standalone", parentSince="") {
   let prompt = PROMPTS[id] || "";
   prompt = prompt.replace(/\[COMPANY\]/g, company);
 
@@ -2076,7 +2122,25 @@ function makePrompt(id, company, acquirer, ctx, synthCtx, market="India", parent
   const parentName = companyMode === "parent"   && parentCo && parentCo.trim() ? parentCo.trim() : null;
   const ownerName  = acqName || parentName || null;
 
+  // ── Integration age (parent mode only) ──────────────────────────────
+  let monthsWithParent = null;
+  let tightlyIntegrated = false;
+  if (companyMode === "parent" && parentSince && parentSince.trim()) {
+    const s = parentSince.trim();
+    const sinceDate = new Date(s.length === 4 ? `${s}-01-01` : s);
+    if (!isNaN(sinceDate.getTime())) {
+      monthsWithParent = Math.floor((new Date() - sinceDate) / (1000 * 60 * 60 * 24 * 30.44));
+      tightlyIntegrated = monthsWithParent >= 18;
+    }
+  }
+  const integrationLine = monthsWithParent !== null
+    ? tightlyIntegrated
+      ? `INTEGRATION STATUS: ${company} has been part of ${parentName} for ~${Math.floor(monthsWithParent/12)} year(s) (${monthsWithParent} months). Treat this as FULLY INTEGRATED — ${parentName}'s distribution, manufacturing, procurement, and systems are already the operating model. Do NOT frame parent assets as future opportunities to unlock. Audit what is working, what is underperforming, and where the relationship constrains rather than enables.`
+      : `INTEGRATION STATUS: ${company} has been part of ${parentName} for ~${monthsWithParent} months — still within the integration window. Distinguish what is already operational from what is still being transferred. For in-transition assets, assess whether the timeline is realistic.`
+    : "";
+
   // Token substitutions used inside individual agent prompts
+ used inside individual agent prompts
   prompt = prompt.replace(/\[ACQUIRER\]/g,         ownerName || "the management team");
   prompt = prompt.replace(/\[ACQUIRER_OR_OWNER\]/g, ownerName || "the company itself");
   prompt = prompt.replace(/\[HAS_ACQUIRER\]/g,     acqName   ? "yes" : "no");
@@ -2087,7 +2151,7 @@ function makePrompt(id, company, acquirer, ctx, synthCtx, market="India", parent
   if (companyMode === "acquired" && acqName) {
     acqPreamble = `## CONTEXT: POST-ACQUISITION ANALYSIS\nAcquirer: ${acqName}. ${company} was acquired by ${acqName}. Frame every finding in terms of what ${acqName} has provided or can still unlock. There was a distinct acquisition event — integration decisions are still in play.`;
   } else if (companyMode === "parent" && parentName) {
-    acqPreamble = `## CONTEXT: BRAND WITHIN PARENT COMPANY\n${company} is a brand owned and operated by ${parentName}. There was NO acquisition event — ${company} was built by or has long been part of ${parentName}. ${parentName} is simultaneously the owner, manufacturer, distributor, and funder. Do NOT frame this as post-acquisition integration. Treat ${parentName}'s infrastructure as already available — the strategic question is what ${company} does with it, where ${company} must differentiate within ${parentName}'s portfolio, and where ${parentName}'s systems constrain rather than enable ${company}'s strategy.`;
+    acqPreamble = `## CONTEXT: BRAND WITHIN PARENT COMPANY\n${company} is a brand owned and operated by ${parentName}. There was NO acquisition event — ${company} was built by or has long been part of ${parentName}. ${parentName} is simultaneously the owner, manufacturer, distributor, and funder. Do NOT frame this as post-acquisition integration. Treat ${parentName}'s infrastructure as already available — the strategic question is what ${company} does with it, where ${company} must differentiate within ${parentName}'s portfolio, and where ${parentName}'s systems constrain rather than enable ${company}'s strategy.${integrationLine ? '\n\n' + integrationLine : ''}`;
   } else {
     acqPreamble = `## CONTEXT: STANDALONE COMPANY ANALYSIS\n${company} is fully independent — NO acquirer, NO parent company. Do NOT mention any acquirer or external owner. Analyse purely on ${company}'s own capital, capabilities, and strategic choices.`;
   }
@@ -2103,7 +2167,7 @@ This is a post-acquisition analysis. ${company} was acquired by ${acqName}. Fram
   } else if (companyMode === "parent" && parentName) {
     acquirerBlock = `
 BRAND-WITHIN-PARENT CONTEXT:
-${company} is a brand that is part of ${parentName}. This is NOT a post-acquisition analysis — there was no acquisition event. ${parentName}'s infrastructure (manufacturing, distribution, procurement, sales force) is fully available to ${company} and should be treated as the operating reality, not a future synergy to unlock. The strategic questions are: (1) how does ${company} win in its category given that it already has ${parentName}'s scale behind it, (2) where does ${company} need to differentiate itself from ${parentName}'s other brands, and (3) what does ${company} need that ${parentName} cannot or should not provide. Do NOT fabricate integration timelines, synergy capture phases, or acquisition-era org design decisions — that framing does not apply here. Do NOT describe ${parentName}'s assets as "untapped" if they are clearly already part of ${company}'s operating model.
+${company} is a brand that is part of ${parentName}. This is NOT a post-acquisition analysis — there was no acquisition event. ${parentName}'s infrastructure (manufacturing, distribution, procurement, sales force) is fully available to ${company} and should be treated as the operating reality, not a future synergy to unlock. The strategic questions are: (1) how does ${company} win in its category given that it already has ${parentName}'s scale behind it, (2) where does ${company} need to differentiate itself from ${parentName}'s other brands, and (3) what does ${company} need that ${parentName} cannot or should not provide. Do NOT fabricate integration timelines, synergy capture phases, or acquisition-era org design decisions — that framing does not apply here. Do NOT describe ${parentName}'s assets as "untapped" if they are clearly already part of ${company}'s operating model.${integrationLine ? '\n' + integrationLine : ''}
 `;
   } else {
     acquirerBlock = `
@@ -2548,6 +2612,9 @@ function DataBlockInspector({ agentId, agentLabel, db }) {
 export default function AdvisorSprint() {
   const [company, setCompany] = useState("");
   const [acquirer, setAcquirer] = useState("");
+  const [parentCo, setParentCo] = useState("");
+  const [parentSince, setParentSince] = useState(""); // year brand joined parent, e.g. "2018"
+  const [companyMode, setCompanyMode] = useState("standalone"); // "standalone" | "acquired" | "parent"
   const [context, setContext] = useState("");
 
   const [appState, setAppState] = useState("idle");
@@ -2774,7 +2841,7 @@ export default function AdvisorSprint() {
         } else if (W2.includes(id)) {
           ctx_for_agent = w1texts;
         }
-        const prompt = makePrompt(id, co, acq, ctx, ctx_for_agent, market, parentCo.trim(), companyMode);
+        const prompt = makePrompt(id, co, acq, ctx, ctx_for_agent, market, parentCo.trim(), companyMode, parentSince.trim());
         let text = "";
         try {
           text = await runAgent(id, prompt, signal, []);
@@ -2823,7 +2890,7 @@ export default function AdvisorSprint() {
     setPdfGenerating(true);
     gaEvent("pdf_generate_puppeteer", { company });
     try {
-      const html = buildPDFHtml({ company, acquirer, parentCo, companyMode, results, dataBlocks, sources, elapsed, market });
+      const html = buildPDFHtml({ company, acquirer, parentCo, parentSince, companyMode, results, dataBlocks, sources, elapsed, market });
       const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -2918,16 +2985,42 @@ export default function AdvisorSprint() {
               </div>
               <div style={{ flex: 1 }}>
                 <label style={{ display: "block", fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, letterSpacing: ".05em", textTransform: "uppercase", color: P.inkMid, marginBottom: 8 }}>
-                  Acquirer <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0, color: P.inkFaint }}>(optional)</span>
+                  Company Type
                 </label>
-                <input
-                  type="text"
-                  value={acquirer}
-                  onChange={(e) => setAcquirer(e.target.value)}
-                  disabled={appState === "running"}
-                  placeholder="Leave blank for standalone analysis"
-                  style={{ width: "100%", padding: "10px 14px", border: `2px solid ${P.sand}`, borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 15, background: P.white }}
-                />
+                <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
+                  {[
+                    { key: "standalone", label: "Standalone" },
+                    { key: "acquired",   label: "Acquired" },
+                    { key: "parent",     label: "Brand within Parent" },
+                  ].map(opt => (
+                    <button key={opt.key}
+                      onClick={() => appState !== "running" && setCompanyMode(opt.key)}
+                      style={{
+                        padding: "7px 14px", borderRadius: 4, cursor: appState === "running" ? "not-allowed" : "pointer",
+                        border: `2px solid ${companyMode === opt.key ? P.forest : P.sand}`,
+                        background: companyMode === opt.key ? P.forest : P.white,
+                        color: companyMode === opt.key ? P.white : P.inkMid,
+                        fontFamily: "'Instrument Sans'", fontSize: 12,
+                        fontWeight: companyMode === opt.key ? 700 : 400, letterSpacing: ".03em",
+                      }}
+                    >{opt.label}</button>
+                  ))}
+                </div>
+                {companyMode === "acquired" && (
+                  <input type="text" value={acquirer} onChange={(e) => setAcquirer(e.target.value)}
+                    disabled={appState === "running"} placeholder="Acquirer — e.g. ITC Limited"
+                    style={{ width: "100%", padding: "10px 14px", border: `2px solid ${P.sand}`, borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 15, background: P.white }} />
+                )}
+                {companyMode === "parent" && (
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <input type="text" value={parentCo} onChange={(e) => setParentCo(e.target.value)}
+                      disabled={appState === "running"} placeholder="Parent company — e.g. ITC Limited"
+                      style={{ flex: 2, padding: "10px 14px", border: `2px solid ${P.sand}`, borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 15, background: P.white }} />
+                    <input type="text" value={parentSince} onChange={(e) => setParentSince(e.target.value)}
+                      disabled={appState === "running"} placeholder="Part of parent since — e.g. 2018"
+                      style={{ flex: 1, padding: "10px 14px", border: `2px solid ${P.sand}`, borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 15, background: P.white }} />
+                  </div>
+                )}
               </div>
             </div>
 
