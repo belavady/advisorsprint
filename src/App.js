@@ -3533,7 +3533,9 @@ export default function AdvisorSprint() {
         'Content-Type': 'application/json',
         'x-tool-name': 'advisor',
         'Connection': 'keep-alive',
+        'Accept': 'text/event-stream',   // signals streaming intent — helps avoid QUIC path
       },
+      cache: 'no-store',                 // disables HTTP cache negotiation that triggers QUIC
       signal,
       body: JSON.stringify({ prompt, agentId, market }),
     });
