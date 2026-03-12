@@ -787,7 +787,7 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
   ],
   "moves": [
     {
-      "title": "4 words max",
+      "title": "4 words max — name the FORMAT or OCCASION, never the consumer segment (e.g. 'Own Dry Goreng India' not 'Segment 3 Cup')",
       "occasion": "occasion or trend captured",
       "opportunityCr": 0,
       "playType": "SCALE|D2C|CATEGORY CREATION",
@@ -809,6 +809,7 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
       "signal": "one evidence line (max 60 chars)"
     }
   ],
+  "page1Summary": "2 sentences max. 160 chars max. Synthesises the single most important pattern across the gap table and trend table on page 1 — what does the combination of gaps + trends tell the CEO that neither alone says? Do not repeat individual gap or trend names — synthesise the pattern.",
   "boldStatement": "One sentence. Max 140 chars. Names the specific occasion or trend window, the competitor who will own it if this brand doesn't move, and the timeframe. Makes the reader feel urgency without using the word urgency.",
   "page3": {
     "needed": false,
@@ -2707,8 +2708,8 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
       // Status dot
       svg += `<circle cx="${lx + dotOffX}" cy="${ly}" r="2.5" fill="${s.fill}" stroke="${s.stroke}" stroke-width="1"/>`;
 
-      // Label text — truncate to 18 chars, wrap at natural word boundary if > 11 chars
-      const raw   = (s.occ.occasion || '').slice(0, 18);
+      // Label text — wrap at natural word boundary, no hard truncation
+      const raw   = (s.occ.occasion || '').slice(0, 28);
       const words = raw.split(' ');
 
       // Wrap only if multi-word AND long enough to benefit
@@ -2729,14 +2730,19 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
         svg += `<text x="${lx + textOffX}" y="${ly + 3}" text-anchor="${anchor}" font-size="7" font-weight="700" fill="${C.forest}">${raw}</text>`;
       }
 
-      // ₹Cr label inside segment — only if segment is wide enough
+      // ₹Cr label — white pill behind text so legible on any segment colour
       if (s.occ.sizeCr > 0 && n <= 12) {
         const midR   = (R_INNER + R_OUTER) / 2;
         const segMid = (s.startAngle + s.endAngle) / 2;
         const sx = CX + midR * Math.cos(segMid);
         const sy = CY + midR * Math.sin(segMid);
-        const valStr = s.occ.sizeCr >= 1000 ? (Math.round(s.occ.sizeCr / 100) / 10) + 'K' : String(s.occ.sizeCr);
-        svg += `<text x="${sx}" y="${sy + 3}" text-anchor="middle" font-size="6" font-weight="700" fill="white">${valStr}</text>`;
+        // ₹4.8K Cr or ₹900 Cr — always show unit explicitly
+        const valStr = s.occ.sizeCr >= 1000
+          ? '₹' + (Math.round(s.occ.sizeCr / 100) / 10) + 'K Cr'
+          : '₹' + s.occ.sizeCr + ' Cr';
+        const tw = valStr.length * 4.0 + 6;
+        svg += `<rect x="${sx - tw/2}" y="${sy - 7}" width="${tw}" height="9" rx="2" fill="rgba(255,255,255,0.85)"/>`;
+        svg += `<text x="${sx}" y="${sy + 1}" text-anchor="middle" font-size="5.5" font-weight="800" fill="${C.forest}">${valStr}</text>`;
       }
     });
 
@@ -2744,9 +2750,21 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
 
     svg += '</svg>';
 
-    // Growth legend — compact horizontal strip below the wheel, no overlap possible
-    const growStrip = `
-      <div style="display:flex;align-items:center;gap:14px;padding:4px 8px;margin-top:2px;">
+    // Presence + Growth legend — single horizontal strip below wheel, no overlap possible
+    const legendStrip = `
+      <div style="display:flex;align-items:center;gap:12px;padding:4px 8px;margin-top:2px;">
+        <span style="font-size:6px;font-weight:800;letter-spacing:.1em;color:#888;text-transform:uppercase;">PRESENCE</span>
+        ${[
+          {label:'Owned',   fill:C.owned,    stroke:'#1a5c35', op:'1'},
+          {label:'Partial', fill:C.partial,  stroke:'#a06010', op:'1'},
+          {label:'Absent',  fill:'#e8e0d5',  stroke:C.absentBorder, op:'1'},
+        ].map(p =>
+          `<span style="display:flex;align-items:center;gap:4px;">
+            <span style="width:9px;height:9px;border-radius:2px;background:${p.fill};border:1px solid ${p.stroke};display:inline-block;flex-shrink:0;"></span>
+            <span style="font-size:7px;font-weight:600;color:${C.forest};">${p.label}</span>
+          </span>`
+        ).join('')}
+        <span style="width:1px;height:12px;background:#ddd;display:inline-block;margin:0 2px;"></span>
         <span style="font-size:6px;font-weight:800;letter-spacing:.1em;color:#888;text-transform:uppercase;">GROWTH</span>
         ${[{label:'High',op:'1'},{label:'Medium',op:'0.6'},{label:'Low',op:'0.3'}].map(g =>
           `<span style="display:flex;align-items:center;gap:4px;">
@@ -2756,7 +2774,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
         ).join('')}
       </div>`;
 
-    return `<div>${svg}${growStrip}</div>`;
+    return `<div>${svg}${legendStrip}</div>`;
   }
 
   // ── Gap Table ────────────────────────────────────────────────────────
@@ -2784,8 +2802,8 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
       const isAbsent = g.brandShare === '0%' || !g.brandShare;
       h += `<tr>
         <td style="padding:4px 8px;background:${bg};border-left:3px solid ${isAbsent ? C.coral : C.amber};">
-          <div style="font-weight:700;color:${C.forest};font-size:8px;">${(g.occasion||'').slice(0,26)}</div>
-          ${g.scalingMechanism ? `<div style="font-size:6.5px;color:#888;margin-top:1px;">via: ${(g.scalingMechanism||'').slice(0,32)}</div>` : ''}
+          <div style="font-weight:700;color:${C.forest};font-size:8px;line-height:1.3;white-space:normal;">${g.occasion||''}</div>
+          ${g.scalingMechanism ? `<div style="font-size:6.5px;color:#888;margin-top:1px;white-space:normal;">via: ${g.scalingMechanism||''}</div>` : ''}
         </td>
         <td style="padding:4px 8px;background:${bg};text-align:right;font-weight:700;font-size:9px;">₹${g.categorySizeCr||'—'}</td>
         <td style="padding:4px 8px;background:${bg};text-align:right;">${shareText}</td>
@@ -2827,8 +2845,8 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
       const futCol = momentumColour[t.months18] || C.amber;
       const futW   = momentumWidth[t.months18] || 50;
       const mkCol  = marketPill[t.sourceMarket] || C.forest;
-      const trend  = (t.trend || '').slice(0, 18);
-      const sig    = (t.nowSignal || '').slice(0, 34);
+      const trend  = t.trend || '';
+      const sig    = t.nowSignal || '';
       const rising = (momentumWidth[t.months18] || 50) > (momentumWidth[t.momentum] || 50);
       const arrow  = rising ? '↑' : (futW < nowW ? '↓' : '→');
       const headroom = typeof t.headroomPct === 'number' ? t.headroomPct : null;
@@ -2972,11 +2990,11 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
         const conf     = m.confidence || 'ESTIMATED';
         const cc       = confColour[conf] || C.amber;
         const filters  = Array.isArray(m.filters) ? m.filters : [];
-        const title    = (m.title || 'Move ' + (i+1)).slice(0, 28);
+        const title    = m.title || 'Move ' + (i+1);
         const play     = m.playType || '';
         const pcfg     = playConfig[play] || { colour: C.forest, label: play, icon: '◆', sub: '' };
-        const orgInstr = (m.orgInstruction || '').slice(0, 90);
-        const scaling  = (m.scalingMechanism || '').slice(0, 50);
+        const orgInstr = m.orgInstruction || '';
+        const scaling  = m.scalingMechanism || '';
         return `<div style="background:#fff;border:1.5px solid ${pcfg.colour};border-radius:4px;overflow:hidden;display:flex;flex-direction:column;">
           <!-- Play Type Banner -->
           <div style="background:${pcfg.colour};padding:4px 10px;display:flex;align-items:center;justify-content:space-between;">
@@ -2990,7 +3008,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
           </div>
           <!-- Body -->
           <div style="padding:8px 10px;flex:1;display:flex;flex-direction:column;gap:4px;">
-            <div style="font-size:7px;color:#666;font-style:italic;line-height:1.3;">${(m.occasion||'').slice(0,45)}</div>
+            <div style="font-size:7px;color:#666;font-style:italic;line-height:1.3;white-space:normal;">${m.occasion||''}</div>
             <!-- Opportunity -->
             <div style="display:flex;align-items:baseline;gap:3px;">
               <span style="font-size:18px;font-weight:900;color:${C.forest};line-height:1;">₹${m.opportunityCr||'?'}</span>
@@ -3000,7 +3018,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
             <!-- Revenue timeline -->
             <div style="font-size:7px;color:#888;">First revenue: <strong style="color:${C.forest};">${m.timeToRevenue||'TBD'}</strong></div>
             <!-- Rationale -->
-            <div style="font-size:7.5px;color:${C.forest};font-weight:600;line-height:1.4;border-left:2px solid ${pcfg.colour};padding-left:5px;">${(m.rationale||'').slice(0,120)}</div>
+            <div style="font-size:7.5px;color:${C.forest};font-weight:600;line-height:1.4;border-left:2px solid ${pcfg.colour};padding-left:5px;white-space:normal;">${m.rationale||''}</div>
             <!-- Org instruction — the key new element -->
             ${orgInstr ? `<div style="background:${pcfg.colour}11;border:1px solid ${pcfg.colour}44;border-radius:3px;padding:4px 6px;">
               <div style="font-size:6px;font-weight:800;letter-spacing:.08em;color:${pcfg.colour};margin-bottom:2px;">HOW TO ORGANISE</div>
@@ -3009,7 +3027,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
             <!-- Scaling mechanism -->
             ${scaling ? `<div style="font-size:6.5px;color:#777;line-height:1.3;"><span style="font-weight:700;color:#555;">Path to scale:</span> ${scaling}</div>` : ''}
             <!-- Evidence -->
-            <div style="font-size:7px;color:#999;border-top:1px solid #f0ece6;padding-top:4px;line-height:1.3;margin-top:auto;">${(m.evidence||'').slice(0,80)}</div>
+            <div style="font-size:7px;color:#999;border-top:1px solid #f0ece6;padding-top:4px;line-height:1.3;margin-top:auto;white-space:normal;">${m.evidence||''}</div>
             <!-- Filter tags -->
             <div style="display:flex;gap:3px;flex-wrap:wrap;">
               ${filters.map(f => `<span style="background:${filterColour[f]||C.forest}22;color:${filterColour[f]||C.forest};border:1px solid ${filterColour[f]||C.forest}55;font-size:6px;font-weight:700;padding:1px 4px;border-radius:2px;letter-spacing:.03em;">${filterLabels[f]||f}</span>`).join('')}
@@ -3033,8 +3051,8 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
             <span style="background:${mc};color:#fff;font-size:7px;font-weight:800;padding:2px 6px;border-radius:2px;letter-spacing:.08em;">${s.market}</span>
             <span style="font-size:7.5px;color:#888;">${s.indiaInflection||''}</span>
           </div>
-          <div style="font-size:8px;font-weight:700;color:${C.forest};margin-bottom:3px;line-height:1.3;">${(s.trend||'').slice(0,35)}</div>
-          <div style="font-size:7px;color:#666;line-height:1.3;">${(s.signal||'').slice(0,60)}</div>
+          <div style="font-size:8px;font-weight:700;color:${C.forest};margin-bottom:3px;line-height:1.3;white-space:normal;">${s.trend||''}</div>
+          <div style="font-size:7px;color:#666;line-height:1.3;white-space:normal;">${s.signal||''}</div>
           <div style="margin-top:4px;display:flex;align-items:center;gap:3px;">
             <span style="width:6px;height:6px;border-radius:50%;background:${cd};display:inline-block;"></span>
             <span style="font-size:6.5px;color:#888;">Signal confidence</span>
@@ -3055,9 +3073,9 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
         const ta = trendArrow[k.trend] || '→';
         const cc = confCol[k.confidence] || C.amber;
         return `<div style="background:#fff;border:1px solid #e8e0d5;border-radius:3px;padding:8px 10px;border-left:3px solid ${C.forest};">
-          <div style="font-size:7px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:3px;">${(k.label||'').slice(0,18)}</div>
+          <div style="font-size:7px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:3px;white-space:normal;">${k.label||''}</div>
           <div style="font-size:16px;font-weight:900;color:${C.forest};line-height:1;">${k.value||'—'} <span style="font-size:11px;color:${tc};">${ta}</span></div>
-          <div style="font-size:7px;color:#888;margin-top:3px;">${(k.sub||'').slice(0,30)}</div>
+          <div style="font-size:7px;color:#888;margin-top:3px;white-space:normal;">${k.sub||''}</div>
           <div style="margin-top:4px;"><span style="background:${cc};color:#fff;font-size:6px;font-weight:700;padding:1px 4px;border-radius:2px;">${k.confidence||'M'}</span></div>
         </div>`;
       }).join('') + '</div>';
@@ -3126,10 +3144,17 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
   </div>
 
   <!-- Flavour Trend Heatmap -->
-  <div>
+  <div style="margin-bottom:10px;">
     <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:8px;">FLAVOUR & FORMAT TREND TRAJECTORY</div>
     ${renderFlavourTrends(flavours)}
   </div>
+
+  <!-- Page 1 synthesis line -->
+  ${(db.page1Summary) ? `
+  <div style="background:#f0ece6;border-left:3px solid ${C.forest};border-radius:0 3px 3px 0;padding:8px 12px;margin-bottom:6px;">
+    <span style="font-size:6.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-right:8px;">SIGNAL SUMMARY</span>
+    <span style="font-size:8px;color:#333;line-height:1.5;">${db.page1Summary}</span>
+  </div>` : ''}
 
   <!-- Footer -->
   <div style="position:absolute;bottom:18px;left:36px;right:36px;display:flex;justify-content:space-between;align-items:center;">
@@ -3190,9 +3215,9 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
     <div style="display:grid;grid-template-columns:repeat(${Math.min(p3.challengerBrands.length,3)},1fr);gap:8px;">
       ${p3.challengerBrands.slice(0,3).map(b => `
         <div style="background:#fff;border:1px solid #e8e0d5;border-radius:3px;padding:8px 10px;border-top:2.5px solid ${C.coral};height:82px;box-sizing:border-box;">
-          <div style="font-size:9px;font-weight:800;color:${C.forest};margin-bottom:3px;">${(b.name||'').slice(0,22)}</div>
+          <div style="font-size:9px;font-weight:800;color:${C.forest};margin-bottom:3px;white-space:normal;">${b.name||''}</div>
           <div style="font-size:15px;font-weight:900;color:${C.coral};margin-bottom:3px;line-height:1;">${b.revenueEst||'?'}</div>
-          <div style="font-size:7px;color:#555;margin-bottom:2px;line-height:1.3;">Targeting: ${(b.occasion||'').slice(0,34)}</div>
+          <div style="font-size:7px;color:#555;margin-bottom:2px;line-height:1.3;white-space:normal;">Targeting: ${b.occasion||''}</div>
           <div style="font-size:7px;color:#888;">Threat: <strong style="color:${C.coral};">${b.threat||'TBD'}</strong></div>
         </div>`).join('')}
     </div>
@@ -3207,7 +3232,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
       const mc = mktCol[s.market] || C.forest;
       return `<div style="display:flex;gap:8px;padding:5px 0;border-bottom:${i < p3.internationalDeep.length-1 ? '1px solid #f0ece6' : 'none'};align-items:flex-start;">
         <span style="background:${mc};color:#fff;font-size:6.5px;font-weight:800;padding:2px 5px;border-radius:2px;flex-shrink:0;letter-spacing:.05em;margin-top:1px;">${s.market||'?'}</span>
-        <span style="font-size:7.5px;color:#444;line-height:1.4;">${(s.fullSignal||'').slice(0,180)}</span>
+        <span style="font-size:7.5px;color:#444;line-height:1.4;white-space:normal;">${s.fullSignal||''}</span>
       </div>`;
     }).join('')}
   </div>` : ''}
@@ -3533,9 +3558,7 @@ export default function AdvisorSprint() {
         'Content-Type': 'application/json',
         'x-tool-name': 'advisor',
         'Connection': 'keep-alive',
-        'Accept': 'text/event-stream',   // signals streaming intent — helps avoid QUIC path
       },
-      cache: 'no-store',                 // disables HTTP cache negotiation that triggers QUIC
       signal,
       body: JSON.stringify({ prompt, agentId, market }),
     });
