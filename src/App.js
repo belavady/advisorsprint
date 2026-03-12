@@ -2585,7 +2585,6 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
   const intl        = Array.isArray(db.internationalSignals) ? db.internationalSignals : [];
   const kpis        = Array.isArray(db.kpis)               ? db.kpis               : [];
   const p3          = db.page3 || {};
-  const needsPage3  = p3.needed === true;
 
   // ── Colour system ────────────────────────────────────────────────────
   const C = {
@@ -2619,17 +2618,15 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
   function renderOccasionWheel(occs) {
     if (!occs.length) return '<div style="height:240px;display:flex;align-items:center;justify-content:center;color:#999;font-size:10px;">No occasion data</div>';
 
-    // Layout constants — wheel sits left, labels get a clear zone, legend sits far right
-    // Key insight: right-side labels need ~80px clearance before legend starts
-    // CX=130 keeps wheel left, LABEL_R=122 gives spoke reach, LEGEND_X=310 keeps legend clear
+    // Layout: Presence legend removed (already in page header).
+    // Growth legend rendered as horizontal strip BELOW the SVG — no right-side legend at all.
+    // Wheel is centred in full SVG width so left/right labels have equal room.
+    // CX = W/2 = 200 → right labels reach x=200+LABEL_R=314, text extends ~60px → x=374 < W=420 ✓
+    // Left labels anchor=end at x=200-LABEL_R=86, text extends left — plenty of room ✓
     const W = 420, H = 250;
-    const CX = 128, CY = 122;          // wheel centre — shifted left
-    const R_INNER = 32, R_OUTER = 88;  // slightly tighter ring
-    const LABEL_R = 114;               // spoke endpoint — kept modest
-    const LEGEND_X = 308;              // legend left edge — well clear of right-side labels
-    // Right-side labels: CX + LABEL_R = 128 + 114 = 242
-    // Longest label text ~60px wide from x=242 → ends ~302 → 6px gap to legend at 308 ✓
-    // Left-side labels: anchor=end, so text extends left from x = CX - LABEL_R = 14 → fine
+    const CX = 200, CY = 122;          // centred — no legend competing on right
+    const R_INNER = 32, R_OUTER = 88;
+    const LABEL_R = 114;
 
     const n = occs.length;
     const angleStep = (2 * Math.PI) / n;
@@ -2743,35 +2740,23 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
       }
     });
 
-    // ── Legend — far right, clear of all labels ───────────────────────
-    const LX  = LEGEND_X;
-    const LY0 = CY - 55;
-
-    svg += `<text x="${LX}" y="${LY0}" font-size="6.5" font-weight="800" fill="${C.forest}" letter-spacing="0.08em">PRESENCE</text>`;
-    const presItems = [
-      { label: 'Owned',   fill: C.owned,    stroke: '#1a5c35' },
-      { label: 'Partial', fill: C.partial,  stroke: '#a06010' },
-      { label: 'Absent',  fill: '#e8e0d5',  stroke: C.absentBorder },
-    ];
-    presItems.forEach((item, i) => {
-      svg += `<rect x="${LX}" y="${LY0 + 4 + i * 14}" width="9" height="9" fill="${item.fill}" stroke="${item.stroke}" stroke-width="1" rx="1.5"/>`;
-      svg += `<text x="${LX + 12}" y="${LY0 + 4 + i * 14 + 7}" font-size="7" font-weight="600" fill="${C.forest}">${item.label}</text>`;
-    });
-
-    const LY1 = LY0 + 4 + 3 * 14 + 10;
-    svg += `<text x="${LX}" y="${LY1}" font-size="6.5" font-weight="800" fill="${C.forest}" letter-spacing="0.08em">GROWTH</text>`;
-    const growItems = [
-      { label: 'High',   opacity: '1'    },
-      { label: 'Medium', opacity: '0.6'  },
-      { label: 'Low',    opacity: '0.3'  },
-    ];
-    growItems.forEach((item, i) => {
-      svg += `<rect x="${LX}" y="${LY1 + 4 + i * 14}" width="9" height="9" fill="${C.owned}" fill-opacity="${item.opacity}" stroke="#1a5c35" stroke-width="1" rx="1.5"/>`;
-      svg += `<text x="${LX + 12}" y="${LY1 + 4 + i * 14 + 7}" font-size="7" font-weight="600" fill="${C.forest}">${item.label}</text>`;
-    });
+    // ── No SVG legend — Presence is in page header, Growth goes below as HTML strip ──
 
     svg += '</svg>';
-    return svg;
+
+    // Growth legend — compact horizontal strip below the wheel, no overlap possible
+    const growStrip = `
+      <div style="display:flex;align-items:center;gap:14px;padding:4px 8px;margin-top:2px;">
+        <span style="font-size:6px;font-weight:800;letter-spacing:.1em;color:#888;text-transform:uppercase;">GROWTH</span>
+        ${[{label:'High',op:'1'},{label:'Medium',op:'0.6'},{label:'Low',op:'0.3'}].map(g =>
+          `<span style="display:flex;align-items:center;gap:4px;">
+            <span style="width:9px;height:9px;border-radius:2px;background:${C.owned};opacity:${g.op};border:1px solid #1a5c35;display:inline-block;flex-shrink:0;"></span>
+            <span style="font-size:7px;font-weight:600;color:${C.forest};">${g.label}</span>
+          </span>`
+        ).join('')}
+      </div>`;
+
+    return `<div>${svg}${growStrip}</div>`;
   }
 
   // ── Gap Table ────────────────────────────────────────────────────────
@@ -3078,72 +3063,8 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
       }).join('') + '</div>';
   }
 
-  // ── Page 3 content ───────────────────────────────────────────────────
-  function renderPage3(p3) {
-    let html = '';
-
-    // Challenger brands
-    if (Array.isArray(p3.challengerBrands) && p3.challengerBrands.length) {
-      html += `<div style="margin-bottom:16px;">
-        <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.coral};margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid ${C.coral};">CHALLENGER BRAND WATCH</div>
-        <div style="display:grid;grid-template-columns:repeat(${Math.min(p3.challengerBrands.length,3)},1fr);gap:8px;">
-          ${p3.challengerBrands.slice(0,3).map(b => `
-            <div style="background:#fff;border:1.5px solid #e8e0d5;border-radius:4px;padding:8px 10px;border-top:3px solid ${C.coral};">
-              <div style="font-size:9px;font-weight:800;color:${C.forest};">${(b.name||'').slice(0,22)}</div>
-              <div style="font-size:14px;font-weight:900;color:${C.coral};margin:3px 0;">${b.revenueEst||'?'}</div>
-              <div style="font-size:7.5px;color:#555;margin-bottom:3px;">Targeting: ${(b.occasion||'').slice(0,30)}</div>
-              <div style="font-size:7px;color:#888;">Threat timeline: ${b.threat||'TBD'}</div>
-            </div>`).join('')}
-        </div>
-      </div>`;
-    }
-
-    // Question bank
-    if (Array.isArray(p3.questionBank) && p3.questionBank.length) {
-      html += `<div style="margin-bottom:16px;">
-        <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid ${C.forest};">QUESTIONS FOR THE BRAND TEAM</div>
-        ${p3.questionBank.slice(0,5).map((q,i) => `
-          <div style="display:flex;gap:8px;margin-bottom:6px;align-items:flex-start;">
-            <span style="background:${C.forest};color:#fff;font-size:7px;font-weight:800;padding:2px 5px;border-radius:2px;flex-shrink:0;">Q${i+1}</span>
-            <span style="font-size:8.5px;font-weight:600;color:${C.forest};line-height:1.4;">${(q||'').slice(0,100)}</span>
-          </div>`).join('')}
-      </div>`;
-    }
-
-    // International deep
-    if (Array.isArray(p3.internationalDeep) && p3.internationalDeep.length) {
-      const mktCol = { KR:'#c0392b', JP:'#b85c38', SEA:'#2563eb', US:'#1a5c35', UK:'#6b21a8', DE:'#374151', AU:'#92400e' };
-      html += `<div style="margin-bottom:16px;">
-        <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.blue};margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid ${C.blue};">INTERNATIONAL SIGNAL DETAIL</div>
-        ${p3.internationalDeep.slice(0,6).map(s => `
-          <div style="display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;">
-            <span style="background:${mktCol[s.market]||C.forest};color:#fff;font-size:7px;font-weight:800;padding:2px 6px;border-radius:2px;flex-shrink:0;letter-spacing:.05em;">${s.market||'?'}</span>
-            <span style="font-size:8px;color:#444;line-height:1.5;">${(s.fullSignal||'').slice(0,200)}</span>
-          </div>`).join('')}
-      </div>`;
-    }
-
-    // Trend evidence log
-    if (Array.isArray(p3.trendEvidenceLog) && p3.trendEvidenceLog.length) {
-      html += `<div>
-        <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #ddd;">TREND EVIDENCE LOG</div>
-        <table style="width:100%;border-collapse:collapse;font-size:7.5px;">
-          <thead><tr>
-            <th style="padding:4px 8px;background:#f0f0f0;color:${C.forest};font-weight:700;text-align:left;width:30%;">TREND</th>
-            <th style="padding:4px 8px;background:#f0f0f0;color:${C.forest};font-weight:700;text-align:left;">EVIDENCE & SOURCE</th>
-          </tr></thead><tbody>
-          ${p3.trendEvidenceLog.slice(0,8).map((e,i) => `
-            <tr style="background:${i%2?'#faf7f2':'#fff'};">
-              <td style="padding:4px 8px;font-weight:600;color:${C.forest};">${(e.trend||'').slice(0,28)}</td>
-              <td style="padding:4px 8px;color:#555;">${(e.evidence||'').slice(0,120)}</td>
-            </tr>`).join('')}
-          </tbody>
-        </table>
-      </div>`;
-    }
-
-    return html;
-  }
+  // renderPage3 removed — challenger brands and international signal detail
+  // are now rendered inline on Page 2 (sufficient space confirmed).
 
   // ── Page structure ───────────────────────────────────────────────────
   const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -3213,7 +3134,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
   <!-- Footer -->
   <div style="position:absolute;bottom:18px;left:36px;right:36px;display:flex;justify-content:space-between;align-items:center;">
     <div style="font-size:6.5px;color:#aaa;letter-spacing:.06em;">ADVISORSPRINT INTELLIGENCE · CONFIDENTIAL</div>
-    <div style="font-size:6.5px;color:#aaa;">PAGE 1 OF ${needsPage3 ? '3' : '2'}</div>
+    <div style="font-size:6.5px;color:#aaa;">PAGE 1 OF 2</div>
   </div>
 </div>
 
@@ -3227,7 +3148,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
       <div style="font-size:16px;font-weight:800;color:${C.forest};">${company} · Where to Play, How to Win</div>
     </div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
-      <div style="font-size:7px;color:#aaa;letter-spacing:.06em;">PAGE 2 OF ${needsPage3 ? '3' : '2'}</div>
+      <div style="font-size:7px;color:#aaa;letter-spacing:.06em;">PAGE 2 OF 2</div>
       <div style="display:flex;gap:5px;align-items:center;">
         <span style="background:${C.forest};color:#fff;font-size:6.5px;font-weight:800;padding:2px 6px;border-radius:2px;">⚡ SCALE PLAY</span>
         <span style="background:${C.blue};color:#fff;font-size:6.5px;font-weight:800;padding:2px 6px;border-radius:2px;">◎ D2C PLAY</span>
@@ -3262,29 +3183,41 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
     <div style="font-size:${boldStatement.length > 100 ? '11' : '13'}px;font-weight:700;color:#fff;line-height:1.5;font-style:italic;">${boldStatement}</div>
   </div>` : ''}
 
+  <!-- Challenger Brand Watch — fixed height, always 3 cards -->
+  ${Array.isArray(p3.challengerBrands) && p3.challengerBrands.length ? `
+  <div style="margin-bottom:12px;">
+    <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.coral};margin-bottom:8px;padding-bottom:4px;border-bottom:1.5px solid ${C.coral};">CHALLENGER BRAND WATCH</div>
+    <div style="display:grid;grid-template-columns:repeat(${Math.min(p3.challengerBrands.length,3)},1fr);gap:8px;">
+      ${p3.challengerBrands.slice(0,3).map(b => `
+        <div style="background:#fff;border:1px solid #e8e0d5;border-radius:3px;padding:8px 10px;border-top:2.5px solid ${C.coral};height:82px;box-sizing:border-box;">
+          <div style="font-size:9px;font-weight:800;color:${C.forest};margin-bottom:3px;">${(b.name||'').slice(0,22)}</div>
+          <div style="font-size:15px;font-weight:900;color:${C.coral};margin-bottom:3px;line-height:1;">${b.revenueEst||'?'}</div>
+          <div style="font-size:7px;color:#555;margin-bottom:2px;line-height:1.3;">Targeting: ${(b.occasion||'').slice(0,34)}</div>
+          <div style="font-size:7px;color:#888;">Threat: <strong style="color:${C.coral};">${b.threat||'TBD'}</strong></div>
+        </div>`).join('')}
+    </div>
+  </div>` : ''}
+
+  <!-- International Signal Detail — compact table rows, fixed height -->
+  ${Array.isArray(p3.internationalDeep) && p3.internationalDeep.length ? `
+  <div style="margin-bottom:12px;">
+    <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.blue};margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid ${C.blue};">INTERNATIONAL SIGNAL DETAIL</div>
+    ${p3.internationalDeep.slice(0,6).map((s,i) => {
+      const mktCol = { KR:'#c0392b', JP:'#b85c38', SEA:'#2563eb', US:'#1a5c35', UK:'#6b21a8', DE:'#374151', AU:'#92400e' };
+      const mc = mktCol[s.market] || C.forest;
+      return `<div style="display:flex;gap:8px;padding:5px 0;border-bottom:${i < p3.internationalDeep.length-1 ? '1px solid #f0ece6' : 'none'};align-items:flex-start;">
+        <span style="background:${mc};color:#fff;font-size:6.5px;font-weight:800;padding:2px 5px;border-radius:2px;flex-shrink:0;letter-spacing:.05em;margin-top:1px;">${s.market||'?'}</span>
+        <span style="font-size:7.5px;color:#444;line-height:1.4;">${(s.fullSignal||'').slice(0,180)}</span>
+      </div>`;
+    }).join('')}
+  </div>` : ''}
+
   <!-- Footer -->
   <div style="position:absolute;bottom:18px;left:36px;right:36px;display:flex;justify-content:space-between;align-items:center;">
     <div style="font-size:6.5px;color:#aaa;letter-spacing:.06em;">ADVISORSPRINT INTELLIGENCE · CONFIDENTIAL · FOR INTERNAL USE ONLY</div>
     <div style="font-size:6.5px;color:#aaa;">NUMBERS MARKED ESTIMATED/SIGNAL ONLY ARE DIRECTIONAL — VERIFY BEFORE PRESENTING</div>
   </div>
 </div>
-
-${needsPage3 ? `
-<!-- PAGE 3 -->
-<div class="page" style="${pageStyle}">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid ${C.forest};">
-    <div>
-      <div style="font-size:8px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:${C.coral};">SUPPLEMENTARY INTELLIGENCE</div>
-      <div style="font-size:16px;font-weight:800;color:${C.forest};">${company} · Deep Evidence & Questions</div>
-    </div>
-    <div style="font-size:7px;color:#aaa;">PAGE 3 OF 3</div>
-  </div>
-  ${renderPage3(p3)}
-  <div style="position:absolute;bottom:18px;left:36px;right:36px;display:flex;justify-content:space-between;">
-    <div style="font-size:6.5px;color:#aaa;">ADVISORSPRINT INTELLIGENCE · CONFIDENTIAL</div>
-    <div style="font-size:6.5px;color:#aaa;">PAGE 3 OF 3</div>
-  </div>
-</div>` : ''}
 
 </body>
 </html>`;
