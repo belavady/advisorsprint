@@ -752,7 +752,7 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
       "sizeCr": 0,
       "status": "owned|partial|absent",
       "growth": "high|medium|low",
-      "owner": "Brand name or blank if owned"
+      "owner": "MANDATORY for ALL statuses — never leave blank. If owned: the brand itself (e.g. 'YiPPee!', 'Bingo', 'Dark Fantasy'). If absent or partial: the specific competitor actively colonising this occasion from Agent 6 output (e.g. 'Maggi Cup', 'Wai Wai', 'Indomie', 'Nissin'). If no clear competitor yet: 'Uncontested'."
     }
   ],
   "gapTable": [
@@ -2731,10 +2731,11 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
       // Wrap only if multi-word AND long enough to benefit
       const isAbsentOcc  = s.occ.status === 'absent';
       const isPartialOcc = s.occ.status === 'partial';
-      const showOwner    = (isAbsentOcc || isPartialOcc) && s.occ.owner && s.occ.owner.trim();
+      const isOwnedOcc   = s.occ.status === 'owned';
+      const showOwner    = s.occ.owner && s.occ.owner.trim();
       const ownerLabel   = showOwner ? (s.occ.owner.trim().slice(0, 14)) : null;
-      // Colour: coral for absent, amber for partial — both legible on white/parchment background
-      const ownerCol     = isAbsentOcc ? C.coral : C.amber;
+      // Colour: forest for owned, amber for partial, coral for absent
+      const ownerCol     = isOwnedOcc ? C.forest : isPartialOcc ? C.amber : C.coral;
 
       let ownerY; // set below based on whether label wraps
       if (words.length >= 2 && raw.length > 11) {
