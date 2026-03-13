@@ -809,7 +809,19 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
       "signal": "one evidence line (max 60 chars)"
     }
   ],
-  "page1Summary": "2 sentences max. 160 chars max. Synthesises the single most important pattern across the gap table and trend table on page 1 — what does the combination of gaps + trends tell the CEO that neither alone says? Do not repeat individual gap or trend names — synthesise the pattern.",
+  "sectionHeaders": {
+    "occasionWheel": "8 words max — what the wheel reveals about this brand specifically e.g. 'Evening owned. Morning, office, travel completely undefended.'",
+    "gapTable": "8 words max — the single most important gap pattern e.g. 'Three absent occasions, all ≥₹1,000 Cr, no Indian owner.'",
+    "trendTable": "8 words max — the trend direction e.g. 'Four converging signals. Dry format arrives first.'",
+    "radarGap": "8 words max — what the radar says about the transformation needed e.g. 'Format range and trend alignment are the critical gaps.'"
+  },
+  "categoryRead": {
+    "globalTrend": "One sentence: what the global category is doing structurally — e.g. bifurcating, premiumising, declining in soup formats. Max 120 chars.",
+    "leadMarket": "KR|JP|SEA|US|UK",
+    "indiaLag": "e.g. 3-5 years behind JP/KR",
+    "implication": "One sentence: what this means specifically for this brand in India right now. Max 120 chars."
+  },
+  "page1Summary": "Exactly 2 sentences. Sentence 1: the single most important structural gap this brand has right now — which occasion is undefended, how large, who is moving into it. Sentence 2: the international trend signal that is converging on that exact gap — which market it is mainstream in today, when it arrives in India, and why this brand is better positioned than any competitor to own it first. This is the bridge sentence: structural gap + incoming trend = specific window. Do not repeat data points already visible in the tables. Do not start with the brand name. Max 280 chars total.",
   "boldStatement": "One sentence. Max 140 chars. Names the specific occasion or trend window, the competitor who will own it if this brand doesn't move, and the timeframe. Makes the reader feel urgency without using the word urgency.",
   "page3": {
     "needed": false,
@@ -826,6 +838,8 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
       {"trend": "trend name", "evidence": "specific data point with source"}
     ]
   },
+  "sectionHeaders": "Four dynamic sub-headers that give each section a voice specific to this brand. Each is a short declarative sentence (8 words max) that tells the reader what THIS section is saying about THIS brand — not a generic label. occasionWheel: what the ownership pattern reveals. gapTable: the single most important gap pattern. trendTable: the direction the trends point. radarGap: what the radar transformation requires. These create the narrative thread across both pages.",
+  "categoryRead": "CATEGORY INTELLIGENCE — drawn entirely from Agent 10 (International) output. globalTrend: one sentence on where the global category is structurally heading — is it premiumising, bifurcating, declining in one format while growing in another? Name the direction and the evidence market. leadMarket: the single market that is 12-36 months ahead of India on this curve. indiaLag: how far behind India is on this curve. implication: one sentence on what this structural global shift means for this brand's strategic window — is the window opening or closing, and how fast?",
   "topActions": [
     {"action": "specific action", "impact": 0, "speed": 0, "confidence": "H|M|L"}
   ]
@@ -2586,6 +2600,8 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
   const intl        = Array.isArray(db.internationalSignals) ? db.internationalSignals : [];
   const kpis        = Array.isArray(db.kpis)               ? db.kpis               : [];
   const p3          = db.page3 || {};
+  const categoryRead   = db.categoryRead || null;
+  const sectionHdrs    = db.sectionHeaders || {};
 
   // ── Colour system ────────────────────────────────────────────────────
   const C = {
@@ -2624,8 +2640,8 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
     // Wheel is centred in full SVG width so left/right labels have equal room.
     // CX = W/2 = 200 → right labels reach x=200+LABEL_R=314, text extends ~60px → x=374 < W=420 ✓
     // Left labels anchor=end at x=200-LABEL_R=86, text extends left — plenty of room ✓
-    const W = 420, H = 250;
-    const CX = 200, CY = 122;          // centred — no legend competing on right
+    const W = 420, H = 265;  // extra 15px for owner tags below spoke labels
+    const CX = 200, CY = 125;          // centred — no legend competing on right
     const R_INNER = 32, R_OUTER = 88;
     const LABEL_R = 114;
 
@@ -2713,6 +2729,14 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
       const words = raw.split(' ');
 
       // Wrap only if multi-word AND long enough to benefit
+      const isAbsentOcc  = s.occ.status === 'absent';
+      const isPartialOcc = s.occ.status === 'partial';
+      const showOwner    = (isAbsentOcc || isPartialOcc) && s.occ.owner && s.occ.owner.trim();
+      const ownerLabel   = showOwner ? (s.occ.owner.trim().slice(0, 14)) : null;
+      // Colour: coral for absent, amber for partial — both legible on white/parchment background
+      const ownerCol     = isAbsentOcc ? C.coral : C.amber;
+
+      let ownerY; // set below based on whether label wraps
       if (words.length >= 2 && raw.length > 11) {
         // Find best split point — roughly equal halves by character count
         let bestSplit = 1, bestDiff = Infinity;
@@ -2726,8 +2750,19 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
         const line2 = words.slice(bestSplit).join(' ');
         svg += `<text x="${lx + textOffX}" y="${ly - 3}" text-anchor="${anchor}" font-size="7" font-weight="700" fill="${C.forest}">${line1}</text>`;
         svg += `<text x="${lx + textOffX}" y="${ly + 6}" text-anchor="${anchor}" font-size="7" font-weight="700" fill="${C.forest}">${line2}</text>`;
+        ownerY = ly + 17; // below both lines
       } else {
         svg += `<text x="${lx + textOffX}" y="${ly + 3}" text-anchor="${anchor}" font-size="7" font-weight="700" fill="${C.forest}">${raw}</text>`;
+        ownerY = ly + 14; // below single line
+      }
+
+      // Owner tag — only for absent/partial, below occasion name, never overlaps
+      if (ownerLabel) {
+        // Pill background so text is legible regardless of what's behind it
+        const ow = ownerLabel.length * 4.2 + 8;
+        const ox = isRight ? lx + textOffX : lx + textOffX - ow;
+        svg += `<rect x="${ox}" y="${ownerY - 7}" width="${ow}" height="8" rx="2" fill="${ownerCol}" fill-opacity="0.15" stroke="${ownerCol}" stroke-width="0.6"/>`;
+        svg += `<text x="${lx + textOffX + (isRight ? ow/2 : -ow/2)}" y="${ownerY - 3}" text-anchor="middle" dominant-baseline="central" font-size="5.5" font-weight="700" fill="${ownerCol}">${ownerLabel}</text>`;
       }
 
       // ₹Cr label — white pill behind text so legible on any segment colour
@@ -3119,12 +3154,8 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
       <div style="font-size:9px;color:#888;margin-top:3px;">${subtitleLine}</div>
     </div>
     <div style="text-align:right;">
-      <div style="font-size:7px;color:#aaa;letter-spacing:.08em;margin-bottom:3px;">${dateStr}</div>
-      <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:6px;">
-        <div style="display:flex;align-items:center;gap:3px;"><div style="width:10px;height:10px;background:${C.owned};border-radius:2px;"></div><span style="font-size:7px;color:#666;">Owned</span></div>
-        <div style="display:flex;align-items:center;gap:3px;"><div style="width:10px;height:10px;background:${C.partial};border-radius:2px;"></div><span style="font-size:7px;color:#666;">Partial</span></div>
-        <div style="display:flex;align-items:center;gap:3px;"><div style="width:10px;height:10px;background:#e8e0d5;border:1.5px solid ${C.coral};border-radius:2px;"></div><span style="font-size:7px;color:#666;">Absent</span></div>
-      </div>
+      <div style="font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(61,96,77,.18);line-height:1.2;">AdvisorSprint</div>
+      <div style="font-size:7.5px;color:rgba(61,96,77,.18);letter-spacing:.04em;margin-top:2px;">Harsha Belavady</div>
     </div>
   </div>
 
@@ -3134,26 +3165,60 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
   <!-- Two-column: Occasion Wheel + Gap Table -->
   <div style="display:grid;grid-template-columns:420px 1fr;gap:16px;margin-bottom:14px;">
     <div>
-      <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:8px;">OCCASION COVERAGE MAP</div>
+      <div style="margin-bottom:8px;">
+        <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};">OCCASION COVERAGE MAP</div>
+        ${sectionHdrs.occasionWheel ? `<div style="font-size:7.5px;color:#666;font-style:italic;margin-top:2px;line-height:1.3;">${sectionHdrs.occasionWheel}</div>` : ''}
+      </div>
       ${renderOccasionWheel(occasions)}
     </div>
     <div>
-      <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:8px;">GAP PRIORITY TABLE</div>
+      <div style="margin-bottom:8px;">
+        <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};">GAP PRIORITY TABLE</div>
+        ${sectionHdrs.gapTable ? `<div style="font-size:7.5px;color:#666;font-style:italic;margin-top:2px;line-height:1.3;">${sectionHdrs.gapTable}</div>` : ''}
+      </div>
       ${renderGapTable(gapTable)}
     </div>
   </div>
 
+  <!-- Category Read — global category intelligence band, just before trend table -->
+  ${categoryRead ? `
+  <div style="display:grid;grid-template-columns:1fr 80px 90px;gap:0;background:#fff;border:1px solid #e8e0d5;border-left:3px solid ${C.blue};border-radius:0 3px 3px 0;padding:8px 12px;margin-bottom:10px;align-items:center;">
+    <div>
+      <div style="font-size:6px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:${C.blue};margin-bottom:3px;">GLOBAL CATEGORY INTELLIGENCE</div>
+      <div style="font-size:7.5px;color:#333;line-height:1.4;font-weight:600;">${categoryRead.globalTrend||''}</div>
+      <div style="font-size:7px;color:#666;line-height:1.4;margin-top:2px;">${categoryRead.implication||''}</div>
+    </div>
+    <div style="text-align:center;padding:0 8px;border-left:1px solid #e8e0d5;">
+      <div style="font-size:6px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:3px;">LEAD MKT</div>
+      <div style="background:${C.blue};color:#fff;font-size:9px;font-weight:800;padding:3px 6px;border-radius:2px;display:inline-block;">${categoryRead.leadMarket||'—'}</div>
+    </div>
+    <div style="text-align:center;padding:0 8px;border-left:1px solid #e8e0d5;">
+      <div style="font-size:6px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:3px;">INDIA LAG</div>
+      <div style="font-size:8px;font-weight:800;color:${C.coral};">${categoryRead.indiaLag||'—'}</div>
+    </div>
+  </div>` : ''}
+
   <!-- Flavour Trend Heatmap -->
   <div style="margin-bottom:10px;">
-    <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:8px;">FLAVOUR & FORMAT TREND TRAJECTORY</div>
+    <div style="margin-bottom:8px;">
+      <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};">FLAVOUR & FORMAT TREND TRAJECTORY</div>
+      ${sectionHdrs.trendTable ? `<div style="font-size:7.5px;color:#666;font-style:italic;margin-top:2px;line-height:1.3;">${sectionHdrs.trendTable}</div>` : ''}
+    </div>
     ${renderFlavourTrends(flavours)}
   </div>
 
-  <!-- Page 1 synthesis line -->
+  <!-- Page 1 → Page 2 transition bridge -->
   ${(db.page1Summary) ? `
-  <div style="background:#f0ece6;border-left:3px solid ${C.forest};border-radius:0 3px 3px 0;padding:8px 12px;margin-bottom:6px;">
-    <span style="font-size:6.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-right:8px;">SIGNAL SUMMARY</span>
-    <span style="font-size:8px;color:#333;line-height:1.5;">${db.page1Summary}</span>
+  <div style="background:#f0ece6;border-radius:3px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;gap:12px;">
+    <div style="flex:1;">
+      <div style="font-size:6px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:${C.forest};margin-bottom:3px;">SITUATION SUMMARY · THE CASE FOR ACTION</div>
+      <div style="font-size:8px;color:#333;line-height:1.5;font-weight:500;">${db.page1Summary}</div>
+    </div>
+    <div style="flex-shrink:0;text-align:center;padding-left:12px;border-left:2px solid #ddd;">
+      <div style="font-size:7px;color:#888;margin-bottom:2px;">continued</div>
+      <div style="font-size:16px;color:${C.forest};font-weight:800;line-height:1;">→</div>
+      <div style="font-size:6.5px;color:${C.forest};font-weight:700;">Page 2</div>
+    </div>
   </div>` : ''}
 
   <!-- Footer -->
@@ -3185,33 +3250,32 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
   <!-- Radar + Before/After State -->
   <div style="display:grid;grid-template-columns:260px 1fr;gap:16px;margin-bottom:14px;">
     <div>
-      <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:6px;">STRATEGIC POSITION GAP</div>
+      <div style="margin-bottom:6px;">
+        <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};">STRATEGIC POSITION GAP</div>
+        ${sectionHdrs.radarGap ? `<div style="font-size:7.5px;color:#666;font-style:italic;margin-top:2px;line-height:1.3;">${sectionHdrs.radarGap}</div>` : ''}
+      </div>
       <div style="font-size:7px;color:#888;margin-bottom:8px;"><span style="color:${C.forest};font-weight:700;">■</span> Today &nbsp; <span style="color:${C.amber};font-weight:700;">▪</span> 18 Months (if 3 moves executed)</div>
       ${renderRadar(radarAxes)}
     </div>
     <div>
-      <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:8px;">THE 3 MOVES</div>
+      <div style="margin-bottom:8px;">
+        <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};">THE 3 MOVES</div>
+        <div style="font-size:7.5px;color:#666;font-style:italic;margin-top:2px;">Closing the gaps identified on Page 1 — sequenced by speed and right to win.</div>
+      </div>
       ${renderMoveCards(moves)}
     </div>
   </div>
 
   <!-- International Signal Strip -->
-  <div style="margin-bottom:14px;">
+  <div style="margin-bottom:12px;">
     <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:8px;">INTERNATIONAL SIGNALS → INDIA TIMELINE</div>
     ${renderIntlStrip(intl)}
   </div>
 
-  <!-- Bold Statement -->
-  ${boldStatement ? `
-  <div style="background:${C.forest};border-radius:4px;padding:16px 20px;margin-bottom:14px;">
-    <div style="font-size:7.5px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px;">THE VERDICT</div>
-    <div style="font-size:${boldStatement.length > 100 ? '11' : '13'}px;font-weight:700;color:#fff;line-height:1.5;font-style:italic;">${boldStatement}</div>
-  </div>` : ''}
-
-  <!-- Challenger Brand Watch — fixed height, always 3 cards -->
+  <!-- Challenger Brand Watch — if you don't move, these brands will -->
   ${Array.isArray(p3.challengerBrands) && p3.challengerBrands.length ? `
   <div style="margin-bottom:12px;">
-    <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.coral};margin-bottom:8px;padding-bottom:4px;border-bottom:1.5px solid ${C.coral};">CHALLENGER BRAND WATCH</div>
+    <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.coral};margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid ${C.coral};">IF YOU DON'T MOVE — THEY WILL</div>
     <div style="display:grid;grid-template-columns:repeat(${Math.min(p3.challengerBrands.length,3)},1fr);gap:8px;">
       ${p3.challengerBrands.slice(0,3).map(b => `
         <div style="background:#fff;border:1px solid #e8e0d5;border-radius:3px;padding:8px 10px;border-top:2.5px solid ${C.coral};height:82px;box-sizing:border-box;">
@@ -3223,7 +3287,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
     </div>
   </div>` : ''}
 
-  <!-- International Signal Detail — compact table rows, fixed height -->
+  <!-- International Signal Detail -->
   ${Array.isArray(p3.internationalDeep) && p3.internationalDeep.length ? `
   <div style="margin-bottom:12px;">
     <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.blue};margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid ${C.blue};">INTERNATIONAL SIGNAL DETAIL</div>
@@ -3235,6 +3299,13 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
         <span style="font-size:7.5px;color:#444;line-height:1.4;white-space:normal;">${s.fullSignal||''}</span>
       </div>`;
     }).join('')}
+  </div>` : ''}
+
+  <!-- Bold Statement — always last, the call to action -->
+  ${boldStatement ? `
+  <div style="background:${C.forest};border-radius:4px;padding:16px 20px;margin-bottom:14px;">
+    <div style="font-size:7.5px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px;">THE VERDICT</div>
+    <div style="font-size:${boldStatement.length > 100 ? '11' : '13'}px;font-weight:700;color:#fff;line-height:1.5;font-style:italic;">${boldStatement}</div>
   </div>` : ''}
 
   <!-- Footer -->
