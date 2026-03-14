@@ -767,14 +767,25 @@ Gaps below all three thresholds: exclude entirely. Do not include them as footno
 ## SYNTHESIS APPROACH
 
 Step 1 — Extract from prior agents. Read every agent output systematically:
-- Agent 1 (Market): TAM, brand's capture rate, underpenetrated segments → GAP SIZING
-- Agent 2 (Portfolio): SKU performance, format gaps → OCCASION MAPPING  
+- Agent 1 (Market): TAM, brand's capture rate, underpenetrated segments → GAP SIZING for KPIs and occasion wheel
+- Agent 2 (Portfolio): SKU performance, format gaps → OCCASION MAPPING + what format/occasion gaps exist
 - Agent 3 (Brand): Occasions owned vs absent, consumer perception → OCCASION WHEEL DATA
 - Agent 4 (Margins): Which gaps are worth chasing (margin-accretive vs dilutive) → MOVE FILTER
 - Agent 5 (Growth): Channel and distribution gaps + GTM Profile → HOW TO SCALE
-- Agent 6 (Competitive): Occasions competitors own that this brand doesn't → THREAT MAP
-- Agent 9 (Platform): Format and flavour adjacencies → TREND SIGNALS
-- Agent 10 (International): KR, JP, SEA, US, UK, DE, AU trend signals → 18-MONTH FORECAST
+- Agent 6 (Competitive): TWO things — (a) occasions competitors own → THREAT MAP for gap table; (b) what D2C players, challengers, and organised competitors are doing DIFFERENTLY in India right now that proves format/occasion demand this brand has not addressed → MARKET SIGNALS TABLE
+- Agent 7 (Synergy): Pull the synergyMatrix — specifically assets with status "untapped" or "partial" that relate to this brand's category. For parent/acquired brands: these are institutional assets. For standalone brands: pull what this brand can do that large incumbents structurally cannot. → INSTITUTIONAL EDGE section
+- Agent 9 (Platform): Format and occasion adjacencies → additional MARKET SIGNALS rows if relevant
+- Agent 10 (International): KR, JP, SEA, US, UK, DE, AU signals → ARRIVAL SEQUENCE on Page 2 only (when + how each format arrives in India + what brand must do before that inflection)
+
+PAGE 1 IS HOME MARKET ONLY. Page 1 must not contain international signals. Every data point on Page 1 describes what is happening in this brand's home market (India, US, or whichever market is specified) — gaps, occasions, what home market competitors and challengers are doing, institutional or structural assets.
+
+PAGE 2 IS INTERNATIONAL + ACTION. Page 2 shows: what this brand must do (3 moves + radar), then what is arriving internationally and when, then the verdict.
+
+CRITICAL — ONE JOB PER SURFACE, NO REPETITION:
+- marketSignals (Page 1): India players proving format/occasion demand — D2C, challenger, organised. India-only.
+- institutionalEdge (Page 1): untapped/partial assets — parent/acquirer OR standalone structural advantage. India-only.
+- arrivalSequence (Page 2): international format/occasion arrival — when, how, what brand must do. No India market data.
+- boldStatement: the competitive window. One competitor. One occasion. One timeframe.
 
 Step 2 — Critical gap search. After extracting, if specific occasion data, flavour trend data, or international signals are missing — and only then — conduct targeted searches (maximum 3). Do not re-search what agents found.
 
@@ -812,10 +823,12 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
     "confidence": "H|M|L"
   },
   "kpis": [
-    {"label": "TAM", "value": "₹X Cr", "sub": "total addressable market", "trend": "up", "confidence": "H"},
-    {"label": "Captured", "value": "X%", "sub": "brand's current share of TAM", "trend": "flat", "confidence": "M"},
-    {"label": "Gap", "value": "₹X Cr", "sub": "revenue not yet captured", "trend": "up", "confidence": "M"},
-    {"label": "Trend Window", "value": "18mo", "sub": "time before window closes", "trend": "down", "confidence": "H"}
+    "MANDATORY: 4 DERIVED metrics that require calculation — not descriptive labels the CEO already knows.",
+    "BAD example: TAM ₹6,800 Cr. The CEO knows the TAM.",
+    "GOOD examples: 'Revenue Left on Table' = gap between brand growth rate and category growth rate × 36 months; 'Months to Parity' = how many months at current growth rate before brand reaches category leader share; 'Unactivated Distribution' = % of ITC outlets not stocking this brand × average outlet revenue; 'Challenger Velocity' = rate at which D2C challengers are growing vs brand growth rate.",
+    "Each KPI must make the CEO think: I had not computed that.",
+    "Format: {label: short label, value: the computed number with unit, sub: what was calculated and from what, trend: up|down|flat|watch, confidence: H|M|L}",
+    "Do not use: TAM, Captured %, Gap ₹Cr, Trend Window — these are descriptive. Compute something from them instead."
   ],
   "occasionWheel": [
     {
@@ -837,15 +850,23 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
       "confidence": "H|M|L"
     }
   ],
-  "flavourTrends": [
+  "marketSignals": [
     {
-      "trend": "trend name (max 20 chars)",
-      "nowSignal": "evidence string (max 40 chars)",
-      "momentum": "accelerating|building|mainstream|emerging|declining",
-      "months18": "accelerating|building|mainstream|emerging|declining",
-      "sourceMarket": "IN|KR|JP|SEA|US|UK|DE|AU",
-      "headroomPct": 65,
+      "player": "brand or company name operating in this brand's home market — D2C player, challenger brand, or organised competitor. Must be operating in the home market.",
+      "action": "what they are doing differently in this category (max 40 chars) — specific format, occasion, channel, or ingredient innovation",
+      "occasion": "which occasion or format they are proving works (max 25 chars)",
+      "proofPoint": "the commercial evidence that this works — sales, reorder rate, funding raised, distribution reached (max 50 chars)",
+      "implicationForBrand": "what this means for THIS brand specifically — if a D2C player is proving this occasion works, what should the brand do? (max 60 chars)",
       "playType": "SCALE|D2C|CATEGORY CREATION"
+    }
+  ],
+  "institutionalEdge": [
+    {
+      "asset": "specific asset name — R&D capability, manufacturing unit, distribution channel, ingredient supply, IP, data, brand equity in adjacent category",
+      "status": "untapped|partial — only include assets NOT already fully activated for this category",
+      "whatItUnlocks": "specific format or occasion this asset enables for this brand that no independent competitor can replicate (max 60 chars)",
+      "activationPath": "what the CEO must do to activate this — one specific action (max 50 chars)",
+      "confidence": "H|M|L"
     }
   ],
   "radarAxes": [
@@ -871,37 +892,37 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
       "evidence": "one line of evidence, source cited, max 80 chars"
     }
   ],
-  "internationalSignals": [
+  "arrivalSequence": [
     {
       "market": "KR|JP|SEA|US|UK|DE|AU",
-      "trend": "trend name (max 35 chars)",
-      "indiaInflection": "Q3 2026",
-      "confidence": "H|M|L",
-      "signal": "one evidence line (max 60 chars)"
+      "format": "the specific format or occasion arriving in the home market (max 30 chars) — not the brand name, the format",
+      "indiaInflection": "Q3 2026 — when this reaches critical mass in the home market, not when it is mainstream abroad",
+      "entryMechanism": "HOW it physically arrives — which importer/platform/channel/QSR/hotel/distributor is the vehicle (max 55 chars)",
+      "brandResponse": "what THIS brand must do specifically before this inflection point — one action (max 50 chars)",
+      "confidence": "H|M|L"
     }
   ],
   "sectionHeaders": {
     "occasionWheel": "8 words max — what the wheel reveals about this brand specifically e.g. 'Evening owned. Morning, office, travel completely undefended.'",
     "gapTable": "8 words max — the single most important gap pattern e.g. 'Three absent occasions, all ≥₹1,000 Cr, no Indian owner.'",
-    "trendTable": "8 words max — the trend direction e.g. 'Four converging signals. Dry format arrives first.'",
+    "marketSignals": "8 words max — what home market players are proving that this brand hasn't done yet e.g. 'D2C players proving three formats. None defended.'",
+    "institutionalEdge": "8 words max — what the institutional or structural edge is and why it matters e.g. 'Parent R&D can build what no D2C can afford.' or 'Speed and community no incumbent can replicate.'",
     "radarGap": "8 words max — what the radar says about the transformation needed e.g. 'Format range and trend alignment are the critical gaps.'"
   },
   "categoryRead": {
-    "globalTrend": "One sentence: what the global category is doing structurally — e.g. bifurcating, premiumising, declining in soup formats. Max 120 chars.",
-    "leadMarket": "KR|JP|SEA|US|UK",
-    "homeMarketLag": "e.g. 'US 2 years behind JP/KR' or 'India 3-5 years behind SEA' — always relative to brand's home market",
-    "implication": "One sentence: what this means specifically for this brand in India right now. Max 120 chars."
+    "globalTrend": "One sentence: where the CATEGORY STRUCTURE is heading — bifurcating, premiumising, commoditising, consolidating. Name the structural direction and the evidence market. Max 120 chars. NO brand names — structural direction only.",
+    "leadMarket": "KR|JP|SEA|US|UK — the single market where this structural shift is most advanced",
+    "homeMarketLag": "e.g. 'India 3-5 yrs behind SEA' — time lag only, no brand examples",
+    "implication": "One sentence: what the structural shift means for THIS brand's window — is the window opening, closing, or already closing? No brand examples. Max 120 chars."
   },
-  "page1Summary": "Exactly 2 sentences. Sentence 1: the single most important structural gap this brand has right now — which occasion is undefended, how large, who is moving into it. Sentence 2: the international trend signal that is converging on that exact gap — which market it is mainstream in today, when it reaches critical mass in this brand's home market, and why this brand is better positioned than any competitor to own it first. This is the bridge sentence: structural gap + incoming trend = specific window. Do not repeat data points already visible in the tables. Do not start with the brand name. Max 280 chars total.",
+  "page1Summary": "Exactly 2 sentences. S1: the single most important structural gap — which occasion is undefended, how large, who is moving into it, and why the brand's existing position creates a specific right to win that a new entrant cannot replicate. S2: the single brand constraint that makes this gap urgent NOW — what organisational or structural fact means that if the brand does not move in the next 18 months, the window closes permanently. DO NOT mention international signals — those are already visible in the trend table and signal strip above. This sentence is about the brand's India position only. Max 280 chars total. Do not start with the brand name.",
   "boldStatement": "One sentence. Max 140 chars. Names the specific occasion or trend window, the competitor who will own it if this brand doesn't move, and the timeframe. Makes the reader feel urgency without using the word urgency.",
   "page3": {
     "needed": false,
     "challengerBrands": [
       {"name": "brand name", "revenueEst": "₹X Cr", "occasion": "occasion targeting", "threat": "Q3 2026", "confidence": "M"}
     ],
-    "internationalDeep": [
-      {"market": "KR", "fullSignal": "2-3 sentence deep signal (max 200 chars)"}
-    ],
+    "internationalDeep": [],
     "questionBank": [
       "Question for Hemant to ask brand team (max 100 chars)"
     ],
@@ -909,7 +930,10 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
       {"trend": "trend name", "evidence": "specific data point with source"}
     ]
   },
+  "marketSignals": "HOME MARKET ONLY market signal table — pulled from Agent 6 (Competitive) and Agent 9 (Platform). For each row: name a specific player operating in this brand's home market (D2C brand, challenger brand, or organised competitor) who is doing something in this category that this brand is NOT doing. The player must be operating in the home market. The action must be specific and concrete — not generic like 'expanding distribution' but like 'launching a protein-fortified format at the home market entry price point' or 'seeding via quick commerce with a bundle targeting a specific occasion'. Use the correct currency for the home market. The proof point must be commercial evidence — sales figures, reorder rates, funding rounds, distribution reached. The implication must tell the CEO what to do specifically because of this signal. Maximum 5 rows. Do not include international players here — they belong in arrivalSequence on Page 2.",
   "sectionHeaders": "Four dynamic sub-headers that give each section a voice specific to this brand. Each is a short declarative sentence (8 words max) that tells the reader what THIS section is saying about THIS brand — not a generic label. occasionWheel: what the ownership pattern reveals. gapTable: the single most important gap pattern. trendTable: the direction the trends point. radarGap: what the radar transformation requires. These create the narrative thread across both pages.",
+  "institutionalEdge": "CONDITIONAL on companyMode. Read the [ACQUISITION_PREAMBLE] to determine which frame applies. IF parent or acquired: pull from Agent 7 synergyMatrix the assets with status untapped or partial. For each asset, identify what specific category opportunity it unlocks for THIS brand that no independent competitor can replicate. Examples of asset types (not ITC-specific): R&D or life sciences capability, manufacturing scale or specialist equipment, hospitality or channel seeding network, ingredient or raw material sourcing advantage, data or consumer insight access, regulatory approval or certification. Name the actual asset this specific parent/acquirer has — do not use generic examples. IF standalone: identify what this brand can do that a large incumbent structurally cannot — speed to market, community building, format experimentation, DTC learning loop, founder credibility in a niche segment, capital-light model. Name the specific structural advantage for this company. Maximum 3 assets/advantages. Only include assets genuinely relevant to this brand's category gaps identified on Page 1.",
+  "arrivalSequence": "PAGE 2 ONLY. International format/occasion arrival timeline — pulled from Agent 10 (International). Each row: a specific format or occasion that is mainstream in a reference market and arriving in this brand's home market. For each: which market it is mainstream in, when it reaches critical mass in the home market, HOW it physically enters the home market (which importer/platform/channel/QSR/hotel/retailer is the vehicle), and what THIS brand must do specifically before that inflection point. Use the home market's channel terminology — e.g. for US: Instacart/DoorDash/Target/Whole Foods; for India: Blinkit/Zepto/MT/GT. Maximum 5 rows. DO NOT include any home market data here — that belongs on Page 1. DO NOT repeat anything from marketSignals. Every row must be forward-looking: arrival date, entry mechanism, brand response.",
   "categoryRead": "CATEGORY INTELLIGENCE — drawn entirely from Agent 10 (International) output. globalTrend: one sentence on where the global category is structurally heading — is it premiumising, bifurcating, declining in one format while growing in another? Name the direction and the evidence market. leadMarket: the single reference market that is 12-36 months ahead of this brand's home market on this curve. homeMarketLag: how far behind this brand's home market is on this curve — phrase relative to home market, e.g. 'US 2 yrs behind JP/KR' or 'India 3-5 yrs behind SEA'. implication: one sentence on what this structural global shift means for this brand's strategic window — is the window opening or closing, and how fast?",
   "topActions": [
     {"action": "specific action", "impact": 0, "speed": 0, "confidence": "H|M|L"}
@@ -2682,16 +2706,17 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
   const boldStatement = boldMatch ? boldMatch[1].trim().replace(/^\*+|\*+$/g,'') : (db.boldStatement || '');
 
   // ── Safe accessors ───────────────────────────────────────────────────
-  const occasions   = Array.isArray(db.occasionWheel)      ? db.occasionWheel      : [];
-  const gapTable    = Array.isArray(db.gapTable)           ? db.gapTable           : [];
-  const flavours    = Array.isArray(db.flavourTrends)      ? db.flavourTrends      : [];
-  const radarAxes   = Array.isArray(db.radarAxes)          ? db.radarAxes          : [];
-  const moves       = Array.isArray(db.moves)              ? db.moves              : [];
-  const intl        = Array.isArray(db.internationalSignals) ? db.internationalSignals : [];
-  const kpis        = Array.isArray(db.kpis)               ? db.kpis               : [];
-  const p3          = db.page3 || {};
-  const categoryRead   = db.categoryRead || null;
-  const sectionHdrs    = db.sectionHeaders || {};
+  const occasions        = Array.isArray(db.occasionWheel)      ? db.occasionWheel      : [];
+  const gapTable         = Array.isArray(db.gapTable)           ? db.gapTable           : [];
+  const marketSignals    = Array.isArray(db.marketSignals)      ? db.marketSignals      : [];
+  const institutionalEdge= Array.isArray(db.institutionalEdge)  ? db.institutionalEdge  : [];
+  const radarAxes        = Array.isArray(db.radarAxes)          ? db.radarAxes          : [];
+  const moves            = Array.isArray(db.moves)              ? db.moves              : [];
+  const arrivalSequence  = Array.isArray(db.arrivalSequence)    ? db.arrivalSequence    : [];
+  const kpis             = Array.isArray(db.kpis)               ? db.kpis               : [];
+  const p3               = db.page3 || {};
+  const categoryRead     = db.categoryRead || null;
+  const sectionHdrs      = db.sectionHeaders || {};
 
   // ── Colour system ────────────────────────────────────────────────────
   const C = {
@@ -2773,8 +2798,11 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
 
     // ── Hub ───────────────────────────────────────────────────────────
     svg += `<circle cx="${CX}" cy="${CY}" r="${R_INNER}" fill="url(#hubGrad2)" stroke="${C.forest}" stroke-width="1.5"/>`;
-    svg += `<text x="${CX}" y="${CY-5}" text-anchor="middle" font-size="6.5" font-weight="800" fill="white" letter-spacing="0.08em">OCCASION</text>`;
-    svg += `<text x="${CX}" y="${CY+6}" text-anchor="middle" font-size="6.5" font-weight="800" fill="white" letter-spacing="0.08em">COVERAGE</text>`;
+    // Inner circle — show count of owned vs total
+    const ownedCount = occasions.filter(o => o.status === 'owned').length;
+    const totalCount = occasions.length;
+    svg += `<text x="${CX}" y="${CY-4}" text-anchor="middle" font-size="11" font-weight="900" fill="white">${ownedCount}/${totalCount}</text>`;
+    svg += `<text x="${CX}" y="${CY+7}" text-anchor="middle" font-size="6" font-weight="700" fill="rgba(255,255,255,0.7)" letter-spacing="0.06em">OWNED</text>`;
 
     // ── Label angle computation with collision avoidance ──────────────
     // Use segment midpoint angles, then iteratively push apart if too close
@@ -2904,6 +2932,87 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
   }
 
   // ── Gap Table ────────────────────────────────────────────────────────
+  // ── MARKET SIGNALS TABLE ──────────────────────────────────────────────
+  function renderMarketSignals(signals) {
+    if (!signals.length) return '<div style="padding:12px;color:#999;font-size:8px;">No market signals data</div>';
+    const playColour = { SCALE: C.forest, 'D2C': C.blue, 'CATEGORY CREATION': C.coral };
+    const playShortM = { SCALE:'SCL', 'D2C':'D2C', 'CATEGORY CREATION':'CAT' };
+    let h = `<table style="width:100%;border-collapse:collapse;font-size:7.5px;">
+      <thead><tr style="background:${C.forest};color:#fff;">
+        <th style="padding:5px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;width:100px;">PLAYER</th>
+        <th style="padding:5px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;">WHAT THEY'RE DOING</th>
+        <th style="padding:5px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;width:110px;">PROOF</th>
+        <th style="padding:5px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;">IMPLICATION FOR BRAND</th>
+        <th style="padding:5px 8px;text-align:center;font-size:6.5px;letter-spacing:.06em;width:40px;">PLAY</th>
+      </tr></thead><tbody>`;
+    signals.slice(0,5).forEach((s, i) => {
+      const bg = i%2===0?'#fff':C.parchment;
+      const pc = playColour[s.playType] || C.forest;
+      const ps = playShortM[s.playType] || s.playType;
+      h += `<tr>
+        <td style="padding:5px 8px;background:${bg};border-left:3px solid ${pc};">
+          <div style="font-weight:800;color:${C.forest};font-size:8px;">${s.player||''}</div>
+          <div style="font-size:6px;color:#888;margin-top:1px;white-space:normal;">${s.occasion||''}</div>
+        </td>
+        <td style="padding:5px 8px;background:${bg};color:${C.inkMid};font-size:7px;white-space:normal;">${s.action||''}</td>
+        <td style="padding:5px 8px;background:${bg};color:${C.forest};font-size:6.5px;font-weight:600;white-space:normal;">${s.proofPoint||''}</td>
+        <td style="padding:5px 8px;background:${bg};color:#444;font-size:7px;font-style:italic;white-space:normal;">${s.implicationForBrand||''}</td>
+        <td style="padding:5px 8px;background:${bg};text-align:center;"><span style="background:${pc};color:#fff;font-size:6px;font-weight:800;padding:2px 4px;border-radius:2px;">${ps}</span></td>
+      </tr>`;
+    });
+    h += '</tbody></table>';
+    return h;
+  }
+
+  // ── INSTITUTIONAL EDGE ────────────────────────────────────────────────
+  function renderInstitutionalEdge(assets) {
+    if (!assets.length) return '';
+    const statusCol = { untapped: C.coral, partial: C.amber };
+    return `<div style="display:grid;grid-template-columns:repeat(${Math.min(assets.length,3)},1fr);gap:8px;">` +
+      assets.slice(0,3).map(a => {
+        const sc = statusCol[a.status] || C.amber;
+        return `<div style="background:#fff;border:1px solid #e8e0d5;border-radius:3px;padding:8px 10px;border-top:2.5px solid ${sc};">
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">
+            <span style="background:${sc}22;color:${sc};font-size:6px;font-weight:800;padding:1px 5px;border-radius:2px;text-transform:uppercase;">${a.status||''}</span>
+          </div>
+          <div style="font-size:8px;font-weight:800;color:${C.forest};margin-bottom:3px;white-space:normal;">${a.asset||''}</div>
+          <div style="font-size:7px;color:#555;line-height:1.3;margin-bottom:4px;white-space:normal;">${a.whatItUnlocks||''}</div>
+          <div style="font-size:6.5px;color:${C.forest};font-weight:600;border-top:1px solid #e8e0d5;padding-top:4px;white-space:normal;">→ ${a.activationPath||''}</div>
+        </div>`;
+      }).join('') + '</div>';
+  }
+
+  // ── ARRIVAL SEQUENCE TABLE ────────────────────────────────────────────
+  function renderArrivalSequence(seq) {
+    if (!seq.length) return '';
+    const mktCol = { KR:'#c0392b', JP:'#b85c38', SEA:'#2563eb', US:'#1a5c35', UK:'#6b21a8', DE:'#374151', AU:'#92400e' };
+    const confCol2 = { H: C.forest, M: C.amber, L: '#bbb' };
+    let h = `<table style="width:100%;border-collapse:collapse;font-size:7px;">
+      <thead><tr style="background:${C.forest};color:#fff;">
+        <th style="padding:5px 8px;text-align:center;font-size:6.5px;letter-spacing:.06em;width:35px;">MKT</th>
+        <th style="padding:5px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;width:120px;">FORMAT ARRIVING</th>
+        <th style="padding:5px 8px;text-align:center;font-size:6.5px;letter-spacing:.06em;width:65px;">INDIA BY</th>
+        <th style="padding:5px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;">HOW IT ENTERS</th>
+        <th style="padding:5px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;">BRAND MUST DO</th>
+        <th style="padding:5px 8px;text-align:center;font-size:6.5px;letter-spacing:.06em;width:35px;">CONF</th>
+      </tr></thead><tbody>`;
+    seq.slice(0,5).forEach((s, i) => {
+      const bg = i%2===0?'#fff':C.parchment;
+      const mc = mktCol[s.market] || C.forest;
+      const cc = confCol2[s.confidence] || C.amber;
+      h += `<tr>
+        <td style="padding:5px 8px;background:${bg};text-align:center;"><span style="background:${mc};color:#fff;font-size:6px;font-weight:800;padding:2px 5px;border-radius:2px;">${s.market||'?'}</span></td>
+        <td style="padding:5px 8px;background:${bg};font-weight:700;color:${C.forest};white-space:normal;">${s.format||''}</td>
+        <td style="padding:5px 8px;background:${bg};text-align:center;font-weight:700;color:${C.coral};font-size:7px;">${s.indiaInflection||'—'}</td>
+        <td style="padding:5px 8px;background:${bg};color:${C.inkMid};font-size:6.5px;white-space:normal;">${s.entryMechanism||''}</td>
+        <td style="padding:5px 8px;background:${bg};color:${C.forest};font-size:6.5px;font-weight:600;font-style:italic;white-space:normal;">${s.brandResponse||''}</td>
+        <td style="padding:5px 8px;background:${bg};text-align:center;"><span style="background:${cc};color:#fff;font-size:6px;font-weight:700;padding:1px 4px;border-radius:2px;">${s.confidence||'M'}</span></td>
+      </tr>`;
+    });
+    h += '</tbody></table>';
+    return h;
+  }
+
   function renderGapTable(gaps) {
     if (!gaps.length) return '';
     const confColour = { H: C.owned, M: C.amber, L: '#999' };
@@ -3012,7 +3121,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
   // ── Radar Chart ──────────────────────────────────────────────────────
   function renderRadar(axes) {
     if (!axes.length) return '';
-    const W = 240, H = 220, CX = 120, CY = 110, R = 85;
+    const W = 260, H = 260, CX = 130, CY = 110, R = 82;
     const n = axes.length;
     const angleStep = (2 * Math.PI) / n;
     const levels = [0.25, 0.5, 0.75, 1.0];
@@ -3061,11 +3170,10 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
       svg += `<circle cx="${CX + R * vf * Math.cos(a)}" cy="${CY + R * vf * Math.sin(a)}" r="3.5" fill="${C.amber}" stroke="#fff" stroke-width="1"/>`;
     });
 
-    // Axis labels — viewport-aware positioning
+    // Axis labels with score numbers — bottom axis shifted to avoid ring overlap
     axes.forEach((ax, i) => {
       const a = i * angleStep - Math.PI / 2;
-      // Place label beyond the outer ring with padding
-      const LABEL_R = R + 18;
+      const LABEL_R = R + 20;
       const lx = CX + LABEL_R * Math.cos(a);
       const ly = CY + LABEL_R * Math.sin(a);
       const isRight = lx > CX + 5;
@@ -3073,27 +3181,25 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
       const anchor  = isRight ? 'start' : isLeft ? 'end' : 'middle';
       const label   = (ax.axis || '').slice(0, 18);
       const words   = label.split(' ');
-      // Score labels
       const todayScore  = Math.round(ax.today || 0);
       const futureScore = Math.round(ax.future || 0);
-      const delta = futureScore - todayScore;
+      const delta    = futureScore - todayScore;
       const deltaStr = delta > 0 ? `+${delta}` : `${delta}`;
-      const deltaCol = delta > 0 ? C.owned : '#c0392b';
+      const deltaCol = delta > 0 ? C.forest : '#c0392b';
+      // Bottom-pointing axes: extra downward offset so score clears the SVG legend area
+      const isBottom = Math.sin(a) > 0.6;
+      const yOff = isBottom ? 8 : 0;
       if (words.length > 1) {
-        svg += `<text x="${lx}" y="${ly - 4}" text-anchor="${anchor}" font-size="7.5" font-weight="700" fill="${C.forest}">${words[0]}</text>`;
-        svg += `<text x="${lx}" y="${ly + 5}" text-anchor="${anchor}" font-size="7.5" font-weight="700" fill="${C.forest}">${words.slice(1).join(' ')}</text>`;
-        svg += `<text x="${lx}" y="${ly + 15}" text-anchor="${anchor}" font-size="7" fill="${deltaCol}" font-weight="700">${todayScore}→${futureScore} (${deltaStr})</text>`;
+        svg += `<text x="${lx}" y="${ly - 3 + yOff}" text-anchor="${anchor}" font-size="7" font-weight="700" fill="${C.forest}">${words[0]}</text>`;
+        svg += `<text x="${lx}" y="${ly + 6 + yOff}" text-anchor="${anchor}" font-size="7" font-weight="700" fill="${C.forest}">${words.slice(1).join(' ')}</text>`;
+        svg += `<text x="${lx}" y="${ly + 15 + yOff}" text-anchor="${anchor}" font-size="6.5" fill="${deltaCol}" font-weight="700">${todayScore}→${futureScore} (${deltaStr})</text>`;
       } else {
-        svg += `<text x="${lx}" y="${ly + 3}" text-anchor="${anchor}" font-size="7.5" font-weight="700" fill="${C.forest}">${label}</text>`;
-        svg += `<text x="${lx}" y="${ly + 13}" text-anchor="${anchor}" font-size="7" fill="${deltaCol}" font-weight="700">${todayScore}→${futureScore} (${deltaStr})</text>`;
+        svg += `<text x="${lx}" y="${ly + 3 + yOff}" text-anchor="${anchor}" font-size="7" font-weight="700" fill="${C.forest}">${label}</text>`;
+        svg += `<text x="${lx}" y="${ly + 12 + yOff}" text-anchor="${anchor}" font-size="6.5" fill="${deltaCol}" font-weight="700">${todayScore}→${futureScore} (${deltaStr})</text>`;
       }
     });
 
-    // Legend
-    svg += `<rect x="${CX - 55}" y="${H - 22}" width="10" height="10" fill="${C.forest}" fill-opacity="0.4" stroke="${C.forest}" stroke-width="1.5" rx="1"/>`;
-    svg += `<text x="${CX - 42}" y="${H - 13}" font-size="7.5" fill="${C.forest}" font-weight="600">Today</text>`;
-    svg += `<rect x="${CX + 5}" y="${H - 22}" width="10" height="10" fill="${C.amber}" fill-opacity="0.25" stroke="${C.amber}" stroke-width="1.5" stroke-dasharray="3,1.5" rx="1"/>`;
-    svg += `<text x="${CX + 18}" y="${H - 13}" font-size="7.5" fill="${C.amber}" font-weight="600">18 Months</text>`;
+    // Legend removed from SVG — shown in HTML above radar
 
     svg += '</svg>';
     return svg;
@@ -3271,32 +3377,24 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
     </div>
   </div>
 
-  <!-- Category Read — global category intelligence band, just before trend table -->
-  ${categoryRead ? `
-  <div style="display:grid;grid-template-columns:1fr 80px 90px;gap:0;background:#fff;border:1px solid #e8e0d5;border-left:3px solid ${C.blue};border-radius:0 3px 3px 0;padding:8px 12px;margin-bottom:10px;align-items:center;">
-    <div>
-      <div style="font-size:6px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:${C.blue};margin-bottom:3px;">GLOBAL CATEGORY INTELLIGENCE</div>
-      <div style="font-size:7.5px;color:#333;line-height:1.4;font-weight:600;">${categoryRead.globalTrend||''}</div>
-      <div style="font-size:7px;color:#666;line-height:1.4;margin-top:2px;">${categoryRead.implication||''}</div>
-    </div>
-    <div style="text-align:center;padding:0 8px;border-left:1px solid #e8e0d5;">
-      <div style="font-size:6px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:3px;">LEAD MKT</div>
-      <div style="background:${C.blue};color:#fff;font-size:9px;font-weight:800;padding:3px 6px;border-radius:2px;display:inline-block;">${categoryRead.leadMarket||'—'}</div>
-    </div>
-    <div style="text-align:center;padding:0 8px;border-left:1px solid #e8e0d5;">
-      <div style="font-size:6px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:3px;">MKT LAG</div>
-      <div style="font-size:8px;font-weight:800;color:${C.coral};">${categoryRead.homeMarketLag||categoryRead.indiaLag||'—'}</div>
-    </div>
-  </div>` : ''}
-
-  <!-- Flavour Trend Heatmap -->
+  <!-- What The Market Is Telling You — home market players proving format/occasion demand -->
   <div style="margin-bottom:10px;">
-    <div style="margin-bottom:8px;">
-      <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};">FLAVOUR & FORMAT TREND TRAJECTORY</div>
-      ${sectionHdrs.trendTable ? `<div style="font-size:7.5px;color:#666;font-style:italic;margin-top:2px;line-height:1.3;">${sectionHdrs.trendTable}</div>` : ''}
+    <div style="margin-bottom:6px;">
+      <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};">WHAT THE MARKET IS TELLING YOU</div>
+      ${sectionHdrs.marketSignals ? `<div style="font-size:7.5px;color:#666;font-style:italic;margin-top:2px;line-height:1.3;">${sectionHdrs.marketSignals}</div>` : ''}
     </div>
-    ${renderFlavourTrends(flavours)}
+    ${renderMarketSignals(marketSignals)}
   </div>
+
+  <!-- Institutional Edge — untapped parent/acquirer assets or standalone structural advantage -->
+  ${institutionalEdge.length ? `
+  <div style="margin-bottom:10px;">
+    <div style="margin-bottom:6px;">
+      <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};">${companyMode === 'standalone' ? 'STRUCTURAL ADVANTAGE' : 'INSTITUTIONAL EDGE NOT DEPLOYED'}</div>
+      ${sectionHdrs.institutionalEdge ? `<div style="font-size:7.5px;color:#666;font-style:italic;margin-top:2px;line-height:1.3;">${sectionHdrs.institutionalEdge}</div>` : ''}
+    </div>
+    ${renderInstitutionalEdge(institutionalEdge)}
+  </div>` : ''}
 
   <!-- Page 1 → Page 2 transition bridge -->
   ${(db.page1Summary) ? `
@@ -3345,7 +3443,16 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
         <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};">STRATEGIC POSITION GAP</div>
         ${sectionHdrs.radarGap ? `<div style="font-size:7.5px;color:#666;font-style:italic;margin-top:2px;line-height:1.3;">${sectionHdrs.radarGap}</div>` : ''}
       </div>
-      <div style="font-size:7px;color:#888;margin-bottom:8px;"><span style="color:${C.forest};font-weight:700;">■</span> Today &nbsp; <span style="color:${C.amber};font-weight:700;">▪</span> 18 Months (if 3 moves executed)</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:4px;">
+          <svg width="10" height="10"><rect width="10" height="10" rx="1" fill="${C.forest}" fill-opacity="0.5" stroke="${C.forest}" stroke-width="1.5"/></svg>
+          <span style="font-size:7px;color:#555;font-weight:600;">Today</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <svg width="10" height="10"><rect width="10" height="10" rx="1" fill="${C.amber}" fill-opacity="0.25" stroke="${C.amber}" stroke-width="1.5" stroke-dasharray="3,1.5"/></svg>
+          <span style="font-size:7px;color:#555;font-weight:600;">18 Months (if 3 moves executed)</span>
+        </div>
+      </div>
       ${renderRadar(radarAxes)}
     </div>
     <div>
@@ -3357,13 +3464,40 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
     </div>
   </div>
 
-  <!-- International Signal Strip -->
-  <div style="margin-bottom:12px;">
-    <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:8px;">INTERNATIONAL SIGNALS → INDIA TIMELINE</div>
-    ${renderIntlStrip(intl)}
+  <!-- Category Read — global structural context for international section -->
+  ${categoryRead ? `
+  <div style="display:grid;grid-template-columns:1fr 80px 110px;gap:0;background:#fff;border:1px solid #e8e0d5;border-left:3px solid ${C.blue};border-radius:0 3px 3px 0;padding:7px 12px;margin-bottom:10px;align-items:center;">
+    <div>
+      <div style="font-size:6px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:${C.blue};margin-bottom:3px;">GLOBAL CATEGORY CONTEXT</div>
+      <div style="font-size:7px;color:#333;line-height:1.4;font-weight:600;">${categoryRead.globalTrend||''}</div>
+      <div style="font-size:6.5px;color:#666;line-height:1.4;margin-top:2px;">${categoryRead.implication||''}</div>
+    </div>
+    <div style="text-align:center;padding:0 8px;border-left:1px solid #e8e0d5;">
+      <div style="font-size:6px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:3px;">LEAD MKT</div>
+      <div style="background:${C.blue};color:#fff;font-size:9px;font-weight:800;padding:3px 6px;border-radius:2px;display:inline-block;">${categoryRead.leadMarket||'—'}</div>
+    </div>
+    <div style="text-align:center;padding:0 8px;border-left:1px solid #e8e0d5;">
+      <div style="font-size:6px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:3px;">MKT LAG</div>
+      <div style="font-size:7.5px;font-weight:800;color:${C.coral};">${categoryRead.homeMarketLag||categoryRead.indiaLag||'—'}</div>
+    </div>
+  </div>` : ''}
+
+  <!-- Country legend -->
+  <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;padding:4px 8px;background:#f8f6f2;border-radius:3px;flex-wrap:wrap;">
+    <span style="font-size:6px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#aaa;margin-right:4px;">MARKETS</span>
+    ${[['KR','Korea'],['JP','Japan'],['SEA','SE Asia'],['US','USA'],['UK','UK'],['DE','Germany'],['AU','Australia'],['IN','India']].map(([code,name]) =>
+      `<span style="font-size:6.5px;color:#555;font-weight:600;"><span style="background:#333;color:#fff;font-size:5.5px;font-weight:800;padding:1px 4px;border-radius:2px;margin-right:3px;font-family:monospace;">${code}</span>${name}</span>`
+    ).join('')}
   </div>
 
-  <!-- Challenger Brand Watch — if you don't move, these brands will -->
+  <!-- International Arrival Sequence — consolidated single table -->
+  ${arrivalSequence.length ? `
+  <div style="margin-bottom:12px;">
+    <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.forest};margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid ${C.forest};">INTERNATIONAL ARRIVAL SEQUENCE</div>
+    ${renderArrivalSequence(arrivalSequence)}
+  </div>` : ''}
+
+  <!-- Challenger Brand Watch -->
   ${Array.isArray(p3.challengerBrands) && p3.challengerBrands.length ? `
   <div style="margin-bottom:12px;">
     <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.coral};margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid ${C.coral};">IF YOU DON'T MOVE — THEY WILL</div>
@@ -3376,20 +3510,6 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
           <div style="font-size:7px;color:#888;">Threat: <strong style="color:${C.coral};">${b.threat||'TBD'}</strong></div>
         </div>`).join('')}
     </div>
-  </div>` : ''}
-
-  <!-- International Signal Detail -->
-  ${Array.isArray(p3.internationalDeep) && p3.internationalDeep.length ? `
-  <div style="margin-bottom:12px;">
-    <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.blue};margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid ${C.blue};">INTERNATIONAL SIGNAL DETAIL</div>
-    ${p3.internationalDeep.slice(0,6).map((s,i) => {
-      const mktCol = { KR:'#c0392b', JP:'#b85c38', SEA:'#2563eb', US:'#1a5c35', UK:'#6b21a8', DE:'#374151', AU:'#92400e' };
-      const mc = mktCol[s.market] || C.forest;
-      return `<div style="display:flex;gap:8px;padding:5px 0;border-bottom:${i < p3.internationalDeep.length-1 ? '1px solid #f0ece6' : 'none'};align-items:flex-start;">
-        <span style="background:${mc};color:#fff;font-size:6.5px;font-weight:800;padding:2px 5px;border-radius:2px;flex-shrink:0;letter-spacing:.05em;margin-top:1px;">${s.market||'?'}</span>
-        <span style="font-size:7.5px;color:#444;line-height:1.4;white-space:normal;">${s.fullSignal||''}</span>
-      </div>`;
-    }).join('')}
   </div>` : ''}
 
   <!-- Bold Statement — always last, the call to action -->
