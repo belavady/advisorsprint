@@ -93,6 +93,7 @@ const P = {
 };
 
 const AGENTS = [
+  { id: "framing", wave: 0, icon: "⊕", label: "Category & Competitive Framing", sub: "Establishes ground truth before all agents run" },
   { id: "market", wave: 1, icon: "◈", label: "Market Position & Category Dynamics", sub: "Category size, growth, competitive landscape" },
   { id: "portfolio", wave: 1, icon: "◉", label: "Portfolio Strategy & SKU Rationalization", sub: "Product mix, SKU performance, keep/kill/launch" },
   { id: "brand", wave: 1, icon: "◎", label: "Brand Positioning & Storytelling", sub: "Brand perception, target customer, messaging" },
@@ -637,6 +638,76 @@ Dense prose. No bullet lists. Tables only for opportunity comparison and investm
 Begin with the single most valuable adjacency — make a recommendation immediately.
 `
 
+PROMPTS.framing = `# AGENT 0: CATEGORY & COMPETITIVE FRAMING
+
+You run before all other agents. Your job is to establish the ground truth competitive frame so that every subsequent agent analyses the right competitors in the right way. This is a precision job, not an analysis job.
+
+[ACQUISITION_PREAMBLE]
+
+## YOUR ONE JOB
+
+Search for and establish:
+1. What [COMPANY]'s exact product format is — not the category name, the specific format (e.g. "chocolate-filled premium cookie", "prebiotic carbonated soda", "round-cake instant noodle")
+2. What consumption occasion it primarily serves
+3. What price tier it operates in
+4. Who the actual direct competitors are in the same format + occasion + price tier in [COMPANY]'s home market
+5. Which brands dominate search results for this category but are NOT direct competitors — and exactly why they are not direct
+
+## THREE-TIER COMPETITIVE CLASSIFICATION
+
+Classify every competitor you find into exactly one of three tiers:
+
+**TIER 1 — DIRECT COMPETITORS**
+Same product format + same consumption occasion + same price tier in the home market.
+These are the correct benchmarks for market share, margin, distribution, and pricing analysis.
+Every subsequent agent must benchmark against Tier 1 only.
+
+**TIER 2 — OCCASION THREATS**
+Different product format BUT colonising the same consumption occasion.
+These are strategic threats — they steal the moment even if the product is different.
+Example: Biscoff vs Dark Fantasy — different format (caramelised biscuit vs chocolate-filled cookie) but both target the same post-dinner premium indulgence occasion. Real threat, wrong benchmark.
+Subsequent agents must: track these for occasion colonisation, flag them in competitive analysis, but NOT benchmark revenue/share/margin against them.
+
+**TIER 3 — CATEGORY ADJACENTS**
+Different format, different occasion, but operating in the same broader category space.
+Include only if growing >25% YoY or recently launched with significant distribution.
+Subsequent agents must: watch but not benchmark. Flag if crossing into Tier 2 territory.
+
+## SEARCH INSTRUCTIONS
+
+Use up to 4 searches:
+1. "[COMPANY] product format occasion competitors [home market]"
+2. "[COMPANY] vs [most likely competitor] comparison"
+3. "[category] India/US market leaders 2025" (use home market)
+4. One targeted search if any Tier 1 competitors are unclear
+
+## OUTPUT — WRITE THIS BLOCK EXACTLY
+
+After your searches, output this block with no additional prose:
+
+<<<FRAMING_BLOCK>>>
+COMPANY: [COMPANY]
+FORMAT: [exact product format — specific, not generic category name]
+OCCASION: [primary consumption occasion]
+PRICE_TIER: [price range and tier descriptor]
+HOME_MARKET: [India/US/Global]
+
+TIER_1_DIRECT:
+- [Brand name]: [one line — why direct, what format, what share if known]
+- [Brand name]: [one line]
+
+TIER_2_OCCASION_THREATS:
+- [Brand name]: [one line — what format, which occasion it overlaps, why it is NOT a direct benchmark]
+- [Brand name]: [one line]
+
+TIER_3_ADJACENT_WATCH:
+- [Brand name]: [one line — why adjacent, growth signal if any]
+
+FRAMING_CONFIDENCE: H|M|L
+FRAMING_NOTE: [One sentence — the single biggest uncertainty in this framing, if any. What you could not confirm.]
+<<<END_FRAMING_BLOCK>>>
+`;
+
 PROMPTS.brief = `# AGENT 11: CEO OPPORTUNITY BRIEF
 
 You are the most senior strategist on this engagement. You have read every agent output, the full synopsis, and all structured DATA_BLOCKs. Your job is to produce one document: a 2-page visual brief for a Divisional CEO that is sharper, more foresighted, and more actionable than anything the brand's own team will present.
@@ -669,27 +740,27 @@ This GTM Profile governs the PLAY TYPE classification of every gap and move.
 Every gap and every recommended move must be classified as exactly one of three Play Types. This is the most important output of this brief — it tells the CEO not just WHAT to do but HOW to organise to do it.
 
 **SCALE PLAY**
-When to apply: Gap is ≥₹300 Cr addressable via existing distribution infrastructure. Win through velocity, distribution density, and price architecture. The company's existing go-to-market machine is the weapon.
+When to apply: Gap is large enough to win with existing distribution infrastructure (India: ≥₹300 Cr; US/Global: ≥$30M). Win through velocity, distribution density, and price architecture. The company's existing go-to-market machine is the weapon.
 What CEO must do: Activate the full organisational machine — sales force, retail execution, supply chain scale. This is where size is an advantage.
 Badge colour: Forest green.
 
 **D2C PLAY**
-When to apply: Gap is real and growing (≥₹80 Cr, ≥25% YoY growth) but requires premium channel, community building, QC-first launch, or test-and-learn before scaling. The existing distribution machine will kill this if it touches it too early.
+When to apply: Gap is real and growing (India: ≥₹80 Cr; US/Global: ≥$8M; both ≥25% YoY growth) but requires premium channel, community building, QC-first launch, or test-and-learn before scaling. The existing distribution machine will kill this if it touches it too early.
 What CEO must do: Ring-fence from core business. Separate P&L, separate small team (8-15 people), separate success metrics (NPS and repeat rate, not volume), different timeline (24 months to prove, not 12). Resist the urge to plug into the mothership prematurely.
 Critical rule: Do NOT recommend the D2C Play for a company that is already D2C-native. For D2C companies, this is their default mode — name the scale pathway instead.
 Badge colour: Blue.
 
 **CATEGORY CREATION PLAY**
-When to apply: No existing Indian category. Strong international signal (mainstream in KR/JP/SEA, emerging in US/UK). India penetration <2%. Estimated category size ₹500 Cr+ in 3-5 years if the right player defines it. First-mover advantage is decisive — the category creator sets price anchors, consumer education, and shelf space norms.
-What CEO must do: Treat as a ₹30-80 Cr venture bet, not a brand extension. Move at D2C speed. Do not wait for Nielsen to validate — by the time Nielsen shows it, the window has closed. The company that moves 18 months early owns the category. The company that waits for proof arrives at a commodity.
+When to apply: No existing or nascent category in the target market. Strong international signal (mainstream in KR/JP/SEA or EU, emerging elsewhere). Market penetration <2%. Estimated category size (India: ₹500 Cr+; US/Global: $50M+) in 3-5 years if the right player defines it. First-mover advantage is decisive — the category creator sets price anchors, consumer education, and shelf space norms.
+What CEO must do: Treat as a venture bet (India: ₹30-80 Cr; US/Global: $3-8M), not a brand extension. Move at DTC speed. Do not wait for Nielsen/SPINS to validate — by the time Nielsen shows it, the window has closed. The company that moves 18 months early owns the category. The company that waits for proof arrives at a commodity.
 Badge colour: Coral/amber.
 
 ## SCALE THRESHOLD — RUTHLESS EXCLUSION
 
 Only include gaps and moves that meet at least one threshold:
-- SCALE PLAY: ≥₹300 Cr addressable via existing channels within 36 months
-- D2C PLAY: ≥₹80 Cr addressable, ≥25% YoY growth signal, clear premium channel pathway
-- CATEGORY CREATION: Strong international signal in ≥2 reference markets + plausible ₹500 Cr Indian TAM in 5 years
+- SCALE PLAY: ≥₹300 Cr (India) / ≥$30M (US/Global) addressable via existing channels within 36 months
+- D2C PLAY: ≥₹80 Cr / ≥$8M addressable, ≥25% YoY growth signal, clear premium channel pathway
+- CATEGORY CREATION: Strong international signal in ≥2 reference markets + plausible ₹500 Cr / $50M TAM in 5 years
 
 Gaps below all three thresholds: exclude entirely. Do not include them as footnotes, watch lists, or caveats. The brief only shows what the company should act on.
 
@@ -818,10 +889,10 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
   "categoryRead": {
     "globalTrend": "One sentence: what the global category is doing structurally — e.g. bifurcating, premiumising, declining in soup formats. Max 120 chars.",
     "leadMarket": "KR|JP|SEA|US|UK",
-    "indiaLag": "e.g. 3-5 years behind JP/KR",
+    "homeMarketLag": "e.g. 'US 2 years behind JP/KR' or 'India 3-5 years behind SEA' — always relative to brand's home market",
     "implication": "One sentence: what this means specifically for this brand in India right now. Max 120 chars."
   },
-  "page1Summary": "Exactly 2 sentences. Sentence 1: the single most important structural gap this brand has right now — which occasion is undefended, how large, who is moving into it. Sentence 2: the international trend signal that is converging on that exact gap — which market it is mainstream in today, when it arrives in India, and why this brand is better positioned than any competitor to own it first. This is the bridge sentence: structural gap + incoming trend = specific window. Do not repeat data points already visible in the tables. Do not start with the brand name. Max 280 chars total.",
+  "page1Summary": "Exactly 2 sentences. Sentence 1: the single most important structural gap this brand has right now — which occasion is undefended, how large, who is moving into it. Sentence 2: the international trend signal that is converging on that exact gap — which market it is mainstream in today, when it reaches critical mass in this brand's home market, and why this brand is better positioned than any competitor to own it first. This is the bridge sentence: structural gap + incoming trend = specific window. Do not repeat data points already visible in the tables. Do not start with the brand name. Max 280 chars total.",
   "boldStatement": "One sentence. Max 140 chars. Names the specific occasion or trend window, the competitor who will own it if this brand doesn't move, and the timeframe. Makes the reader feel urgency without using the word urgency.",
   "page3": {
     "needed": false,
@@ -839,7 +910,7 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
     ]
   },
   "sectionHeaders": "Four dynamic sub-headers that give each section a voice specific to this brand. Each is a short declarative sentence (8 words max) that tells the reader what THIS section is saying about THIS brand — not a generic label. occasionWheel: what the ownership pattern reveals. gapTable: the single most important gap pattern. trendTable: the direction the trends point. radarGap: what the radar transformation requires. These create the narrative thread across both pages.",
-  "categoryRead": "CATEGORY INTELLIGENCE — drawn entirely from Agent 10 (International) output. globalTrend: one sentence on where the global category is structurally heading — is it premiumising, bifurcating, declining in one format while growing in another? Name the direction and the evidence market. leadMarket: the single market that is 12-36 months ahead of India on this curve. indiaLag: how far behind India is on this curve. implication: one sentence on what this structural global shift means for this brand's strategic window — is the window opening or closing, and how fast?",
+  "categoryRead": "CATEGORY INTELLIGENCE — drawn entirely from Agent 10 (International) output. globalTrend: one sentence on where the global category is structurally heading — is it premiumising, bifurcating, declining in one format while growing in another? Name the direction and the evidence market. leadMarket: the single reference market that is 12-36 months ahead of this brand's home market on this curve. homeMarketLag: how far behind this brand's home market is on this curve — phrase relative to home market, e.g. 'US 2 yrs behind JP/KR' or 'India 3-5 yrs behind SEA'. implication: one sentence on what this structural global shift means for this brand's strategic window — is the window opening or closing, and how fast?",
   "topActions": [
     {"action": "specific action", "impact": 0, "speed": 0, "confidence": "H|M|L"}
   ]
@@ -2334,7 +2405,7 @@ ${agentPageHtml}
 </html>`;
 }
 
-function makePrompt(id, company, acquirer, ctx, synthCtx, market="India", parentCo="", companyMode="standalone", parentSince="") {
+function makePrompt(id, company, acquirer, ctx, synthCtx, market="India", parentCo="", companyMode="standalone", parentSince="", framingBlock="") {
   let prompt = PROMPTS[id] || "";
   prompt = prompt.replace(/\[COMPANY\]/g, company);
 
@@ -2530,16 +2601,31 @@ If you report individual brand growth rates that differ significantly from a cat
 
   // Prepend COMPANY/ACQUIRER prefix so server.js schema substitution can reliably find them
   const metaPrefix = `COMPANY: ${company}\n` + (acqName ? `ACQUIRER: ${acqName}\n` : '') + `\n`;
+
+  // Framing block — injected for all agents EXCEPT framing itself
+  const framingSection = (framingBlock && id !== 'framing')
+    ? `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CATEGORY & COMPETITIVE FRAMING — READ THIS FIRST, BEFORE ANY ANALYSIS
+This framing was established by Agent 0 before your analysis began.
+It defines the correct competitive classification for this brand.
+You MUST respect these tier classifications throughout your analysis.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${framingBlock}
+TIER 1 = benchmark for share/margin/distribution. TIER 2 = occasion threat only, do NOT benchmark revenue or share against these. TIER 3 = watch only.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+`
+    : '';
   
   if (ctx) {
-    prompt = metaPrefix + NARRATIVE_RULES + `USER CONTEXT:
+    prompt = metaPrefix + NARRATIVE_RULES + framingSection + `USER CONTEXT:
 ${ctx}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ` + prompt;
   } else {
-    prompt = metaPrefix + NARRATIVE_RULES + prompt;
+    prompt = metaPrefix + NARRATIVE_RULES + framingSection + prompt;
   }
   
   if (synthCtx && Object.keys(synthCtx).length > 0) {
@@ -2585,6 +2671,10 @@ ${ctx}
 
 function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalone", results, dataBlocks, market="India" }) {
   const db = dataBlocks['brief'] || {};
+  const isUS     = market === 'US' || market === 'Global';
+  const CUR_SYM  = isUS ? '$' : '₹';
+  const CUR_UNIT = isUS ? 'M' : 'Cr';
+  const fmtVal   = (v) => v != null ? `${CUR_SYM}${v} ${CUR_UNIT}` : '—';
   const raw = results['brief'] || '';
 
   // ── Extract bold statement ───────────────────────────────────────────
@@ -2772,10 +2862,10 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
         const segMid = (s.startAngle + s.endAngle) / 2;
         const sx = CX + midR * Math.cos(segMid);
         const sy = CY + midR * Math.sin(segMid);
-        // ₹4.8K Cr or ₹900 Cr — always show unit explicitly
+        // format value with market currency — ₹Cr for India, $M for US
         const valStr = s.occ.sizeCr >= 1000
-          ? '₹' + (Math.round(s.occ.sizeCr / 100) / 10) + 'K Cr'
-          : '₹' + s.occ.sizeCr + ' Cr';
+          ? CUR_SYM + (Math.round(s.occ.sizeCr / 100) / 10) + 'K ' + CUR_UNIT
+          : CUR_SYM + s.occ.sizeCr + ' ' + CUR_UNIT;
         const tw = valStr.length * 4.0 + 6;
         svg += `<rect x="${sx - tw/2}" y="${sy - 7}" width="${tw}" height="9" rx="2" fill="rgba(255,255,255,0.85)"/>`;
         svg += `<text x="${sx}" y="${sy + 1}" text-anchor="middle" font-size="5.5" font-weight="800" fill="${C.forest}">${valStr}</text>`;
@@ -2822,7 +2912,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
     let h = `<table style="width:100%;border-collapse:collapse;font-size:8px;">
       <thead><tr>
         <th style="padding:5px 8px;background:${C.forest};color:#fff;font-weight:700;text-align:left;letter-spacing:.05em;">OCCASION</th>
-        <th style="padding:5px 8px;background:${C.forest};color:#fff;font-weight:700;text-align:right;">₹Cr</th>
+        <th style="padding:5px 8px;background:${C.forest};color:#fff;font-weight:700;text-align:right;">${CUR_SYM}${CUR_UNIT}</th>
         <th style="padding:5px 8px;background:${C.forest};color:#fff;font-weight:700;text-align:right;">SHARE</th>
         <th style="padding:5px 8px;background:${C.forest};color:#fff;font-weight:700;text-align:center;">PLAY</th>
         <th style="padding:5px 8px;background:${C.forest};color:#fff;font-weight:700;text-align:center;">CONF</th>
@@ -2841,7 +2931,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
           <div style="font-weight:700;color:${C.forest};font-size:8px;line-height:1.3;white-space:normal;">${g.occasion||''}</div>
           ${g.scalingMechanism ? `<div style="font-size:6.5px;color:#888;margin-top:1px;white-space:normal;">via: ${g.scalingMechanism||''}</div>` : ''}
         </td>
-        <td style="padding:4px 8px;background:${bg};text-align:right;font-weight:700;font-size:9px;">₹${g.categorySizeCr||'—'}</td>
+        <td style="padding:4px 8px;background:${bg};text-align:right;font-weight:700;font-size:9px;">${CUR_SYM}${g.categorySizeCr||'—'}</td>
         <td style="padding:4px 8px;background:${bg};text-align:right;">${shareText}</td>
         <td style="padding:4px 8px;background:${bg};text-align:center;">
           ${ps ? `<span style="background:${pc};color:#fff;font-size:6px;font-weight:800;padding:2px 4px;border-radius:2px;letter-spacing:.04em;white-space:nowrap;">${ps}</span>` : ''}
@@ -3047,8 +3137,8 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
             <div style="font-size:7px;color:#666;font-style:italic;line-height:1.3;white-space:normal;">${m.occasion||''}</div>
             <!-- Opportunity -->
             <div style="display:flex;align-items:baseline;gap:3px;">
-              <span style="font-size:18px;font-weight:900;color:${C.forest};line-height:1;">₹${m.opportunityCr||'?'}</span>
-              <span style="font-size:7px;color:#888;">Cr opp.</span>
+              <span style="font-size:18px;font-weight:900;color:${C.forest};line-height:1;">${CUR_SYM}${m.opportunityCr||'?'}</span>
+              <span style="font-size:7px;color:#888;">${CUR_UNIT} opp.</span>
               <span style="background:${cc};color:#fff;font-size:6px;font-weight:700;padding:1px 4px;border-radius:2px;margin-left:4px;">${conf}</span>
             </div>
             <!-- Revenue timeline -->
@@ -3194,8 +3284,8 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
       <div style="background:${C.blue};color:#fff;font-size:9px;font-weight:800;padding:3px 6px;border-radius:2px;display:inline-block;">${categoryRead.leadMarket||'—'}</div>
     </div>
     <div style="text-align:center;padding:0 8px;border-left:1px solid #e8e0d5;">
-      <div style="font-size:6px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:3px;">INDIA LAG</div>
-      <div style="font-size:8px;font-weight:800;color:${C.coral};">${categoryRead.indiaLag||'—'}</div>
+      <div style="font-size:6px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:3px;">MKT LAG</div>
+      <div style="font-size:8px;font-weight:800;color:${C.coral};">${categoryRead.homeMarketLag||categoryRead.indiaLag||'—'}</div>
     </div>
   </div>` : ''}
 
@@ -3818,6 +3908,27 @@ export default function AdvisorSprint() {
         ? ['market']  // TEST MODE: single agent to verify visuals cheaply
         : [...W1, ...W2, 'synopsis', 'brief'];
 
+      // ── AGENT 0: Category & Competitive Framing — runs first, before all others ──
+      let framingBlock = "";
+      if (!testMode) {
+        setStatuses(s => ({ ...s, framing: "running" }));
+        try {
+          const framingPrompt = makePrompt('framing', co, acq, ctx, {}, market, parentCo.trim(), companyMode, parentSince.trim(), "");
+          const framingText = await runAgent('framing', framingPrompt, signal, []);
+          // Extract the FRAMING_BLOCK from the output
+          const framingMatch = framingText.match(/<<<FRAMING_BLOCK>>>([\s\S]*?)<<<END_FRAMING_BLOCK>>>/);
+          framingBlock = framingMatch ? framingMatch[1].trim() : framingText.trim();
+          w1texts['framing'] = framingText;
+          setStatuses(s => ({ ...s, framing: "done" }));
+          // Short gap before Wave 1
+          if (!signal.aborted) await new Promise(r => setTimeout(r, 30000));
+        } catch(framingErr) {
+          console.error('[Sprint] Framing agent failed:', framingErr.message);
+          // Non-fatal — continue without framing block, agents will run without it
+          setStatuses(s => ({ ...s, framing: "done" }));
+        }
+      }
+
       for (const id of ALL_AGENTS_ORDERED) {
         if (signal.aborted) break;
 
@@ -3834,7 +3945,7 @@ export default function AdvisorSprint() {
         } else if (W2.includes(id)) {
           ctx_for_agent = w1texts;
         }
-        const prompt = makePrompt(id, co, acq, ctx, ctx_for_agent, market, parentCo.trim(), companyMode, parentSince.trim());
+        const prompt = makePrompt(id, co, acq, ctx, ctx_for_agent, market, parentCo.trim(), companyMode, parentSince.trim(), framingBlock);
         let text = "";
         try {
           text = await runAgent(id, prompt, signal, []);
