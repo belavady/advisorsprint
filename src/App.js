@@ -4749,19 +4749,24 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
       if (!gapText) return null;
       const lines = gapText.split('\n');
       const sections = { Q1: [], Q2: [], Q3_add: [], Q3_remove: [], Q3_reframe: [] };
-      let currentSection = null;
+      // Default to Q1 — content before the first detected header goes into Q1
+      // The model is told to start immediately without preamble, so Q1 content
+      // appears before any ## QUESTION 2 header
+      let currentSection = 'Q1';
       lines.forEach(line => {
         const t = line.trim();
-        if (/QUESTION 1|WHAT THE BRIEF SURFACED/i.test(t)) { currentSection = 'Q1'; return; }
-        if (/QUESTION 2|WHAT YOUR CONTEXT/i.test(t)) { currentSection = 'Q2'; return; }
-        if (/QUESTION 3|WHAT TO ADD/i.test(t)) { currentSection = 'Q3'; return; }
-        if (!t || /^---/.test(t)) return;
+        // Detect section boundaries — handles ## QUESTION 1, QUESTION 1:, **QUESTION 1**, etc.
+        if (/QUESTION\s*1|WHAT THE (BRIEF|AI) SURFACED|BRIEF SURFACED|CONTEXT DIDN.T PROVIDE/i.test(t)) { currentSection = 'Q1'; return; }
+        if (/QUESTION\s*2|WHAT YOUR CONTEXT|CONTEXT PROVIDED|BRIEF DIDN.T USE|BRIEF DID NOT USE/i.test(t)) { currentSection = 'Q2'; return; }
+        if (/QUESTION\s*3|WHAT TO ADD|ADD OR CHANGE|IMPROVE YOUR|CONTEXT BRIEF NEXT/i.test(t)) { currentSection = 'Q3'; return; }
+        if (!t || /^---+$/.test(t)) return;
         if (currentSection === 'Q1' && t.length > 5) sections.Q1.push(t);
         if (currentSection === 'Q2' && t.length > 5) sections.Q2.push(t);
         if (currentSection === 'Q3') {
           if (/^ADD:/i.test(t)) sections.Q3_add.push(t.replace(/^ADD:\s*/i,''));
           else if (/^REMOVE:/i.test(t)) sections.Q3_remove.push(t.replace(/^REMOVE:\s*/i,''));
           else if (/^REFRAME:/i.test(t)) sections.Q3_reframe.push(t.replace(/^REFRAME:\s*/i,''));
+          else if (t.length > 5) sections.Q3_add.push(t);
         }
       });
       return sections;
@@ -5149,7 +5154,7 @@ ${pageGap}
                     style={{ padding: "12px 24px", background: pdfGenerating ? "#999" : P.terra, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: pdfGenerating ? "not-allowed" : "pointer" }}>
                     {pdfGenerating ? "⟳ Generating PDF..." : "⬇ Download Full Report"}
                   </button>
-                  {results['brief'] && (
+                  {(results['brief'] || (dataBlocks['brief'] && dataBlocks['brief'].agent === 'brief')) && (
                     <button
                       onClick={generateBriefPDF}
                       disabled={briefPdfGenerating}
