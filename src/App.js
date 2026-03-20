@@ -1404,6 +1404,31 @@ let CUR = '₹';
 let UNIT = 'Cr';
 const fmtMoney = (val) => val != null ? `${CUR}${val}${UNIT}` : 'N/A';
 
+// ── REPAIR JSON — fixes model JSON malformations before JSON.parse ────────
+function repairJson(raw) {
+  let s = raw
+    .replace(/\/\/[^\n\r]*/g, '')        // remove // comments before newline collapse
+    .replace(/\r\n|\r|\n/g, ' ')          // literal newlines → space
+    .replace(/[\x00-\x09\x0b\x0c\x0e-\x1f\x7f]/g, '') // control chars
+    .replace(/,(\s*[}\]])/g, '$1')          // trailing commas
+    .replace(/\[\s*\.\.\.\s*\]/g, '[]') // [...] → []
+    .replace(/\{\s*\.\.\.\s*\}/g, '{}'); // {...} → {}
+  const start = s.indexOf('{');
+  if (start === -1) return s;
+  let depth = 0, end = -1, inString = false, escape = false;
+  for (let i = start; i < s.length; i++) {
+    const c = s[i];
+    if (escape) { escape = false; continue; }
+    if (c === '\\' && inString) { escape = true; continue; }
+    if (c === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (c === '{') depth++;
+    else if (c === '}') { depth--; if (depth === 0) { end = i; break; } }
+  }
+  if (end !== -1) s = s.slice(start, end + 1);
+  return s;
+}
+
 // ── KPI ROW — 4 tiles, compact ────────────────────────────────────────────
 function renderKPIs(kpis) {
   if (!kpis || !kpis.length) return '';
@@ -2060,9 +2085,11 @@ function renderSynopsis(db) {
   let h = '';
 
   if (db.agentVerdicts && db.agentVerdicts.length) {
-    h += sectionLabel('9-Agent Intelligence Dashboard');
     const vColor=v=>({STRONG:V.green,WATCH:V.amber,OPTIMISE:V.blue,UNDERDELIVERED:V.red,RISK:V.red}[v]||'#666');
     const vBg=v=>({STRONG:V.greenBg,WATCH:V.amberBg,OPTIMISE:V.blueBg,UNDERDELIVERED:V.redBg,RISK:V.redBg}[v]||'#f0f0f0');
+    // Wrap heading + grid together so they never split across pages
+    h += `<div style="break-inside:avoid;page-break-inside:avoid;">`;
+    h += sectionLabel('9-Agent Intelligence Dashboard');
     h+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:10px;">`;
     db.agentVerdicts.forEach(av=>{
       const vc=vColor(av.verdict),vb=vBg(av.verdict);
@@ -2075,6 +2102,7 @@ function renderSynopsis(db) {
       h+=`</div>`;
     });
     h+=`</div>`;
+    h += `</div>`; // close break-inside:avoid wrapper
   }
 
   if (db.topActions && db.topActions.length) {
@@ -2295,72 +2323,7 @@ function buildPDFHtml({ company, acquirer, parentCo="", parentSince="", companyM
     </div>`;
 
 
-  // ── VERDICT MATRIX PAGE ──────────────────────────────────────────────────
-  const verdictMatrixHtml = (() => {
-    const agentMeta = [
-      { id: 'market',      num: '01', title: 'Market Position & Category Dynamics' },
-      { id: 'portfolio',   num: '02', title: 'Portfolio Strategy & SKU Rationalization' },
-      { id: 'brand',       num: '03', title: 'Brand Positioning & Storytelling' },
-      { id: 'margins',     num: '04', title: 'Margin Improvement & Unit Economics' },
-      { id: 'growth',      num: '05', title: 'Growth Strategy & Channel Orchestration' },
-      { id: 'competitive', num: '06', title: 'Competitive Battle Plan' },
-      { id: 'synergy',     num: '07', title: 'Strategic Leverage & Growth Enablers' },
-      { id: 'platform',    num: '08', title: 'Platform Expansion & Adjacency Strategy' },
-      { id: 'intl',        num: '09', title: 'International Benchmarks & Global Playbook' },
-    ];
-    const vColor = v => ({ STRONG: '#2d7a4f', WATCH: '#c97d20', OPTIMISE: '#2563eb', UNDERDELIVERED: '#c0392b', RISK: '#c0392b' }[v] || '#666');
-    const vBg    = v => ({ STRONG: '#e8f5ee', WATCH: '#fef3e2', OPTIMISE: '#eff6ff', UNDERDELIVERED: '#fdf2f2', RISK: '#fdf2f2' }[v] || '#f5f5f5');
-    const rows = agentMeta.map(ag => {
-      const db = dataBlocks[ag.id];
-      const verdict  = db?.verdictRow?.verdict  || '—';
-      const finding  = db?.verdictRow?.finding  || 'Analysis in progress';
-      const conf     = db?.verdictRow?.confidence || '—';
-      const vc = vColor(verdict), vb = vBg(verdict);
-      return `
-        <tr>
-          <td style="padding:10px 14px;border:1px solid #e0d8cc;background:#faf7f2;font-family:monospace;font-size:8px;font-weight:700;color:#b85c38;width:36px;">${ag.num}</td>
-          <td style="padding:10px 14px;border:1px solid #e0d8cc;background:#fff;font-size:9px;font-weight:600;color:#1a3a2a;width:200px;">${ag.title}</td>
-          <td style="padding:10px 14px;border:1px solid #e0d8cc;background:${vb};text-align:center;width:100px;">
-            <span style="background:${vb};color:${vc};font-family:monospace;font-size:7.5px;font-weight:700;padding:4px 10px;border-radius:3px;border:1px solid ${vc}30;letter-spacing:.06em;white-space:nowrap;">${verdict}</span>
-          </td>
-          <td style="padding:10px 14px;border:1px solid #e0d8cc;background:#fff;font-size:8.5px;color:#3a3a3a;line-height:1.5;">${finding}</td>
-          <td style="padding:10px 14px;border:1px solid #e0d8cc;background:#faf7f2;text-align:center;width:36px;">
-            <span style="font-family:monospace;font-size:7px;font-weight:700;color:${conf==='H'?'#2d7a4f':conf==='M'?'#c97d20':'#aaa'};">${conf}</span>
-          </td>
-        </tr>`;
-    }).join('');
-
-    return `
-    <div style="width:794px;min-height:1122px;position:relative;background:#fff;page-break-after:always;overflow:hidden;">
-      ${header('VERDICT MATRIX · 9-AGENT INTELLIGENCE SUMMARY')}
-      <div style="padding:26px 50px 36px;">
-        <div style="font-family:monospace;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#b85c38;margin-bottom:4px;">Strategic Intelligence Snapshot</div>
-        <div style="font-family:'Playfair Display',serif;font-size:22px;color:#1a3a2a;font-weight:700;margin-bottom:3px;">Verdict Matrix</div>
-        <div style="height:2px;background:linear-gradient(90deg,#1a3a2a 0%,#b85c38 40%,transparent 100%);margin-bottom:18px;"></div>
-        <p style="font-size:8.5px;color:#666;margin-bottom:18px;line-height:1.6;">One verdict and one finding per agent. Read this page first — it tells you where the business is strong, where to watch, and where the risk is. Drill into the full agent analysis for the reasoning.</p>
-        <table style="width:100%;border-collapse:collapse;">
-          <thead>
-            <tr>
-              <th style="background:#1a3a2a;color:#fff;padding:8px 14px;text-align:left;font-size:7px;letter-spacing:.1em;border:1px solid #1a3a2a;">#</th>
-              <th style="background:#1a3a2a;color:#fff;padding:8px 14px;text-align:left;font-size:7px;letter-spacing:.1em;border:1px solid #1a3a2a;">Agent</th>
-              <th style="background:#1a3a2a;color:#fff;padding:8px 14px;text-align:center;font-size:7px;letter-spacing:.1em;border:1px solid #1a3a2a;">Verdict</th>
-              <th style="background:#1a3a2a;color:#fff;padding:8px 14px;text-align:left;font-size:7px;letter-spacing:.1em;border:1px solid #1a3a2a;">Key Finding</th>
-              <th style="background:#1a3a2a;color:#fff;padding:8px 14px;text-align:center;font-size:7px;letter-spacing:.1em;border:1px solid #1a3a2a;">Conf</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-        <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">
-          ${['STRONG:#2d7a4f:#e8f5ee', 'WATCH:#c97d20:#fef3e2', 'OPTIMISE:#2563eb:#eff6ff', 'RISK:#c0392b:#fdf2f2'].map(s => {
-            const [label, fg, bg] = s.split(':');
-            return `<span style="background:${bg};color:${fg};font-family:monospace;font-size:7px;font-weight:700;padding:4px 10px;border-radius:3px;border:1px solid ${fg}30;">${label}</span>`;
-          }).join('')}
-          <span style="font-size:7.5px;color:#999;margin-left:4px;align-self:center;">Conf: H = High · M = Medium · L = Low</span>
-        </div>
-      </div>
-      ${footer(2)}
-    </div>`;
-  })();
+  // Verdict matrix removed — 9-agent dashboard in synopsis provides the same information without a duplicate page
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -2422,7 +2385,6 @@ tbody tr:hover{background:#f0ead8;}
   </div>
 </div>
 
-${verdictMatrixHtml}
 ${sourcesHtml}
 ${synopsisHtml}
 ${agentPageHtml}
@@ -2704,7 +2666,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
   const raw = results['brief'] || '';
 
   // ── Extract bold statement ───────────────────────────────────────────
-  const boldMatch = raw.match(/BOLD STATEMENT[:\s]*\n([^\n]+)/i);
+  const boldMatch = raw.match(/BOLD STATEMENT[^\n]*\n([^\n]+)/i);
   const boldStatement = boldMatch ? boldMatch[1].trim().replace(/^\*+|\*+$/g,'') : (db.boldStatement || '');
 
   // ── Safe accessors ───────────────────────────────────────────────────
@@ -3798,6 +3760,12 @@ export default function AdvisorSprint() {
   const [dataBlocks, setDataBlocks] = useState({});
   const [pdfGenerating, setPdfGenerating] = useState(false);
   const [briefPdfGenerating, setBriefPdfGenerating] = useState(false);
+  const [retryingBrief, setRetryingBrief] = useState(false);
+  const [thinkingBlocks, setThinkingBlocks] = useState({});   // synopsis + brief thinking traces
+  const [toolLogs, setToolLogs] = useState({});               // per-agent search/fetch logs
+  const [gapAnalysis, setGapAnalysis] = useState(null);       // Agent 12 output
+  const [tracePdfGenerating, setTracePdfGenerating] = useState(false);
+  const [gapAnalysisRunning, setGapAnalysisRunning] = useState(false);
   const [sources, setSources] = useState([]);
   const [statuses, setStatuses] = useState({});
   const [elapsed, setElapsed] = useState(0);
@@ -3886,6 +3854,8 @@ export default function AdvisorSprint() {
           if (event.type === 'chunk')     fullText += event.text;
           if (event.type === 'searching') setStatuses(s => ({ ...s, [agentId]: `searching: ${event.query.slice(0,40)}…` }));
           if (event.type === 'retrying')  setStatuses(s => ({ ...s, [agentId]: event.message || 'API overloaded — retrying…' }));
+          if (event.type === 'thinking')  setThinkingBlocks(t => ({ ...t, [event.agentId]: event.text }));
+          if (event.type === 'toollog')   setToolLogs(l => ({ ...l, [event.agentId]: event.log }));
           if (event.type === 'done') {
             fullText = event.text || fullText;
           }
@@ -3913,13 +3883,13 @@ export default function AdvisorSprint() {
       const text = await callClaude(prompt, id, signal);
       if (!signal.aborted) {
         // Strip DATA_BLOCK from display — keep only prose for reader
-        const dbMatch = text.match(/<<<DATA_BLOCK>>>[\s\S]*?```json([\s\S]*?)```[\s\S]*?<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/);
+        const dbMatch = text.match(/<<<DATA_BLOCK>>>\s*```json([\s\S]*?)```\s*<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>\s*(\{[\s\S]*\})/);
         const cleanText = text.replace(/<<<DATA_BLOCK>>>[\s\S]*?<<<END_DATA_BLOCK>>>/g, '').trim();
         if (dbMatch) {
           try {
-            const raw = (dbMatch[1] || dbMatch[2] || '').trim();
+            const raw = (dbMatch[1] || dbMatch[2] || dbMatch[3] || '').trim();
             const cleaned = raw.replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'').trim();
-            const parsed = JSON.parse(cleaned);
+            const parsed = JSON.parse(repairJson(cleaned));
             setDataBlocks(d => ({ ...d, [id]: parsed }));
             console.log('[DataBlock] parsed OK:', id);
           } catch(e) {
@@ -3983,6 +3953,13 @@ export default function AdvisorSprint() {
 
   const runSprint = async () => {
     if (!company.trim() || appState === "running") return;
+    // Warn if results already exist — re-run costs full credits
+    if (Object.keys(results).length > 0) {
+      const confirmed = window.confirm(
+        `Re-running will cost full credits (~$6) and overwrite the existing ${company.trim()} analysis.\n\nAre you sure?`
+      );
+      if (!confirmed) return;
+    }
     if (abortRef.current) abortRef.current.abort(); // kill any zombie from previous run
 
     const ctrl = new AbortController();
@@ -3996,6 +3973,10 @@ export default function AdvisorSprint() {
     setResults({});
     setSources([]);
     setElapsed(0);
+    setThinkingBlocks({});
+    setToolLogs({});
+    setGapAnalysis(null);
+    setGapAnalysisRunning(false);  // reset stale state from any prior sprint
 
     // Wake Render backend — free tier sleeps after 15min inactivity
     try {
@@ -4079,16 +4060,39 @@ export default function AdvisorSprint() {
         }
         w1texts[id] = text;
 
+        // Persist raw agent text to sessionStorage after every agent —
+        // trace PDF and retry flows read from here as the reliable source
+        try {
+          sessionStorage.setItem(`sprint_${co}`, JSON.stringify(w1texts));
+        } catch(e) { console.warn('[sessionStorage] write failed:', e.message); }
+
         // Gap after each agent — keeps tokens under rate limit (skip in test mode)
         if (!signal.aborted && id !== 'synopsis') {
           setStatuses(s => ({ ...s, [id]: "done" }));
           if (!testMode) await new Promise(r => setTimeout(r, 60000));
+        }
+        // Synopsis excluded from gap block above — set done explicitly
+        if (!signal.aborted && id === 'synopsis') {
+          setStatuses(s => ({ ...s, synopsis: "done" }));
         }
       }
 
       if (!signal.aborted) {
         setAppState("done");
         gaEvent("sprint_completed", { company: co, time_seconds: elapsed });
+        try { sessionStorage.removeItem(`sprint_${co}`); } catch(e) {}
+        // Trigger Agent 12 gap analysis — only if context was provided (otherwise nothing to compare)
+        if (ctx && ctx.trim().length > 50) {
+          try {
+            const briefRaw = w1texts['brief'] || '';
+            const dbM = briefRaw.match(/<<<DATA_BLOCK>>>\s*```json([\s\S]*?)```\s*<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>\s*(\{[\s\S]*\})/);
+            const briefDB = dbM ? (() => { try { return JSON.parse(repairJson((dbM[1]||dbM[2]||dbM[3]||'').trim().replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'').trim())); } catch(e) { return {}; } })() : {};
+            const synopsisText = (w1texts['synopsis'] || '').replace(/<<<DATA_BLOCK>>>[\s\S]*?<<<END_DATA_BLOCK>>>/g,'').trim();
+            runGapAnalysis(co, ctx, synopsisText, briefDB);
+          } catch(e) { console.warn('[Agent12 trigger]', e.message); }
+        }
+        // Now safe to clear sessionStorage — Agent 12 has read what it needs
+        try { sessionStorage.removeItem(`sprint_${co}`); } catch(e) {}
       }
 
     } catch (e) {
@@ -4096,6 +4100,818 @@ export default function AdvisorSprint() {
       setAppState("error");
     } finally {
       if (timerRef.current) clearInterval(timerRef.current);
+    }
+  };
+
+  // ── AGENT 12: GAP ANALYSIS ──────────────────────────────────────────
+  const runGapAnalysis = async (co, ctx, synopsisText, briefDataBlock) => {
+    setGapAnalysisRunning(true);
+    const prompt = `You are a prompt engineering advisor reviewing an AI sprint output.
+You have three inputs:
+1. The context brief the user provided before the sprint
+2. The synopsis the AI produced
+3. The opportunity brief DATA_BLOCK the AI produced
+
+Your job: answer exactly three questions with specific, actionable bullets. No preamble. No summary. Start immediately with Question 1.
+
+## CONTEXT BRIEF PROVIDED BY USER
+${ctx || '(no context provided)'}
+
+## SYNOPSIS OUTPUT (trimmed)
+${(synopsisText || '').slice(0, 6000)}
+
+## OPPORTUNITY BRIEF DATA_BLOCK
+${JSON.stringify(briefDataBlock || {}, null, 2).slice(0, 3000)}
+
+---
+
+## QUESTION 1: WHAT THE BRIEF SURFACED THAT YOUR CONTEXT DIDN'T PROVIDE
+List specific facts, figures, or competitors the AI found independently that were NOT in your context brief. For each: state the finding and flag whether it should be verified (found via search) or is likely reliable (well-known fact).
+
+## QUESTION 2: WHAT YOUR CONTEXT PROVIDED THAT THE BRIEF DIDN'T USE
+List specific points from your context brief that did not appear in the brief output. For each: state why it likely wasn't used (too generic, contradicted by data, framing issue) and whether it should be made more explicit next time.
+
+## QUESTION 3: WHAT TO ADD OR CHANGE IN YOUR CONTEXT BRIEF NEXT TIME
+Specific, copy-paste-ready suggestions. Format each as:
+ADD: "..." — why this would improve output
+REMOVE: "..." — why this is not helping
+REFRAME: "..." → "..." — how to sharpen the instruction`;
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-tool-name': 'advisor' },
+        body: JSON.stringify({ prompt, agentId: 'gap_analysis', market }),
+        signal: AbortSignal.timeout(120000),
+      });
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '', fullText = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const ev = JSON.parse(line.slice(6));
+            if (ev.type === 'chunk') fullText += ev.text;
+            if (ev.type === 'done') fullText = ev.text || fullText;
+          } catch(e) {}
+        }
+      }
+      setGapAnalysis(fullText.trim());
+    } catch(e) {
+      console.warn('[Agent12] Gap analysis failed:', e.message);
+      setGapAnalysis('Gap analysis failed — run again or check console.');
+    } finally {
+      setGapAnalysisRunning(false);
+      // Signal to generateTracePDF wait loop that gap analysis is done
+      try { sessionStorage.setItem('gapAnalysisDone', '1'); } catch(e) {}
+    }
+  };
+
+  const retryBrief = async () => {
+    if (retryingBrief) return;
+    setRetryingBrief(true);
+    setAppState("running");
+    const co = company.trim();
+    const acq = acquirer.trim();
+    const ctx = context.trim();
+    try {
+      const saved = sessionStorage.getItem(`sprint_${co}`);
+      if (!saved) throw new Error("No saved sprint data — please re-run the full sprint");
+      const w1texts = JSON.parse(saved);
+      if (!w1texts['synopsis']) throw new Error("Synopsis missing — please re-run the full sprint");
+      const ctrl = new AbortController();
+      abortRef.current = ctrl;
+      const signal = ctrl.signal;
+      setStatuses(s => ({ ...s, brief: "running" }));
+      const prompt = makePrompt('brief', co, acq, ctx, w1texts, market, parentCo.trim(), companyMode, parentSince.trim(), w1texts['framing'] || '');
+      await runAgent('brief', prompt, signal, []);
+      setStatuses(s => ({ ...s, brief: "done" }));
+      setAppState("done");
+    } catch(e) {
+      console.error("[RetryBrief]", e.message);
+      alert(`Retry failed: ${e.message}`);
+      setAppState("error");
+    } finally {
+      setRetryingBrief(false);
+    }
+  };
+
+  // ── BUILD TRACE PDF HTML ─────────────────────────────────────────────
+  const buildTracePdfHtml = (co, acq, ctx, allDataBlocks, allThinking, allToolLogs, gapText, elapsed) => {
+    const date = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+    const navy = '#0f1f3d', forest = '#1a3a2a', amber = '#d97706', coral = '#b85c38';
+    const confColor = v => v==='H'?'#16a34a':v==='M'?amber:'#dc2626';
+    const confBg    = v => v==='H'?'#dcfce7':v==='M'?'#fef3c7':'#fee2e2';
+
+    // ── DEPENDENCY MAP — what each agent actually received as input ────────
+    // W1 agents: framing block only (no prior agent outputs)
+    // W2 agents: all W1 outputs
+    // Synopsis:  all W1 + W2 outputs
+    // Brief:     all W1 + W2 + Synopsis outputs
+    const AGENT_INPUTS = {
+      framing:    [],
+      market:     ['framing'],
+      portfolio:  ['framing'],
+      brand:      ['framing'],
+      margins:    ['framing'],
+      growth:     ['framing'],
+      competitive:['framing'],
+      synergy:    ['framing','market','portfolio','brand','margins','growth','competitive'],
+      platform:   ['framing','market','portfolio','brand','margins','growth','competitive'],
+      intl:       ['framing','market','portfolio','brand','margins','growth','competitive'],
+      synopsis:   ['framing','market','portfolio','brand','margins','growth','competitive','synergy','platform','intl'],
+      brief:      ['framing','market','portfolio','brand','margins','growth','competitive','synergy','platform','intl','synopsis'],
+    };
+    const AGENT_SHORT = {
+      framing:'Framing', market:'Market', portfolio:'Portfolio', brand:'Brand',
+      margins:'Margins', growth:'Growth', competitive:'Competitive',
+      synergy:'Synergy', platform:'Platform', intl:"Int'l",
+      synopsis:'Synopsis', brief:'Brief',
+    };
+    const AGENT_WAVE = {
+      framing:0, market:1, portfolio:1, brand:1, margins:1, growth:1, competitive:1,
+      synergy:2, platform:2, intl:2, synopsis:3, brief:4,
+    };
+
+    // ── CONTRADICTION KEYWORDS — scan thinking for these ─────────────────
+    const CONTRADICTION_KW = [
+      'however','but ','contradict','disagree','tension','conflict','inconsistent',
+      'discrepancy','conflicts with','at odds','diverges','on the other hand',
+      'disputes','challenges the','not align','different from','rather than',
+      'whereas','despite','although','nevertheless','yet ','revising',
+      'reconsidering','question whether','uncertain whether',
+    ];
+
+    // ── HELPER: extract a sentence window around a keyword match ─────────
+    const extractSnippets = (text, keywords, maxSnippets=5) => {
+      if (!text) return [];
+      const sentences = text.replace(/([.!?])\s+/g, '$1\n').split('\n').filter(s => s.trim().length > 20);
+      const found = [];
+      for (const s of sentences) {
+        if (found.length >= maxSnippets) break;
+        const lower = s.toLowerCase();
+        const kw = keywords.find(k => lower.includes(k));
+        if (kw) found.push({ sentence: s.trim().slice(0, 300), keyword: kw });
+      }
+      return found;
+    };
+
+    // ── SPRINT QUALITY SCORE ─────────────────────────────────────────────
+    const ALL_AGENT_IDS = ['market','portfolio','brand','margins','growth','competitive','synergy','platform','intl','synopsis','brief'];
+    let totalKpis = 0, highKpis = 0, medKpis = 0;
+    ALL_AGENT_IDS.forEach(id => {
+      const kpis = Array.isArray((allDataBlocks[id]||{}).kpis) ? allDataBlocks[id].kpis : [];
+      kpis.forEach(k => {
+        totalKpis++;
+        if (k.confidence === 'H') highKpis++;
+        else if (k.confidence === 'M') medKpis++;
+      });
+    });
+    const agentsDone = ALL_AGENT_IDS.filter(id => allDataBlocks[id] && Object.keys(allDataBlocks[id]).length > 1).length;
+    const totalSearches = Object.values(allToolLogs).reduce((s, logs) => s + (logs||[]).length, 0);
+    const totalSources = Object.values(allToolLogs).reduce((s, logs) => s + (logs||[]).reduce((n, l) => n + (l.results||[]).length, 0), 0);
+    const totalThinkingChars = Object.values(allThinking).reduce((s, t) => s + (t||'').length, 0);
+    const qualityPct = totalKpis > 0 ? Math.round(((highKpis + medKpis) / totalKpis) * 100) : 0;
+    const qualityColor = qualityPct >= 80 ? '#16a34a' : qualityPct >= 60 ? amber : '#dc2626';
+    const qualityLabel = qualityPct >= 80 ? 'STRONG' : qualityPct >= 60 ? 'MODERATE' : 'THIN';
+
+    // ── PAGE 1: COVER — heatmap + dependency diagram + quality score ─────
+    const AGENTS_HEATMAP = ['market','portfolio','brand','margins','growth','competitive','synergy','platform','intl','synopsis','brief'];
+    const AGENT_LABELS_HM = { market:'Market', portfolio:'Portfolio', brand:'Brand', margins:'Margins', growth:'Growth',
+      competitive:'Competitive', synergy:'Synergy', platform:'Platform', intl:"Int'l", synopsis:'Synopsis', brief:'Brief' };
+
+    const agentConf = {};
+    AGENTS_HEATMAP.forEach(id => {
+      const db = allDataBlocks[id] || {};
+      const kpis = Array.isArray(db.kpis) ? db.kpis : [];
+      const verdict = db.verdictRow?.confidence || null;
+      const confs = kpis.map(k => k.confidence || '—');
+      agentConf[id] = { kpis: confs, verdict, overall: verdict || (confs.length ? confs[0] : '—') };
+    });
+
+    const heatmapRows = AGENTS_HEATMAP.map(id => {
+      const db = allDataBlocks[id] || {};
+      const kpis = Array.isArray(db.kpis) ? db.kpis : [];
+      const cells = kpis.slice(0,4).map(k => {
+        const c = k.confidence || '—';
+        const bg = c==='H'?'#dcfce7':c==='M'?'#fef3c7':c==='—'?'#f3f4f6':'#fee2e2';
+        const col = c==='H'?'#16a34a':c==='M'?'#92400e':c==='—'?'#9ca3af':'#dc2626';
+        return `<td style="padding:4px 6px;text-align:center;background:${bg};border:1px solid #e5e7eb;">
+          <span style="font-size:8px;font-weight:800;color:${col};font-family:monospace;">${c}</span>
+          <div style="font-size:5.5px;color:#6b7280;margin-top:1px;white-space:nowrap;overflow:hidden;max-width:55px;">${(k.label||'').slice(0,12)}</div>
+        </td>`;
+      }).join('');
+      const padded = cells + '<td style="padding:4px 6px;background:#f9fafb;border:1px solid #e5e7eb;"></td>'.repeat(Math.max(0,4-kpis.slice(0,4).length));
+      const ov = agentConf[id].overall;
+      const ovBg = ov==='H'?'#dcfce7':ov==='M'?'#fef3c7':ov==='—'?'#f3f4f6':'#fee2e2';
+      const ovCol = ov==='H'?'#16a34a':ov==='M'?'#92400e':ov==='—'?'#9ca3af':'#dc2626';
+      // Verdict from DATA_BLOCK
+      const verdictText = (db.verdictRow?.verdict || db.verdictRow?.finding || '').slice(0,60);
+      return `<tr>
+        <td style="padding:4px 8px;font-size:7.5px;font-weight:700;color:${navy};border:1px solid #e5e7eb;background:#f9fafb;white-space:nowrap;">${AGENT_LABELS_HM[id]||id}</td>
+        <td style="padding:4px 6px;text-align:center;background:${ovBg};border:1px solid #e5e7eb;">
+          <span style="font-size:9px;font-weight:900;color:${ovCol};font-family:monospace;">${ov}</span>
+        </td>
+        ${padded}
+        <td style="padding:4px 8px;font-size:6px;color:#6b7280;border:1px solid #e5e7eb;max-width:130px;">${verdictText || kpis.map(k=>`<span style="color:${confColor(k.confidence||'—')};font-weight:600;">[${k.confidence||'—'}]</span> ${(k.label||'').slice(0,16)}`).join('<br>')}</td>
+      </tr>`;
+    }).join('');
+
+    // ── DEPENDENCY DIAGRAM (SVG) ─────────────────────────────────────────
+    // Wave lanes: W0=Framing, W1=6 agents, W2=3 agents, W3=Synopsis, W4=Brief
+    // Rendered as horizontal SVG with arrows showing data flow
+    const diagW = 680, diagH = 130;
+    // Lane x positions
+    const laneX = { 0:30, 1:140, 2:420, 3:540, 4:620 };
+    // Agent box positions [id, x, y, w, h, color]
+    const boxDefs = [
+      { id:'framing',    x:10,  y:48, w:100, h:18, col:'#4c1d95', tc:'#fff', short:'Framing' },
+      { id:'market',     x:148, y:8,  w:88,  h:16, col:navy, tc:'#fff', short:'Market' },
+      { id:'portfolio',  x:148, y:28, w:88,  h:16, col:navy, tc:'#fff', short:'Portfolio' },
+      { id:'brand',      x:148, y:48, w:88,  h:16, col:navy, tc:'#fff', short:'Brand' },
+      { id:'margins',    x:148, y:68, w:88,  h:16, col:navy, tc:'#fff', short:'Margins' },
+      { id:'growth',     x:148, y:88, w:88,  h:16, col:navy, tc:'#fff', short:'Growth' },
+      { id:'competitive',x:148, y:108,w:88,  h:16, col:navy, tc:'#fff', short:'Competitive' },
+      { id:'synergy',    x:254, y:28, w:80,  h:16, col:'#1a3a2a', tc:'#fff', short:'Synergy' },
+      { id:'platform',   x:254, y:55, w:80,  h:16, col:'#1a3a2a', tc:'#fff', short:'Platform' },
+      { id:'intl',       x:254, y:82, w:80,  h:16, col:'#1a3a2a', tc:'#fff', short:"Int'l" },
+      { id:'synopsis',   x:352, y:48, w:88,  h:18, col:coral, tc:'#fff', short:'Synopsis' },
+      { id:'brief',      x:458, y:48, w:80,  h:18, col:amber, tc:'#fff', short:'Brief' },
+    ];
+    const boxMap = {};
+    boxDefs.forEach(b => { boxMap[b.id] = b; });
+
+    // Arrow helper — from right-edge of src to left-edge of dst, mid-point curve
+    const arrow = (srcId, dstId, color='#cbd5e1', opacity=0.7) => {
+      const s = boxMap[srcId]; const d = boxMap[dstId];
+      if (!s || !d) return '';
+      const x1 = s.x + s.w, y1 = s.y + s.h/2;
+      const x2 = d.x,       y2 = d.y + d.h/2;
+      const mx = (x1 + x2) / 2;
+      return `<path d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" stroke="${color}" stroke-width="1" fill="none" opacity="${opacity}" marker-end="url(#arr)"/>`;
+    };
+
+    // Draw all dependency arrows
+    const arrowsSvg = [
+      // Framing → all W1
+      ...['market','portfolio','brand','margins','growth','competitive'].map(id => arrow('framing', id, '#7c3aed', 0.4)),
+      // W1 → W2
+      ...['market','portfolio','brand','margins','growth','competitive'].flatMap(w1 =>
+        ['synergy','platform','intl'].map(w2 => arrow(w1, w2, '#64748b', 0.25))
+      ),
+      // W1+W2 → Synopsis
+      ...['market','portfolio','brand','margins','growth','competitive','synergy','platform','intl'].map(id => arrow(id, 'synopsis', coral, 0.3)),
+      // All → Brief
+      ...['market','portfolio','brand','margins','growth','competitive','synergy','platform','intl','synopsis'].map(id => arrow(id, 'brief', amber, 0.3)),
+    ].join('');
+
+    const boxesSvg = boxDefs.map(b => `
+      <rect x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="3" fill="${b.col}"/>
+      <text x="${b.x + b.w/2}" y="${b.y + b.h/2 + 4}" text-anchor="middle" font-family="monospace" font-size="6.5" font-weight="700" fill="${b.tc}">${b.short}</text>
+    `).join('');
+
+    // Wave labels
+    const waveLabels = [
+      { x:10,  y:6, label:'WAVE 0' },
+      { x:148, y:6, label:'WAVE 1 · 6 AGENTS' },
+      { x:254, y:6, label:'WAVE 2' },
+      { x:352, y:6, label:'WAVE 3' },
+      { x:458, y:6, label:'WAVE 4' },
+    ].map(l => `<text x="${l.x}" y="${l.y}" font-family="monospace" font-size="5.5" font-weight="800" fill="#9ca3af" letter-spacing="0.5">${l.label}</text>`).join('');
+
+    const diagSvg = `<svg width="${diagW}" height="${diagH}" viewBox="0 0 ${diagW} ${diagH}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+          <path d="M0,0 L5,2.5 L0,5 Z" fill="#94a3b8"/>
+        </marker>
+      </defs>
+      ${arrowsSvg}
+      ${boxesSvg}
+      ${waveLabels}
+    </svg>`;
+
+    // ── TOTAL PAGE COUNT ─────────────────────────────────────────────────
+    const ALL_TRACE_AGENTS = [
+      { id:'market',      num:1,  name:'MARKET POSITION & CATEGORY DYNAMICS' },
+      { id:'portfolio',   num:2,  name:'PORTFOLIO STRATEGY & SKU RATIONALISATION' },
+      { id:'brand',       num:3,  name:'BRAND POSITIONING & STORYTELLING' },
+      { id:'margins',     num:4,  name:'MARGIN IMPROVEMENT & UNIT ECONOMICS' },
+      { id:'growth',      num:5,  name:'GROWTH STRATEGY & CHANNEL ORCHESTRATION' },
+      { id:'competitive', num:6,  name:'COMPETITIVE BATTLE PLAN' },
+      { id:'synergy',     num:7,  name:'SYNERGY PLAYBOOK' },
+      { id:'platform',    num:8,  name:'PLATFORM EXPANSION & D2C INCUBATOR' },
+      { id:'intl',        num:9,  name:'INTERNATIONAL BENCHMARKS' },
+      { id:'synopsis',    num:10, name:'EXECUTIVE SYNOPSIS' },
+      { id:'brief',       num:11, name:'OPPORTUNITY BRIEF' },
+    ];
+    const traceAgents = ALL_TRACE_AGENTS.filter(ag =>
+      (allThinking[ag.id] && allThinking[ag.id].length > 0) ||
+      (allToolLogs[ag.id] && allToolLogs[ag.id].length > 0)
+    );
+    const totalPages = 1 + traceAgents.length + 1;
+
+    const page1 = `
+    <div class="page" style="padding:32px 36px;font-family:'Instrument Sans',sans-serif;background:#fff;position:relative;min-height:1050px;">
+      <!-- HEADER -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;padding-bottom:12px;border-bottom:3px solid ${navy};">
+        <div>
+          <div style="font-size:7px;font-weight:800;letter-spacing:.18em;color:${coral};margin-bottom:3px;">RESEARCH TRACE · SPRINT INTELLIGENCE REPORT</div>
+          <div style="font-size:22px;font-weight:900;color:${navy};">${co}${acq?` · ${acq}`:''}</div>
+          <div style="font-size:8.5px;color:#6b7280;margin-top:3px;">${date} · Sprint duration: ${Math.floor(elapsed/60)}m ${elapsed%60}s · ${agentsDone}/11 agents completed</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:8px;font-weight:800;letter-spacing:.12em;color:rgba(15,31,61,.18);">AdvisorSprint</div>
+          <div style="font-size:6.5px;color:rgba(15,31,61,.18);margin-top:2px;">Harsha Belavady</div>
+        </div>
+      </div>
+
+      <!-- SPRINT QUALITY SCORE STRIP -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px;">
+        <div style="background:${navy};border-radius:4px;padding:8px 10px;text-align:center;">
+          <div style="font-size:7px;color:#94a3b8;letter-spacing:.08em;margin-bottom:3px;">QUALITY SCORE</div>
+          <div style="font-size:18px;font-weight:900;color:${qualityColor};">${qualityPct}%</div>
+          <div style="font-size:6px;color:${qualityColor};font-weight:700;letter-spacing:.1em;">${qualityLabel}</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;padding:8px 10px;text-align:center;">
+          <div style="font-size:7px;color:#64748b;letter-spacing:.06em;margin-bottom:3px;">AGENTS DONE</div>
+          <div style="font-size:18px;font-weight:900;color:${navy};">${agentsDone}<span style="font-size:10px;color:#94a3b8;">/11</span></div>
+          <div style="font-size:6px;color:#64748b;">of 11 ran successfully</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;padding:8px 10px;text-align:center;">
+          <div style="font-size:7px;color:#64748b;letter-spacing:.06em;margin-bottom:3px;">WEB SEARCHES</div>
+          <div style="font-size:18px;font-weight:900;color:${navy};">${totalSearches}</div>
+          <div style="font-size:6px;color:#64748b;">${totalSources} sources retrieved</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;padding:8px 10px;text-align:center;">
+          <div style="font-size:7px;color:#64748b;letter-spacing:.06em;margin-bottom:3px;">H/M CONFIDENCE</div>
+          <div style="font-size:18px;font-weight:900;color:${navy};">${highKpis+medKpis}<span style="font-size:10px;color:#94a3b8;">/${totalKpis}</span></div>
+          <div style="font-size:6px;color:#64748b;">KPIs reliably sourced</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;padding:8px 10px;text-align:center;">
+          <div style="font-size:7px;color:#64748b;letter-spacing:.06em;margin-bottom:3px;">OPUS THINKING</div>
+          <div style="font-size:18px;font-weight:900;color:${navy};">${totalThinkingChars > 0 ? Math.round(totalThinkingChars/1000)+'k' : '—'}</div>
+          <div style="font-size:6px;color:#64748b;">chars of reasoning</div>
+        </div>
+      </div>
+
+      <!-- AGENT DEPENDENCY DIAGRAM -->
+      <div style="margin-bottom:14px;">
+        <div style="font-size:7.5px;font-weight:800;letter-spacing:.1em;color:${navy};margin-bottom:6px;">AGENT INTERACTION MAP — HOW OUTPUTS FLOWED THROUGH THE SPRINT</div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;padding:10px 12px;overflow:hidden;">
+          ${diagSvg}
+          <div style="display:flex;gap:14px;margin-top:6px;">
+            <div style="display:flex;align-items:center;gap:4px;"><div style="width:12px;height:2px;background:#7c3aed;opacity:.6;"></div><span style="font-size:6px;color:#64748b;">Framing context</span></div>
+            <div style="display:flex;align-items:center;gap:4px;"><div style="width:12px;height:2px;background:#64748b;opacity:.5;"></div><span style="font-size:6px;color:#64748b;">W1 → W2 outputs</span></div>
+            <div style="display:flex;align-items:center;gap:4px;"><div style="width:12px;height:2px;background:${coral};opacity:.5;"></div><span style="font-size:6px;color:#64748b;">→ Synopsis synthesis</span></div>
+            <div style="display:flex;align-items:center;gap:4px;"><div style="width:12px;height:2px;background:${amber};opacity:.5;"></div><span style="font-size:6px;color:#64748b;">→ Brief output</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONFIDENCE HEATMAP -->
+      <div style="font-size:7.5px;font-weight:800;letter-spacing:.1em;color:${navy};margin-bottom:6px;">CONFIDENCE HEATMAP · ALL AGENTS</div>
+      <div style="font-size:6.5px;color:#6b7280;margin-bottom:8px;">GREEN = High (sourced data) · AMBER = Medium (triangulated) · RED = Low (signal only) · — = Not available</div>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
+        <thead>
+          <tr style="background:${navy};color:#fff;">
+            <th style="padding:5px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;font-family:monospace;">AGENT</th>
+            <th style="padding:5px 7px;text-align:center;font-size:6.5px;letter-spacing:.06em;font-family:monospace;">OVERALL</th>
+            <th style="padding:5px 7px;text-align:center;font-size:6.5px;font-family:monospace;">KPI 1</th>
+            <th style="padding:5px 7px;text-align:center;font-size:6.5px;font-family:monospace;">KPI 2</th>
+            <th style="padding:5px 7px;text-align:center;font-size:6.5px;font-family:monospace;">KPI 3</th>
+            <th style="padding:5px 7px;text-align:center;font-size:6.5px;font-family:monospace;">KPI 4</th>
+            <th style="padding:5px 8px;text-align:left;font-size:6.5px;font-family:monospace;">VERDICT / KPI LABELS</th>
+          </tr>
+        </thead>
+        <tbody>${heatmapRows}</tbody>
+      </table>
+
+      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:4px;padding:10px 14px;">
+        <div style="font-size:6.5px;color:#374151;line-height:1.6;">
+          <strong>H</strong> — sourced from a named publication, filing, or verified data. Safe to use with client. &nbsp;
+          <strong>M</strong> — triangulated from 2+ indirect signals. Check reasoning trace. &nbsp;
+          <strong>L</strong> — estimated from weak signals. Verify before using. &nbsp;
+          <strong>Low-confidence agents</strong> = gaps in your context brief. See Gap Analysis page.
+        </div>
+      </div>
+
+      <div style="position:absolute;bottom:18px;left:36px;right:36px;display:flex;justify-content:space-between;">
+        <div style="font-size:6.5px;color:#9ca3af;letter-spacing:.06em;">ADVISORSPRINT INTELLIGENCE · CONFIDENTIAL</div>
+        <div style="font-size:6.5px;color:#9ca3af;">PAGE 1 OF ${totalPages}</div>
+      </div>
+    </div>`;
+
+    // ── AGENT PAGES ──────────────────────────────────────────────────────
+    const tracePages = traceAgents.map((ag, pageIdx) => {
+      const id = ag.id;
+      const thinking = allThinking[id] || '';
+      const toolLog = allToolLogs[id] || [];
+      const pageNum = pageIdx + 2;
+      const db = allDataBlocks[id] || {};
+      const wave = AGENT_WAVE[id];
+      const inputIds = AGENT_INPUTS[id] || [];
+
+      // ── THEME 1: INPUTS RECEIVED panel (W2, Synopsis, Brief only) ────
+      const showInputs = wave >= 2 && inputIds.filter(i => i !== 'framing').length > 0;
+      const inputsHtml = showInputs ? (() => {
+        const feeders = inputIds.filter(i => i !== 'framing');
+        const rows = feeders.map(fid => {
+          const fdb = allDataBlocks[fid] || {};
+          const fkpis = Array.isArray(fdb.kpis) ? fdb.kpis : [];
+          const overallConf = fdb.verdictRow?.confidence || (fkpis[0]?.confidence) || '—';
+          const verdictSnip = (fdb.verdictRow?.finding || fdb.verdictRow?.verdict || fkpis.map(k=>k.label).join(', ') || '—').slice(0, 80);
+          const confBg2 = overallConf==='H'?'#dcfce7':overallConf==='M'?'#fef3c7':overallConf==='—'?'#f3f4f6':'#fee2e2';
+          const confCol2 = overallConf==='H'?'#16a34a':overallConf==='M'?'#92400e':overallConf==='—'?'#9ca3af':'#dc2626';
+          return `<tr style="border-bottom:1px solid #e5e7eb;">
+            <td style="padding:4px 8px;font-size:7px;font-weight:700;color:${navy};white-space:nowrap;">${AGENT_SHORT[fid]||fid}</td>
+            <td style="padding:4px 6px;text-align:center;background:${confBg2};">
+              <span style="font-size:7.5px;font-weight:800;color:${confCol2};font-family:monospace;">${overallConf}</span>
+            </td>
+            <td style="padding:4px 8px;font-size:6.5px;color:#374151;">${verdictSnip}</td>
+          </tr>`;
+        }).join('');
+        return `
+        <div style="margin-bottom:14px;">
+          <div style="font-size:8px;font-weight:800;letter-spacing:.1em;color:${navy};margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid ${navy};">AGENT INPUTS RECEIVED — WHAT THIS AGENT WAS GIVEN</div>
+          <div style="font-size:6.5px;color:#64748b;margin-bottom:6px;">This agent received the full DATA_BLOCK + verdict + first 3,000 chars of prose from each agent below. These structured outputs shaped its analysis.</div>
+          <table style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;">
+            <thead><tr style="background:#f1f5f9;">
+              <th style="padding:4px 8px;font-size:6.5px;text-align:left;font-family:monospace;color:${navy};">SOURCE AGENT</th>
+              <th style="padding:4px 6px;font-size:6.5px;text-align:center;font-family:monospace;color:${navy};">CONF</th>
+              <th style="padding:4px 8px;font-size:6.5px;text-align:left;font-family:monospace;color:${navy};">KEY FINDING PASSED IN</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>`;
+      })() : '';
+
+      // ── THEME 2: CONTRADICTION DETECTION (Synopsis + Brief only) ─────
+      const showContradictions = (id === 'synopsis' || id === 'brief') && thinking.length > 0;
+      const contradictionHtml = showContradictions ? (() => {
+        const snippets = extractSnippets(thinking, CONTRADICTION_KW, 6);
+        if (!snippets.length) return `
+        <div style="margin-bottom:14px;padding:8px 12px;background:#fffbeb;border:1px solid #fde68a;border-left:3px solid ${amber};border-radius:2px;">
+          <div style="font-size:7px;font-weight:700;color:#92400e;margin-bottom:3px;">CROSS-AGENT REASONING — NO EXPLICIT CONTRADICTIONS DETECTED</div>
+          <div style="font-size:6.5px;color:#78350f;">The thinking stream did not contain explicit contradiction keywords. This may mean the agent found prior outputs consistent, or used different phrasing when reconciling differences. Review the full thinking below.</div>
+        </div>`;
+        const snippetRows = snippets.map((s, i) => `
+          <div style="margin-bottom:8px;padding:7px 10px;background:#fffbeb;border:1px solid #fde68a;border-left:3px solid ${amber};border-radius:2px;">
+            <div style="font-size:6px;color:#92400e;font-family:monospace;font-weight:700;margin-bottom:3px;">SIGNAL ${i+1} — keyword: "${s.keyword}"</div>
+            <div style="font-size:7px;color:#1f2937;line-height:1.6;">${s.sentence.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+          </div>`).join('');
+        return `
+        <div style="margin-bottom:14px;">
+          <div style="font-size:8px;font-weight:800;letter-spacing:.1em;color:#92400e;margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid ${amber};">CROSS-AGENT REASONING — WHERE OPUS RECONCILED CONFLICTING SIGNALS</div>
+          <div style="font-size:6.5px;color:#64748b;margin-bottom:8px;">Passages from the extended thinking where Opus detected tension, contradiction, or disagreement between prior agent outputs. These are the moments where synthesis — not just summarisation — occurred.</div>
+          ${snippetRows}
+        </div>`;
+      })() : '';
+
+      // ── THEME 1: Cross-agent reference scan for Synopsis/Brief ───────
+      const showAgentRefs = (id === 'synopsis' || id === 'brief') && thinking.length > 0;
+      const agentRefHtml = showAgentRefs ? (() => {
+        const agentRefKw = ['market agent','portfolio agent','brand agent','margins agent','growth agent',
+          'competitive agent','synergy agent','platform agent','intl agent',
+          'agent 1','agent 2','agent 3','agent 4','agent 5','agent 6','agent 7','agent 8','agent 9',
+          'market analysis','portfolio analysis','brand analysis',
+          'market found','portfolio found','brand found','margins found','competitive found'];
+        const refs = extractSnippets(thinking, agentRefKw, 5);
+        if (!refs.length) return '';
+        return `
+        <div style="margin-bottom:14px;">
+          <div style="font-size:8px;font-weight:800;letter-spacing:.1em;color:${forest};margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid ${forest};">CROSS-AGENT REFERENCES — WHERE OPUS EXPLICITLY USED PRIOR AGENT OUTPUT</div>
+          <div style="font-size:6.5px;color:#64748b;margin-bottom:8px;">Moments in the thinking stream where Opus explicitly referenced or built on a specific prior agent's finding.</div>
+          ${refs.map((s,i) => `
+            <div style="margin-bottom:6px;padding:7px 10px;background:#f0fdf4;border:1px solid #bbf7d0;border-left:3px solid ${forest};border-radius:2px;">
+              <div style="font-size:6px;color:#166534;font-family:monospace;font-weight:700;margin-bottom:3px;">REF ${i+1} — "${s.keyword}"</div>
+              <div style="font-size:7px;color:#1f2937;line-height:1.6;">${s.sentence.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+            </div>`).join('')}
+        </div>`;
+      })() : '';
+
+      // ── SEARCH TABLE ────────────────────────────────────────────────
+      const searchRows = toolLog.map((t,i) => `
+        <tr style="border-bottom:1px solid #e5e7eb;">
+          <td style="padding:5px 8px;font-size:7px;font-weight:700;color:${navy};white-space:nowrap;">#${i+1}</td>
+          <td style="padding:5px 8px;font-size:7px;color:#374151;">${(t.query||'(building query…)').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</td>
+          <td style="padding:5px 8px;font-size:7px;color:#6b7280;">${(t.results||[]).length} sources</td>
+          <td style="padding:5px 8px;font-size:6.5px;color:#6b7280;">${(t.results||[]).map(r=>`<div style="margin-bottom:2px;">→ ${(r.title||r.url||'').slice(0,60).replace(/</g,'&lt;')}</div>`).join('')}</td>
+        </tr>`).join('');
+
+      // ── CALCULATION PROVENANCE PANEL (Brief only) ────────────────
+      // Shows every derived number in the brief with its calculation, source agent, and confidence
+      const provenanceHtml = (id === 'brief' && Object.keys(db).length > 1) ? (() => {
+        const esc = s => (s||'').toString().replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        const confCell = c => {
+          const bg = c==='H'?'#dcfce7':c==='M'?'#fef3c7':c==='L'?'#fee2e2':'#f3f4f6';
+          const col = c==='H'?'#16a34a':c==='M'?'#92400e':c==='L'?'#dc2626':'#9ca3af';
+          return `<td style="padding:4px 6px;text-align:center;background:${bg};white-space:nowrap;"><span style="font-size:7px;font-weight:800;font-family:monospace;color:${col};">${c||'—'}</span></td>`;
+        };
+
+        // ── SECTION A: KPI calculations ──────────────────────────────
+        const kpis = Array.isArray(db.kpis) ? db.kpis : [];
+        const kpiRows = kpis.map(k => `<tr style="border-bottom:1px solid #e5e7eb;">
+          <td style="padding:4px 8px;font-size:7px;font-weight:700;color:${navy};">${esc(k.label)}</td>
+          <td style="padding:4px 8px;font-size:7px;font-weight:800;color:${navy};">${esc(k.value)}</td>
+          <td style="padding:4px 8px;font-size:6.5px;color:#374151;">${esc(k.sub)}</td>
+          ${confCell(k.confidence)}
+        </tr>`).join('');
+
+        // ── SECTION B: Gap table calculations ────────────────────────
+        const gaps = Array.isArray(db.gapTable) ? db.gapTable : [];
+        const gapRows = gaps.map(g => `<tr style="border-bottom:1px solid #e5e7eb;">
+          <td style="padding:4px 8px;font-size:7px;font-weight:700;color:${navy};">${esc(g.occasion)}</td>
+          <td style="padding:4px 8px;font-size:7px;font-weight:800;color:${navy};">${g.categorySizeCr ? `₹${g.categorySizeCr} Cr` : '—'}</td>
+          <td style="padding:4px 8px;font-size:6.5px;color:#374151;">${esc(g.scalingMechanism)} · brand share: ${esc(g.brandShare)} · play: ${esc(g.playType)}</td>
+          ${confCell(g.confidence)}
+        </tr>`).join('');
+
+        // ── SECTION C: Move evidence ──────────────────────────────────
+        const moves = Array.isArray(db.moves) ? db.moves : [];
+        const moveRows = moves.map(m => `<tr style="border-bottom:1px solid #e5e7eb;">
+          <td style="padding:4px 8px;font-size:7px;font-weight:700;color:${navy};">${esc(m.title)}</td>
+          <td style="padding:4px 8px;font-size:7px;font-weight:800;color:${navy};">${m.opportunityCr ? `₹${m.opportunityCr} Cr` : '—'}</td>
+          <td style="padding:4px 8px;font-size:6.5px;color:#374151;">${esc(m.evidence)} · ${esc(m.rationale)}</td>
+          ${confCell(m.confidence === 'CONFIRMED' ? 'H' : m.confidence === 'DERIVED' ? 'M' : m.confidence === 'ESTIMATED' ? 'M' : 'L')}
+        </tr>`).join('');
+
+        // ── SECTION D: Market signals ─────────────────────────────────
+        const signals = Array.isArray(db.marketSignals) ? db.marketSignals : [];
+        const signalRows = signals.map(s => `<tr style="border-bottom:1px solid #e5e7eb;">
+          <td style="padding:4px 8px;font-size:7px;font-weight:700;color:${navy};">${esc(s.player)}</td>
+          <td style="padding:4px 8px;font-size:7px;color:#374151;">${esc(s.action)} — ${esc(s.occasion)}</td>
+          <td style="padding:4px 8px;font-size:6.5px;color:#374151;">${esc(s.proofPoint)}</td>
+          <td style="padding:4px 8px;font-size:6.5px;color:#64748b;">${esc(s.implicationForBrand)}</td>
+        </tr>`).join('');
+
+        const tableHead = (cols) => `<thead><tr style="background:${navy};color:#fff;">${cols.map(c=>`<th style="padding:4px 8px;font-size:6.5px;text-align:left;font-family:monospace;">${c}</th>`).join('')}</tr></thead>`;
+
+        return `
+        <div style="margin-bottom:14px;">
+          <div style="font-size:8px;font-weight:800;letter-spacing:.1em;color:#4c1d95;padding-bottom:5px;border-bottom:1.5px solid #4c1d95;margin-bottom:8px;">CALCULATION PROVENANCE — HOW EVERY NUMBER IN THE BRIEF WAS DERIVED</div>
+          <div style="font-size:6.5px;color:#64748b;margin-bottom:10px;">Every derived figure in the Opportunity Brief, with its calculation shown inline. Use this to verify market sizes, gap estimates, and move opportunity values before presenting to a client.</div>
+
+          ${kpiRows ? `
+          <div style="font-size:7px;font-weight:800;color:${navy};letter-spacing:.08em;margin-bottom:5px;">KPI TILES — DERIVED METRICS</div>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:10px;border:1px solid #e5e7eb;">
+            ${tableHead(['METRIC','VALUE','CALCULATION / BASIS','CONF'])}
+            <tbody>${kpiRows}</tbody>
+          </table>` : ''}
+
+          ${gapRows ? `
+          <div style="font-size:7px;font-weight:800;color:${navy};letter-spacing:.08em;margin-bottom:5px;">GAP TABLE — CATEGORY SIZE & OPPORTUNITY BASIS</div>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:10px;border:1px solid #e5e7eb;">
+            ${tableHead(['OCCASION / GAP','CATEGORY SIZE','MECHANISM · SHARE · PLAY TYPE','CONF'])}
+            <tbody>${gapRows}</tbody>
+          </table>` : ''}
+
+          ${moveRows ? `
+          <div style="font-size:7px;font-weight:800;color:${navy};letter-spacing:.08em;margin-bottom:5px;">MOVES — OPPORTUNITY SIZE & EVIDENCE</div>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:10px;border:1px solid #e5e7eb;">
+            ${tableHead(['MOVE','OPPORTUNITY','EVIDENCE · RATIONALE','CONF'])}
+            <tbody>${moveRows}</tbody>
+          </table>` : ''}
+
+          ${signalRows ? `
+          <div style="font-size:7px;font-weight:800;color:${navy};letter-spacing:.08em;margin-bottom:5px;">MARKET SIGNALS — PROOF POINTS</div>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:6px;border:1px solid #e5e7eb;">
+            ${tableHead(['PLAYER','ACTION · OCCASION','PROOF POINT','IMPLICATION FOR BRAND'])}
+            <tbody>${signalRows}</tbody>
+          </table>` : ''}
+
+          <div style="padding:6px 10px;background:#f5f3ff;border:1px solid #ddd6fe;border-left:3px solid #4c1d95;border-radius:2px;">
+            <div style="font-size:6.5px;color:#4c1d95;line-height:1.5;"><strong>CONFIRMED</strong> = directly cited source · <strong>DERIVED</strong> = calculated from sourced inputs · <strong>ESTIMATED</strong> = triangulated from comparable data · <strong>SIGNAL ONLY</strong> = one unverified signal, treat as directional</div>
+          </div>
+        </div>`;
+      })() : '';
+
+      // ── THINKING BLOCK ──────────────────────────────────────────────
+      const thinkingHtml = thinking ? `
+        <div style="margin-bottom:14px;">
+          <div style="font-size:8px;font-weight:800;letter-spacing:.1em;color:${forest};margin-bottom:8px;padding-bottom:4px;border-bottom:1.5px solid ${forest};">EXTENDED THINKING — FULL REASONING STREAM</div>
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-left:3px solid ${forest};border-radius:2px;padding:12px 14px;">
+            <div style="font-size:6.5px;color:#6b7280;margin-bottom:6px;font-family:monospace;">${thinking.length.toLocaleString()} chars · ${thinking.split(' ').length.toLocaleString()} words · full trace shown</div>
+            <div style="font-size:7px;color:#166534;line-height:1.7;white-space:pre-wrap;word-break:break-word;">${thinking.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+          </div>
+        </div>` : `
+        <div style="margin-bottom:12px;padding:8px 14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:3px;">
+          <div style="font-size:7px;color:#0369a1;">This agent uses Sonnet 4.6 — extended thinking is enabled only for Opus agents (Synopsis + Brief). Search activity below shows what this agent researched.</div>
+        </div>`;
+
+      const searchHtml = toolLog.length ? `
+        <div style="margin-bottom:14px;">
+          <div style="font-size:8px;font-weight:800;letter-spacing:.1em;color:${navy};margin-bottom:8px;padding-bottom:4px;border-bottom:1.5px solid ${navy};">RESEARCH SEQUENCE — SEARCHES AND SOURCES</div>
+          <table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="background:${navy};color:#fff;">
+              <th style="padding:5px 8px;font-size:6.5px;text-align:left;font-family:monospace;">#</th>
+              <th style="padding:5px 8px;font-size:6.5px;text-align:left;font-family:monospace;">QUERY</th>
+              <th style="padding:5px 8px;font-size:6.5px;text-align:left;font-family:monospace;">RESULTS</th>
+              <th style="padding:5px 8px;font-size:6.5px;text-align:left;font-family:monospace;">SOURCES SELECTED</th>
+            </tr></thead>
+            <tbody>${searchRows}</tbody>
+          </table>
+        </div>` : '';
+
+      return `
+      <div class="page" style="padding:36px;font-family:'Instrument Sans',sans-serif;background:#fff;position:relative;min-height:1050px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid ${navy};">
+          <div>
+            <div style="font-size:7px;font-weight:800;letter-spacing:.15em;color:${coral};">AGENT ${ag.num} · WAVE ${wave} · REASONING TRACE</div>
+            <div style="font-size:17px;font-weight:900;color:${navy};">${ag.name}</div>
+            ${inputIds.length ? `<div style="font-size:6.5px;color:#64748b;margin-top:2px;">Received input from: ${inputIds.map(i=>AGENT_SHORT[i]||i).join(' → ')}</div>` : ''}
+          </div>
+          <div style="font-size:6.5px;color:#9ca3af;font-family:monospace;">PAGE ${pageNum} OF ${totalPages}</div>
+        </div>
+        ${inputsHtml}
+        ${agentRefHtml}
+        ${contradictionHtml}
+        ${provenanceHtml}
+        ${thinkingHtml}
+        ${searchHtml}
+        <div style="position:absolute;bottom:18px;left:36px;right:36px;display:flex;justify-content:space-between;">
+          <div style="font-size:6.5px;color:#9ca3af;letter-spacing:.06em;">ADVISORSPRINT INTELLIGENCE · CONFIDENTIAL</div>
+          <div style="font-size:6.5px;color:#9ca3af;">PAGE ${pageNum} OF ${totalPages}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    // ── GAP ANALYSIS PAGE ─────────────────────────────────────────────
+    const gap = gapText || '(Gap analysis was still running when this PDF was generated. Click \u21e9 Research Trace again after a few minutes to get the complete version.)';
+
+    // Theme 3: Parse gap text into structured ADD / REMOVE / REFRAME sections
+    const gapSections = (() => {
+      if (!gapText) return null;
+      const lines = gapText.split('\n');
+      const sections = { Q1: [], Q2: [], Q3_add: [], Q3_remove: [], Q3_reframe: [] };
+      let currentSection = null;
+      lines.forEach(line => {
+        const t = line.trim();
+        if (/QUESTION 1|WHAT THE BRIEF SURFACED/i.test(t)) { currentSection = 'Q1'; return; }
+        if (/QUESTION 2|WHAT YOUR CONTEXT/i.test(t)) { currentSection = 'Q2'; return; }
+        if (/QUESTION 3|WHAT TO ADD/i.test(t)) { currentSection = 'Q3'; return; }
+        if (!t || /^---/.test(t)) return;
+        if (currentSection === 'Q1' && t.length > 5) sections.Q1.push(t);
+        if (currentSection === 'Q2' && t.length > 5) sections.Q2.push(t);
+        if (currentSection === 'Q3') {
+          if (/^ADD:/i.test(t)) sections.Q3_add.push(t.replace(/^ADD:\s*/i,''));
+          else if (/^REMOVE:/i.test(t)) sections.Q3_remove.push(t.replace(/^REMOVE:\s*/i,''));
+          else if (/^REFRAME:/i.test(t)) sections.Q3_reframe.push(t.replace(/^REFRAME:\s*/i,''));
+        }
+      });
+      return sections;
+    })();
+
+    const gapCard = (items, col, label) => items.length === 0 ? '' : `
+      <div style="margin-bottom:10px;">
+        <div style="font-size:7.5px;font-weight:800;color:${col};letter-spacing:.1em;margin-bottom:5px;text-transform:uppercase;">${label}</div>
+        ${items.map(item => `<div style="padding:6px 10px;background:${col}12;border-left:3px solid ${col};border-radius:2px;margin-bottom:5px;font-size:7px;color:#1f2937;line-height:1.6;">${item.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/^"(.*)"(.*)$/,'<strong>$1</strong>$2')}</div>`).join('')}
+      </div>`;
+
+    const gapStructured = gapSections ? `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div>
+          <div style="font-size:8px;font-weight:800;color:${navy};letter-spacing:.08em;margin-bottom:8px;padding-bottom:4px;border-bottom:1.5px solid ${navy};">Q1 — WHAT THE AI FOUND (NOT IN YOUR BRIEF)</div>
+          ${gapSections.Q1.slice(0,6).map(l=>`<div style="padding:4px 8px;border-bottom:1px solid #f0f0f0;font-size:6.5px;color:#374151;line-height:1.5;">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`).join('') || '<div style="font-size:6.5px;color:#9ca3af;padding:4px 8px;">None identified</div>'}
+        </div>
+        <div>
+          <div style="font-size:8px;font-weight:800;color:${navy};letter-spacing:.08em;margin-bottom:8px;padding-bottom:4px;border-bottom:1.5px solid ${navy};">Q2 — WHAT YOUR BRIEF PROVIDED BUT AI DIDN\'T USE</div>
+          ${gapSections.Q2.slice(0,6).map(l=>`<div style="padding:4px 8px;border-bottom:1px solid #f0f0f0;font-size:6.5px;color:#374151;line-height:1.5;">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`).join('') || '<div style="font-size:6.5px;color:#9ca3af;padding:4px 8px;">None identified</div>'}
+        </div>
+      </div>
+      <div style="font-size:8px;font-weight:800;color:${navy};letter-spacing:.08em;margin-bottom:10px;padding-bottom:4px;border-bottom:1.5px solid ${navy};">Q3 — HOW TO IMPROVE YOUR CONTEXT BRIEF NEXT TIME</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div>${gapCard(gapSections.Q3_add, '#16a34a', '✚ Add to brief')}</div>
+        <div>${gapCard(gapSections.Q3_remove, '#dc2626', '✕ Remove from brief')}</div>
+        <div>${gapCard(gapSections.Q3_reframe, amber, '↻ Reframe')}</div>
+      </div>` : `<div style="font-size:7.5px;color:#1f2937;line-height:1.8;white-space:pre-wrap;word-break:break-word;">${gap.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/## (.*)/g,`<div style="font-size:9px;font-weight:800;color:${navy};margin:14px 0 6px;letter-spacing:.05em;">$1</div>`).replace(/^(ADD|REMOVE|REFRAME):/gm,`<strong style="color:${coral};">$1:</strong>`)}</div>`;
+
+    // Feedback loop explanation
+    const feedbackLoopHtml = `
+      <div style="background:${navy};border-radius:4px;padding:10px 14px;margin-bottom:14px;">
+        <div style="font-size:7px;font-weight:800;color:#e2e8f0;letter-spacing:.1em;margin-bottom:5px;">THE FEEDBACK LOOP — HOW THIS PAGE MAKES THE NEXT SPRINT BETTER</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+          <div style="text-align:center;padding:6px;">
+            <div style="font-size:16px;margin-bottom:3px;">①</div>
+            <div style="font-size:6.5px;color:#94a3b8;line-height:1.4;">Run sprint with a context brief</div>
+          </div>
+          <div style="text-align:center;padding:6px;">
+            <div style="font-size:16px;margin-bottom:3px;">②</div>
+            <div style="font-size:6.5px;color:#94a3b8;line-height:1.4;">Read Q3 on this page — copy the ADD / REFRAME suggestions</div>
+          </div>
+          <div style="text-align:center;padding:6px;">
+            <div style="font-size:16px;margin-bottom:3px;">③</div>
+            <div style="font-size:6.5px;color:#94a3b8;line-height:1.4;">Paste improved context brief into the next sprint</div>
+          </div>
+          <div style="text-align:center;padding:6px;">
+            <div style="font-size:16px;margin-bottom:3px;">④</div>
+            <div style="font-size:6.5px;color:#94a3b8;line-height:1.4;">Quality score on Page 1 improves — H-confidence KPIs increase</div>
+          </div>
+        </div>
+      </div>`;
+
+    const pageGap = `
+    <div class="page" style="padding:36px;font-family:'Instrument Sans',sans-serif;background:#fff;position:relative;min-height:1050px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid ${navy};">
+        <div>
+          <div style="font-size:7px;font-weight:800;letter-spacing:.15em;color:${coral};">AGENT 12 · PROMPT IMPROVEMENT ENGINE</div>
+          <div style="font-size:18px;font-weight:900;color:${navy};">GAP ANALYSIS & BRIEF REFINEMENT</div>
+        </div>
+        <div style="font-size:6.5px;color:#9ca3af;font-family:monospace;">PAGE ${totalPages} OF ${totalPages}</div>
+      </div>
+      ${feedbackLoopHtml}
+      ${gapStructured}
+      <div style="position:absolute;bottom:18px;left:36px;right:36px;display:flex;justify-content:space-between;">
+        <div style="font-size:6.5px;color:#9ca3af;letter-spacing:.06em;">ADVISORSPRINT INTELLIGENCE · CONFIDENTIAL</div>
+        <div style="font-size:6.5px;color:#9ca3af;">PAGE ${totalPages} OF ${totalPages}</div>
+      </div>
+    </div>`;
+
+    return `<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;600;700;800&display=swap');
+  @page { size: A4; margin: 0; }
+  body { margin: 0; padding: 0; font-family: 'Instrument Sans', 'Helvetica Neue', Arial, sans-serif; }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+</style>
+</head><body>
+${page1}
+${tracePages}
+${pageGap}
+</body></html>`;
+  };
+
+  // ── GENERATE TRACE PDF ────────────────────────────────────────────
+  const generateTracePDF = async () => {
+    if (tracePdfGenerating) return;
+    // Wait up to 60s for gap analysis to complete
+    // Use sessionStorage flag not closure variable (closure captures stale value)
+    if (gapAnalysisRunning) {
+      await new Promise(resolve => {
+        let waited = 0;
+        const poll = setInterval(() => {
+          waited += 500;
+          const done = sessionStorage.getItem('gapAnalysisDone') === '1';
+          if (done || waited >= 90000) {
+            clearInterval(poll);
+            sessionStorage.removeItem('gapAnalysisDone');
+            resolve();
+          }
+        }, 500);
+      });
+      // Extra delay for React state to settle
+      await new Promise(r => setTimeout(r, 1500));
+    }
+    setTracePdfGenerating(true);
+    try {
+      // Resolve dataBlocks from sessionStorage — not stale React state
+      let resolvedDataBlocks = { ...dataBlocks };
+      try {
+        const saved = sessionStorage.getItem(`sprint_${company.trim()}`);
+        if (saved) {
+          const w1 = JSON.parse(saved);
+          Object.entries(w1).forEach(([id, raw]) => {
+            if (typeof raw !== 'string') return;
+            const m = raw.match(/<<<DATA_BLOCK>>>\s*```json([\s\S]*?)```\s*<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>\s*(\{[\s\S]*\})/);
+            if (m) {
+              try {
+                const parsed = JSON.parse(repairJson((m[1]||m[2]||m[3]||'').trim().replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'').trim()));
+                resolvedDataBlocks[id] = parsed;
+              } catch(e) {}
+            }
+          });
+        }
+      } catch(e) { console.warn('[TracePDF] sessionStorage read:', e.message); }
+
+      const html = buildTracePdfHtml(
+        company.trim(), acquirer.trim(), context.trim(),
+        resolvedDataBlocks, thinkingBlocks, toolLogs,
+        gapAnalysis, elapsed
+      );
+      const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ html, company: company.trim(), acquirer: acquirer.trim() }),
+        signal: AbortSignal.timeout(120000),
+      });
+      if (!pdfRes.ok) throw new Error('Trace PDF generation failed');
+      const blob = await pdfRes.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${company.trim().replace(/\s+/g,'-')}_ResearchTrace_${new Date().toISOString().slice(0,10)}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch(e) {
+      alert(`Trace PDF failed: ${e.message}`);
+    } finally {
+      setTracePdfGenerating(false);
     }
   };
 
@@ -4318,6 +5134,13 @@ export default function AdvisorSprint() {
                 </button>
               )}
 
+              {appState === "error" && results['synopsis'] && (
+                <button onClick={retryBrief} disabled={retryingBrief}
+                  style={{ padding: "12px 24px", background: retryingBrief ? "#999" : "#b85c38", color: "#fff", border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: retryingBrief ? "not-allowed" : "pointer" }}>
+                  {retryingBrief ? "⟳ Retrying Brief…" : "↺ Retry Brief Only"}
+                </button>
+              )}
+
               {appState === "done" && (
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                   <button
@@ -4334,6 +5157,12 @@ export default function AdvisorSprint() {
                       {briefPdfGenerating ? "⟳ Generating Brief..." : "⬇ CEO Opportunity Brief"}
                     </button>
                   )}
+                  <button
+                    onClick={generateTracePDF}
+                    disabled={tracePdfGenerating}
+                    style={{ padding: "12px 24px", background: tracePdfGenerating ? "#999" : "#4c1d95", color: "#fff", border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: tracePdfGenerating ? "not-allowed" : "pointer" }}>
+                    {tracePdfGenerating ? "⟳ Building Trace..." : "⬇ Research Trace"}
+                  </button>
                   <button
                     onClick={downloadPDF}
                     style={{ padding: "12px 20px", background: "transparent", color: P.inkSoft, border: `1px solid ${P.inkFaint}`, borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 12, cursor: "pointer" }}>
