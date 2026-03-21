@@ -3974,9 +3974,7 @@ export default function AdvisorSprint() {
             const m = raw.match(/<<<DATA_BLOCK>>>\s*```json([\s\S]*?)```\s*<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>\s*(\{[\s\S]*\})/);
             if (m) {
               try {
-                const parsed = JSON.parse(repairJson((m[1]||m[2]||m[3]||'').trim().replace(/^```[a-z]*
-?/,'').replace(/
-?```$/,'')));
+                const parsed = JSON.parse(repairJson((m[1]||m[2]||m[3]||'').trim().replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'')));
                 resolvedDataBlocks[id] = parsed;
               } catch(e) {
                 console.warn('[BriefPDF] re-parse failed for', id, e.message);
@@ -5045,9 +5043,7 @@ ${pageGap}
             const m = raw.match(/<<<DATA_BLOCK>>>\s*```json([\s\S]*?)```\s*<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>\s*(\{[\s\S]*\})/);
             if (m) {
               try {
-                const parsed = JSON.parse(repairJson((m[1]||m[2]||m[3]||'').trim().replace(/^```[a-z]*
-?/,'').replace(/
-?```$/,'')));
+                const parsed = JSON.parse(repairJson((m[1]||m[2]||m[3]||'').trim().replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'')));
                 resolvedDataBlocks[id] = parsed;
               } catch(e) { console.warn('[FullPDF] re-parse failed for', id, e.message); }
             }
