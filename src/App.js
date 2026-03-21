@@ -3926,7 +3926,8 @@ export default function AdvisorSprint() {
   }, [company, callClaude]);
 
   const generateBriefPDF = async () => {
-    if (briefPdfGenerating || !results['brief']) return;
+    const briefReady = results['brief'] || (dataBlocks['brief'] && dataBlocks['brief'].agent === 'brief' && Array.isArray(dataBlocks['brief'].kpis) && dataBlocks['brief'].kpis[0]?.label !== 'Analysis Complete');
+    if (briefPdfGenerating || !briefReady) return;
     setBriefPdfGenerating(true);
     gaEvent("brief_pdf_generate", { company });
     try {
@@ -4142,7 +4143,7 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-tool-name': 'advisor' },
         body: JSON.stringify({ prompt, agentId: 'gap_analysis', market }),
-        signal: AbortSignal.timeout(120000),
+        signal: AbortSignal.timeout(180000),
       });
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
