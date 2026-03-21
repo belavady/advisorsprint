@@ -2148,25 +2148,36 @@ function renderSynopsis(db) {
 
 // ── DISPATCHER ───────────────────────────────────────────────────────────
 function renderAgentVisuals(agentId, db, market="India") {
-  // Set module-level currency vars so all sub-renderers pick them up
   CUR = (market === "US" || market === "Global") ? "$" : "₹";
   UNIT = (market === "US" || market === "Global") ? "M" : "Cr";
   if (!db) return '';
+  // Normalise every array field — guards against model returning {} or null
+  const arrFields = ['kpis','competitorBubbles','channelHeatmap','categoryShifts','skuMatrix','tierMargins',
+    'positioningMap','perceptionGap','marginWaterfall','channelMargins','marginLevers','revenueBridge',
+    'channelMixCurrent','channelMixTarget','milestones','threatHeatmap','battleCards','synergyMatrix',
+    'synergyRoadmap','opportunityBubbles','buildPartnerAcquire','entryPriority','agentVerdicts',
+    'topActions','risks','opportunities'];
+  arrFields.forEach(f => { if (!Array.isArray(db[f])) db[f] = []; });
   let h = '';
-  h += renderKPIs(db.kpis);
-  switch(agentId) {
-    case 'market':      h += renderMarket(db); break;
-    case 'portfolio':   h += renderPortfolio(db); break;
-    case 'brand':       h += renderBrand(db); break;
-    case 'margins':     h += renderMargins(db); break;
-    case 'growth':      h += renderGrowth(db); break;
-    case 'competitive': h += renderCompetitive(db); break;
-    case 'synergy':     h += renderSynergy(db); break;
-    case 'platform':    h += renderPlatform(db); break;
-    case 'intl':        h += renderIntl(db); break;
-    case 'synopsis':    h += renderSynopsis(db); break;
+  try { h += renderKPIs(db.kpis); } catch(e) { console.warn('[render] KPIs:', agentId, e.message); }
+  try {
+    switch(agentId) {
+      case 'market':      h += renderMarket(db); break;
+      case 'portfolio':   h += renderPortfolio(db); break;
+      case 'brand':       h += renderBrand(db); break;
+      case 'margins':     h += renderMargins(db); break;
+      case 'growth':      h += renderGrowth(db); break;
+      case 'competitive': h += renderCompetitive(db); break;
+      case 'synergy':     h += renderSynergy(db); break;
+      case 'platform':    h += renderPlatform(db); break;
+      case 'intl':        h += renderIntl(db); break;
+      case 'synopsis':    h += renderSynopsis(db); break;
+    }
+  } catch(e) {
+    console.warn('[render] visuals crash:', agentId, e.message);
+    h += `<div style="padding:8px 12px;background:#fef9c3;border:1px solid #fde68a;border-radius:3px;font-size:8px;color:#92400e;margin-bottom:10px;">Visual renderer error for ${agentId} — see prose below.</div>`;
   }
-  h += renderVerdict(db.verdictRow);
+  try { h += renderVerdict(db.verdictRow); } catch(e) { console.warn('[render] verdict:', agentId, e.message); }
   return h;
 }
 
@@ -2709,6 +2720,19 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
     };
     return map[bg] || '#fff';
   }
+
+  // Normalise all brief array fields — guards against model returning {} or null
+  const briefArrFields = ['occasionWheel','gapTable','marketSignals','institutionalEdge','radarAxes','moves','arrivalSequence','kpis'];
+  briefArrFields.forEach(f => { if (!Array.isArray(db[f])) db[f] = []; });
+  // Re-assign safe accessors after normalisation
+  const occasions2        = db.occasionWheel;
+  const gapTable2         = db.gapTable;
+  const marketSignals2    = db.marketSignals;
+  const institutionalEdge2= db.institutionalEdge;
+  const radarAxes2        = db.radarAxes;
+  const moves2            = db.moves;
+  const arrivalSequence2  = db.arrivalSequence;
+  const kpis2             = db.kpis;
 
   // ── Occasion Wheel SVG ───────────────────────────────────────────────
   function renderOccasionWheel(occs) {
@@ -3931,13 +3955,47 @@ export default function AdvisorSprint() {
     setBriefPdfGenerating(true);
     gaEvent("brief_pdf_generate", { company });
     try {
-      const html = buildBriefHtml({ company, acquirer, parentCo, companyMode, results, dataBlocks, market });
+      // Re-parse brief DATA_BLOCK from sessionStorage — same approach as trace PDF.
+      // This handles the case where repairJson failed during the sprint but the raw
+      // text is intact in sessionStorage (which is what the trace already confirmed).
+      let resolvedDataBlocks = { ...dataBlocks };
+      let resolvedResults    = { ...results };
+      try {
+        const saved = sessionStorage.getItem(`sprint_${company.trim()}`);
+        if (saved) {
+          const w1 = JSON.parse(saved);
+          // Re-parse every agent DATA_BLOCK from raw text
+          Object.entries(w1).forEach(([id, raw]) => {
+            if (typeof raw !== 'string') return;
+            // Restore prose result
+            const cleanText = raw.replace(/<<<DATA_BLOCK>>>[\s\S]*?<<<END_DATA_BLOCK>>>/g, '').trim();
+            if (cleanText) resolvedResults[id] = cleanText;
+            // Re-parse DATA_BLOCK
+            const m = raw.match(/<<<DATA_BLOCK>>>\s*```json([\s\S]*?)```\s*<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>\s*(\{[\s\S]*\})/);
+            if (m) {
+              try {
+                const parsed = JSON.parse(repairJson((m[1]||m[2]||m[3]||'').trim().replace(/^```[a-z]*
+?/,'').replace(/
+?```$/,'')));
+                resolvedDataBlocks[id] = parsed;
+              } catch(e) {
+                console.warn('[BriefPDF] re-parse failed for', id, e.message);
+              }
+            }
+          });
+        }
+      } catch(e) { console.warn('[BriefPDF] sessionStorage read:', e.message); }
+
+      const html = buildBriefHtml({ company, acquirer, parentCo, companyMode, results: resolvedResults, dataBlocks: resolvedDataBlocks, market });
       const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ html, filename: `${company.replace(/\s+/g,'-')}-CEO-Brief.pdf` }),
       });
-      if (!pdfRes.ok) throw new Error('Brief PDF generation failed');
+      if (!pdfRes.ok) {
+        const errBody = await pdfRes.json().catch(() => ({ error: `Server error ${pdfRes.status}` }));
+        throw new Error(errBody.error || `Brief PDF failed — server ${pdfRes.status}`);
+      }
       const blob = await pdfRes.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -4065,6 +4123,8 @@ export default function AdvisorSprint() {
         // trace PDF and retry flows read from here as the reliable source
         try {
           sessionStorage.setItem(`sprint_${co}`, JSON.stringify(w1texts));
+          // Also persist toolLogs — trace PDF needs search counts even if state refreshed
+          sessionStorage.setItem(`toolLogs_${co}`, JSON.stringify(toolLogs));
         } catch(e) { console.warn('[sessionStorage] write failed:', e.message); }
 
         // Gap after each agent — keeps tokens under rate limit (skip in test mode)
@@ -4617,12 +4677,21 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
 
         // ── SECTION A: KPI calculations ──────────────────────────────
         const kpis = Array.isArray(db.kpis) ? db.kpis : [];
-        const kpiRows = kpis.map(k => `<tr style="border-bottom:1px solid #e5e7eb;">
-          <td style="padding:4px 8px;font-size:7px;font-weight:700;color:${navy};">${esc(k.label)}</td>
-          <td style="padding:4px 8px;font-size:7px;font-weight:800;color:${navy};">${esc(k.value)}</td>
-          <td style="padding:4px 8px;font-size:6.5px;color:#374151;">${esc(k.sub)}</td>
-          ${confCell(k.confidence)}
-        </tr>`).join('');
+        const confBadge = c => {
+          if (c === 'H') return '<span style="background:#dcfce7;color:#16a34a;font-size:6px;font-weight:800;font-family:monospace;padding:1px 5px;border-radius:2px;margin-right:4px;">CONFIRMED</span>';
+          if (c === 'M') return '<span style="background:#fef3c7;color:#92400e;font-size:6px;font-weight:800;font-family:monospace;padding:1px 5px;border-radius:2px;margin-right:4px;">DERIVED</span>';
+          return '<span style="background:#fee2e2;color:#dc2626;font-size:6px;font-weight:800;font-family:monospace;padding:1px 5px;border-radius:2px;margin-right:4px;">ESTIMATED</span>';
+        };
+        const kpiRows = kpis.map(k => {
+          // Skip placeholder rows from fallback dataBlock
+          if ((k.sub||'').includes('See prose below') || (k.sub||'').includes('Data block not generated')) return '';
+          return `<tr style="border-bottom:1px solid #e5e7eb;">
+            <td style="padding:4px 8px;font-size:7px;font-weight:700;color:${navy};">${esc(k.label)}</td>
+            <td style="padding:4px 8px;font-size:8px;font-weight:900;color:${navy};">${esc(k.value)}</td>
+            <td style="padding:4px 8px;font-size:6.5px;color:#374151;line-height:1.5;">${confBadge(k.confidence)}${esc(k.sub)}</td>
+            ${confCell(k.confidence)}
+          </tr>`;
+        }).join('');
 
         // ── SECTION B: Gap table calculations ────────────────────────
         const gaps = Array.isArray(db.gapTable) ? db.gapTable : [];
@@ -4791,10 +4860,10 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
         </div>
       </div>
       <div style="font-size:8px;font-weight:800;color:${navy};letter-spacing:.08em;margin-bottom:10px;padding-bottom:4px;border-bottom:1.5px solid ${navy};">Q3 — HOW TO IMPROVE YOUR CONTEXT BRIEF NEXT TIME</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-        <div>${gapCard(gapSections.Q3_add, '#16a34a', '✚ Add to brief')}</div>
-        <div>${gapCard(gapSections.Q3_remove, '#dc2626', '✕ Remove from brief')}</div>
-        <div>${gapCard(gapSections.Q3_reframe, amber, '↻ Reframe')}</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        ${gapCard(gapSections.Q3_add, '#16a34a', '✚ ADD — paste this into your context brief')}
+        ${gapCard(gapSections.Q3_remove, '#dc2626', '✕ REMOVE — this is not helping the AI')}
+        ${gapCard(gapSections.Q3_reframe, amber, '↻ REFRAME — change the wording to this')}
       </div>` : `<div style="font-size:7.5px;color:#1f2937;line-height:1.8;white-space:pre-wrap;word-break:break-word;">${gap.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/## (.*)/g,`<div style="font-size:9px;font-weight:800;color:${navy};margin:14px 0 6px;letter-spacing:.05em;">$1</div>`).replace(/^(ADD|REMOVE|REFRAME):/gm,`<strong style="color:${coral};">$1:</strong>`)}</div>`;
 
     // Feedback loop explanation
@@ -4895,18 +4964,42 @@ ${pageGap}
         }
       } catch(e) { console.warn('[TracePDF] sessionStorage read:', e.message); }
 
+      // Restore toolLogs from sessionStorage if state was lost (page refresh etc.)
+      let resolvedToolLogs = toolLogs;
+      try {
+        const storedToolLogs = sessionStorage.getItem(`toolLogs_${company.trim()}`);
+        if (storedToolLogs) {
+          const parsed = JSON.parse(storedToolLogs);
+          // Use whichever has more data
+          const stateCount = Object.values(toolLogs).reduce((s, l) => s + (l||[]).length, 0);
+          const storedCount = Object.values(parsed).reduce((s, l) => s + (l||[]).length, 0);
+          if (storedCount > stateCount) resolvedToolLogs = parsed;
+        }
+      } catch(e) { console.warn('[TracePDF] toolLogs restore:', e.message); }
+
       const html = buildTracePdfHtml(
         company.trim(), acquirer.trim(), context.trim(),
-        resolvedDataBlocks, thinkingBlocks, toolLogs,
+        resolvedDataBlocks, thinkingBlocks, resolvedToolLogs,
         gapAnalysis, elapsed
       );
+      // Guard: truncate if HTML exceeds safe payload size (~38MB leaves headroom under 50MB limit)
+      let safeHtml = html;
+      const htmlBytes = new TextEncoder().encode(html).length;
+      if (htmlBytes > 38 * 1024 * 1024) {
+        console.warn('[TracePDF] HTML too large (' + Math.round(htmlBytes/1024/1024) + 'MB) — truncating thinking streams');
+        safeHtml = html.replace(/<div[^>]*EXTENDED THINKING[\s\S]*?<\/div>\s*<\/div>/gi,
+          '<div style="padding:8px 14px;background:#fef9c3;border:1px solid #fde68a;border-radius:3px;font-size:7px;color:#92400e;">Thinking stream omitted — HTML payload too large. View raw text in browser console.</div>');
+      }
       const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ html, company: company.trim(), acquirer: acquirer.trim() }),
+        body: JSON.stringify({ html: safeHtml, company: company.trim(), acquirer: acquirer.trim() }),
         signal: AbortSignal.timeout(120000),
       });
-      if (!pdfRes.ok) throw new Error('Trace PDF generation failed');
+      if (!pdfRes.ok) {
+        const errBody = await pdfRes.json().catch(() => ({ error: `Server error ${pdfRes.status}` }));
+        throw new Error(errBody.error || `Trace PDF failed — server ${pdfRes.status}`);
+      }
       const blob = await pdfRes.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -4938,7 +5031,30 @@ ${pageGap}
     setPdfGenerating(true);
     gaEvent("pdf_generate_puppeteer", { company });
     try {
-      const html = buildPDFHtml({ company, acquirer, parentCo, parentSince, companyMode, results, dataBlocks, sources, elapsed, market });
+      // Re-parse dataBlocks + results from sessionStorage — guards against stale state
+      let resolvedDataBlocks = { ...dataBlocks };
+      let resolvedResults    = { ...results };
+      try {
+        const saved = sessionStorage.getItem(`sprint_${company.trim()}`);
+        if (saved) {
+          const w1 = JSON.parse(saved);
+          Object.entries(w1).forEach(([id, raw]) => {
+            if (typeof raw !== 'string') return;
+            const cleanText = raw.replace(/<<<DATA_BLOCK>>>[\s\S]*?<<<END_DATA_BLOCK>>>/g, '').trim();
+            if (cleanText) resolvedResults[id] = cleanText;
+            const m = raw.match(/<<<DATA_BLOCK>>>\s*```json([\s\S]*?)```\s*<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>\s*(\{[\s\S]*\})/);
+            if (m) {
+              try {
+                const parsed = JSON.parse(repairJson((m[1]||m[2]||m[3]||'').trim().replace(/^```[a-z]*
+?/,'').replace(/
+?```$/,'')));
+                resolvedDataBlocks[id] = parsed;
+              } catch(e) { console.warn('[FullPDF] re-parse failed for', id, e.message); }
+            }
+          });
+        }
+      } catch(e) { console.warn('[FullPDF] sessionStorage read:', e.message); }
+      const html = buildPDFHtml({ company, acquirer, parentCo, parentSince, companyMode, results: resolvedResults, dataBlocks: resolvedDataBlocks, sources, elapsed, market });
       const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -5109,6 +5225,40 @@ ${pageGap}
                 rows={12}
                 style={{ width: "100%", padding: "10px 14px", border: `2px solid ${P.sand}`, borderRadius: 4, fontFamily: "'JetBrains Mono'", fontSize: 13, background: P.white, lineHeight: 1.5 }}
               />
+            </div>
+
+            {/* ── Reference Document upload (UI only — no functionality) ── */}
+            <div style={{ marginBottom: 20 }}>
+              <label style={{ display: "block", fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, letterSpacing: ".05em", textTransform: "uppercase", color: P.inkMid, marginBottom: 8 }}>
+                Reference Document
+                <span style={{ marginLeft: 8, fontWeight: 400, textTransform: "none", letterSpacing: 0, color: P.inkFaint, fontSize: 11 }}>Optional · 1 PDF · Max 500 KB</span>
+              </label>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <label
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: 7,
+                    padding: "8px 14px",
+                    background: P.parchment,
+                    border: `1.5px dashed ${P.sand}`,
+                    borderRadius: 4,
+                    fontFamily: "'Instrument Sans'", fontSize: 12, fontWeight: 600,
+                    color: P.inkMid,
+                    cursor: "not-allowed",
+                    userSelect: "none",
+                    opacity: 0.7,
+                  }}
+                  title="PDF upload — coming soon"
+                >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 13h10M7 1v8M4 6l3 3 3-3" stroke="#b85c38" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  Attach PDF
+                  <input type="file" accept=".pdf" disabled style={{ display: "none" }} />
+                </label>
+                <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 11, color: P.inkFaint, fontStyle: "italic" }}>
+                  No file attached
+                </span>
+              </div>
             </div>
 
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
