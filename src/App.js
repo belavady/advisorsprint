@@ -3822,81 +3822,115 @@ export default function AdvisorSprint() {
       return MOCK[mockId] || MOCK.market;
     }
 
-    // Real mode — retry once on network error or rate limit
-    // Synopsis uses Opus and takes 3-4 min — QUIC protocol errors are common on long streams
-    const attemptFetch = () => fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-tool-name': 'advisor',
-        'Connection': 'keep-alive',
-      },
-      signal,
-      body: JSON.stringify({ prompt, agentId, market }),
-    });
-
-    let res;
-    try {
-      res = await attemptFetch();
-    } catch (networkErr) {
-      // Network error (ERR_QUIC_PROTOCOL_ERROR etc) — wait 8s and retry once
-      if (signal.aborted) throw networkErr;
-      console.warn(`[${agentId}] Network error, retrying in 8s:`, networkErr.message);
-      setStatuses(s => ({ ...s, [agentId]: 'retrying…' }));
-      await new Promise(r => setTimeout(r, 8000));
-      if (signal.aborted) throw networkErr;
-      res = await attemptFetch();
-    }
-    if (!res.ok) {
-      const err = await res.text().catch(() => '');
-      throw new Error(err || `Server error: ${res.status}`);
-    }
-
-    // Read the SSE stream
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
+    // Real mode — up to 2 attempts, each covering fetch + full stream read.
+    // Attempt 2 only fires on network-class errors (ERR_NETWORK_CHANGED, QUIC, WiFi handoff).
+    // API errors (rate limit, billing, server errors) are NOT retried client-side — server handles those.
+    const MAX_NET_ATTEMPTS = 2;
+    const RETRY_DELAYS = [8000]; // 8s before attempt 2
     let fullText = '';
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      if (signal.aborted) { reader.cancel(); break; }
+    for (let attempt = 1; attempt <= MAX_NET_ATTEMPTS; attempt++) {
+      if (signal.aborted) break;
+      if (attempt > 1) {
+        const delay = RETRY_DELAYS[attempt - 2];
+        console.warn(`[${agentId}] Network retry ${attempt}/${MAX_NET_ATTEMPTS} in ${delay/1000}s…`);
+        setStatuses(s => ({ ...s, [agentId]: `network error — retrying (${attempt-1}/${MAX_NET_ATTEMPTS-1})…` }));
+        await new Promise(r => setTimeout(r, delay));
+        if (signal.aborted) break;
+      }
 
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop(); // keep incomplete line
+      let res;
+      try {
+        res = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-tool-name': 'advisor',
+            'Connection': 'keep-alive',
+          },
+          signal,
+          body: JSON.stringify({ prompt, agentId, market }),
+        });
+      } catch (fetchErr) {
+        if (signal.aborted) throw fetchErr;
+        if (attempt === MAX_NET_ATTEMPTS) throw fetchErr;
+        continue; // retry
+      }
 
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        try {
-          const event = JSON.parse(line.slice(6));
-          if (event.type === 'chunk')     fullText += event.text;
-          if (event.type === 'searching') setStatuses(s => ({ ...s, [agentId]: `searching: ${event.query.slice(0,40)}…` }));
-          if (event.type === 'retrying')  setStatuses(s => ({ ...s, [agentId]: event.message || 'API overloaded — retrying…' }));
-          if (event.type === 'thinking')  setThinkingBlocks(t => ({ ...t, [event.agentId]: event.text }));
-          if (event.type === 'toollog') {
-            toolLogsRef.current = { ...toolLogsRef.current, [event.agentId]: event.log };
-            setToolLogs(l => ({ ...l, [event.agentId]: event.log }));
+      if (!res.ok) {
+        const err = await res.text().catch(() => '');
+        throw new Error(err || `Server error: ${res.status}`);
+      }
+
+      // Read the SSE stream — catch mid-stream network drops and retry whole request
+      let streamFailed = false;
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      fullText = ''; // reset on each attempt
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          if (signal.aborted) { reader.cancel(); break; }
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop(); // keep incomplete line
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            try {
+              const event = JSON.parse(line.slice(6));
+              if (event.type === 'chunk')     fullText += event.text;
+              if (event.type === 'searching') setStatuses(s => ({ ...s, [agentId]: `searching: ${event.query.slice(0,40)}…` }));
+              if (event.type === 'retrying')  setStatuses(s => ({ ...s, [agentId]: event.message || 'API overloaded — retrying…' }));
+              if (event.type === 'thinking')  setThinkingBlocks(t => ({ ...t, [event.agentId]: event.text }));
+              if (event.type === 'toollog') {
+                toolLogsRef.current = { ...toolLogsRef.current, [event.agentId]: event.log };
+                setToolLogs(l => ({ ...l, [event.agentId]: event.log }));
+              }
+              if (event.type === 'done') {
+                fullText = event.text || fullText;
+              }
+              if (event.type === 'source' && event.url) {
+                setSources(prev => {
+                  if (prev.find(s => s.url === event.url)) return prev;
+                  return [...prev, { url: event.url, title: event.title, agent: event.agent }];
+                });
+              }
+              if (event.type === 'error') {
+                if (event.message?.includes('rate_limit')) throw new Error('RATE_LIMIT:' + event.message);
+                throw new Error(event.message);
+              }
+            } catch (e) {
+              if (e.message && !e.message.startsWith('JSON')) throw e;
+            }
           }
-          if (event.type === 'done') {
-            fullText = event.text || fullText;
-          }
-          if (event.type === 'source' && event.url) {
-            setSources(prev => {
-              if (prev.find(s => s.url === event.url)) return prev;
-              return [...prev, { url: event.url, title: event.title, agent: event.agent }];
-            });
-          }
-          if (event.type === 'error') {
-            if (event.message?.includes('rate_limit')) throw new Error('RATE_LIMIT:' + event.message);
-            throw new Error(event.message);
-          }
-        } catch (e) {
-          if (e.message && !e.message.startsWith('JSON')) throw e;
+        }
+      } catch (streamErr) {
+        reader.cancel().catch(() => {});
+        if (signal.aborted) throw streamErr;
+        // Mid-stream network drop (ERR_NETWORK_CHANGED, QUIC etc) — retry if attempts remain
+        // Only retry on pure network errors — not on API/server errors
+        // Server errors (rate limit, billing, overload) are handled server-side
+        const isNetworkDrop = streamErr.message?.includes('network') ||
+          streamErr.message?.includes('Network') ||
+          streamErr.message?.includes('fetch') ||
+          streamErr.message?.includes('ERR_') ||
+          streamErr.message?.includes('QUIC') ||
+          (streamErr.name === 'TypeError' && !streamErr.message?.includes('rate') &&
+           !streamErr.message?.includes('credit') && !streamErr.message?.includes('billing'));
+        if (attempt < MAX_NET_ATTEMPTS && isNetworkDrop) {
+          streamFailed = true;
+        } else {
+          throw streamErr; // non-network error or out of retries — propagate
         }
       }
-    }
+
+      if (!streamFailed) break; // stream completed cleanly — done
+    } // end retry loop
 
     return fullText;
   }, [setSources, setStatuses]); // callClaude has no dependencies - uses only parameters and constants
@@ -4098,8 +4132,20 @@ export default function AdvisorSprint() {
         }
       }
 
+      let totalApiCalls = 0;          // guard against runaway retry loops
+      const MAX_SPRINT_API_CALLS = 18; // 12 agents + framing + 2 retries headroom
+
       for (const id of ALL_AGENTS_ORDERED) {
         if (signal.aborted) break;
+
+        totalApiCalls++;
+        if (totalApiCalls > MAX_SPRINT_API_CALLS) {
+          console.error(`[Sprint] API call limit reached (${totalApiCalls}) — aborting to prevent runaway spend`);
+          alert(`Safety stop: the sprint made more than ${MAX_SPRINT_API_CALLS} API calls, which may indicate a retry loop. The sprint has been stopped to protect your credits. Please check the console and contact support if this repeats.`);
+          abortRef.current?.abort();
+          setAppState("error");
+          return;
+        }
 
         setStatuses(s => ({ ...s, [id]: "running" }));
 
