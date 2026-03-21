@@ -829,7 +829,7 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
     "BAD example: TAM ₹6,800 Cr. The CEO knows the TAM.",
     "GOOD examples: 'Revenue Left on Table' = gap between brand growth rate and category growth rate × 36 months; 'Months to Parity' = how many months at current growth rate before brand reaches category leader share; 'Unactivated Distribution' = % of ITC outlets not stocking this brand × average outlet revenue; 'Challenger Velocity' = rate at which D2C challengers are growing vs brand growth rate.",
     "Each KPI must make the CEO think: I had not computed that.",
-    "Format: {label: short label, value: the computed number with unit, sub: what was calculated and from what, trend: up|down|flat|watch, confidence: H|M|L}",
+    "Format: {label: short label, value: the computed number with unit, sub: THE EXACT ARITHMETIC shown inline — e.g. 'YiPPee! 18% growth vs Maggi 8% = 10pp gap × 36 months = 30 months to parity at current rates' or 'Dry noodle format ~₹800 Cr (35% of ₹2,300 Cr instant noodle addressable × format penetration est.) — YiPPee! share ~0% = ₹800 Cr uncaptured'. Never write just a description. Always write: [starting number] [operation] [factor] = [result]. Source the starting number from agent output or web search.", trend: up|down|flat|watch, confidence: H|M|L}",
     "Do not use: TAM, Captured %, Gap ₹Cr, Trend Window — these are descriptive. Compute something from them instead."
   ],
   "occasionWheel": [
@@ -845,6 +845,7 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
     {
       "occasion": "occasion name",
       "categorySizeCr": 0,
+      "sizeCalculation": "show exactly how categorySizeCr was derived — e.g. 'Dry goreng: 35% of ₹2,300 Cr addressable instant noodles × format penetration 10% est. from SEA analogue = ₹800 Cr' or 'Cup noodle office occasion: 45M urban office workers × 2 meals/wk × 8% noodle penetration × ₹35 ASP × 52 weeks = ₹1,100 Cr'. This field is what appears in Calculation Provenance. It must show the arithmetic, not just a description.",
       "brandShare": "X%",
       "owner": "competitor name",
       "playType": "SCALE|D2C|CATEGORY CREATION",
@@ -2680,15 +2681,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
   const boldMatch = raw.match(/BOLD STATEMENT[^\n]*\n([^\n]+)/i);
   const boldStatement = boldMatch ? boldMatch[1].trim().replace(/^\*+|\*+$/g,'') : (db.boldStatement || '');
 
-  // ── Safe accessors ───────────────────────────────────────────────────
-  const occasions        = Array.isArray(db.occasionWheel)      ? db.occasionWheel      : [];
-  const gapTable         = Array.isArray(db.gapTable)           ? db.gapTable           : [];
-  const marketSignals    = Array.isArray(db.marketSignals)      ? db.marketSignals      : [];
-  const institutionalEdge= Array.isArray(db.institutionalEdge)  ? db.institutionalEdge  : [];
-  const radarAxes        = Array.isArray(db.radarAxes)          ? db.radarAxes          : [];
-  const moves            = Array.isArray(db.moves)              ? db.moves              : [];
-  const arrivalSequence  = Array.isArray(db.arrivalSequence)    ? db.arrivalSequence    : [];
-  const kpis             = Array.isArray(db.kpis)               ? db.kpis               : [];
+  // p3, categoryRead, sectionHdrs — not arrays, handle separately
   const p3               = db.page3 || {};
   const categoryRead     = db.categoryRead || null;
   const sectionHdrs      = db.sectionHeaders || {};
@@ -2724,15 +2717,17 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
   // Normalise all brief array fields — guards against model returning {} or null
   const briefArrFields = ['occasionWheel','gapTable','marketSignals','institutionalEdge','radarAxes','moves','arrivalSequence','kpis'];
   briefArrFields.forEach(f => { if (!Array.isArray(db[f])) db[f] = []; });
-  // Re-assign safe accessors after normalisation
-  const occasions2        = db.occasionWheel;
-  const gapTable2         = db.gapTable;
-  const marketSignals2    = db.marketSignals;
-  const institutionalEdge2= db.institutionalEdge;
-  const radarAxes2        = db.radarAxes;
-  const moves2            = db.moves;
-  const arrivalSequence2  = db.arrivalSequence;
-  const kpis2             = db.kpis;
+  // briefArrFields normalisation above ensures db[f] is always an array
+  // The safe accessor variables (occasions, gapTable, etc.) were bound before normalisation
+  // Re-bind them to the normalised values so renderers always get clean arrays
+  const occasions         = db.occasionWheel;
+  const gapTable          = db.gapTable;
+  const marketSignals     = db.marketSignals;
+  const institutionalEdge = db.institutionalEdge;
+  const radarAxes         = db.radarAxes;
+  const moves             = db.moves;
+  const arrivalSequence   = db.arrivalSequence;
+  const kpis              = db.kpis;
 
   // ── Occasion Wheel SVG ───────────────────────────────────────────────
   function renderOccasionWheel(occs) {
@@ -3797,6 +3792,7 @@ export default function AdvisorSprint() {
   
   const abortRef = useRef(null);
   const timerRef = useRef(null);
+  const toolLogsRef = useRef({});  // mirrors toolLogs state synchronously — avoids stale closure
 
   useEffect(() => {
     const style = document.createElement("style");
@@ -3879,7 +3875,10 @@ export default function AdvisorSprint() {
           if (event.type === 'searching') setStatuses(s => ({ ...s, [agentId]: `searching: ${event.query.slice(0,40)}…` }));
           if (event.type === 'retrying')  setStatuses(s => ({ ...s, [agentId]: event.message || 'API overloaded — retrying…' }));
           if (event.type === 'thinking')  setThinkingBlocks(t => ({ ...t, [event.agentId]: event.text }));
-          if (event.type === 'toollog')   setToolLogs(l => ({ ...l, [event.agentId]: event.log }));
+          if (event.type === 'toollog') {
+            toolLogsRef.current = { ...toolLogsRef.current, [event.agentId]: event.log };
+            setToolLogs(l => ({ ...l, [event.agentId]: event.log }));
+          }
           if (event.type === 'done') {
             fullText = event.text || fullText;
           }
@@ -3950,8 +3949,7 @@ export default function AdvisorSprint() {
   }, [company, callClaude]);
 
   const generateBriefPDF = async () => {
-    const briefReady = results['brief'] || (dataBlocks['brief'] && dataBlocks['brief'].agent === 'brief' && Array.isArray(dataBlocks['brief'].kpis) && dataBlocks['brief'].kpis[0]?.label !== 'Analysis Complete');
-    if (briefPdfGenerating || !briefReady) return;
+    if (briefPdfGenerating) return;
     setBriefPdfGenerating(true);
     gaEvent("brief_pdf_generate", { company });
     try {
@@ -3984,11 +3982,21 @@ export default function AdvisorSprint() {
         }
       } catch(e) { console.warn('[BriefPDF] sessionStorage read:', e.message); }
 
+      // Verify we actually have brief data before rendering
+      const briefDb = resolvedDataBlocks['brief'] || {};
+      const hasBriefData = Array.isArray(briefDb.kpis) && briefDb.kpis.length > 0 &&
+                           briefDb.kpis[0]?.label !== 'Analysis Complete' &&
+                           briefDb.kpis[0]?.sub !== 'Data block not generated';
+      const hasBriefProse = (resolvedResults['brief'] || '').length > 100;
+      if (!hasBriefData && !hasBriefProse) {
+        throw new Error('Brief data not found. The brief agent may not have completed successfully. Try running the sprint again or check the Research Trace for details.');
+      }
       const html = buildBriefHtml({ company, acquirer, parentCo, companyMode, results: resolvedResults, dataBlocks: resolvedDataBlocks, market });
       const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ html, filename: `${company.replace(/\s+/g,'-')}-CEO-Brief.pdf` }),
+        signal: AbortSignal.timeout(120000),
       });
       if (!pdfRes.ok) {
         const errBody = await pdfRes.json().catch(() => ({ error: `Server error ${pdfRes.status}` }));
@@ -4032,6 +4040,7 @@ export default function AdvisorSprint() {
     setElapsed(0);
     setThinkingBlocks({});
     setToolLogs({});
+    toolLogsRef.current = {};
     setGapAnalysis(null);
     setGapAnalysisRunning(false);  // reset stale state from any prior sprint
 
@@ -4122,7 +4131,7 @@ export default function AdvisorSprint() {
         try {
           sessionStorage.setItem(`sprint_${co}`, JSON.stringify(w1texts));
           // Also persist toolLogs — trace PDF needs search counts even if state refreshed
-          sessionStorage.setItem(`toolLogs_${co}`, JSON.stringify(toolLogs));
+          sessionStorage.setItem(`toolLogs_${co}`, JSON.stringify(toolLogsRef.current));
         } catch(e) { console.warn('[sessionStorage] write failed:', e.message); }
 
         // Gap after each agent — keeps tokens under rate limit (skip in test mode)
@@ -4139,7 +4148,8 @@ export default function AdvisorSprint() {
       if (!signal.aborted) {
         setAppState("done");
         gaEvent("sprint_completed", { company: co, time_seconds: elapsed });
-        try { sessionStorage.removeItem(`sprint_${co}`); } catch(e) {}
+        // Do NOT remove sessionStorage here — brief and trace PDFs need it for re-parsing
+        // It will be overwritten when the next sprint starts
         // Trigger Agent 12 gap analysis — only if context was provided (otherwise nothing to compare)
         if (ctx && ctx.trim().length > 50) {
           try {
@@ -4150,8 +4160,7 @@ export default function AdvisorSprint() {
             runGapAnalysis(co, ctx, synopsisText, briefDB);
           } catch(e) { console.warn('[Agent12 trigger]', e.message); }
         }
-        // Now safe to clear sessionStorage — Agent 12 has read what it needs
-        try { sessionStorage.removeItem(`sprint_${co}`); } catch(e) {}
+        // sessionStorage kept intact — brief and trace PDFs re-parse from it
       }
 
     } catch (e) {
@@ -4665,7 +4674,13 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
 
       // ── CALCULATION PROVENANCE PANEL (Brief only) ────────────────
       // Shows every derived number in the brief with its calculation, source agent, and confidence
-      const provenanceHtml = (id === 'brief' && Object.keys(db).length > 1) ? (() => {
+      // Provenance: only render if we have actual brief data fields, not fallback placeholder
+      const hasBriefProvenance = id === 'brief' &&
+        Array.isArray(db.kpis) && db.kpis.length > 0 &&
+        db.kpis[0]?.label !== 'Analysis Complete' &&
+        db.kpis[0]?.sub !== 'Data block not generated' &&
+        (Array.isArray(db.gapTable) || Array.isArray(db.moves) || Array.isArray(db.marketSignals));
+      const provenanceHtml = hasBriefProvenance ? (() => {
         const esc = s => (s||'').toString().replace(/</g,'&lt;').replace(/>/g,'&gt;');
         const confCell = c => {
           const bg = c==='H'?'#dcfce7':c==='M'?'#fef3c7':c==='L'?'#fee2e2':'#f3f4f6';
@@ -4695,8 +4710,11 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
         const gaps = Array.isArray(db.gapTable) ? db.gapTable : [];
         const gapRows = gaps.map(g => `<tr style="border-bottom:1px solid #e5e7eb;">
           <td style="padding:4px 8px;font-size:7px;font-weight:700;color:${navy};">${esc(g.occasion)}</td>
-          <td style="padding:4px 8px;font-size:7px;font-weight:800;color:${navy};">${g.categorySizeCr ? `₹${g.categorySizeCr} Cr` : '—'}</td>
-          <td style="padding:4px 8px;font-size:6.5px;color:#374151;">${esc(g.scalingMechanism)} · brand share: ${esc(g.brandShare)} · play: ${esc(g.playType)}</td>
+          <td style="padding:4px 8px;font-size:7px;font-weight:800;color:${navy};white-space:nowrap;">${g.categorySizeCr ? `₹${g.categorySizeCr} Cr` : '—'}</td>
+          <td style="padding:4px 8px;font-size:6.5px;color:#374151;line-height:1.5;">
+            ${g.sizeCalculation ? `<div style="margin-bottom:3px;font-style:italic;color:#1e3a5f;">${esc(g.sizeCalculation)}</div>` : ''}
+            ${esc(g.scalingMechanism)} · brand share: ${esc(g.brandShare)} · play: ${esc(g.playType)}
+          </td>
           ${confCell(g.confidence)}
         </tr>`).join('');
 
@@ -4728,14 +4746,14 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
           ${kpiRows ? `
           <div style="font-size:7px;font-weight:800;color:${navy};letter-spacing:.08em;margin-bottom:5px;">KPI TILES — DERIVED METRICS</div>
           <table style="width:100%;border-collapse:collapse;margin-bottom:10px;border:1px solid #e5e7eb;">
-            ${tableHead(['METRIC','VALUE','CALCULATION / BASIS','CONF'])}
+            ${tableHead(['METRIC','VALUE','EXACT ARITHMETIC — HOW THE NUMBER WAS DERIVED','CONF'])}
             <tbody>${kpiRows}</tbody>
           </table>` : ''}
 
           ${gapRows ? `
           <div style="font-size:7px;font-weight:800;color:${navy};letter-spacing:.08em;margin-bottom:5px;">GAP TABLE — CATEGORY SIZE & OPPORTUNITY BASIS</div>
           <table style="width:100%;border-collapse:collapse;margin-bottom:10px;border:1px solid #e5e7eb;">
-            ${tableHead(['OCCASION / GAP','CATEGORY SIZE','MECHANISM · SHARE · PLAY TYPE','CONF'])}
+            ${tableHead(['OCCASION / GAP','CATEGORY SIZE','SIZE CALCULATION · MECHANISM · SHARE · PLAY','CONF'])}
             <tbody>${gapRows}</tbody>
           </table>` : ''}
 
