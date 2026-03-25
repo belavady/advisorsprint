@@ -2671,6 +2671,7 @@ ${ctx}
 
 function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalone", results, dataBlocks, market="India" }) {
   const db = dataBlocks['brief'] || {};
+  const wasTruncated = db._truncated === true;
   const isUS     = market === 'US' || market === 'Global';
   const CUR_SYM  = isUS ? '$' : '₹';
   const CUR_UNIT = isUS ? 'M' : 'Cr';
@@ -3784,6 +3785,9 @@ export default function AdvisorSprint() {
   const [toolLogs, setToolLogs] = useState({});               // per-agent search/fetch logs
   const [gapAnalysis, setGapAnalysis] = useState(null);       // Agent 12 output
   const [tracePdfGenerating, setTracePdfGenerating] = useState(false);
+  const [shareUrl, setShareUrl] = useState(null);
+  const [shareLoading, setShareLoading] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [gapAnalysisRunning, setGapAnalysisRunning] = useState(false);
   const [sources, setSources] = useState([]);
   const [statuses, setStatuses] = useState({});
@@ -3793,6 +3797,18 @@ export default function AdvisorSprint() {
   const abortRef = useRef(null);
   const timerRef = useRef(null);
   const toolLogsRef = useRef({});  // mirrors toolLogs state synchronously — avoids stale closure
+  // ── Auth ─────────────────────────────────────────────────────────────────
+  const [sessionToken, setSessionToken] = useState(() => sessionStorage.getItem('sprint_token') || null);
+  const [authPassword, setAuthPassword] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
+  const [sprintCreditUsed, setSprintCreditUsed] = useState(() => sessionStorage.getItem('sprint_credit_used') === '1');
+
+  // ── Conversational agent drawer ──────────────────────────────────────────
+  const [drawerAgent, setDrawerAgent] = useState(null);
+  const [drawerMessages, setDrawerMessages] = useState([]);
+  const [drawerInput, setDrawerInput] = useState('');
+  const [drawerLoading, setDrawerLoading] = useState(false);
 
   useEffect(() => {
     const style = document.createElement("style");
@@ -3843,11 +3859,7 @@ export default function AdvisorSprint() {
       try {
         res = await fetch(API_URL, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-tool-name': 'advisor',
-            'Connection': 'keep-alive',
-          },
+          headers: authHeaders({ 'x-tool-name': 'advisor', 'Connection': 'keep-alive' }),
           signal,
           body: JSON.stringify({ prompt, agentId, market }),
         });
@@ -4022,13 +4034,45 @@ export default function AdvisorSprint() {
                            briefDb.kpis[0]?.label !== 'Analysis Complete' &&
                            briefDb.kpis[0]?.sub !== 'Data block not generated';
       const hasBriefProse = (resolvedResults['brief'] || '').length > 100;
-      if (!hasBriefData && !hasBriefProse) {
-        throw new Error('Brief data not found. The brief agent may not have completed successfully. Try running the sprint again or check the Research Trace for details.');
+
+      // Recovery: if DATA_BLOCK is empty but prose exists, the brief was truncated mid-output.
+      // Build a minimal DATA_BLOCK from what the thinking stream computed so the PDF renders.
+      if (!hasBriefData && hasBriefProse) {
+        console.warn('[BriefPDF] DATA_BLOCK empty but prose present — brief was truncated. Building minimal dataBlock for render.');
+        const prose = resolvedResults['brief'] || '';
+        // Extract bold statement if present in prose
+        const boldMatch = prose.match(/\*\*BOLD STATEMENT[:\*]*\*\*\s*([^
+]+)/i) ||
+                          prose.match(/BOLD STATEMENT[:\s]+([^
+]+)/i);
+        const boldStatement = boldMatch ? boldMatch[1].trim() : '';
+        // Build minimal brief dataBlock so buildBriefHtml renders gracefully
+        resolvedDataBlocks['brief'] = {
+          agent: 'brief',
+          verdictRow: { dimension: 'CEO Opportunity Brief', verdict: 'WATCH', 
+            finding: boldStatement || 'Brief output was truncated — see prose analysis below for full findings.', confidence: 'M' },
+          kpis: [{ label: 'Brief Status', value: 'See Prose', sub: 'The brief agent completed but output was truncated before the DATA_BLOCK was fully written. Run Retry Brief to regenerate.', trend: 'watch', confidence: 'L' }],
+          occasionWheel: [], gapTable: [], marketSignals: [], institutionalEdge: [],
+          radarAxes: [
+            {axis:'Occasion Coverage',today:0,future:0},{axis:'Trend Alignment',today:0,future:0},
+            {axis:'Channel Reach',today:0,future:0},{axis:'Format Range',today:0,future:0},
+            {axis:'Price Architecture',today:0,future:0},{axis:'Competitive Moat',today:0,future:0}
+          ],
+          moves: [], arrivalSequence: [],
+          sectionHeaders: { occasionWheel:'', gapTable:'', marketSignals:'', institutionalEdge:'', radarGap:'' },
+          categoryRead: { globalTrend:'', leadMarket:'', homeMarketLag:'', implication:'' },
+          page1Summary: boldStatement || 'Brief output truncated — use Retry Brief to regenerate the full brief.',
+          boldStatement: boldStatement || 'Brief output truncated. Use ↻ Retry Brief button to regenerate.',
+          topActions: [{ action: 'Click ↻ Retry Brief to regenerate the full Opportunity Brief', impact: 100, speed: 100, confidence: 'H' }],
+          _truncated: true,
+        };
+      } else if (!hasBriefData && !hasBriefProse) {
+        throw new Error('Brief data not found. The brief agent may not have completed successfully. Click ↻ Retry Brief to try again, or run a new sprint.');
       }
       const html = buildBriefHtml({ company, acquirer, parentCo, companyMode, results: resolvedResults, dataBlocks: resolvedDataBlocks, market });
       const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify({ html, filename: `${company.replace(/\s+/g,'-')}-CEO-Brief.pdf` }),
         signal: AbortSignal.timeout(120000),
       });
@@ -4067,6 +4111,10 @@ export default function AdvisorSprint() {
     
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
+    let wakeLock = null;
+    try {
+      if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen');
+    } catch(wlErr) { console.warn('[WakeLock]', wlErr.message); }
     
     setAppState("preparing");
     setResults({});
@@ -4193,6 +4241,8 @@ export default function AdvisorSprint() {
 
       if (!signal.aborted) {
         setAppState("done");
+        if (wakeLock) { try { await wakeLock.release(); } catch(e) {} wakeLock = null; }
+        markSprintComplete();
         gaEvent("sprint_completed", { company: co, time_seconds: elapsed });
         // Do NOT remove sessionStorage here — brief and trace PDFs need it for re-parsing
         // It will be overwritten when the next sprint starts
@@ -4211,6 +4261,7 @@ export default function AdvisorSprint() {
 
     } catch (e) {
       console.error("Sprint error:", e);
+      if (wakeLock) { try { await wakeLock.release(); } catch(wlErr) {} }
       setAppState("error");
     } finally {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -4254,7 +4305,7 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
     try {
       const res = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-tool-name': 'advisor' },
+        headers: authHeaders({ 'x-tool-name': 'advisor' }),
         body: JSON.stringify({ prompt, agentId: 'gap_analysis', market }),
         signal: AbortSignal.timeout(180000),
       });
@@ -4284,6 +4335,269 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
       setGapAnalysisRunning(false);
       // Signal to generateTracePDF wait loop that gap analysis is done
       try { sessionStorage.setItem('gapAnalysisDone', '1'); } catch(e) {}
+    }
+  };
+
+
+  // ── AGENT DRAWER HELPERS ─────────────────────────────────────────────────
+
+  const getAgentSummary = (agentId) => {
+    const raw = results[agentId] || '';
+    if (!raw) return '';
+    const clean = raw
+      .replace(/<<<DATA_BLOCK>>>[\s\S]*?<<<END_DATA_BLOCK>>>/g, '')
+      .replace(/◉◉ VERDICT_STAMP[\s\S]*?◉◉ END_STAMP/g, '')
+      .trim();
+    const sentences = clean.match(/[^.!?]+[.!?]+/g) || [];
+    const summary = sentences.slice(0, 2).join(' ').trim();
+    return summary.slice(0, 320) || clean.slice(0, 280);
+  };
+
+  const getSuggestedQuestions = (agentId) => {
+    const db = dataBlocks[agentId] || {};
+    const kpis = Array.isArray(db.kpis) ? db.kpis : [];
+    const verdict = db.verdictRow || {};
+    const questions = [];
+
+    if (kpis[0]?.label && kpis[0]?.value) {
+      questions.push(`How did you calculate ${kpis[0].label} of ${kpis[0].value}?`);
+    } else {
+      questions.push(`What is your single most important finding for ${company}?`);
+    }
+
+    const lowConf = kpis.find(k => k.confidence === 'L' || k.confidence === 'M');
+    if (lowConf?.label) {
+      questions.push(`Your confidence on ${lowConf.label} was ${lowConf.confidence} — what would make it H?`);
+    } else if (verdict.finding) {
+      questions.push(`What is the evidence behind: "${verdict.finding.slice(0, 60)}${verdict.finding.length > 60 ? '...' : ''}"?`);
+    } else {
+      questions.push('What data were you unable to verify through web search?');
+    }
+
+    const agentImplications = {
+      framing:     `What is the single biggest misconception about ${company}'s category that this analysis corrects?`,
+      market:      `What is the most important category shift ${company} must respond to in the next 18 months?`,
+      portfolio:   `Which SKU in ${company}'s portfolio should be killed first and why?`,
+      brand:       `What is the biggest gap between how ${company} positions itself and how consumers see it?`,
+      margins:     `What is the single highest-impact action ${company} can take to improve gross margins?`,
+      growth:      `Which growth channel is most underinvested relative to its potential for ${company}?`,
+      competitive: `What is the most plausible way a competitor breaks ${company}'s market position?`,
+      synergy:     `What is the single most valuable untapped synergy asset for ${company}?`,
+      platform:    `What platform bet should ${company} make that it has not yet made?`,
+      intl:        `Which international market is the best analog for ${company}'s next move?`,
+      synopsis:    `Where did agents disagree most and how did you resolve the tension?`,
+    };
+    questions.push(agentImplications[agentId] || `What is the most important implication of your analysis for ${company}?`);
+
+    return questions;
+  };
+
+  const buildAgentSystemPrompt = (agentId) => {
+    const agentMeta = AGENTS.find(a => a.id === agentId) || {};
+    const PROSE_CAP = agentId === 'synopsis' ? 4000 : agentId === 'brief' ? 3000 : 6000;
+    const prose = (results[agentId] || '')
+      .replace(/<<<DATA_BLOCK>>>[\s\S]*?<<<END_DATA_BLOCK>>>/g, '')
+      .replace(/◉◉ VERDICT_STAMP[\s\S]*?◉◉ END_STAMP/g, '')
+      .trim();
+    const db = dataBlocks[agentId] || {};
+    const thinking = thinkingBlocks[agentId] || '';
+    const toolLog = toolLogs[agentId] || [];
+
+    const dataBlockStr = Object.keys(db).length > 0
+      ? `
+
+STRUCTURED DATA (your DATA_BLOCK output):
+${JSON.stringify(db, null, 2)}`
+      : '';
+    const thinkingStr = thinking
+      ? `
+
+YOUR REASONING TRACE:
+${thinking.slice(0, 4000)}${thinking.length > 4000 ? '
+[...truncated...]' : ''}`
+      : '';
+    const searchStr = toolLog.length > 0
+      ? `
+
+WEB SEARCHES YOU PERFORMED:
+${toolLog.map((t,i) => `${i+1}. "${t.query}" — ${t.results?.length || 0} results`).join('
+')}`
+      : '';
+
+    return `You are the ${agentMeta.label || agentId} agent from an AdvisorSprint analysis of ${company}${market ? ` (${market} market)` : ''}, a consumer packaged goods brand.
+
+CRITICAL RULES — follow these exactly:
+1. You can ONLY answer based on what you actually found and wrote in this sprint. Do not invent new data, statistics, or findings.
+2. If asked about something not in your output, say clearly: "I did not analyse that in this sprint — my scope was [your scope]."
+3. If a number came from a web search result, say so. If it was estimated or derived, say so and show the arithmetic.
+4. If your confidence was L or M on something, explain why and what would change it to H.
+5. Keep answers concise — 3-5 sentences unless the user asks for detail.
+6. Never speculate beyond what your output supports. Qualify everything uncertain with "estimated", "derived", or "not confirmed".
+7. If the user asks about something not visible in your output above, acknowledge the analysis may be truncated and direct them to the full report.
+
+YOUR FULL ANALYSIS OUTPUT:
+${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '
+[...truncated — full analysis in report...]' : ''}${dataBlockStr}${thinkingStr}${searchStr}`;
+  };
+
+  const sendDrawerMessage = async () => {
+    if (!drawerInput.trim() || drawerLoading || !drawerAgent) return;
+    const userMessage = drawerInput.trim();
+    setDrawerInput('');
+    const newMessages = [...drawerMessages, { role: 'user', content: userMessage }];
+    setDrawerMessages([...newMessages, { role: 'assistant', content: '', isStreaming: true }]);
+    setDrawerLoading(true);
+    try {
+      const systemPrompt = buildAgentSystemPrompt(drawerAgent);
+      const apiMessages = newMessages.map(m => ({ role: m.role, content: m.content }));
+      const response = await fetch(API_URL.replace('/api/claude', '/api/chat'), {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          system: systemPrompt,
+          messages: apiMessages,
+          model: 'claude-sonnet-4-6',
+          max_tokens: 600,
+        }),
+        signal: AbortSignal.timeout(30000),
+      });
+      if (!response.ok) {
+        const err = await response.text().catch(() => '');
+        throw new Error(err || `Server error ${response.status}`);
+      }
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let fullReply = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('
+');
+        buffer = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const event = JSON.parse(line.slice(6));
+            if (event.type === 'chunk') {
+              fullReply += event.text;
+              setDrawerMessages(prev => {
+                const updated = [...prev];
+                updated[updated.length - 1] = { role: 'assistant', content: fullReply, isStreaming: true };
+                return updated;
+              });
+            }
+            if (event.type === 'done') fullReply = event.text || fullReply;
+            if (event.type === 'error') throw new Error(event.message || 'Stream error');
+          } catch(parseErr) {
+            if (parseErr.message !== 'Stream error' && !parseErr.message.startsWith('JSON')) continue;
+            throw parseErr;
+          }
+        }
+      }
+      setDrawerMessages(prev => {
+        const updated = [...prev];
+        updated[updated.length - 1] = { role: 'assistant', content: fullReply, isStreaming: false };
+        return updated;
+      });
+    } catch(e) {
+      setDrawerMessages(prev => {
+        const updated = [...prev.filter(m => !m.isStreaming)];
+        return [...updated, { role: 'assistant', content: `Unable to get a response: ${e.message}. Please try again.`, isError: true }];
+      });
+    } finally {
+      setDrawerLoading(false);
+    }
+  };
+
+  const openDrawer = (agentId) => {
+    setDrawerAgent(agentId);
+    setDrawerMessages([]);
+    setDrawerInput('');
+    setDrawerLoading(false);
+  };
+
+  const closeDrawer = () => {
+    setDrawerAgent(null);
+    setDrawerMessages([]);
+    setDrawerInput('');
+  };
+
+
+  // ── AUTH HELPERS ─────────────────────────────────────────────────────────
+
+  const authHeaders = (extra = {}) => ({
+    'Content-Type': 'application/json',
+    'x-session-token': sessionToken || '',
+    ...extra,
+  });
+
+  const handleAuth = async () => {
+    if (!authPassword.trim()) return;
+    setAuthLoading(true);
+    setAuthError('');
+    try {
+      const res = await fetch(API_URL.replace('/api/claude', '/api/auth'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: authPassword.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Authentication failed');
+      sessionStorage.setItem('sprint_token', data.token);
+      setSessionToken(data.token);
+    } catch(e) {
+      setAuthError(e.message);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const markSprintComplete = async () => {
+    if (sprintCreditUsed) return;
+    try {
+      const res = await fetch(API_URL.replace('/api/claude', '/api/sprint-complete'), {
+        method: 'POST',
+        headers: authHeaders(),
+      });
+      if (res.status === 403) {
+        sessionStorage.setItem('sprint_credit_used', '1');
+        setSprintCreditUsed(true);
+      } else if (res.ok) {
+        sessionStorage.setItem('sprint_credit_used', '1');
+        setSprintCreditUsed(true);
+      }
+    } catch(e) { console.warn('[SprintComplete]', e.message); }
+  };
+
+  const saveSprint = async () => {
+    if (shareLoading) return;
+    setShareLoading(true);
+    try {
+      const res = await fetch(API_URL.replace('/api/claude', '/api/save-sprint'), {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          company: company.trim(),
+          tool: 'consumer',
+          sector: market,
+          results,
+          dataBlocks,
+          thinking: thinkingBlocks,
+          toolLogs,
+          sources,
+          elapsed,
+        }),
+      });
+      if (!res.ok) throw new Error('Save failed');
+      const data = await res.json();
+      setShareUrl(data.shareUrl);
+      setShowShareModal(true);
+    } catch(e) {
+      alert(`Save failed: ${e.message}`);
+    } finally {
+      setShareLoading(false);
     }
   };
 
@@ -4345,8 +4659,8 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
     const AGENT_SHORT = {
       framing:'Framing', market:'Market', portfolio:'Portfolio', brand:'Brand',
       margins:'Margins', growth:'Growth', competitive:'Competitive',
-      synergy:'Synergy', platform:'Platform', intl:"Int'l",
-      synopsis:'Synopsis', brief:'Brief',
+      synergy:'Org Synergy', platform:'Platform', intl:'Intl Distill',
+      synopsis:'Exec Synopsis', brief:'Brief',
     };
     const AGENT_WAVE = {
       framing:0, market:1, portfolio:1, brand:1, margins:1, growth:1, competitive:1,
@@ -4390,6 +4704,14 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
     const agentsDone = ALL_AGENT_IDS.filter(id => allDataBlocks[id] && Object.keys(allDataBlocks[id]).length > 1).length;
     const totalSearches = Object.values(allToolLogs).reduce((s, logs) => s + (logs||[]).length, 0);
     const totalSources = Object.values(allToolLogs).reduce((s, logs) => s + (logs||[]).reduce((n, l) => n + (l.results||[]).length, 0), 0);
+    // Fallback: if toolLogs empty, estimate search count from thinking stream text
+    // The thinking stream contains "I'll search", "Let me search", "Now I'm running searches" etc.
+    const searchCountFinal = totalSearches > 0 ? totalSearches : (() => {
+      const allThinkingText = Object.values(allThinking).join(' ');
+      const searchMentions = (allThinkingText.match(/(?:let me search|now i.m (?:running )?search|i.ll search|searching for|run.*search|web search|search results)/gi) || []).length;
+      return searchMentions > 0 ? searchMentions : 0;
+    })();
+    const sourcesLabel = totalSources > 0 ? `${totalSources} sources retrieved` : (searchCountFinal > 0 ? 'from thinking stream' : '0 sources retrieved');
     const totalThinkingChars = Object.values(allThinking).reduce((s, t) => s + (t||'').length, 0);
     const qualityPct = totalKpis > 0 ? Math.round(((highKpis + medKpis) / totalKpis) * 100) : 0;
     const qualityColor = qualityPct >= 80 ? '#16a34a' : qualityPct >= 60 ? amber : '#dc2626';
@@ -4398,7 +4720,7 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
     // ── PAGE 1: COVER — heatmap + dependency diagram + quality score ─────
     const AGENTS_HEATMAP = ['market','portfolio','brand','margins','growth','competitive','synergy','platform','intl','synopsis','brief'];
     const AGENT_LABELS_HM = { market:'Market', portfolio:'Portfolio', brand:'Brand', margins:'Margins', growth:'Growth',
-      competitive:'Competitive', synergy:'Synergy', platform:'Platform', intl:"Int'l", synopsis:'Synopsis', brief:'Brief' };
+      competitive:'Competitive', synergy:'Org Synergy', platform:'Platform', intl:'Intl Distill', synopsis:'Exec Synopsis', brief:'Brief' };
 
     const agentConf = {};
     AGENTS_HEATMAP.forEach(id => {
@@ -4526,7 +4848,7 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
     ];
     const traceAgents = ALL_TRACE_AGENTS.filter(ag =>
       (allThinking[ag.id] && allThinking[ag.id].length > 0) ||
-      (allToolLogs[ag.id] && allToolLogs[ag.id].length > 0)
+      ((allToolLogs[ag.id] && allToolLogs[ag.id].length > 0) || (allThinking[ag.id] && /(?:let me search|now i.m (?:running )?search|i.ll search|searching for|web search)/i.test(allThinking[ag.id])))
     );
     const totalPages = 1 + traceAgents.length + 1;
 
@@ -4559,8 +4881,8 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
         </div>
         <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;padding:8px 10px;text-align:center;">
           <div style="font-size:7px;color:#64748b;letter-spacing:.06em;margin-bottom:3px;">WEB SEARCHES</div>
-          <div style="font-size:18px;font-weight:900;color:${navy};">${totalSearches}</div>
-          <div style="font-size:6px;color:#64748b;">${totalSources} sources retrieved</div>
+          <div style="font-size:18px;font-weight:900;color:${navy};">${searchCountFinal}${totalSearches === 0 && searchCountFinal > 0 ? '<span style="font-size:8px;color:#94a3b8;">~</span>' : ''}</div>
+          <div style="font-size:6px;color:#64748b;">${sourcesLabel}</div>
         </div>
         <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;padding:8px 10px;text-align:center;">
           <div style="font-size:7px;color:#64748b;letter-spacing:.06em;margin-bottom:3px;">H/M CONFIDENCE</div>
@@ -4720,12 +5042,13 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
 
       // ── CALCULATION PROVENANCE PANEL (Brief only) ────────────────
       // Shows every derived number in the brief with its calculation, source agent, and confidence
-      // Provenance: only render if we have actual brief data fields, not fallback placeholder
+      // Provenance: render whenever brief has real kpis (not fallback placeholder).
+      // gapTable/moves/marketSignals are optional — show section if populated, skip if empty.
       const hasBriefProvenance = id === 'brief' &&
         Array.isArray(db.kpis) && db.kpis.length > 0 &&
         db.kpis[0]?.label !== 'Analysis Complete' &&
         db.kpis[0]?.sub !== 'Data block not generated' &&
-        (Array.isArray(db.gapTable) || Array.isArray(db.moves) || Array.isArray(db.marketSignals));
+        db.kpis[0]?.sub !== 'See prose below';
       const provenanceHtml = hasBriefProvenance ? (() => {
         const esc = s => (s||'').toString().replace(/</g,'&lt;').replace(/>/g,'&gt;');
         const confCell = c => {
@@ -4836,6 +5159,16 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
           <div style="font-size:7px;color:#0369a1;">This agent uses Sonnet 4.6 — extended thinking is enabled only for Opus agents (Synopsis + Brief). Search activity below shows what this agent researched.</div>
         </div>`;
 
+      // Fallback: if toolLog empty but thinking mentions searches, show a note
+      const agentSearchMentions = !toolLog.length && thinking ?
+        (thinking.match(/(?:let me search|now i.m (?:running )?search|i.ll search|searching for|web search|search results)/gi) || []).length : 0;
+      const searchFallbackHtml = !toolLog.length && agentSearchMentions > 0 ? `
+        <div style="margin-bottom:14px;">
+          <div style="font-size:8px;font-weight:800;letter-spacing:.1em;color:${navy};margin-bottom:8px;padding-bottom:4px;border-bottom:1.5px solid ${navy};">RESEARCH SEQUENCE — SEARCHES DETECTED</div>
+          <div style="padding:8px 14px;background:#f0f9ff;border:1px solid #bae6fd;border-left:3px solid ${navy};border-radius:3px;">
+            <div style="font-size:7px;color:#0369a1;line-height:1.6;">~${agentSearchMentions} web search reference(s) detected in the thinking stream. Detailed search log was not captured — this occurs when the sprint tab was closed or refreshed before the trace was generated. The thinking stream above shows what was searched and found.</div>
+          </div>
+        </div>` : '';
       const searchHtml = toolLog.length ? `
         <div style="margin-bottom:14px;">
           <div style="font-size:8px;font-weight:800;letter-spacing:.1em;color:${navy};margin-bottom:8px;padding-bottom:4px;border-bottom:1.5px solid ${navy};">RESEARCH SEQUENCE — SEARCHES AND SOURCES</div>
@@ -4866,6 +5199,7 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
         ${provenanceHtml}
         ${thinkingHtml}
         ${searchHtml}
+        ${searchFallbackHtml}
         <div style="position:absolute;bottom:18px;left:36px;right:36px;display:flex;justify-content:space-between;">
           <div style="font-size:6.5px;color:#9ca3af;letter-spacing:.06em;">ADVISORSPRINT INTELLIGENCE · CONFIDENTIAL</div>
           <div style="font-size:6.5px;color:#9ca3af;">PAGE ${pageNum} OF ${totalPages}</div>
@@ -5026,16 +5360,18 @@ ${pageGap}
         }
       } catch(e) { console.warn('[TracePDF] sessionStorage read:', e.message); }
 
-      // Restore toolLogs from sessionStorage if state was lost (page refresh etc.)
-      let resolvedToolLogs = toolLogs;
+      // Resolve toolLogs — toolLogsRef.current is always fresh (no stale closure issue).
+      // Fall back to sessionStorage if the ref is somehow empty (e.g. page was refreshed).
+      let resolvedToolLogs = (toolLogsRef.current && Object.keys(toolLogsRef.current).length > 0)
+        ? toolLogsRef.current
+        : toolLogs;
       try {
         const storedToolLogs = sessionStorage.getItem(`toolLogs_${company.trim()}`);
         if (storedToolLogs) {
           const parsed = JSON.parse(storedToolLogs);
-          // Use whichever has more data
-          const stateCount = Object.values(toolLogs).reduce((s, l) => s + (l||[]).length, 0);
+          const refCount = Object.values(resolvedToolLogs).reduce((s, l) => s + (l||[]).length, 0);
           const storedCount = Object.values(parsed).reduce((s, l) => s + (l||[]).length, 0);
-          if (storedCount > stateCount) resolvedToolLogs = parsed;
+          if (storedCount > refCount) resolvedToolLogs = parsed;
         }
       } catch(e) { console.warn('[TracePDF] toolLogs restore:', e.message); }
 
@@ -5054,7 +5390,7 @@ ${pageGap}
       }
       const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify({ html: safeHtml, company: company.trim(), acquirer: acquirer.trim() }),
         signal: AbortSignal.timeout(120000),
       });
@@ -5117,7 +5453,7 @@ ${pageGap}
       const html = buildPDFHtml({ company, acquirer, parentCo, parentSince, companyMode, results: resolvedResults, dataBlocks: resolvedDataBlocks, sources, elapsed, market });
       const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify({ html, company, acquirer }),
         signal: AbortSignal.timeout(120000), // 2 min timeout — Puppeteer needs time on cold start
       });
@@ -5173,6 +5509,45 @@ ${pageGap}
 
       {/* Main UI (hidden in print) */}
       <div className="no-print">
+
+        {/* ── Password gate ── */}
+        {!sessionToken && (
+          <div style={{ position: 'fixed', inset: 0, background: P.forest, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 340, padding: '40px 36px', background: P.forestMid, border: `1px solid ${P.sand}30`, borderRadius: 8 }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 700, color: P.parchment, marginBottom: 4 }}><em style={{ fontWeight: 400 }}>Advisor</em>Sprint</div>
+              <div style={{ fontFamily: 'monospace', fontSize: 9, letterSpacing: '.2em', textTransform: 'uppercase', color: `${P.parchment}60`, marginBottom: 28 }}>Consumer Intelligence</div>
+              <label style={{ display: 'block', fontFamily: 'monospace', fontSize: 9, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: P.sand, marginBottom: 8 }}>Access Code</label>
+              <input
+                type="password"
+                value={authPassword}
+                onChange={e => setAuthPassword(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && !authLoading && handleAuth()}
+                placeholder="Enter access code…"
+                autoFocus
+                style={{ width: '100%', padding: '10px 12px', background: `${P.parchment}15`, border: `1px solid ${P.sand}50`, borderRadius: 4, color: P.parchment, fontFamily: 'monospace', fontSize: 14, marginBottom: 12, outline: 'none', boxSizing: 'border-box' }}
+              />
+              {authError && (
+                <div style={{ fontFamily: 'monospace', fontSize: 10, color: '#ff8a80', marginBottom: 10 }}>{authError}</div>
+              )}
+              <button
+                onClick={handleAuth}
+                disabled={authLoading || !authPassword.trim()}
+                style={{ width: '100%', padding: '11px', background: authLoading ? `${P.parchment}20` : P.terra, border: 'none', borderRadius: 4, color: P.white, fontFamily: 'monospace', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', cursor: authLoading || !authPassword.trim() ? 'not-allowed' : 'pointer' }}
+              >
+                {authLoading ? 'Verifying…' : 'Enter Sprint'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── Sprint credit exhausted notice ── */}
+        {sessionToken && sprintCreditUsed && appState === 'idle' && (
+          <div style={{ position: 'fixed', bottom: 24, right: 24, background: P.forestMid, border: `1px solid ${P.gold}40`, borderRadius: 6, padding: '12px 18px', zIndex: 90, maxWidth: 320 }}>
+            <div style={{ fontFamily: 'monospace', fontSize: 9, fontWeight: 700, color: P.gold, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 4 }}>Sprint credit used</div>
+            <div style={{ fontSize: 11, color: `${P.parchment}80`, lineHeight: 1.5 }}>Your complimentary sprint has been used. Contact Harsha for additional access.</div>
+          </div>
+        )}
+
         {/* Header */}
         <div style={{ background: P.forest, padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `3px solid ${P.forestMid}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -5323,9 +5698,9 @@ ${pageGap}
 
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
               <button
-                onClick={runSprint}
-                disabled={!company.trim() || appState === "running"}
-                style={{ padding: "12px 24px", background: appState === "running" ? P.inkFaint : testMode ? P.gold : P.forest, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: appState === "running" ? "not-allowed" : "pointer" }}
+                onClick={sprintCreditUsed ? undefined : runSprint}
+                disabled={!company.trim() || appState === "running" || sprintCreditUsed}
+                style={{ padding: "12px 24px", background: sprintCreditUsed ? P.inkFaint : appState === "running" ? P.inkFaint : testMode ? P.gold : P.forest, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: (appState === "running" || sprintCreditUsed) ? "not-allowed" : "pointer" }}
               >
                 {appState === "running" ? `Running... ${formatTime(elapsed)}` : testMode ? "▶ Test Run (Agent 1 only)" : "Run Analysis"}
               </button>
@@ -5379,6 +5754,14 @@ ${pageGap}
                     style={{ padding: "12px 24px", background: tracePdfGenerating ? "#999" : "#4c1d95", color: "#fff", border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: tracePdfGenerating ? "not-allowed" : "pointer" }}>
                     {tracePdfGenerating ? "⟳ Building Trace..." : "⬇ Research Trace"}
                   </button>
+                  {appState === "done" && (
+                    <button
+                      onClick={saveSprint}
+                      disabled={shareLoading}
+                      style={{ padding: "12px 24px", background: shareLoading ? P.inkFaint : "#059669", color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: shareLoading ? "not-allowed" : "pointer" }}>
+                      {shareLoading ? "⟳ Saving…" : shareUrl ? "✓ Saved" : "⤴ Save & Share"}
+                    </button>
+                  )}
                   <button
                     onClick={downloadPDF}
                     style={{ padding: "12px 20px", background: "transparent", color: P.inkSoft, border: `1px solid ${P.inkFaint}`, borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 12, cursor: "pointer" }}>
@@ -5404,8 +5787,29 @@ ${pageGap}
                         <div style={{ fontFamily: "'Instrument Sans'", fontSize: 13, fontWeight: 600, color: P.ink }}>{agent.label}</div>
                         <div style={{ fontFamily: "'Instrument Sans'", fontSize: 11, color: P.inkSoft }}>{agent.sub}</div>
                       </div>
-                      <div style={{ fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, color: status === "done" ? "#28a745" : status === "running" ? "#fd7e14" : P.inkFaint }}>
-                        {status === "done" ? "✓" : status === "running" ? "⟳" : status === "error" ? "✗" : "○"}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        {status === 'done' && !['brief','framing','gap_analysis'].includes(agent.id) && (
+                          <button
+                            onClick={() => openDrawer(agent.id)}
+                            style={{
+                              padding: '3px 9px',
+                              background: 'transparent',
+                              border: `1px solid ${P.forestSoft}`,
+                              borderRadius: 4,
+                              color: P.forestSoft,
+                              fontSize: 9, fontWeight: 700,
+                              fontFamily: 'monospace',
+                              letterSpacing: '.06em',
+                              cursor: 'pointer',
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            Ask ↗
+                          </button>
+                        )}
+                        <div style={{ fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, color: status === "done" ? "#28a745" : status === "running" ? "#fd7e14" : P.inkFaint }}>
+                          {status === "done" ? "✓" : status === "running" ? "⟳" : status === "error" ? "✗" : "○"}
+                        </div>
                       </div>
                     </div>
                   );
@@ -5436,6 +5840,176 @@ ${pageGap}
 
         </div>
       </div>
+
+      {/* ── Agent Conversation Drawer ── */}
+      {drawerAgent && (() => {
+        const agentMeta = AGENTS.find(a => a.id === drawerAgent) || {};
+        const db = dataBlocks[drawerAgent] || {};
+        const verdict = db.verdictRow || {};
+        const kpis = Array.isArray(db.kpis) ? db.kpis : [];
+        const summary = getAgentSummary(drawerAgent);
+        const suggestedQs = getSuggestedQuestions(drawerAgent);
+        const verdictColor = { STRONG:'#059669', WATCH:'#d97706', RISK:'#dc2626', OPTIMISE:'#2563eb' }[verdict.verdict] || '#64748b';
+        const verdictBg   = { STRONG:'#dcfce7', WATCH:'#fef3c7', RISK:'#fee2e2', OPTIMISE:'#dbeafe' }[verdict.verdict] || '#f1f5f9';
+
+        return (
+          <>
+            <div onClick={closeDrawer} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 40 }} />
+            <div style={{
+              position: 'fixed', top: 0, right: 0,
+              width: 420, height: '100vh',
+              background: P.white,
+              borderLeft: `2px solid ${P.sand}`,
+              zIndex: 50,
+              display: 'flex', flexDirection: 'column',
+              overflowY: 'hidden',
+              fontFamily: "'Instrument Sans', sans-serif",
+            }}>
+              {/* Header */}
+              <div style={{ padding: '14px 18px 12px', borderBottom: `1px solid ${P.sand}`, flexShrink: 0, background: P.parchment }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
+                  <div>
+                    <div style={{ fontFamily: 'monospace', fontSize: 8, fontWeight: 700, color: P.forestSoft, letterSpacing: '.12em', textTransform: 'uppercase', marginBottom: 3 }}>
+                      W{agentMeta.wave} · Agent Conversation
+                    </div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: P.ink, lineHeight: 1.3 }}>
+                      {agentMeta.label || drawerAgent}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                    {verdict.verdict && (
+                      <span style={{ fontFamily: 'monospace', fontSize: 8, fontWeight: 700, padding: '2px 7px', borderRadius: 3, background: verdictBg, color: verdictColor }}>
+                        {verdict.verdict}
+                      </span>
+                    )}
+                    <button onClick={closeDrawer} style={{ background: 'transparent', border: `1px solid ${P.sand}`, borderRadius: 4, color: P.inkFaint, fontSize: 14, cursor: 'pointer', padding: '2px 8px', lineHeight: 1 }}>✕</button>
+                  </div>
+                </div>
+                {summary && (
+                  <div style={{ marginTop: 10, fontSize: 10, color: P.inkMid, lineHeight: 1.6, background: P.cream, borderRadius: 4, padding: '7px 10px', border: `1px solid ${P.sand}` }}>
+                    {summary}
+                  </div>
+                )}
+                {kpis.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 8 }}>
+                    {kpis.slice(0, 4).map((k, i) => (
+                      <div key={i} style={{ background: P.white, border: `1px solid ${P.sand}`, borderRadius: 4, padding: '3px 8px' }}>
+                        <div style={{ fontFamily: 'monospace', fontSize: 7, color: P.inkFaint, textTransform: 'uppercase', letterSpacing: '.05em' }}>{(k.label||'').slice(0,16)}</div>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: P.ink }}>{k.value||'—'}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Conversation area */}
+              <div style={{ flex: 1, overflowY: 'auto', padding: '12px 18px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {drawerMessages.length === 0 && (
+                  <div>
+                    <div style={{ fontFamily: 'monospace', fontSize: 8, color: P.inkFaint, letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 8 }}>
+                      Suggested questions
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      {suggestedQs.map((q, i) => (
+                        <button key={i} onClick={() => setDrawerInput(q)}
+                          style={{ textAlign: 'left', background: P.cream, border: `1px solid ${P.sand}`, borderRadius: 6, padding: '7px 11px', color: P.forestMid, fontSize: 11, cursor: 'pointer', lineHeight: 1.5 }}>
+                          {q}
+                        </button>
+                      ))}
+                    </div>
+                    <div style={{ marginTop: 12, padding: '6px 10px', background: '#f5f0ff', border: '1px solid #d8b4fe', borderRadius: 4, fontSize: 9, color: '#6d28d9', lineHeight: 1.6 }}>
+                      This agent will only answer from what it found in the sprint. It will not invent new data or speculate beyond its analysis.
+                    </div>
+                  </div>
+                )}
+
+                {drawerMessages.map((msg, i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
+                    {msg.role === 'assistant' && (
+                      <div style={{ width: 22, height: 22, borderRadius: '50%', background: P.parchment, border: `1px solid ${P.sand}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, flexShrink: 0, marginRight: 7, marginTop: 2 }}>
+                        {agentMeta.icon || '◈'}
+                      </div>
+                    )}
+                    <div style={{
+                      maxWidth: '82%', padding: '8px 12px',
+                      borderRadius: msg.role === 'user' ? '8px 8px 2px 8px' : '8px 8px 8px 2px',
+                      background: msg.role === 'user' ? P.forest : (msg.isError ? '#fff0f0' : P.parchment),
+                      border: `1px solid ${msg.role === 'user' ? P.forestMid : msg.isError ? '#fca5a5' : P.sand}`,
+                      fontSize: 11, color: msg.role === 'user' ? P.white : (msg.isError ? '#dc2626' : P.inkMid),
+                      lineHeight: 1.65, whiteSpace: 'pre-wrap',
+                    }}>
+                      {msg.content}{msg.isStreaming ? <span style={{ borderRight: `2px solid ${P.terra}`, marginLeft: 1 }}>&nbsp;</span> : null}
+                    </div>
+                  </div>
+                ))}
+
+                {drawerLoading && !drawerMessages.some(m => m.isStreaming && m.content.length > 0) && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{ width: 22, height: 22, borderRadius: '50%', background: P.parchment, border: `1px solid ${P.sand}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, flexShrink: 0 }}>
+                      {agentMeta.icon || '◈'}
+                    </div>
+                    <div style={{ fontSize: 11, color: P.inkFaint, fontStyle: 'italic' }}>Thinking…</div>
+                  </div>
+                )}
+              </div>
+
+              {/* Input */}
+              <div style={{ padding: '12px 18px 16px', borderTop: `1px solid ${P.sand}`, flexShrink: 0, background: P.parchment }}>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <input type="text" value={drawerInput}
+                    onChange={e => setDrawerInput(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' && !e.shiftKey && !drawerLoading) { e.preventDefault(); sendDrawerMessage(); }
+                      if (e.key === 'Escape') { e.preventDefault(); closeDrawer(); }
+                    }}
+                    placeholder={`Ask the ${agentMeta.label || 'agent'} Agent…`}
+                    disabled={drawerLoading}
+                    style={{ flex: 1, background: P.white, border: `1px solid ${P.sand}`, borderRadius: 4, padding: '8px 11px', color: P.ink, fontSize: 11, fontFamily: "'Instrument Sans', sans-serif", outline: 'none' }}
+                  />
+                  <button onClick={sendDrawerMessage} disabled={drawerLoading || !drawerInput.trim()}
+                    style={{ padding: '8px 14px', background: drawerLoading || !drawerInput.trim() ? P.sand : P.forest, border: 'none', borderRadius: 4, color: P.white, fontSize: 10, fontWeight: 700, fontFamily: 'monospace', cursor: drawerLoading || !drawerInput.trim() ? 'not-allowed' : 'pointer', letterSpacing: '.06em' }}>
+                    {drawerLoading ? '…' : 'Send'}
+                  </button>
+                </div>
+                <div style={{ marginTop: 7, fontSize: 9, color: P.inkFaint, fontFamily: 'monospace' }}>
+                  Enter to send · Esc to close · ~$0.01 per exchange
+                </div>
+              </div>
+            </div>
+          </>
+        );
+      })()}
+
+      {/* ── Share Modal ── */}
+      {showShareModal && shareUrl && (
+        <>
+          <div onClick={() => setShowShareModal(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 60 }} />
+          <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 420, background: P.white, border: `1px solid ${P.sand}`, borderRadius: 10, padding: '28px 32px', zIndex: 70 }}>
+            <div style={{ fontFamily: 'monospace', fontSize: 9, fontWeight: 700, color: '#059669', letterSpacing: '.12em', textTransform: 'uppercase', marginBottom: 6 }}>Sprint saved</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: P.ink, marginBottom: 16, lineHeight: 1.4 }}>Share this link with your recipient — they can ask questions of each agent directly.</div>
+            <div style={{ background: P.parchment, border: `1px solid ${P.sand}`, borderRadius: 4, padding: '10px 12px', fontFamily: 'monospace', fontSize: 10, color: P.forestSoft, wordBreak: 'break-all', marginBottom: 12 }}>
+              {shareUrl}
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button
+                onClick={() => { navigator.clipboard.writeText(shareUrl); }}
+                style={{ flex: 1, padding: '9px', background: P.forest, border: 'none', borderRadius: 4, color: P.white, fontSize: 11, fontWeight: 700, fontFamily: 'monospace', cursor: 'pointer' }}
+              >
+                Copy Link
+              </button>
+              <button
+                onClick={() => setShowShareModal(false)}
+                style={{ padding: '9px 16px', background: 'transparent', border: `1px solid ${P.sand}`, borderRadius: 4, color: P.inkFaint, fontSize: 11, cursor: 'pointer' }}
+              >
+                Close
+              </button>
+            </div>
+            <div style={{ marginTop: 10, fontSize: 9, color: P.inkFaint, fontFamily: 'monospace' }}>
+              Link expires in 30 days · Recipients can ask questions — they cannot run sprints
+            </div>
+          </div>
+        </>
+      )}
 
       {/* PDF CONTENT - 16 PAGES WITH BEAUTIFUL FORMATTING */}
 <div style={{ display: "none" }} className="print-only">
