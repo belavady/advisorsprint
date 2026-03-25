@@ -3797,6 +3797,7 @@ export default function AdvisorSprint() {
   const abortRef = useRef(null);
   const timerRef = useRef(null);
   const toolLogsRef = useRef({});  // mirrors toolLogs state synchronously — avoids stale closure
+  const sessionTokenRef = useRef(sessionStorage.getItem('sprint_token') || null); // avoids stale closure in callClaude
   // ── Auth ─────────────────────────────────────────────────────────────────
   const [sessionToken, setSessionToken] = useState(() => sessionStorage.getItem('sprint_token') || null);
   const [authPassword, setAuthPassword] = useState('');
@@ -3945,7 +3946,7 @@ export default function AdvisorSprint() {
     } // end retry loop
 
     return fullText;
-  }, [setSources, setStatuses]); // callClaude has no dependencies - uses only parameters and constants
+  }, [setSources, setStatuses]); // uses sessionTokenRef.current to avoid stale closure
 
   const runAgent = useCallback(async (id, prompt, signal, docs) => {
     try {
@@ -4523,7 +4524,7 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\n[...truncated — fu
 
   const authHeaders = (extra = {}) => ({
     'Content-Type': 'application/json',
-    'x-session-token': sessionToken || '',
+    'x-session-token': sessionTokenRef.current || sessionToken || '',
     ...extra,
   });
 
@@ -4540,6 +4541,7 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\n[...truncated — fu
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Authentication failed');
       sessionStorage.setItem('sprint_token', data.token);
+      sessionTokenRef.current = data.token;
       setSessionToken(data.token);
     } catch(e) {
       setAuthError(e.message);
@@ -5501,8 +5503,8 @@ ${pageGap}
       {/* Main UI (hidden in print) */}
       <div className="no-print">
 
-        {/* ── Password gate ── */}
-        {!sessionToken && (
+        {/* ── Password gate — DISABLED, re-enable when sharing publicly ── */}
+        {/* {!sessionToken && (
           <div style={{ position: 'fixed', inset: 0, background: P.forest, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ width: 340, padding: '40px 36px', background: P.forestMid, border: `1px solid ${P.sand}30`, borderRadius: 8 }}>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 700, color: P.parchment, marginBottom: 4 }}><em style={{ fontWeight: 400 }}>Advisor</em>Sprint</div>
@@ -5529,15 +5531,15 @@ ${pageGap}
               </button>
             </div>
           </div>
-        )}
+        )} */}
 
-        {/* ── Sprint credit exhausted notice ── */}
-        {sessionToken && sprintCreditUsed && appState === 'idle' && (
+        {/* ── Sprint credit exhausted notice — disabled with auth ── */}
+        {/* {sessionToken && sprintCreditUsed && appState === 'idle' && (
           <div style={{ position: 'fixed', bottom: 24, right: 24, background: P.forestMid, border: `1px solid ${P.gold}40`, borderRadius: 6, padding: '12px 18px', zIndex: 90, maxWidth: 320 }}>
             <div style={{ fontFamily: 'monospace', fontSize: 9, fontWeight: 700, color: P.gold, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 4 }}>Sprint credit used</div>
             <div style={{ fontSize: 11, color: `${P.parchment}80`, lineHeight: 1.5 }}>Your complimentary sprint has been used. Contact Harsha for additional access.</div>
           </div>
-        )}
+        )} */}
 
         {/* Header */}
         <div style={{ background: P.forest, padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `3px solid ${P.forestMid}` }}>
