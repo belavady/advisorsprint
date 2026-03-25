@@ -4041,10 +4041,8 @@ export default function AdvisorSprint() {
         console.warn('[BriefPDF] DATA_BLOCK empty but prose present — brief was truncated. Building minimal dataBlock for render.');
         const prose = resolvedResults['brief'] || '';
         // Extract bold statement if present in prose
-        const boldMatch = prose.match(/\*\*BOLD STATEMENT[:\*]*\*\*\s*([^
-]+)/i) ||
-                          prose.match(/BOLD STATEMENT[:\s]+([^
-]+)/i);
+        const boldMatch = prose.match(/\*\*BOLD STATEMENT[:\*]*\*\*\s*([^\n]+)/i) ||
+                          prose.match(/BOLD STATEMENT[:\s]+([^\n]+)/i);
         const boldStatement = boldMatch ? boldMatch[1].trim() : '';
         // Build minimal brief dataBlock so buildBriefHtml renders gracefully
         resolvedDataBlocks['brief'] = {
@@ -4420,8 +4418,7 @@ ${thinking.slice(0, 4000)}${thinking.length > 4000 ? '
       ? `
 
 WEB SEARCHES YOU PERFORMED:
-${toolLog.map((t,i) => `${i+1}. "${t.query}" — ${t.results?.length || 0} results`).join('
-')}`
+${toolLog.map((t,i) => `${i+1}. "${t.query}" — ${t.results?.length || 0} results`).join('\n')}`
       : '';
 
     return `You are the ${agentMeta.label || agentId} agent from an AdvisorSprint analysis of ${company}${market ? ` (${market} market)` : ''}, a consumer packaged goods brand.
