@@ -3781,6 +3781,7 @@ export default function AdvisorSprint() {
   const [pdfGenerating, setPdfGenerating] = useState(false);
   const [briefPdfGenerating, setBriefPdfGenerating] = useState(false);
   const [retryingBrief, setRetryingBrief] = useState(false);
+  const [retrySynopsisRunning, setRetrySynopsisRunning] = useState(false);
   const [thinkingBlocks, setThinkingBlocks] = useState({});   // synopsis + brief thinking traces
   const [toolLogs, setToolLogs] = useState({});               // per-agent search/fetch logs
   const [gapAnalysis, setGapAnalysis] = useState(null);       // Agent 12 output
@@ -4624,6 +4625,47 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\n[...truncated — fu
       setAppState("error");
     } finally {
       setRetryingBrief(false);
+    }
+  };
+
+  const retrySynopsis = async () => {
+    if (retrySynopsisRunning) return;
+    setRetrySynopsisRunning(true);
+    setAppState("running");
+    const co = company.trim();
+    const acq = acquirer.trim();
+    const ctx = context.trim();
+    try {
+      const saved = sessionStorage.getItem(`sprint_${co}`);
+      if (!saved) throw new Error("No saved sprint data — please re-run the full sprint");
+      const w1texts = JSON.parse(saved);
+      // Check all W1+W2 agents completed
+      const required = ['market','portfolio','brand','margins','growth','competitive','synergy','platform','intl'];
+      const missing = required.filter(id => !w1texts[id]);
+      if (missing.length > 0) throw new Error(`Missing agent outputs: ${missing.join(', ')} — please re-run the full sprint`);
+      const ctrl = new AbortController();
+      abortRef.current = ctrl;
+      const signal = ctrl.signal;
+      // Run synopsis
+      setStatuses(s => ({ ...s, synopsis: "running" }));
+      const synopsisPrompt = makePrompt('synopsis', co, acq, ctx, w1texts, market, parentCo.trim(), companyMode, parentSince.trim(), w1texts['framing'] || '');
+      const synopsisText = await runAgent('synopsis', synopsisPrompt, signal, []);
+      w1texts['synopsis'] = synopsisText;
+      sessionStorage.setItem(`sprint_${co}`, JSON.stringify(w1texts));
+      setStatuses(s => ({ ...s, synopsis: "done" }));
+      if (signal.aborted) return;
+      await new Promise(r => setTimeout(r, 30000));
+      // Run brief
+      setStatuses(s => ({ ...s, brief: "running" }));
+      const briefPrompt = makePrompt('brief', co, acq, ctx, w1texts, market, parentCo.trim(), companyMode, parentSince.trim(), w1texts['framing'] || '');
+      await runAgent('brief', briefPrompt, signal, []);
+      setStatuses(s => ({ ...s, brief: "done" }));
+      setAppState("done");
+    } catch(e) {
+      console.error("[RetrySynopsis]", e.message);
+      setAppState("error");
+    } finally {
+      setRetrySynopsisRunning(false);
     }
   };
 
@@ -5724,11 +5766,17 @@ ${pageGap}
                   <div style={{ background: '#fff0f0', border: '1px solid #f5c6cb', borderRadius: 4, padding: '10px 16px', fontSize: 12, color: '#842029', fontFamily: 'monospace', lineHeight: 1.6 }}>
                     ✗ Sprint failed — one or more agents could not reach the server. This is usually a network or CORS issue. Check the browser console for details, then retry.
                   </div>
-                  <div style={{ display: 'flex', gap: 8 }}>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                     <button onClick={() => { setAppState('idle'); setStatuses({}); }}
                       style={{ padding: "10px 20px", background: P.forest, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
                       ↺ Start Over
                     </button>
+                    {!results['synopsis'] && (
+                      <button onClick={retrySynopsis} disabled={retrySynopsisRunning}
+                        style={{ padding: "10px 20px", background: retrySynopsisRunning ? "#999" : "#1a56db", color: "#fff", border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 13, fontWeight: 600, cursor: retrySynopsisRunning ? "not-allowed" : "pointer" }}>
+                        {retrySynopsisRunning ? "⟳ Retrying Synopsis…" : "↺ Retry Synopsis + Brief"}
+                      </button>
+                    )}
                     {results['synopsis'] && (
                       <button onClick={retryBrief} disabled={retryingBrief}
                         style={{ padding: "10px 20px", background: retryingBrief ? "#999" : "#b85c38", color: "#fff", border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 13, fontWeight: 600, cursor: retryingBrief ? "not-allowed" : "pointer" }}>
