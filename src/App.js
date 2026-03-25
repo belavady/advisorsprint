@@ -4174,8 +4174,8 @@ export default function AdvisorSprint() {
           if (!signal.aborted) await new Promise(r => setTimeout(r, 30000));
         } catch(framingErr) {
           console.error('[Sprint] Framing agent failed:', framingErr.message);
-          // Non-fatal — continue without framing block, agents will run without it
-          setStatuses(s => ({ ...s, framing: "done" }));
+          // Non-fatal — continue without framing block, mark as error visually
+          setStatuses(s => ({ ...s, framing: "error" }));
         }
       }
 
@@ -4212,8 +4212,9 @@ export default function AdvisorSprint() {
         try {
           text = await runAgent(id, prompt, signal, []);
         } catch(agentErr) {
-          // Agent failed — stop the sprint, don't run remaining agents
+          // Agent failed — mark it as error, stop the sprint
           console.error(`[Sprint] Agent ${id} failed:`, agentErr.message);
+          setStatuses(s => ({ ...s, [id]: "error" }));
           setAppState("error");
           return; // exits runSprint entirely — no more API calls
         }
@@ -5718,11 +5719,24 @@ ${pageGap}
                 </button>
               )}
 
-              {appState === "error" && results['synopsis'] && (
-                <button onClick={retryBrief} disabled={retryingBrief}
-                  style={{ padding: "12px 24px", background: retryingBrief ? "#999" : "#b85c38", color: "#fff", border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: retryingBrief ? "not-allowed" : "pointer" }}>
-                  {retryingBrief ? "⟳ Retrying Brief…" : "↺ Retry Brief Only"}
-                </button>
+              {appState === "error" && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%' }}>
+                  <div style={{ background: '#fff0f0', border: '1px solid #f5c6cb', borderRadius: 4, padding: '10px 16px', fontSize: 12, color: '#842029', fontFamily: 'monospace', lineHeight: 1.6 }}>
+                    ✗ Sprint failed — one or more agents could not reach the server. This is usually a network or CORS issue. Check the browser console for details, then retry.
+                  </div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button onClick={() => { setAppState('idle'); setStatuses({}); }}
+                      style={{ padding: "10px 20px", background: P.forest, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+                      ↺ Start Over
+                    </button>
+                    {results['synopsis'] && (
+                      <button onClick={retryBrief} disabled={retryingBrief}
+                        style={{ padding: "10px 20px", background: retryingBrief ? "#999" : "#b85c38", color: "#fff", border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 13, fontWeight: 600, cursor: retryingBrief ? "not-allowed" : "pointer" }}>
+                        {retryingBrief ? "⟳ Retrying Brief…" : "↺ Retry Brief Only"}
+                      </button>
+                    )}
+                  </div>
+                </div>
               )}
 
               {appState === "done" && (
