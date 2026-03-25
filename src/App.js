@@ -121,10 +121,12 @@ const PROMPTS = {
 
 ## YOUR MANDATE
 
-Map the category [COMPANY] competes in — its size, growth trajectory, structural forces, and [COMPANY]'s position within it. You are the foundation every other agent builds on. Get the numbers right. Estimate where you must, show your work, label confidence.\n
+Map the category [COMPANY] competes in — its size, growth trajectory, structural forces, and [COMPANY]'s position within it. You are the foundation every other agent builds on. Get the numbers right. Estimate where you must, show your work, label confidence.
+
 ## FOUR QUESTIONS YOU MUST ANSWER
 
-**1. What is the category, and what is [COMPANY]'s actual position in it?**\nNot the broad sector — the specific segment where [COMPANY] competes. Size it in revenue terms. Show where [COMPANY] ranks, with market share estimate and growth rate versus category growth. If [COMPANY] is outgrowing the category, explain why. If it's underperforming, diagnose what's constraining it.
+**1. What is the category, and what is [COMPANY]'s actual position in it?**
+Not the broad sector — the specific segment where [COMPANY] competes. Size it in revenue terms. Show where [COMPANY] ranks, with market share estimate and growth rate versus category growth. If [COMPANY] is outgrowing the category, explain why. If it's underperforming, diagnose what's constraining it.
 
 **2. What structural forces are reshaping this category right now?**
 Identify 2–3 structural changes — not trends but forces with dollar consequences. For each: what changed, when, how large the redistribution of value is, and which player benefits. Quick Commerce displacement, premiumisation, channel consolidation, ingredient regulation — wherever the evidence points.
@@ -167,7 +169,8 @@ Populate the standard DATA_BLOCK schema PLUS these additional fields:
 
 ## YOUR MANDATE
 
-Analyse [COMPANY]'s current product portfolio — what it sells, what is working, what is not, and what the next wave of portfolio moves should be. You are making the case for specific kill, keep, and launch decisions. Show the unit economics. Show the sequencing.\n
+Analyse [COMPANY]'s current product portfolio — what it sells, what is working, what is not, and what the next wave of portfolio moves should be. You are making the case for specific kill, keep, and launch decisions. Show the unit economics. Show the sequencing.
+
 ## FOUR QUESTIONS YOU MUST ANSWER
 
 **1. What does the current portfolio look like, and where is the concentration risk?**
@@ -211,7 +214,8 @@ Populate standard schema PLUS:
 
 ## YOUR MANDATE
 
-Assess where [COMPANY]'s brand actually stands — not where it claims to stand — and define the specific repositioning or evolution it needs for the next phase of growth. Brand is not a creative brief. It is a set of specific claims, a target customer, a reason to choose [COMPANY] over a direct alternative, and a consistent story across channels. Diagnose what [COMPANY] has, identify the gap, and specify what it needs.\n
+Assess where [COMPANY]'s brand actually stands — not where it claims to stand — and define the specific repositioning or evolution it needs for the next phase of growth. Brand is not a creative brief. It is a set of specific claims, a target customer, a reason to choose [COMPANY] over a direct alternative, and a consistent story across channels. Diagnose what [COMPANY] has, identify the gap, and specify what it needs.
+
 ## FOUR QUESTIONS YOU MUST ANSWER
 
 **1. What do customers actually believe about [COMPANY]?**
@@ -220,7 +224,8 @@ Not the positioning statement — the customer reality. Use review language, soc
 **2. Who is the real target customer in 2026, and is that the right customer to target?**
 Describe the actual buyer — demographics, occasion, motivation, channel. Then assess: is this the highest-value customer [COMPANY] can serve, or has the brand drifted toward a lower-value segment through distribution expansion? If [COMPANY] needs to reacquire or sharpen its target, say so explicitly.
 
-**3. What is [COMPANY]'s differentiation — and is it still defensible?**\nWhat claim does [COMPANY] own that a direct competitor cannot easily match? If the original differentiation has been eroded (by copycat competitors, by mass distribution, by brand association), diagnose that honestly. Then specify the new or refreshed differentiation.
+**3. What is [COMPANY]'s differentiation — and is it still defensible?**
+What claim does [COMPANY] own that a direct competitor cannot easily match? If the original differentiation has been eroded (by copycat competitors, by mass distribution, by brand association), diagnose that honestly. Then specify the new or refreshed differentiation.
 
 **4. What must the brand become to support the next revenue target?**
 The brand that took [COMPANY] to its current scale is not necessarily the brand that takes it to 2x. Specify the evolution: what changes in messaging, what changes in visual identity, what changes in channel-level brand expression. Where does [COMPANY] lead with [ACQUIRER] association and where does it maintain distance?
@@ -310,9 +315,11 @@ You are a senior channel strategist. Your mandate is strictly channel developmen
 ## FOUR SECTIONS — COMPLETE ALL FOUR
 
 **Section 1: Growth Diagnostic (150–200 words)**
-What does [COMPANY]'s current channel mix look like? Where is growth coming from and where is it plateauing? Estimate distribution saturation if data is unavailable. Which channel is the growth engine and which has hit its ceiling?\n
+What does [COMPANY]'s current channel mix look like? Where is growth coming from and where is it plateauing? Estimate distribution saturation if data is unavailable. Which channel is the growth engine and which has hit its ceiling?
+
 **Section 2: The Underpenetrated Channel (200–250 words)**
-Identify the single largest underpenetrated channel for [COMPANY]. Quantify the opportunity specifically — category penetration, [COMPANY]'s current share of that channel, what it would take to build to 20–25% of revenue through it. Phase the investment and set numeric milestones.\n
+Identify the single largest underpenetrated channel for [COMPANY]. Quantify the opportunity specifically — category penetration, [COMPANY]'s current share of that channel, what it would take to build to 20–25% of revenue through it. Phase the investment and set numeric milestones.
+
 **Section 3: Institutional and B2B (150–200 words)**
 Corporate wellness, gym chains, hotel distribution, airline catering, educational institutions. Quantify the opportunity, identify the 2–3 highest-leverage entry points for [COMPANY] specifically, and show the revenue math.
 
@@ -427,10 +434,12 @@ What is blocking capture? Culture mismatch, approval layers, brand dilution, cha
 **The preamble above specifies the integration status. Apply the correct frame.**
 
 **If tightly integrated (≥18 months inside parent):**
-The parent's infrastructure IS the operating model. Do not treat it as a future opportunity to unlock — audit how well the integration is actually performing.\n
+The parent's infrastructure IS the operating model. Do not treat it as a future opportunity to unlock — audit how well the integration is actually performing.
+
 CRITICAL DEFAULT RULE — DISTRIBUTION AND PLACEMENT: A brand within a large parent with extensive internal channels (hotels, restaurants, retail, institutional) MUST be assumed to have already leveraged those channels for placement unless there is SPECIFIC PUBLIC EVIDENCE that it has not. Absence of evidence is NOT evidence of absence. A company operating for 15+ years inside ITC will have activated ITC Hotels placement, ITC retail, ITC institutional channels — this is basic operational competence. Do NOT mark these as "untapped" without a specific citation proving they are unused. The only distribution/placement gaps worth flagging are those where third-party data (Nielsen, trade reports, distributor statements) specifically shows the brand is absent from a channel it should be present in.
 
-First: what is [PARENT]'s infrastructure delivering in hard numbers today? Distribution reach achieved vs. target, manufacturing cost vs. independent benchmark, procurement savings realised. Search for evidence — do not assume benefits are captured just because the assets exist.\n
+First: what is [PARENT]'s infrastructure delivering in hard numbers today? Distribution reach achieved vs. target, manufacturing cost vs. independent benchmark, procurement savings realised. Search for evidence — do not assume benefits are captured just because the assets exist.
+
 Second: where is integration underperforming? Identify specific gaps — distribution velocity below category benchmarks, margin compression from internal transfer pricing, quality variance from parent manufacturing, brand dilution from mass-channel overexposure, innovation slowdown from approval layers. Name what the data suggests is not working. Do NOT include distribution or placement gaps unless supported by specific evidence.
 
 Third: where does [PARENT]'s system actively constrain [COMPANY]? Portfolio prioritisation that deprioritises [COMPANY]'s SKUs, internal competition for shelf space or marketing budget, processes that slow speed-to-market relative to independent competitors. These constraints are as important as the assets.
@@ -446,7 +455,8 @@ What does [COMPANY] need that it cannot build alone in 3 years? Distribution rea
 
 Who are the best partners for each need? Name specific companies — not categories. Which distributor, retailer, ingredient supplier, or platform would unlock the most value, and why [COMPANY] specifically can attract them.
 
-What is [COMPANY]'s negotiating asset? What does [COMPANY] have that a large FMCG or strategic investor would pay to access? This is what gives [COMPANY] bargaining power.\n
+What is [COMPANY]'s negotiating asset? What does [COMPANY] have that a large FMCG or strategic investor would pay to access? This is what gives [COMPANY] bargaining power.
+
 ## STEP 3: OUTPUT
 
 Dense prose. No bullet lists. Two tables permitted:
@@ -477,7 +487,8 @@ You are the senior partner who has read every agent output in this report. You w
 
 **Tone:** The company is playing offense. Frame everything as opportunity and acceleration. Gaps are spaces to move into. Risks are known and manageable.
 
-**Numbers:** Use every number the agents found. Cite the source agent. If a number wasn't confirmed, write "not confirmed through available data." Never invent figures.\n
+**Numbers:** Use every number the agents found. Cite the source agent. If a number wasn't confirmed, write "not confirmed through available data." Never invent figures.
+
 **Writing style:** Dense prose. No bullet points. No numbered lists. Paragraphs only — each making one argument, building evidence, landing on an implication. Each paragraph connects to the next.
 
 ---
@@ -504,14 +515,16 @@ Paragraph 2 — Portfolio and brand: Connect Agents 2 and 3. What does SKU analy
 
 Paragraph 3 — Growth and margin: Connect Agents 4 and 5. Which growth moves improve margin and which compress it?
 
-Paragraph 4 — Leverage: Draw from Agent 7. What does [COMPANY]'s institutional leverage unlock that independent growth cannot?\n
+Paragraph 4 — Leverage: Draw from Agent 7. What does [COMPANY]'s institutional leverage unlock that independent growth cannot?
+
 Paragraph 5 — The international lens: What Agent 10's global analog reveals about [COMPANY]'s trajectory and the decisions that matter most right now.
 
 ---
 
 **SIX INSIGHTS**
 
-Six findings the reader would not arrive at without this report. Each is a ◉-tagged block — four to five sentences: finding → why non-obvious → which agents' data supports it → what should be done.\n
+Six findings the reader would not arrive at without this report. Each is a ◉-tagged block — four to five sentences: finding → why non-obvious → which agents' data supports it → what should be done.
+
 ◉ [INSIGHT TITLE IN CAPS]
 [Four to five sentences of dense prose.]
 
@@ -536,15 +549,18 @@ Write two short narrative paragraphs — no headers, no bullets, flowing prose.
 
 **Paragraph 1 — The path this report recommends:** What does [COMPANY] look like in 24 months if it executes the top 3 recommendations from this report? Be specific: revenue range, market position, which competitor it has pulled away from, what the team feels like. Make it concrete enough that the reader can picture it.
 
-**Paragraph 2 — The most common mistake:** What is the single most likely way companies in this exact position get this wrong? Not a generic risk — the specific mistake that companies with [COMPANY]'s profile, at [COMPANY]'s stage, in [COMPANY]'s category tend to make. What does [COMPANY] look like in 24 months if it makes that mistake? Name the consequence specifically.\n
+**Paragraph 2 — The most common mistake:** What is the single most likely way companies in this exact position get this wrong? Not a generic risk — the specific mistake that companies with [COMPANY]'s profile, at [COMPANY]'s stage, in [COMPANY]'s category tend to make. What does [COMPANY] look like in 24 months if it makes that mistake? Name the consequence specifically.
+
 ---
 
-## PART 4: THE ANALYST'S GUT CALL\n
+## PART 4: THE ANALYST'S GUT CALL
+
 Four sentences. No data. No confidence labels. No attribution. Set aside the structured analysis entirely.
 
 Finish this sentence and then write three more: *"The thing this company is not seeing about itself is..."*
 
-This is your unhedged read — what the pattern of all nine agent outputs suggests about [COMPANY]'s blind spot, its underestimated asset, or the assumption baked into its strategy that deserves to be challenged. Write it as a senior analyst who has seen this pattern before in other companies. Direct. Specific. Memorable.\n
+This is your unhedged read — what the pattern of all nine agent outputs suggests about [COMPANY]'s blind spot, its underestimated asset, or the assumption baked into its strategy that deserves to be challenged. Write it as a senior analyst who has seen this pattern before in other companies. Direct. Specific. Memorable.
+
 ---
 `
 };
@@ -572,12 +588,14 @@ Search for (adapt to company and context):
 What are the 4-6 most valuable adjacency opportunities for [COMPANY]?
 For each, answer:
 1. What is the TAM and growth rate? Show calculation.
-2. Does [COMPANY]'s existing brand, customer base, or capability give it a right to win?\n3. What is the investment required and what does year-3 revenue look like? Show the model.
+2. Does [COMPANY]'s existing brand, customer base, or capability give it a right to win?
+3. What is the investment required and what does year-3 revenue look like? Show the model.
 4. Should [COMPANY] build this, partner for it, or acquire it? One clear recommendation with rationale.
 5. What is the sequencing? Which comes first and why?
 
 ### IF ACQUIRED — additional questions:
-- Which adjacencies are accelerated by [ACQUIRER]'s assets? (manufacturing, distribution, brand, capital)\n- Which adjacencies would [ACQUIRER] fund vs. expect [COMPANY] to fund from its own P&L?
+- Which adjacencies are accelerated by [ACQUIRER]'s assets? (manufacturing, distribution, brand, capital)
+- Which adjacencies would [ACQUIRER] fund vs. expect [COMPANY] to fund from its own P&L?
 - Is [COMPANY] better used as a single-brand operator or as a platform incubating new brands for [ACQUIRER]? Take a position.
 
 ### IF BRAND WITHIN PARENT — additional questions:
@@ -585,15 +603,18 @@ For each, answer:
 **The preamble specifies integration status (≥18 months = tightly integrated). Apply the correct frame.**
 
 **If tightly integrated (≥18 months inside parent):**
-[PARENT]'s infrastructure is the full operating reality. The adjacency question is what [COMPANY] can do *within* that system.\n
+[PARENT]'s infrastructure is the full operating reality. The adjacency question is what [COMPANY] can do *within* that system.
+
 Which adjacencies can [COMPANY] own distinctly within [PARENT]'s portfolio — where no sibling brand competes and [COMPANY]'s brand equity gives it a credible right to win? Map the white space specifically.
 
 Which adjacencies would [PARENT] fund at portfolio level vs. which must [COMPANY] justify from its own P&L? Be specific about what gets parent capital vs. what is a self-funded bet.
 
 Which adjacencies would [PARENT] actively block — portfolio conflict, channel conflict, brand dilution, sibling brand competition for shelf or budget? Name these explicitly and do not recommend them.
 
-Has [COMPANY]'s position inside [PARENT] opened any adjacency impossible independently — international distribution, clinical validation, new manufacturing formats, institutional channel access? If yes, name it and what it unlocks.\n
-Is [COMPANY] better as a focused category leader in its core, or as a platform for [PARENT] to expand into adjacent segments using [COMPANY]'s brand equity? Take a position with rationale.\n
+Has [COMPANY]'s position inside [PARENT] opened any adjacency impossible independently — international distribution, clinical validation, new manufacturing formats, institutional channel access? If yes, name it and what it unlocks.
+
+Is [COMPANY] better as a focused category leader in its core, or as a platform for [PARENT] to expand into adjacent segments using [COMPANY]'s brand equity? Take a position with rationale.
+
 **If still integrating (<18 months inside parent):**
 Adjacency decisions before core integration is complete carry high execution risk. Recommend at most 1–2 adjacencies that can be built independently of integration milestones. Flag the risk explicitly. Prioritise completing integration before expanding scope.
 
@@ -607,7 +628,9 @@ Adjacency decisions before core integration is complete carry high execution ris
 ## DATA BLOCK GUIDANCE
 
 opportunityBubbles: Score each opportunity on Strategic Fit (0-100), Market Growth %, and TAM.
-- IF ACQUIRER: Strategic Fit = fit with [ACQUIRER]'s assets and portfolio\n- IF NO ACQUIRER: Strategic Fit = fit with [COMPANY]'s existing brand, capability, and customer base\n
+- IF ACQUIRER: Strategic Fit = fit with [ACQUIRER]'s assets and portfolio
+- IF NO ACQUIRER: Strategic Fit = fit with [COMPANY]'s existing brand, capability, and customer base
+
 investmentReturn: Show realistic investment and 3-year revenue for each opportunity.
 buildPartnerAcquire: One clear recommendation per opportunity.
 
@@ -626,9 +649,11 @@ You run before all other agents. Your job is to establish the ground truth compe
 ## YOUR ONE JOB
 
 Search for and establish:
-1. What [COMPANY]'s exact product format is — not the category name, the specific format (e.g. "chocolate-filled premium cookie", "prebiotic carbonated soda", "round-cake instant noodle")\n2. What consumption occasion it primarily serves
+1. What [COMPANY]'s exact product format is — not the category name, the specific format (e.g. "chocolate-filled premium cookie", "prebiotic carbonated soda", "round-cake instant noodle")
+2. What consumption occasion it primarily serves
 3. What price tier it operates in
-4. Who the actual direct competitors are in the same format + occasion + price tier in [COMPANY]'s home market\n5. Which brands dominate search results for this category but are NOT direct competitors — and exactly why they are not direct
+4. Who the actual direct competitors are in the same format + occasion + price tier in [COMPANY]'s home market
+5. Which brands dominate search results for this category but are NOT direct competitors — and exactly why they are not direct
 
 ## THREE-TIER COMPETITIVE CLASSIFICATION
 
@@ -687,7 +712,8 @@ FRAMING_NOTE: [One sentence — the single biggest uncertainty in this framing, 
 
 PROMPTS.brief = `# AGENT 11: CEO OPPORTUNITY BRIEF
 
-You are the most senior strategist on this engagement. You have read every agent output, the full synopsis, and all structured DATA_BLOCKs. Your job is to produce one document: a 2-page visual brief for a Divisional CEO that is sharper, more foresighted, and more actionable than anything the brand's own team will present.\n
+You are the most senior strategist on this engagement. You have read every agent output, the full synopsis, and all structured DATA_BLOCKs. Your job is to produce one document: a 2-page visual brief for a Divisional CEO that is sharper, more foresighted, and more actionable than anything the brand's own team will present.
+
 [ACQUISITION_PREAMBLE]
 
 ## YOUR ADVANTAGE OVER THE BRAND TEAM
@@ -716,7 +742,8 @@ This GTM Profile governs the PLAY TYPE classification of every gap and move.
 Every gap and every recommended move must be classified as exactly one of three Play Types. This is the most important output of this brief — it tells the CEO not just WHAT to do but HOW to organise to do it.
 
 **SCALE PLAY**
-When to apply: Gap is large enough to win with existing distribution infrastructure (India: ≥₹300 Cr; US/Global: ≥$30M). Win through velocity, distribution density, and price architecture. The company's existing go-to-market machine is the weapon.\nWhat CEO must do: Activate the full organisational machine — sales force, retail execution, supply chain scale. This is where size is an advantage.
+When to apply: Gap is large enough to win with existing distribution infrastructure (India: ≥₹300 Cr; US/Global: ≥$30M). Win through velocity, distribution density, and price architecture. The company's existing go-to-market machine is the weapon.
+What CEO must do: Activate the full organisational machine — sales force, retail execution, supply chain scale. This is where size is an advantage.
 Badge colour: Forest green.
 
 **D2C PLAY**
@@ -742,15 +769,18 @@ Gaps below all three thresholds: exclude entirely. Do not include them as footno
 ## SYNTHESIS APPROACH
 
 Step 1 — Extract from prior agents. Read every agent output systematically:
-- Agent 1 (Market): TAM, brand's capture rate, underpenetrated segments → GAP SIZING for KPIs and occasion wheel\n- Agent 2 (Portfolio): SKU performance, format gaps → OCCASION MAPPING + what format/occasion gaps exist
+- Agent 1 (Market): TAM, brand's capture rate, underpenetrated segments → GAP SIZING for KPIs and occasion wheel
+- Agent 2 (Portfolio): SKU performance, format gaps → OCCASION MAPPING + what format/occasion gaps exist
 - Agent 3 (Brand): Occasions owned vs absent, consumer perception → OCCASION WHEEL DATA
 - Agent 4 (Margins): Which gaps are worth chasing (margin-accretive vs dilutive) → MOVE FILTER
 - Agent 5 (Growth): Channel and distribution gaps + GTM Profile → HOW TO SCALE
 - Agent 6 (Competitive): TWO things — (a) occasions competitors own → THREAT MAP for gap table; (b) what D2C players, challengers, and organised competitors are doing DIFFERENTLY in India right now that proves format/occasion demand this brand has not addressed → MARKET SIGNALS TABLE
-- Agent 7 (Synergy): Pull the synergyMatrix — specifically assets with status "untapped" or "partial" that relate to this brand's category. For parent/acquired brands: these are institutional assets. For standalone brands: pull what this brand can do that large incumbents structurally cannot. → INSTITUTIONAL EDGE section\n- Agent 9 (Platform): Format and occasion adjacencies → additional MARKET SIGNALS rows if relevant
+- Agent 7 (Synergy): Pull the synergyMatrix — specifically assets with status "untapped" or "partial" that relate to this brand's category. For parent/acquired brands: these are institutional assets. For standalone brands: pull what this brand can do that large incumbents structurally cannot. → INSTITUTIONAL EDGE section
+- Agent 9 (Platform): Format and occasion adjacencies → additional MARKET SIGNALS rows if relevant
 - Agent 10 (International): KR, JP, SEA, US, UK, DE, AU signals → ARRIVAL SEQUENCE on Page 2 only (when + how each format arrives in India + what brand must do before that inflection)
 
-PAGE 1 IS HOME MARKET ONLY. Page 1 must not contain international signals. Every data point on Page 1 describes what is happening in this brand's home market (India, US, or whichever market is specified) — gaps, occasions, what home market competitors and challengers are doing, institutional or structural assets.\n
+PAGE 1 IS HOME MARKET ONLY. Page 1 must not contain international signals. Every data point on Page 1 describes what is happening in this brand's home market (India, US, or whichever market is specified) — gaps, occasions, what home market competitors and challengers are doing, institutional or structural assets.
+
 PAGE 2 IS INTERNATIONAL + ACTION. Page 2 shows: what this brand must do (3 moves + radar), then what is arriving internationally and when, then the verdict.
 
 CRITICAL — ONE JOB PER SURFACE, NO REPETITION:
@@ -955,7 +985,8 @@ const MOCK = {
 
 **Market timing signal:** Category at inflection point—D2C saturation evident (Whole Truth Amazon review velocity -38% YoY) forcing offline expansion.
 
-**ITC's 4M outlet reach unlocks ₹270 Cr path:**  \n- Current: 150 MT stores = ₹125 Cr  
+**ITC's 4M outlet reach unlocks ₹270 Cr path:**  
+- Current: 150 MT stores = ₹125 Cr  
 - ITC-enabled: 500 MT + 2,000 GT = ₹270 Cr (18 months vs 48 months independently)
 
 **Competitive moat window:** First to 2,500 stores likely captures 20-25% category share (anchor brand status). Current trajectory puts [COMPANY] 24-36 months behind Whole Truth. ITC compresses this to 12 months.`,
@@ -1143,7 +1174,8 @@ const MOCK = {
 
 **Tier 2 Threats (Adjacency):**  
 - **RiteBite:** Mass market leader moving up (₹25 → ₹35 new range)  
-- **Kellogg's/ITC:** Incumbents could enter premium segment\n
+- **Kellogg's/ITC:** Incumbents could enter premium segment
+
 ## HEAD-TO-HEAD: [COMPANY] VS WHOLE TRUTH
 
 **Our Advantages:**  
@@ -1159,8 +1191,10 @@ const MOCK = {
 **Attack Vector:** "90% of the quality, 83% of the price, 3x the availability"  
 Target their price-sensitive customers who value accessibility over ultra-premium positioning.
 
-**Counter-move Expected:** They'll defend premium with community/content, accelerate MT to close distribution gap, or launch ₹45 accessible line.\n
-**Our Response:** Pre-empt with exclusive MT shelf commitments (ITC relationships), maintain ₹50 sweet spot, don't engage in price war.\n
+**Counter-move Expected:** They'll defend premium with community/content, accelerate MT to close distribution gap, or launch ₹45 accessible line.
+
+**Our Response:** Pre-empt with exclusive MT shelf commitments (ITC relationships), maintain ₹50 sweet spot, don't engage in price war.
+
 ## HEAD-TO-HEAD: [COMPANY] VS TRUE ELEMENTS
 
 **Where We Compete:** Protein bars (₹50 vs ₹45)
@@ -1180,7 +1214,8 @@ Target their price-sensitive customers who value accessibility over ultra-premiu
 
   synergy: `## SYNERGY PLAYBOOK
 
-**Strategic Frame:** ITC's institutional strengths (distribution, manufacturing, procurement) unlock growth acceleration that [COMPANY] cannot achieve independently—while preserving the digital-native capabilities that justify the acquisition premium.\n
+**Strategic Frame:** ITC's institutional strengths (distribution, manufacturing, procurement) unlock growth acceleration that [COMPANY] cannot achieve independently—while preserving the digital-native capabilities that justify the acquisition premium.
+
 ## SYNERGY MAPPING (4 Dimensions)
 
 **1. DISTRIBUTION REACH**  
@@ -1255,8 +1290,10 @@ Target their price-sensitive customers who value accessibility over ultra-premiu
 
   platform: `## PLATFORM EXPANSION & D2C BRAND INCUBATOR
 
-[COMPANY] has built something ITC's Foods division cannot replicate through training: the lived capability of building a D2C brand from zero. The question is whether ITC activates this as a studio to incubate additional premium brands in categories where its legacy portfolio is a liability.\n
-Global precedents are instructive. Marico acquired Beardo and ran it with near-complete operational autonomy, using Marico's supply chain only when Beardo's volume justified it. The brand remained independent and grew from ₹20 Cr to ₹200 Cr in five years without the "Marico" name appearing anywhere on the product. Unilever did the opposite with Dollar Shave Club — integrated it into the Unilever system — and DSC's growth plateaued within two years of acquisition as the founder energy dissipated into corporate process.\n
+[COMPANY] has built something ITC's Foods division cannot replicate through training: the lived capability of building a D2C brand from zero. The question is whether ITC activates this as a studio to incubate additional premium brands in categories where its legacy portfolio is a liability.
+
+Global precedents are instructive. Marico acquired Beardo and ran it with near-complete operational autonomy, using Marico's supply chain only when Beardo's volume justified it. The brand remained independent and grew from ₹20 Cr to ₹200 Cr in five years without the "Marico" name appearing anywhere on the product. Unilever did the opposite with Dollar Shave Club — integrated it into the Unilever system — and DSC's growth plateaued within two years of acquisition as the founder energy dissipated into corporate process.
+
 The category recommendation is Functional Wellness — collagen, adaptogens, immunity — where ITC's Life Sciences and Technology Centre provides clinical validation capability that no D2C startup can access independently, where ITC's existing Foods brands have no presence, and where the TAM is estimated at ₹800 Cr growing at 35% annually. Premium Snacking is a conditional second — the Bingo adjacency creates distribution channel conflict risk. Functional Beverages should be deferred due to cold chain complexity.
 
 The structure proposed is a D2C Business Unit within ITC — not a sub-brand, not a division of [COMPANY]'s operations, but a separate entity with its own P&L, its own team (seeded from [COMPANY]'s brand-building talent), and a defined level of autonomy that allows 48-hour spend decisions and direct founder-equivalent authority. ITC contributes R&D access, ingredient sourcing through the Agri Business Division, and manufacturing scale when volume justifies a plant move. The new brand launches with a separate identity that carries no [COMPANY] or ITC branding.
@@ -1266,7 +1303,8 @@ The condition for activation: [COMPANY] reaches ₹500 Cr revenue in FY27, demon
 
 Three brands qualify against the six scoring criteria, each offering a different lesson. Grenade UK scores 5/6 and is the most directly relevant: founded in 2010 as a gym-channel D2C brand, Grenade built £50M in revenue before Mondelez acquired it in 2021. The critical moment came when Tesco demanded shelf pricing below Grenade's threshold to protect their private label margin. Grenade refused, accepted a 40% reduction in Tesco shelf space, and rebuilt distribution through Sainsbury's and Boots at full price over 18 months. The brand is now at £75M and growing at 8% — slower than its 40%+ D2C peak, but with margin intact. The lesson is not that MT is dangerous; it is that the first MT buyer conversation is the most important one, and the outcome of that conversation is set by whether the brand has alternatives.
 
-Barebells Sweden scores 5/6 and offers the QC lesson. Before approaching any MT buyer, Barebells built three months of Gorillas and Glovo Quick Commerce data showing repeat purchase rates and basket attachment. That data became the buyer pitch: Barebells did not ask MT buyers to take a risk on an unknown brand, they showed documented consumer demand at full price in the channel adjacent to MT. Orkla acquired Barebells in 2022 with manufacturing support but no brand direction. The brand is now at €80M growing at 25%. The QC data strategy is directly replicable: Blinkit and Zepto provide exportable analytics to brand partners, and that data is [COMPANY]'s strongest MT entry argument.\n
+Barebells Sweden scores 5/6 and offers the QC lesson. Before approaching any MT buyer, Barebells built three months of Gorillas and Glovo Quick Commerce data showing repeat purchase rates and basket attachment. That data became the buyer pitch: Barebells did not ask MT buyers to take a risk on an unknown brand, they showed documented consumer demand at full price in the channel adjacent to MT. Orkla acquired Barebells in 2022 with manufacturing support but no brand direction. The brand is now at €80M growing at 25%. The QC data strategy is directly replicable: Blinkit and Zepto provide exportable analytics to brand partners, and that data is [COMPANY]'s strongest MT entry argument.
+
 RXBAR scores 4/6 and provides the acquisition integration cautionary note. Kellogg acquired RXBAR in 2017 for $600M — 4.6x revenue. The founders were contractually retained for three years with brand autonomy. Revenue grew 40% in years one and two. In year three, Kellogg integrated the marketing function into its corporate structure. Growth plateaued. The RXBAR lesson for ITC is specific: the governance document matters more than the acquisition document. The level of autonomy the [COMPANY] team has in 2026 and 2027 will determine whether the brand continues its trajectory or begins to move at the speed of a ₹75,000 Cr conglomerate.
 
 The five transferable lessons across these three brands point to a consistent playbook: hold MT price at all costs and use pack-size reduction rather than price cuts when volume pressure builds; arrive at the first MT buyer conversation with QC velocity data rather than brand deck slides; establish the autonomy framework in writing before it is needed rather than after a conflict arises; enter MT with four hero SKUs maximum and keep the full range exclusive to D2C and QC; and create a QC-specific format at a lower price point that protects MT price architecture rather than discounting the existing range.`,
@@ -1289,7 +1327,8 @@ The five transferable lessons across these three brands point to a consistent pl
 **KEY INSIGHTS**
 
 **INSIGHT 1: Distribution Velocity, Not Product Innovation, Determines Winners**  
-Market analysis shows category commoditization—customer blind taste tests <40% brand identification. Meanwhile, distribution breadth correlates 1:1 with revenue. ITC's 4M outlet reach can place [COMPANY] in 3x more stores than competitors within 18 months, creating a moat far more defensible than formulation.\n
+Market analysis shows category commoditization—customer blind taste tests <40% brand identification. Meanwhile, distribution breadth correlates 1:1 with revenue. ITC's 4M outlet reach can place [COMPANY] in 3x more stores than competitors within 18 months, creating a moat far more defensible than formulation.
+
 **INSIGHT 2: MT Velocity (80-120 bars/month) Is Make-or-Break Assumption**  
 Entire strategy depends on modern trade velocity validation. If stores sell <60 bars/month, retailers delist and distribution synergy collapses. Mitigation: 100-store pilot mandatory before scaling.
 
@@ -1301,7 +1340,8 @@ Competitive analysis shows Whole Truth hitting D2C ceiling (review velocity -38%
 
 **THE VERDICT**
 
-**RECOMMENDED STRATEGY:** Pursue hybrid integration model leveraging ITC distribution + manufacturing while preserving [COMPANY]'s brand independence and digital-native capabilities, targeting ₹270 Cr revenue and break-even by FY26.\n
+**RECOMMENDED STRATEGY:** Pursue hybrid integration model leveraging ITC distribution + manufacturing while preserving [COMPANY]'s brand independence and digital-native capabilities, targeting ₹270 Cr revenue and break-even by FY26.
+
 **WHY:**  
 1. Market timing: 12-18 month window for leadership, ITC enables capture  
 2. Synergy capture: ₹37-46 Cr annually (80% of maximum) with manageable risk  
@@ -2184,7 +2224,8 @@ function buildPDFHtml({ company, acquirer, parentCo="", parentSince="", companyM
     // Split into paragraphs and wrap each
     const paras = t.split(/\n\n+/).map(p => p.trim()).filter(p => p.length > 0);
     return paras.map(p => {
-      // Already an HTML block element — don't wrap in <p>\n      if (p.startsWith('<strong') || p.startsWith('<div') || p.startsWith('<hr')) return p;
+      // Already an HTML block element — don't wrap in <p>
+      if (p.startsWith('<strong') || p.startsWith('<div') || p.startsWith('<hr')) return p;
       // "What's Missing" paragraph — style distinctly
       if (p.toLowerCase().startsWith('what this analysis could not confirm') || p.toLowerCase().startsWith('**what this analysis could not confirm')) {
         const cleaned = p.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
@@ -2287,7 +2328,8 @@ function buildPDFHtml({ company, acquirer, parentCo="", parentSince="", companyM
           </div>
         </div>
         <div style="margin-top:18px;padding:13px;background:#1a3a2a;border-radius:5px;color:rgba(255,255,255,.7);font-size:7.5px;line-height:1.7;">
-          <strong style="color:#fff;">Disclaimer:</strong> Generated by AdvisorSprint's 10-agent AI system using live web search. Strategic thinking tool only — not a substitute for primary research or professional financial advice.\n        </div>
+          <strong style="color:#fff;">Disclaimer:</strong> Generated by AdvisorSprint's 10-agent AI system using live web search. Strategic thinking tool only — not a substitute for primary research or professional financial advice.
+        </div>
       </div>
       ${footer(2)}
     </div>`;
@@ -2385,7 +2427,8 @@ function makePrompt(id, company, acquirer, ctx, synthCtx, market="India", parent
   }
   const integrationLine = monthsWithParent !== null
     ? tightlyIntegrated
-      ? `INTEGRATION STATUS: ${company} has been part of ${parentName} for ~${Math.floor(monthsWithParent/12)} year(s) (${monthsWithParent} months). Treat this as FULLY INTEGRATED — ${parentName}'s distribution, manufacturing, procurement, and systems are already the operating model. Do NOT frame parent assets as future opportunities to unlock. Audit what is working, what is underperforming, and where the relationship constrains rather than enables.`\n      : `INTEGRATION STATUS: ${company} has been part of ${parentName} for ~${monthsWithParent} months — still within the integration window. Distinguish what is already operational from what is still being transferred. For in-transition assets, assess whether the timeline is realistic.`
+      ? `INTEGRATION STATUS: ${company} has been part of ${parentName} for ~${Math.floor(monthsWithParent/12)} year(s) (${monthsWithParent} months). Treat this as FULLY INTEGRATED — ${parentName}'s distribution, manufacturing, procurement, and systems are already the operating model. Do NOT frame parent assets as future opportunities to unlock. Audit what is working, what is underperforming, and where the relationship constrains rather than enables.`
+      : `INTEGRATION STATUS: ${company} has been part of ${parentName} for ~${monthsWithParent} months — still within the integration window. Distinguish what is already operational from what is still being transferred. For in-transition assets, assess whether the timeline is realistic.`
     : "";
 
   // Token substitutions used inside individual agent prompts
@@ -2401,7 +2444,8 @@ function makePrompt(id, company, acquirer, ctx, synthCtx, market="India", parent
   } else if (companyMode === "parent" && parentName) {
     acqPreamble = `## CONTEXT: BRAND WITHIN PARENT COMPANY\n${company} is a brand owned and operated by ${parentName}. There was NO acquisition event — ${company} was built by or has long been part of ${parentName}. ${parentName} is simultaneously the owner, manufacturer, distributor, and funder. Do NOT frame this as post-acquisition integration. Treat ${parentName}'s infrastructure as already available — the strategic question is what ${company} does with it, where ${company} must differentiate within ${parentName}'s portfolio, and where ${parentName}'s systems constrain rather than enable ${company}'s strategy.${integrationLine ? '\n\n' + integrationLine : ''}`;
   } else {
-    acqPreamble = `## CONTEXT: STANDALONE COMPANY ANALYSIS\n${company} is fully independent — NO acquirer, NO parent company. Do NOT mention any acquirer or external owner. Analyse purely on ${company}'s own capital, capabilities, and strategic choices.`;\n  }
+    acqPreamble = `## CONTEXT: STANDALONE COMPANY ANALYSIS\n${company} is fully independent — NO acquirer, NO parent company. Do NOT mention any acquirer or external owner. Analyse purely on ${company}'s own capital, capabilities, and strategic choices.`;
+  }
   prompt = prompt.replace(/\[ACQUISITION_PREAMBLE\]/g, acqPreamble);
 
   // acquirerBlock — governs agent tone throughout via NARRATIVE_RULES
@@ -2414,7 +2458,8 @@ This is a post-acquisition analysis. ${company} was acquired by ${acqName}. Fram
   } else if (companyMode === "parent" && parentName) {
     acquirerBlock = `
 BRAND-WITHIN-PARENT CONTEXT:
-${company} is a brand that is part of ${parentName}. This is NOT a post-acquisition analysis — there was no acquisition event. ${parentName}'s infrastructure (manufacturing, distribution, procurement, sales force) is fully available to ${company} and should be treated as the operating reality, not a future synergy to unlock. The strategic questions are: (1) how does ${company} win in its category given that it already has ${parentName}'s scale behind it, (2) where does ${company} need to differentiate itself from ${parentName}'s other brands, and (3) what does ${company} need that ${parentName} cannot or should not provide. Do NOT fabricate integration timelines, synergy capture phases, or acquisition-era org design decisions — that framing does not apply here. Do NOT describe ${parentName}'s assets as "untapped" if they are clearly already part of ${company}'s operating model.${integrationLine ? '\n' + integrationLine : ''}\n`;
+${company} is a brand that is part of ${parentName}. This is NOT a post-acquisition analysis — there was no acquisition event. ${parentName}'s infrastructure (manufacturing, distribution, procurement, sales force) is fully available to ${company} and should be treated as the operating reality, not a future synergy to unlock. The strategic questions are: (1) how does ${company} win in its category given that it already has ${parentName}'s scale behind it, (2) where does ${company} need to differentiate itself from ${parentName}'s other brands, and (3) what does ${company} need that ${parentName} cannot or should not provide. Do NOT fabricate integration timelines, synergy capture phases, or acquisition-era org design decisions — that framing does not apply here. Do NOT describe ${parentName}'s assets as "untapped" if they are clearly already part of ${company}'s operating model.${integrationLine ? '\n' + integrationLine : ''}
+`;
   } else {
     acquirerBlock = `
 COMPANY CONTEXT:
@@ -2436,7 +2481,8 @@ If specific revenue or financial figures are provided in the USER CONTEXT below,
 
 MARKET & CURRENCY: This analysis is for the ${market} market. Use ${currencyLabel} for ALL revenue figures throughout. Never mix currencies. Channel terminology for this market: ${channelTerms}. Do not reference channels, competitors, or metrics from other markets unless explicitly comparing.
 
-Do NOT mention any individual person's name (e.g. founders, executives) in your analysis. This is a company analysis, not a people analysis.\n
+Do NOT mention any individual person's name (e.g. founders, executives) in your analysis. This is a company analysis, not a people analysis.
+
 WRITING STYLE — MANDATORY FOR EVERY AGENT:
 
 You write in dense, precise prose — not bullet points, not numbered lists, not sub-bullets.
@@ -2472,7 +2518,8 @@ LENGTH AND COMPLETION — CRITICAL:
 
 Your analysis must be COMPLETE. Never stop mid-sentence or mid-section. You have ample token budget — use it fully. If you are running long, tighten prose rather than dropping sections. Always finish the final section with a complete sentence. A truncated analysis is a failed analysis. Target 500–650 words of dense prose. Cut repetition before cutting conclusions. For Synopsis: target 900–1100 words — completeness takes priority over brevity.
 
-WHAT'S MISSING — MANDATORY FINAL PARAGRAPH (non-synopsis agents only):\n
+WHAT'S MISSING — MANDATORY FINAL PARAGRAPH (non-synopsis agents only):
+
 The last paragraph of your prose must be titled "What This Analysis Could Not Confirm" and must do three things: (1) name the single most important data point you searched for but could not find or verify, (2) explain why its absence matters strategically — what decision it affects, (3) state what [COMPANY] should do to get that data. This paragraph should be 3–4 sentences. It is not a disclaimer. It is analysis. The absence of data is often where the most important decisions live. If you found everything you searched for, name the assumption in your analysis that is most likely to be wrong and why.
 
 DATA_BLOCKS FROM PRIOR AGENTS:
@@ -2480,7 +2527,8 @@ When prior agent outputs are provided above, each contains a <<<DATA_BLOCK>>> wi
 
 DO NOT REPEAT WHAT OTHER AGENTS COVER:
 
-You are one of 10 specialist agents. Do not write about topics that belong to another agent's mandate:\n- Market sizing and category growth → Agent 1 (market)
+You are one of 10 specialist agents. Do not write about topics that belong to another agent's mandate:
+- Market sizing and category growth → Agent 1 (market)
 - SKU mix and portfolio decisions → Agent 2 (portfolio)  
 - Brand positioning and consumer → Agent 3 (brand)
 - Margins and unit economics → Agent 4 (margins)
@@ -2813,7 +2861,8 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
 
       // Owner tag — only for absent/partial, below occasion name, never overlaps
       if (ownerLabel) {
-        // Pill background so text is legible regardless of what's behind it\n        const ow = ownerLabel.length * 4.2 + 8;
+        // Pill background so text is legible regardless of what's behind it
+        const ow = ownerLabel.length * 4.2 + 8;
         const ox = isRight ? lx + textOffX : lx + textOffX - ow;
         svg += `<rect x="${ox}" y="${ownerY - 7}" width="${ow}" height="8" rx="2" fill="${ownerCol}" fill-opacity="0.15" stroke="${ownerCol}" stroke-width="0.6"/>`;
         svg += `<text x="${lx + textOffX + (isRight ? ow/2 : -ow/2)}" y="${ownerY - 3}" text-anchor="middle" dominant-baseline="central" font-size="5.5" font-weight="700" fill="${ownerCol}">${ownerLabel}</text>`;
@@ -2875,7 +2924,8 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
     let h = `<table style="width:100%;border-collapse:collapse;font-size:7.5px;">
       <thead><tr style="background:${C.forest};color:#fff;">
         <th style="padding:5px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;width:100px;">PLAYER</th>
-        <th style="padding:5px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;">WHAT THEY'RE DOING</th>\n        <th style="padding:5px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;width:110px;">PROOF</th>
+        <th style="padding:5px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;">WHAT THEY'RE DOING</th>
+        <th style="padding:5px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;width:110px;">PROOF</th>
         <th style="padding:5px 8px;text-align:left;font-size:6.5px;letter-spacing:.06em;">IMPLICATION FOR BRAND</th>
         <th style="padding:5px 8px;text-align:center;font-size:6.5px;letter-spacing:.06em;width:40px;">PLAY</th>
       </tr></thead><tbody>`;
@@ -3434,7 +3484,8 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
   <!-- Challenger Brand Watch -->
   ${Array.isArray(p3.challengerBrands) && p3.challengerBrands.length ? `
   <div style="margin-bottom:12px;">
-    <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.coral};margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid ${C.coral};">IF YOU DON'T MOVE — THEY WILL</div>\n    <div style="display:grid;grid-template-columns:repeat(${Math.min(p3.challengerBrands.length,3)},1fr);gap:8px;">
+    <div style="font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${C.coral};margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid ${C.coral};">IF YOU DON'T MOVE — THEY WILL</div>
+    <div style="display:grid;grid-template-columns:repeat(${Math.min(p3.challengerBrands.length,3)},1fr);gap:8px;">
       ${p3.challengerBrands.slice(0,3).map(b => `
         <div style="background:#fff;border:1px solid #e8e0d5;border-radius:3px;padding:8px 10px;border-top:2.5px solid ${C.coral};height:82px;box-sizing:border-box;">
           <div style="font-size:9px;font-weight:800;color:${C.forest};margin-bottom:3px;white-space:normal;">${b.name||''}</div>
@@ -3479,7 +3530,8 @@ function md(text) {
   text = text.replace(/^[^\n]*(?:I'll conduct|I will conduct|Let me|Based on my research|I need to|I'll search|I'll analyze|I'll now|I'll begin|I'll start)[^\n]*\n/gim, '');
   text = text.replace(/^#{1,2}\s*$/gm, ''); // remove empty headers left behind
 
-  // First, fix the Sources line to ensure it's on one line\n  let fixedText = text.replace(/\*\*Sources:\*\*([^\n]*(?:\n(?!\n)[^\n]*)*)/g, (match, sources) => {
+  // First, fix the Sources line to ensure it's on one line
+  let fixedText = text.replace(/\*\*Sources:\*\*([^\n]*(?:\n(?!\n)[^\n]*)*)/g, (match, sources) => {
     const cleaned = sources.replace(/\n/g, ', ').replace(/,\s*,/g, ',').trim();
     return `**Sources:** ${cleaned}`;
   });
@@ -3529,11 +3581,13 @@ function md(text) {
       </div>`;
     }
 
-    // Extract ANALYST'S GUT CALL (## PART 4)\n    const gutMatch = fixedText.match(/##\s*PART\s*4[:\s—]*.*GUT[\s\S]*?\n([\s\S]+?)(?=\n##|$)/i);
+    // Extract ANALYST'S GUT CALL (## PART 4)
+    const gutMatch = fixedText.match(/##\s*PART\s*4[:\s—]*.*GUT[\s\S]*?\n([\s\S]+?)(?=\n##|$)/i);
     if (gutMatch) {
       const gutText = gutMatch[1].trim().replace(/\n/g,' ');
       html += `<div style="margin:14px 0;padding:14px 18px;background:#1a3325;border-radius:4px;">
-        <div style="font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:8px;">THE ANALYST'S GUT CALL</div>\n        <p style="font-size:10px;line-height:1.7;color:rgba(255,255,255,.9);font-style:italic;margin:0;">${gutText.replace(/\*\*(.+?)\*\*/g,'<strong style="color:#fff">$1</strong>')}</p>
+        <div style="font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:8px;">THE ANALYST'S GUT CALL</div>
+        <p style="font-size:10px;line-height:1.7;color:rgba(255,255,255,.9);font-style:italic;margin:0;">${gutText.replace(/\*\*(.+?)\*\*/g,'<strong style="color:#fff">$1</strong>')}</p>
       </div>`;
     }
     
@@ -3582,7 +3636,8 @@ function md(text) {
     .replace(/\[LOW\]/gi,    '<span class="conf-low">⚠ Low</span>');
 
   // Regular content (agent analysis)
-  // Special case: if content starts with ##, don't add opening <p> tag\n  const startsWithHeader = fixedText.trim().startsWith('##');
+  // Special case: if content starts with ##, don't add opening <p> tag
+  const startsWithHeader = fixedText.trim().startsWith('##');
   const openTag = startsWithHeader ? '' : '<p style="margin:6px 0;">';
   const closeTag = startsWithHeader ? '' : '</p>';
   
@@ -4156,7 +4211,8 @@ export default function AdvisorSprint() {
         try {
           text = await runAgent(id, prompt, signal, []);
         } catch(agentErr) {
-          // Agent failed — stop the sprint, don't run remaining agents\n          console.error(`[Sprint] Agent ${id} failed:`, agentErr.message);
+          // Agent failed — stop the sprint, don't run remaining agents
+          console.error(`[Sprint] Agent ${id} failed:`, agentErr.message);
           setAppState("error");
           return; // exits runSprint entirely — no more API calls
         }
@@ -4232,9 +4288,12 @@ ${JSON.stringify(briefDataBlock || {}, null, 2).slice(0, 3000)}
 
 ---
 
-## QUESTION 1: WHAT THE BRIEF SURFACED THAT YOUR CONTEXT DIDN'T PROVIDE\nList specific facts, figures, or competitors the AI found independently that were NOT in your context brief. For each: state the finding and flag whether it should be verified (found via search) or is likely reliable (well-known fact).
+## QUESTION 1: WHAT THE BRIEF SURFACED THAT YOUR CONTEXT DIDN'T PROVIDE
+List specific facts, figures, or competitors the AI found independently that were NOT in your context brief. For each: state the finding and flag whether it should be verified (found via search) or is likely reliable (well-known fact).
 
-## QUESTION 2: WHAT YOUR CONTEXT PROVIDED THAT THE BRIEF DIDN'T USE\nList specific points from your context brief that did not appear in the brief output. For each: state why it likely wasn't used (too generic, contradicted by data, framing issue) and whether it should be made more explicit next time.\n
+## QUESTION 2: WHAT YOUR CONTEXT PROVIDED THAT THE BRIEF DIDN'T USE
+List specific points from your context brief that did not appear in the brief output. For each: state why it likely wasn't used (too generic, contradicted by data, framing issue) and whether it should be made more explicit next time.
+
 ## QUESTION 3: WHAT TO ADD OR CHANGE IN YOUR CONTEXT BRIEF NEXT TIME
 Specific, copy-paste-ready suggestions. Format each as:
 ADD: "..." — why this would improve output
@@ -4314,13 +4373,17 @@ REFRAME: "..." → "..." — how to sharpen the instruction`;
     }
 
     const agentImplications = {
-      framing:     `What is the single biggest misconception about ${company}'s category that this analysis corrects?`,\n      market:      `What is the most important category shift ${company} must respond to in the next 18 months?`,
-      portfolio:   `Which SKU in ${company}'s portfolio should be killed first and why?`,\n      brand:       `What is the biggest gap between how ${company} positions itself and how consumers see it?`,
+      framing:     `What is the single biggest misconception about ${company}'s category that this analysis corrects?`,
+      market:      `What is the most important category shift ${company} must respond to in the next 18 months?`,
+      portfolio:   `Which SKU in ${company}'s portfolio should be killed first and why?`,
+      brand:       `What is the biggest gap between how ${company} positions itself and how consumers see it?`,
       margins:     `What is the single highest-impact action ${company} can take to improve gross margins?`,
       growth:      `Which growth channel is most underinvested relative to its potential for ${company}?`,
-      competitive: `What is the most plausible way a competitor breaks ${company}'s market position?`,\n      synergy:     `What is the single most valuable untapped synergy asset for ${company}?`,
+      competitive: `What is the most plausible way a competitor breaks ${company}'s market position?`,
+      synergy:     `What is the single most valuable untapped synergy asset for ${company}?`,
       platform:    `What platform bet should ${company} make that it has not yet made?`,
-      intl:        `Which international market is the best analog for ${company}'s next move?`,\n      synopsis:    `Where did agents disagree most and how did you resolve the tension?`,
+      intl:        `Which international market is the best analog for ${company}'s next move?`,
+      synopsis:    `Where did agents disagree most and how did you resolve the tension?`,
     };
     questions.push(agentImplications[agentId] || `What is the most important implication of your analysis for ${company}?`);
 
@@ -4405,7 +4468,8 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\n[...truncated — fu
         const { done, value } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');\n        buffer = lines.pop();
+        const lines = buffer.split('\n');
+        buffer = lines.pop();
         for (const line of lines) {
           if (!line.startsWith('data: ')) continue;
           try {
@@ -4589,8 +4653,8 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\n[...truncated — fu
     const AGENT_SHORT = {
       framing:'Framing', market:'Market', portfolio:'Portfolio', brand:'Brand',
       margins:'Margins', growth:'Growth', competitive:'Competitive',
-      synergy:'Org Synergy', platform:'Platform', intl:'Intl Distill',
-      synopsis:'Exec Synopsis', brief:'Brief',
+      synergy:'Synergy', platform:'Platform', intl:"Int'l",
+      synopsis:'Synopsis', brief:'Brief',
     };
     const AGENT_WAVE = {
       framing:0, market:1, portfolio:1, brand:1, margins:1, growth:1, competitive:1,
@@ -4650,7 +4714,7 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\n[...truncated — fu
     // ── PAGE 1: COVER — heatmap + dependency diagram + quality score ─────
     const AGENTS_HEATMAP = ['market','portfolio','brand','margins','growth','competitive','synergy','platform','intl','synopsis','brief'];
     const AGENT_LABELS_HM = { market:'Market', portfolio:'Portfolio', brand:'Brand', margins:'Margins', growth:'Growth',
-      competitive:'Competitive', synergy:'Org Synergy', platform:'Platform', intl:'Intl Distill', synopsis:'Exec Synopsis', brief:'Brief' };
+      competitive:'Competitive', synergy:'Synergy', platform:'Platform', intl:"Int'l", synopsis:'Synopsis', brief:'Brief' };
 
     const agentConf = {};
     AGENTS_HEATMAP.forEach(id => {
@@ -4952,7 +5016,8 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\n[...truncated — fu
         return `
         <div style="margin-bottom:14px;">
           <div style="font-size:8px;font-weight:800;letter-spacing:.1em;color:${forest};margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid ${forest};">CROSS-AGENT REFERENCES — WHERE OPUS EXPLICITLY USED PRIOR AGENT OUTPUT</div>
-          <div style="font-size:6.5px;color:#64748b;margin-bottom:8px;">Moments in the thinking stream where Opus explicitly referenced or built on a specific prior agent's finding.</div>\n          ${refs.map((s,i) => `
+          <div style="font-size:6.5px;color:#64748b;margin-bottom:8px;">Moments in the thinking stream where Opus explicitly referenced or built on a specific prior agent's finding.</div>
+          ${refs.map((s,i) => `
             <div style="margin-bottom:6px;padding:7px 10px;background:#f0fdf4;border:1px solid #bbf7d0;border-left:3px solid ${forest};border-radius:2px;">
               <div style="font-size:6px;color:#166534;font-family:monospace;font-weight:700;margin-bottom:3px;">REF ${i+1} — "${s.keyword}"</div>
               <div style="font-size:7px;color:#1f2937;line-height:1.6;">${s.sentence.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
@@ -4971,13 +5036,12 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\n[...truncated — fu
 
       // ── CALCULATION PROVENANCE PANEL (Brief only) ────────────────
       // Shows every derived number in the brief with its calculation, source agent, and confidence
-      // Provenance: render whenever brief has real kpis (not fallback placeholder).
-      // gapTable/moves/marketSignals are optional — show section if populated, skip if empty.
+      // Provenance: only render if we have actual brief data fields, not fallback placeholder
       const hasBriefProvenance = id === 'brief' &&
         Array.isArray(db.kpis) && db.kpis.length > 0 &&
         db.kpis[0]?.label !== 'Analysis Complete' &&
         db.kpis[0]?.sub !== 'Data block not generated' &&
-        db.kpis[0]?.sub !== 'See prose below';
+        (Array.isArray(db.gapTable) || Array.isArray(db.moves) || Array.isArray(db.marketSignals));
       const provenanceHtml = hasBriefProvenance ? (() => {
         const esc = s => (s||'').toString().replace(/</g,'&lt;').replace(/>/g,'&gt;');
         const confCell = c => {
@@ -5180,7 +5244,8 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\n[...truncated — fu
           ${gapSections.Q1.slice(0,6).map(l=>`<div style="padding:4px 8px;border-bottom:1px solid #f0f0f0;font-size:6.5px;color:#374151;line-height:1.5;">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`).join('') || '<div style="font-size:6.5px;color:#9ca3af;padding:4px 8px;">None identified</div>'}
         </div>
         <div>
-          <div style="font-size:8px;font-weight:800;color:${navy};letter-spacing:.08em;margin-bottom:8px;padding-bottom:4px;border-bottom:1.5px solid ${navy};">Q2 — WHAT YOUR BRIEF PROVIDED BUT AI DIDN\'T USE</div>\n          ${gapSections.Q2.slice(0,6).map(l=>`<div style="padding:4px 8px;border-bottom:1px solid #f0f0f0;font-size:6.5px;color:#374151;line-height:1.5;">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`).join('') || '<div style="font-size:6.5px;color:#9ca3af;padding:4px 8px;">None identified</div>'}
+          <div style="font-size:8px;font-weight:800;color:${navy};letter-spacing:.08em;margin-bottom:8px;padding-bottom:4px;border-bottom:1.5px solid ${navy};">Q2 — WHAT YOUR BRIEF PROVIDED BUT AI DIDN\'T USE</div>
+          ${gapSections.Q2.slice(0,6).map(l=>`<div style="padding:4px 8px;border-bottom:1px solid #f0f0f0;font-size:6.5px;color:#374151;line-height:1.5;">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`).join('') || '<div style="font-size:6.5px;color:#9ca3af;padding:4px 8px;">None identified</div>'}
         </div>
       </div>
       <div style="font-size:8px;font-weight:800;color:${navy};letter-spacing:.08em;margin-bottom:10px;padding-bottom:4px;border-bottom:1.5px solid ${navy};">Q3 — HOW TO IMPROVE YOUR CONTEXT BRIEF NEXT TIME</div>
@@ -5288,18 +5353,16 @@ ${pageGap}
         }
       } catch(e) { console.warn('[TracePDF] sessionStorage read:', e.message); }
 
-      // Resolve toolLogs — toolLogsRef.current is always fresh (no stale closure issue).
-      // Fall back to sessionStorage if the ref is somehow empty (e.g. page was refreshed).
-      let resolvedToolLogs = (toolLogsRef.current && Object.keys(toolLogsRef.current).length > 0)
-        ? toolLogsRef.current
-        : toolLogs;
+      // Restore toolLogs from sessionStorage if state was lost (page refresh etc.)
+      let resolvedToolLogs = toolLogs;
       try {
         const storedToolLogs = sessionStorage.getItem(`toolLogs_${company.trim()}`);
         if (storedToolLogs) {
           const parsed = JSON.parse(storedToolLogs);
-          const refCount = Object.values(resolvedToolLogs).reduce((s, l) => s + (l||[]).length, 0);
+          // Use whichever has more data
+          const stateCount = Object.values(toolLogs).reduce((s, l) => s + (l||[]).length, 0);
           const storedCount = Object.values(parsed).reduce((s, l) => s + (l||[]).length, 0);
-          if (storedCount > refCount) resolvedToolLogs = parsed;
+          if (storedCount > stateCount) resolvedToolLogs = parsed;
         }
       } catch(e) { console.warn('[TracePDF] toolLogs restore:', e.message); }
 
@@ -5890,7 +5953,7 @@ ${pageGap}
                       if (e.key === 'Enter' && !e.shiftKey && !drawerLoading) { e.preventDefault(); sendDrawerMessage(); }
                       if (e.key === 'Escape') { e.preventDefault(); closeDrawer(); }
                     }}
-                    placeholder={`Ask the ${agentMeta.label || 'agent'} Agent…`}
+                    placeholder={`Ask the ${agentMeta.label || 'agent'}…`}
                     disabled={drawerLoading}
                     style={{ flex: 1, background: P.white, border: `1px solid ${P.sand}`, borderRadius: 4, padding: '8px 11px', color: P.ink, fontSize: 11, fontFamily: "'Instrument Sans', sans-serif", outline: 'none' }}
                   />
