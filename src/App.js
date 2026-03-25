@@ -2182,7 +2182,7 @@ function renderAgentVisuals(agentId, db, market="India") {
   return h;
 }
 
-function buildPDFHtml({ company, acquirer, parentCo="", parentSince="", companyMode="standalone", results, dataBlocks, sources, elapsed, market="India" }) {
+function buildPDFHtml({ company, acquirer, parentCo="", parentSince="", companyMode="standalone", results, dataBlocks, sources, elapsed, market="India", shareUrl="" }) {
   const acq = acquirer && acquirer.trim() ? acquirer.trim() : null;
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -5516,7 +5516,7 @@ ${pageGap}
           });
         }
       } catch(e) { console.warn('[FullPDF] sessionStorage read:', e.message); }
-      const html = buildPDFHtml({ company, acquirer, parentCo, parentSince, companyMode, results: resolvedResults, dataBlocks: resolvedDataBlocks, sources, elapsed, market });
+      const html = buildPDFHtml({ company, acquirer, parentCo, parentSince, companyMode, results: resolvedResults, dataBlocks: resolvedDataBlocks, sources, elapsed, market, shareUrl: shareUrl || '' });
       const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
         method: 'POST',
         headers: authHeaders(),
