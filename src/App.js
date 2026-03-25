@@ -4411,8 +4411,7 @@ ${JSON.stringify(db, null, 2)}`
       ? `
 
 YOUR REASONING TRACE:
-${thinking.slice(0, 4000)}${thinking.length > 4000 ? '
-[...truncated...]' : ''}`
+${thinking.slice(0, 4000)}${thinking.length > 4000 ? '\n[...truncated...]' : ''}`
       : '';
     const searchStr = toolLog.length > 0
       ? `
@@ -4433,8 +4432,7 @@ CRITICAL RULES — follow these exactly:
 7. If the user asks about something not visible in your output above, acknowledge the analysis may be truncated and direct them to the full report.
 
 YOUR FULL ANALYSIS OUTPUT:
-${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '
-[...truncated — full analysis in report...]' : ''}${dataBlockStr}${thinkingStr}${searchStr}`;
+${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\n[...truncated — full analysis in report...]' : ''}${dataBlockStr}${thinkingStr}${searchStr}`;
   };
 
   const sendDrawerMessage = async () => {
