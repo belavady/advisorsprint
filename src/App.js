@@ -4047,9 +4047,7 @@ export default function AdvisorSprint() {
             const m = raw.match(/<<<DATA_BLOCK>>>\s*```json([\s\S]*?)```\s*<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>\s*(\{[\s\S]*\})/);
             if (m) {
               try {
-                const parsed = JSON.parse(repairJson((m[1]||m[2]||m[3]||'').trim().replace(/^```[a-z]*
-?/,'').replace(/
-?```$/,'')));
+                const parsed = JSON.parse(repairJson((m[1]||m[2]||m[3]||'').trim().replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'')));
                 const existingKpis = resolvedDataBlocks[id]?.kpis;
                 const existingIsFallback = !existingKpis ||
                   existingKpis[0]?.label === 'Analysis Complete' ||
@@ -4130,9 +4128,7 @@ export default function AdvisorSprint() {
                 resolvedResults['brief'] = altClean;
                 const altM = altRaw.match(/<<<DATA_BLOCK>>>\s*```json([\s\S]*?)```\s*<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>\s*(\{[\s\S]*\})/);
                 if (altM) {
-                  try { resolvedDataBlocks['brief'] = JSON.parse(repairJson((altM[1]||altM[2]||altM[3]||'').trim().replace(/^```[a-z]*
-?/,'').replace(/
-?```$/,''))); } catch(e) {}
+                  try { resolvedDataBlocks['brief'] = JSON.parse(repairJson((altM[1]||altM[2]||altM[3]||'').trim().replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,''))); } catch(e) {}
                 }
                 recovered = true;
                 break;
