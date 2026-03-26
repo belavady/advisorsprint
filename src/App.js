@@ -815,6 +815,10 @@ PROSE LIMIT: The entire brief contains fewer than 80 words of prose. Everything 
 
 This DATA_BLOCK is the source of truth for the visual renderer. Every visual element is built from this JSON. Be precise — wrong values here produce wrong charts.
 
+KPI RULES: Write 4 derived metrics that require calculation — not labels the CEO already knows. Each must show exact arithmetic in the sub field. e.g. "YiPPee! 18% growth vs Maggi 8% = 10pp gap x 36 months = 30 months to parity". Never write just a description. Format: {label, value (number with unit), sub (exact arithmetic), trend (up|down|flat|watch), confidence (H|M|L)}.
+
+DUPLICATE KEY WARNING: marketSignals, sectionHeaders, institutionalEdge, arrivalSequence, categoryRead each appear ONCE only in the JSON below. Do not repeat them.
+
 <<<DATA_BLOCK>>>
 {
   "agent": "brief",
@@ -825,27 +829,25 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
     "confidence": "H|M|L"
   },
   "kpis": [
-    "MANDATORY: 4 DERIVED metrics that require calculation — not descriptive labels the CEO already knows.",
-    "BAD example: TAM ₹6,800 Cr. The CEO knows the TAM.",
-    "GOOD examples: 'Revenue Left on Table' = gap between brand growth rate and category growth rate × 36 months; 'Months to Parity' = how many months at current growth rate before brand reaches category leader share; 'Unactivated Distribution' = % of ITC outlets not stocking this brand × average outlet revenue; 'Challenger Velocity' = rate at which D2C challengers are growing vs brand growth rate.",
-    "Each KPI must make the CEO think: I had not computed that.",
-    "Format: {label: short label, value: the computed number with unit, sub: THE EXACT ARITHMETIC shown inline — e.g. 'YiPPee! 18% growth vs Maggi 8% = 10pp gap × 36 months = 30 months to parity at current rates' or 'Dry noodle format ~₹800 Cr (35% of ₹2,300 Cr instant noodle addressable × format penetration est.) — YiPPee! share ~0% = ₹800 Cr uncaptured'. Never write just a description. Always write: [starting number] [operation] [factor] = [result]. Source the starting number from agent output or web search.", trend: up|down|flat|watch, confidence: H|M|L}",
-    "Do not use: TAM, Captured %, Gap ₹Cr, Trend Window — these are descriptive. Compute something from them instead."
+    {"label": "short derived metric name", "value": "computed number with unit", "sub": "exact arithmetic: starting number x factor = result", "trend": "up|down|flat|watch", "confidence": "H|M|L"},
+    {"label": "short derived metric name", "value": "computed number with unit", "sub": "exact arithmetic: starting number x factor = result", "trend": "up|down|flat|watch", "confidence": "H|M|L"},
+    {"label": "short derived metric name", "value": "computed number with unit", "sub": "exact arithmetic: starting number x factor = result", "trend": "up|down|flat|watch", "confidence": "H|M|L"},
+    {"label": "short derived metric name", "value": "computed number with unit", "sub": "exact arithmetic: starting number x factor = result", "trend": "up|down|flat|watch", "confidence": "H|M|L"}
   ],
   "occasionWheel": [
     {
-      "occasion": "Morning Snack",
+      "occasion": "occasion name",
       "sizeCr": 0,
       "status": "owned|partial|absent",
       "growth": "high|medium|low",
-      "owner": "MANDATORY for ALL statuses — never leave blank. If owned: the brand itself (e.g. 'YiPPee!', 'Bingo', 'Dark Fantasy'). If absent or partial: the specific competitor actively colonising this occasion from Agent 6 output (e.g. 'Maggi Cup', 'Wai Wai', 'Indomie', 'Nissin'). If no clear competitor yet: 'Uncontested'."
+      "owner": "brand name — if owned: this brand; if absent/partial: the specific competitor colonising it, or Uncontested"
     }
   ],
   "gapTable": [
     {
       "occasion": "occasion name",
       "categorySizeCr": 0,
-      "sizeCalculation": "show exactly how categorySizeCr was derived — e.g. 'Dry goreng: 35% of ₹2,300 Cr addressable instant noodles × format penetration 10% est. from SEA analogue = ₹800 Cr' or 'Cup noodle office occasion: 45M urban office workers × 2 meals/wk × 8% noodle penetration × ₹35 ASP × 52 weeks = ₹1,100 Cr'. This field is what appears in Calculation Provenance. It must show the arithmetic, not just a description.",
+      "sizeCalculation": "exact arithmetic showing how categorySizeCr was derived",
       "brandShare": "X%",
       "owner": "competitor name",
       "playType": "SCALE|D2C|CATEGORY CREATION",
@@ -855,20 +857,20 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
   ],
   "marketSignals": [
     {
-      "player": "brand or company name operating in this brand's home market — D2C player, challenger brand, or organised competitor. Must be operating in the home market.",
-      "action": "what they are doing differently in this category (max 40 chars) — specific format, occasion, channel, or ingredient innovation",
-      "occasion": "which occasion or format they are proving works (max 25 chars)",
-      "proofPoint": "the commercial evidence that this works — sales, reorder rate, funding raised, distribution reached (max 50 chars)",
-      "implicationForBrand": "what this means for THIS brand specifically — if a D2C player is proving this occasion works, what should the brand do? (max 60 chars)",
+      "player": "home market competitor or challenger brand name",
+      "action": "what they are doing differently — max 40 chars",
+      "occasion": "occasion or format they are proving — max 25 chars",
+      "proofPoint": "commercial evidence: sales, funding, distribution — max 50 chars",
+      "implicationForBrand": "what THIS brand must do — max 60 chars",
       "playType": "SCALE|D2C|CATEGORY CREATION"
     }
   ],
   "institutionalEdge": [
     {
-      "asset": "specific asset name — R&D capability, manufacturing unit, distribution channel, ingredient supply, IP, data, brand equity in adjacent category",
-      "status": "untapped|partial — only include assets NOT already fully activated for this category",
-      "whatItUnlocks": "specific format or occasion this asset enables for this brand that no independent competitor can replicate (max 60 chars)",
-      "activationPath": "what the CEO must do to activate this — one specific action (max 50 chars)",
+      "asset": "specific asset name",
+      "status": "untapped|partial",
+      "whatItUnlocks": "specific format or occasion this asset enables — max 60 chars",
+      "activationPath": "one specific CEO action — max 50 chars",
       "confidence": "H|M|L"
     }
   ],
@@ -882,12 +884,12 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
   ],
   "moves": [
     {
-      "title": "4 words max — name the FORMAT or OCCASION, never the consumer segment (e.g. 'Own Dry Goreng India' not 'Segment 3 Cup')",
+      "title": "4 words max — name the FORMAT or OCCASION",
       "occasion": "occasion or trend captured",
       "opportunityCr": 0,
       "playType": "SCALE|D2C|CATEGORY CREATION",
-      "scalingMechanism": "how this company specifically reaches scale — name the channel/model",
-      "orgInstruction": "what CEO must organise differently — e.g. separate P&L, ring-fence team, use full machine",
+      "scalingMechanism": "how this company reaches scale — name the channel/model",
+      "orgInstruction": "what CEO must organise differently",
       "confidence": "CONFIRMED|DERIVED|ESTIMATED|SIGNAL ONLY",
       "timeToRevenue": "Q1 26",
       "filters": ["A", "B"],
@@ -898,46 +900,35 @@ This DATA_BLOCK is the source of truth for the visual renderer. Every visual ele
   "arrivalSequence": [
     {
       "market": "KR|JP|SEA|US|UK|DE|AU",
-      "format": "the specific format or occasion arriving in the home market (max 30 chars) — not the brand name, the format",
-      "indiaInflection": "Q3 2026 — when this reaches critical mass in the home market, not when it is mainstream abroad",
-      "entryMechanism": "HOW it physically arrives — which importer/platform/channel/QSR/hotel/distributor is the vehicle (max 55 chars)",
-      "brandResponse": "what THIS brand must do specifically before this inflection point — one action (max 50 chars)",
+      "format": "specific format or occasion arriving — max 30 chars",
+      "indiaInflection": "Q3 2026 — when this reaches critical mass in home market",
+      "entryMechanism": "which importer/platform/channel is the vehicle — max 55 chars",
+      "brandResponse": "what THIS brand must do before this inflection — max 50 chars",
       "confidence": "H|M|L"
     }
   ],
   "sectionHeaders": {
-    "occasionWheel": "8 words max — what the wheel reveals about this brand specifically e.g. 'Evening owned. Morning, office, travel completely undefended.'",
-    "gapTable": "8 words max — the single most important gap pattern e.g. 'Three absent occasions, all ≥₹1,000 Cr, no Indian owner.'",
-    "marketSignals": "8 words max — what home market players are proving that this brand hasn't done yet e.g. 'D2C players proving three formats. None defended.'",
-    "institutionalEdge": "8 words max — what the institutional or structural edge is and why it matters e.g. 'Parent R&D can build what no D2C can afford.' or 'Speed and community no incumbent can replicate.'",
-    "radarGap": "8 words max — what the radar says about the transformation needed e.g. 'Format range and trend alignment are the critical gaps.'"
+    "occasionWheel": "8 words max — what the ownership pattern reveals about this brand",
+    "gapTable": "8 words max — the single most important gap pattern",
+    "marketSignals": "8 words max — what home market players are proving",
+    "institutionalEdge": "8 words max — what the institutional edge is and why it matters",
+    "radarGap": "8 words max — what the radar transformation requires"
   },
   "categoryRead": {
-    "globalTrend": "One sentence: where the CATEGORY STRUCTURE is heading — bifurcating, premiumising, commoditising, consolidating. Name the structural direction and the evidence market. Max 120 chars. NO brand names — structural direction only.",
-    "leadMarket": "KR|JP|SEA|US|UK — the single market where this structural shift is most advanced",
-    "homeMarketLag": "e.g. 'India 3-5 yrs behind SEA' — time lag only, no brand examples",
-    "implication": "One sentence: what the structural shift means for THIS brand's window — is the window opening, closing, or already closing? No brand examples. Max 120 chars."
+    "globalTrend": "one sentence: where the category structure is heading globally — max 120 chars",
+    "leadMarket": "KR|JP|SEA|US|UK — the single market most ahead on this curve",
+    "homeMarketLag": "e.g. India 3-5 yrs behind SEA",
+    "implication": "one sentence: what this means for this brand's window — max 120 chars"
   },
-  "page1Summary": "Exactly 2 sentences. S1: the single most important structural gap — which occasion is undefended, how large, who is moving into it, and why the brand's existing position creates a specific right to win that a new entrant cannot replicate. S2: the single brand constraint that makes this gap urgent NOW — what organisational or structural fact means that if the brand does not move in the next 18 months, the window closes permanently. DO NOT mention international signals — those are already visible in the trend table and signal strip above. This sentence is about the brand's India position only. Max 280 chars total. Do not start with the brand name.",
-  "boldStatement": "One sentence. Max 140 chars. Names the specific occasion or trend window, the competitor who will own it if this brand doesn't move, and the timeframe. Makes the reader feel urgency without using the word urgency.",
+  "page1Summary": "Exactly 2 sentences. S1: the single most important structural gap — which occasion, how large, who is moving into it, and why this brand has a right to win. S2: the single constraint making this gap urgent NOW. Max 280 chars total. Do not start with the brand name.",
+  "boldStatement": "One sentence. Max 140 chars. Names the specific occasion or trend window, the competitor who will own it if this brand does not move, and the timeframe.",
   "page3": {
     "needed": false,
-    "challengerBrands": [
-      {"name": "brand name", "revenueEst": "₹X Cr", "occasion": "occasion targeting", "threat": "Q3 2026", "confidence": "M"}
-    ],
+    "challengerBrands": [{"name": "brand name", "revenueEst": "X Cr", "occasion": "occasion targeting", "threat": "Q3 2026", "confidence": "M"}],
     "internationalDeep": [],
-    "questionBank": [
-      "Question for Hemant to ask brand team (max 100 chars)"
-    ],
-    "trendEvidenceLog": [
-      {"trend": "trend name", "evidence": "specific data point with source"}
-    ]
+    "questionBank": ["Question for brand team — max 100 chars"],
+    "trendEvidenceLog": [{"trend": "trend name", "evidence": "specific data point with source"}]
   },
-  "marketSignals": "HOME MARKET ONLY market signal table — pulled from Agent 6 (Competitive) and Agent 9 (Platform). For each row: name a specific player operating in this brand's home market (D2C brand, challenger brand, or organised competitor) who is doing something in this category that this brand is NOT doing. The player must be operating in the home market. The action must be specific and concrete — not generic like 'expanding distribution' but like 'launching a protein-fortified format at the home market entry price point' or 'seeding via quick commerce with a bundle targeting a specific occasion'. Use the correct currency for the home market. The proof point must be commercial evidence — sales figures, reorder rates, funding rounds, distribution reached. The implication must tell the CEO what to do specifically because of this signal. Maximum 5 rows. Do not include international players here — they belong in arrivalSequence on Page 2.",
-  "sectionHeaders": "Four dynamic sub-headers that give each section a voice specific to this brand. Each is a short declarative sentence (8 words max) that tells the reader what THIS section is saying about THIS brand — not a generic label. occasionWheel: what the ownership pattern reveals. gapTable: the single most important gap pattern. trendTable: the direction the trends point. radarGap: what the radar transformation requires. These create the narrative thread across both pages.",
-  "institutionalEdge": "CONDITIONAL on companyMode. Read the [ACQUISITION_PREAMBLE] to determine which frame applies. IF parent or acquired: pull from Agent 7 synergyMatrix the assets with status untapped or partial. CRITICAL EXCLUSION — do NOT include any distribution, placement, or channel assets (e.g. hotel placement, retail presence, outlet network) unless Agent 7 has specific cited evidence that the brand is absent from that channel. A long-established brand within a large parent will have already activated its obvious internal distribution channels — suggesting hotel placement or outlet activation as an untapped opportunity without evidence is a hallucination, not an insight. Focus ONLY on: R&D or innovation capability not yet applied to this category, manufacturing or ingredient technology not yet used for this product line, data or consumer insight assets not yet leveraged, regulatory or certification advantages not yet activated, proprietary IP or formulation capability sitting idle. Name the actual asset this specific parent/acquirer has with a specific category application. IF standalone: identify what this brand can do that a large incumbent structurally cannot — speed to market, community building, format experimentation, DTC learning loop, founder credibility. Maximum 3 assets. Only include assets with a plausible activation path specific to this brand's gaps.",
-  "arrivalSequence": "PAGE 2 ONLY. International format/occasion arrival timeline — pulled from Agent 10 (International). Each row: a specific format or occasion that is mainstream in a reference market and arriving in this brand's home market. For each: which market it is mainstream in, when it reaches critical mass in the home market, HOW it physically enters the home market (which importer/platform/channel/QSR/hotel/retailer is the vehicle), and what THIS brand must do specifically before that inflection point. Use the home market's channel terminology — e.g. for US: Instacart/DoorDash/Target/Whole Foods; for India: Blinkit/Zepto/MT/GT. Maximum 5 rows. DO NOT include any home market data here — that belongs on Page 1. DO NOT repeat anything from marketSignals. Every row must be forward-looking: arrival date, entry mechanism, brand response.",
-  "categoryRead": "CATEGORY INTELLIGENCE — drawn entirely from Agent 10 (International) output. globalTrend: one sentence on where the global category is structurally heading — is it premiumising, bifurcating, declining in one format while growing in another? Name the direction and the evidence market. leadMarket: the single reference market that is 12-36 months ahead of this brand's home market on this curve. homeMarketLag: how far behind this brand's home market is on this curve — phrase relative to home market, e.g. 'US 2 yrs behind JP/KR' or 'India 3-5 yrs behind SEA'. implication: one sentence on what this structural global shift means for this brand's strategic window — is the window opening or closing, and how fast?",
   "topActions": [
     {"action": "specific action", "impact": 0, "speed": 0, "confidence": "H|M|L"}
   ]
@@ -4031,29 +4022,50 @@ export default function AdvisorSprint() {
       // Re-parse brief DATA_BLOCK from sessionStorage — same approach as trace PDF.
       // This handles the case where repairJson failed during the sprint but the raw
       // text is intact in sessionStorage (which is what the trace already confirmed).
+      // Start with React state — this is the most reliable source since the
+      // brief agent just completed and state was set by runAgent directly.
       let resolvedDataBlocks = { ...dataBlocks };
       let resolvedResults    = { ...results };
+
+      // Log what React state has for brief
+      console.log('[BriefPDF] React state — brief result length:', (results['brief']||'').length,
+        '| brief dataBlock keys:', Object.keys(dataBlocks['brief']||{}));
+
+      // Also try sessionStorage as a fallback / supplement
       try {
         const saved = sessionStorage.getItem(`sprint_${company.trim()}`);
         if (saved) {
           const w1 = JSON.parse(saved);
-          // Re-parse every agent DATA_BLOCK from raw text
+          console.log('[BriefPDF] sessionStorage keys:', Object.keys(w1), '| brief length:', (w1['brief']||'').length);
           Object.entries(w1).forEach(([id, raw]) => {
             if (typeof raw !== 'string') return;
-            // Restore prose result
             const cleanText = raw.replace(/<<<DATA_BLOCK>>>[\s\S]*?<<<END_DATA_BLOCK>>>/g, '').trim();
-            if (cleanText) resolvedResults[id] = cleanText;
-            // Re-parse DATA_BLOCK
+            // Only overwrite if sessionStorage has MORE data than React state
+            if (cleanText && cleanText.length > (resolvedResults[id]||'').length) {
+              resolvedResults[id] = cleanText;
+            }
             const m = raw.match(/<<<DATA_BLOCK>>>\s*```json([\s\S]*?)```\s*<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>\s*(\{[\s\S]*\})/);
             if (m) {
               try {
-                const parsed = JSON.parse(repairJson((m[1]||m[2]||m[3]||'').trim().replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'')));
-                resolvedDataBlocks[id] = parsed;
+                const parsed = JSON.parse(repairJson((m[1]||m[2]||m[3]||'').trim().replace(/^```[a-z]*
+?/,'').replace(/
+?```$/,'')));
+                const existingKpis = resolvedDataBlocks[id]?.kpis;
+                const existingIsFallback = !existingKpis ||
+                  existingKpis[0]?.label === 'Analysis Complete' ||
+                  existingKpis[0]?.sub === 'Data block not generated' ||
+                  existingKpis[0]?.sub === 'See prose below';
+                // Use sessionStorage parse if React state has only fallback data
+                if (existingIsFallback) {
+                  resolvedDataBlocks[id] = parsed;
+                }
               } catch(e) {
                 console.warn('[BriefPDF] re-parse failed for', id, e.message);
               }
             }
           });
+        } else {
+          console.warn('[BriefPDF] No sessionStorage data found for key:', `sprint_${company.trim()}`);
         }
       } catch(e) { console.warn('[BriefPDF] sessionStorage read:', e.message); }
 
@@ -4061,8 +4073,18 @@ export default function AdvisorSprint() {
       const briefDb = resolvedDataBlocks['brief'] || {};
       const hasBriefData = Array.isArray(briefDb.kpis) && briefDb.kpis.length > 0 &&
                            briefDb.kpis[0]?.label !== 'Analysis Complete' &&
-                           briefDb.kpis[0]?.sub !== 'Data block not generated';
-      const hasBriefProse = (resolvedResults['brief'] || '').length > 100;
+                           briefDb.kpis[0]?.sub !== 'Data block not generated' &&
+                           briefDb.kpis[0]?.sub !== 'See prose below';
+      // Check prose in both resolved results AND raw React state
+      const briefProseLength = Math.max(
+        (resolvedResults['brief'] || '').length,
+        (results['brief'] || '').length
+      );
+      const hasBriefProse = briefProseLength > 50;
+      // If React state has prose but resolvedResults doesn't, copy it over
+      if (!resolvedResults['brief'] && results['brief']) {
+        resolvedResults['brief'] = results['brief'];
+      }
 
       // Recovery: if DATA_BLOCK is empty but prose exists, the brief was truncated mid-output.
       // Build a minimal DATA_BLOCK from what the thinking stream computed so the PDF renders.
@@ -4094,7 +4116,33 @@ export default function AdvisorSprint() {
           _truncated: true,
         };
       } else if (!hasBriefData && !hasBriefProse) {
-        throw new Error('Brief data not found. The brief agent may not have completed successfully. Click ↻ Retry Brief to try again, or run a new sprint.');
+        // Last resort: scan all sprint_* keys in sessionStorage
+        const ssKeys = [];
+        for (let i = 0; i < sessionStorage.length; i++) ssKeys.push(sessionStorage.key(i));
+        let recovered = false;
+        for (const key of ssKeys) {
+          if (key.startsWith('sprint_')) {
+            try {
+              const altW1 = JSON.parse(sessionStorage.getItem(key) || '{}');
+              const altRaw = altW1['brief'] || '';
+              const altClean = altRaw.replace(/<<<DATA_BLOCK>>>[\s\S]*?<<<END_DATA_BLOCK>>>/g, '').trim();
+              if (altClean.length > 50) {
+                resolvedResults['brief'] = altClean;
+                const altM = altRaw.match(/<<<DATA_BLOCK>>>\s*```json([\s\S]*?)```\s*<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>\s*(\{[\s\S]*\})/);
+                if (altM) {
+                  try { resolvedDataBlocks['brief'] = JSON.parse(repairJson((altM[1]||altM[2]||altM[3]||'').trim().replace(/^```[a-z]*
+?/,'').replace(/
+?```$/,''))); } catch(e) {}
+                }
+                recovered = true;
+                break;
+              }
+            } catch(e) {}
+          }
+        }
+        if (!recovered) {
+          throw new Error('Brief data not found. Please click ↻ Retry Brief to regenerate.');
+        }
       }
       const html = buildBriefHtml({ company, acquirer, parentCo, companyMode, results: resolvedResults, dataBlocks: resolvedDataBlocks, market, shareUrl: shareUrl || '' });
       const pdfRes = await fetch(API_URL.replace('/api/claude', '/api/pdf'), {
@@ -6081,6 +6129,20 @@ ${pageGap}
             <div style={{ fontSize: 13, fontWeight: 700, color: P.ink, marginBottom: 16, lineHeight: 1.4 }}>Share this link with your recipient — they can ask questions of each agent directly.</div>
             <div style={{ background: P.parchment, border: `1px solid ${P.sand}`, borderRadius: 4, padding: '10px 12px', fontFamily: 'monospace', fontSize: 10, color: P.forestSoft, wordBreak: 'break-all', marginBottom: 12 }}>
               {shareUrl}
+            </div>
+            <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', marginBottom: 12 }}>
+              <div style={{ flexShrink: 0 }}>
+                <div style={{ fontFamily: 'monospace', fontSize: 8, color: P.inkFaint, textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>Scan to open</div>
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=96x96&data=${encodeURIComponent(shareUrl)}&color=1a3325&bgcolor=f5f0e8`}
+                  alt="QR code"
+                  width={96} height={96}
+                  style={{ borderRadius: 4, border: `1px solid ${P.sand}`, display: 'block' }}
+                />
+              </div>
+              <div style={{ flex: 1, fontSize: 10, color: P.inkMid, lineHeight: 1.7, paddingTop: 22 }}>
+                Share this link or scan the QR code. Recipients can ask questions of each agent directly — they cannot run new sprints.
+              </div>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
               <button
