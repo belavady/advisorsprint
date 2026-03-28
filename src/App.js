@@ -2569,25 +2569,7 @@ ${agentPageHtml}
       }).join('') + '</div>';
   }
 
-  // ── KPI strip ────────────────────────────────────────────────────────
-  function renderKPIs(kpis) {
-    if (!kpis.length) return '';
-    const trendArrow = { up: '↑', down: '↓', flat: '→', watch: '⚠' };
-    const trendCol   = { up: C.owned, down: '#c0392b', flat: '#888', watch: C.amber };
-    const confCol    = { H: C.owned, M: C.amber, L: '#999' };
-    return `<div style="display:grid;grid-template-columns:repeat(${Math.min(kpis.length,4)},1fr);gap:6px;margin-bottom:14px;">` +
-      kpis.slice(0, 4).map(k => {
-        const tc = trendCol[k.trend] || '#888';
-        const ta = trendArrow[k.trend] || '→';
-        const cc = confCol[k.confidence] || C.amber;
-        return `<div style="background:#fff;border:1px solid #e8e0d5;border-radius:3px;padding:8px 10px;border-left:3px solid ${C.forest};">
-          <div style="font-size:7px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:3px;white-space:normal;">${k.label||''}</div>
-          <div style="font-size:16px;font-weight:900;color:${C.forest};line-height:1;">${k.value||'—'} <span style="font-size:11px;color:${tc};">${ta}</span></div>
-          <div style="font-size:7px;color:#888;margin-top:3px;white-space:normal;">${k.sub||''}</div>
-          <div style="margin-top:4px;"><span style="background:${cc};color:#fff;font-size:6px;font-weight:700;padding:1px 4px;border-radius:2px;">${k.confidence||'M'}</span></div>
-        </div>`;
-      }).join('') + '</div>';
-  }
+
 
   // renderPage3 removed — challenger brands and international signal detail
   // are now rendered inline on Page 2 (sufficient space confirmed).
