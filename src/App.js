@@ -1962,7 +1962,13 @@ ${agentPageHtml}
 </html>`;
 }
 
-// ── makePrompt moved to server.js (private repo) ─────────────────────────
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// buildBriefHtml — CEO Opportunity Brief — standalone 2-page PDF
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalone", results, dataBlocks, market="India" }) {
+  const db = dataBlocks['brief'] || {};
   const wasTruncated = db._truncated === true;
   const isUS     = market === 'US' || market === 'Global';
   const CUR_SYM  = isUS ? '$' : '₹';
@@ -2569,7 +2575,25 @@ ${agentPageHtml}
       }).join('') + '</div>';
   }
 
-
+  // ── KPI strip ────────────────────────────────────────────────────────
+  function renderBriefKPIs(kpis) {
+    if (!kpis.length) return '';
+    const trendArrow = { up: '↑', down: '↓', flat: '→', watch: '⚠' };
+    const trendCol   = { up: C.owned, down: '#c0392b', flat: '#888', watch: C.amber };
+    const confCol    = { H: C.owned, M: C.amber, L: '#999' };
+    return `<div style="display:grid;grid-template-columns:repeat(${Math.min(kpis.length,4)},1fr);gap:6px;margin-bottom:14px;">` +
+      kpis.slice(0, 4).map(k => {
+        const tc = trendCol[k.trend] || '#888';
+        const ta = trendArrow[k.trend] || '→';
+        const cc = confCol[k.confidence] || C.amber;
+        return `<div style="background:#fff;border:1px solid #e8e0d5;border-radius:3px;padding:8px 10px;border-left:3px solid ${C.forest};">
+          <div style="font-size:7px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:3px;white-space:normal;">${k.label||''}</div>
+          <div style="font-size:16px;font-weight:900;color:${C.forest};line-height:1;">${k.value||'—'} <span style="font-size:11px;color:${tc};">${ta}</span></div>
+          <div style="font-size:7px;color:#888;margin-top:3px;white-space:normal;">${k.sub||''}</div>
+          <div style="margin-top:4px;"><span style="background:${cc};color:#fff;font-size:6px;font-weight:700;padding:1px 4px;border-radius:2px;">${k.confidence||'M'}</span></div>
+        </div>`;
+      }).join('') + '</div>';
+  }
 
   // renderPage3 removed — challenger brands and international signal detail
   // are now rendered inline on Page 2 (sufficient space confirmed).
@@ -2585,7 +2609,7 @@ ${agentPageHtml}
 <html>
 <head>
 <meta charset="UTF-8">
-<!-- Google Fonts removed — causes networkidle0 hang on Render Puppeteer. Using system font fallbacks. -->
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #eee; }
@@ -2777,16 +2801,6 @@ ${agentPageHtml}
     <div style="font-size:${boldStatement.length > 100 ? '11' : '13'}px;font-weight:700;color:#fff;line-height:1.5;font-style:italic;">${boldStatement}</div>
   </div>` : ''}
 
-${shareUrl ? `
-  <div style="margin-top:14px;padding:12px 16px;background:#f0f7ff;border:2px solid #2563eb;border-radius:6px;page-break-inside:avoid;">
-    <div style="font-size:7.5px;font-weight:800;color:#2563eb;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;">&#9672; Ask the Agents &mdash; Interactive Analysis</div>
-    <div style="font-size:7.5px;color:#1a3325;line-height:1.7;margin-bottom:7px;">Open the link below to query each agent directly &mdash; ask follow-up questions, challenge findings, or go deeper on any section of this report.</div>
-    <div style="background:#2563eb;padding:6px 12px;border-radius:3px;text-align:center;">
-      <a href="${shareUrl}" style="color:#fff;font-family:monospace;font-size:7.5px;font-weight:700;text-decoration:none;letter-spacing:.04em;">${shareUrl}</a>
-    </div>
-    <div style="font-size:6.5px;color:#64748b;margin-top:5px;text-align:center;">Link expires in 30 days &middot; Recipients can ask questions but cannot run new sprints</div>
-  </div>` : ''}
-
   <!-- Footer -->
   <div style="position:absolute;bottom:18px;left:36px;right:36px;display:flex;justify-content:space-between;align-items:center;">
     <div style="font-size:6.5px;color:#aaa;letter-spacing:.06em;">ADVISORSPRINT INTELLIGENCE · CONFIDENTIAL · FOR INTERNAL USE ONLY</div>
@@ -2797,6 +2811,7 @@ ${shareUrl ? `
 </body>
 </html>`;
 }
+
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // MAIN COMPONENT
