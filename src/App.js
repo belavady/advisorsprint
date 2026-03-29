@@ -2691,6 +2691,8 @@ export default function AdvisorSprint() {
   const [appState, setAppState] = useState("idle");
   const [testMode, setTestMode] = useState(false);
   const [market, setMarket] = useState("India"); // India | US | Global // TEST MODE: runs only Agent 1 (market) to verify visuals cheaply
+  const [isPublic, setIsPublic] = useState(false);
+  const [ticker, setTicker] = useState("");
   const [results, setResults] = useState({});
   const [dataBlocks, setDataBlocks] = useState({});
   const [pdfGenerating, setPdfGenerating] = useState(false);
@@ -2709,6 +2711,7 @@ export default function AdvisorSprint() {
   const [gapAnalysisRunning, setGapAnalysisRunning] = useState(false);
   const [sources, setSources] = useState([]);
   const [statuses, setStatuses] = useState({});
+  const [dataIntel, setDataIntel] = useState(null); // { sources, label, ticker }
   const [elapsed, setElapsed] = useState(0);
   // Removed unused state: pdfs, setPdfs, userName, setUserName, showDash, setShowDash
   
@@ -2801,6 +2804,7 @@ export default function AdvisorSprint() {
             if (!line.startsWith('data: ')) continue;
             try {
               const event = JSON.parse(line.slice(6));
+              if (event.type === 'data_status') setDataIntel(event);
               if (event.type === 'chunk')     fullText += event.text;
               if (event.type === 'searching') setStatuses(s => ({ ...s, [agentId]: `searching: ${event.query.slice(0,40)}…` }));
               if (event.type === 'retrying')  setStatuses(s => ({ ...s, [agentId]: event.message || 'API overloaded — retrying…' }));
@@ -3106,6 +3110,7 @@ export default function AdvisorSprint() {
     const agentsToRun = testMode ? ['market'] : AGENTS.map(a => a.id);
     AGENTS.forEach(a => initStatus[a.id] = agentsToRun.includes(a.id) ? "queued" : "idle");
     setStatuses(initStatus);
+    setDataIntel(null);
 
     try {
       setAppState("running");
@@ -3121,7 +3126,7 @@ export default function AdvisorSprint() {
       if (!testMode) {
         setStatuses(s => ({ ...s, framing: "running" }));
         try {
-          const framingParams = { company: co, acquirer: acq, ctx, synthCtx: {}, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock: '' };
+          const framingParams = { company: co, acquirer: acq, ctx, synthCtx: {}, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock: '', isPublic, ticker: ticker.trim() };
           const framingText = await runAgent('framing', framingParams, signal, []);
           // Extract the FRAMING_BLOCK from the output
           const framingMatch = framingText.match(/<<<FRAMING_BLOCK>>>([\s\S]*?)<<<END_FRAMING_BLOCK>>>/);
@@ -3165,7 +3170,7 @@ export default function AdvisorSprint() {
         } else if (W2.includes(id)) {
           ctx_for_agent = w1texts;
         }
-        const agentParams = { company: co, acquirer: acq, ctx, synthCtx: ctx_for_agent, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock };
+        const agentParams = { company: co, acquirer: acq, ctx, synthCtx: ctx_for_agent, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock, isPublic, ticker: ticker.trim() };
         let text = "";
         try {
           text = await runAgent(id, agentParams, signal, []);
@@ -3572,7 +3577,7 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\\n[...truncated - ful
       abortRef.current = ctrl;
       const signal = ctrl.signal;
       setStatuses(s => ({ ...s, brief: "running" }));
-      const briefParams = { company: co, acquirer: acq, ctx, synthCtx: w1texts, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock: w1texts['framing'] || '' };
+      const briefParams = { company: co, acquirer: acq, ctx, synthCtx: w1texts, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock: w1texts['framing'] || '', isPublic, ticker: ticker.trim() };
       await runAgent('brief', briefParams, signal, []);
       setStatuses(s => ({ ...s, brief: "done" }));
       setAppState("done");
@@ -3605,7 +3610,7 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\\n[...truncated - ful
       const signal = ctrl.signal;
       // Run synopsis
       setStatuses(s => ({ ...s, synopsis: "running" }));
-      const synopsisParams = { company: co, acquirer: acq, ctx, synthCtx: w1texts, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock: w1texts['framing'] || '' };
+      const synopsisParams = { company: co, acquirer: acq, ctx, synthCtx: w1texts, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock: w1texts['framing'] || '', isPublic, ticker: ticker.trim() };
       const synopsisText = await runAgent('synopsis', synopsisParams, signal, []);
       w1texts['synopsis'] = synopsisText;
       sessionStorage.setItem(`sprint_${co}`, JSON.stringify(w1texts));
@@ -3614,7 +3619,7 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\\n[...truncated - ful
       await new Promise(r => setTimeout(r, 30000));
       // Run brief
       setStatuses(s => ({ ...s, brief: "running" }));
-      const briefRetryParams = { company: co, acquirer: acq, ctx, synthCtx: w1texts, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock: w1texts['framing'] || '' };
+      const briefRetryParams = { company: co, acquirer: acq, ctx, synthCtx: w1texts, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock: w1texts['framing'] || '', isPublic, ticker: ticker.trim() };
       await runAgent('brief', briefRetryParams, signal, []);
       setStatuses(s => ({ ...s, brief: "done" }));
       setAppState("done");
@@ -4645,6 +4650,35 @@ ${pageGap}
               </div>
             </div>
 
+            {/* ── Listed company toggle ─────────────────────────────────── */}
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: isPublic ? 10 : 0 }}>
+                <button
+                  onClick={() => appState !== "running" && setIsPublic(p => !p)}
+                  style={{ width: 36, height: 20, borderRadius: 10, border: "none", background: isPublic ? P.forest : P.sand, position: "relative", cursor: appState === "running" ? "not-allowed" : "pointer", transition: "background .2s", flexShrink: 0 }}>
+                  <div style={{ position: "absolute", top: 3, left: isPublic ? 18 : 3, width: 14, height: 14, borderRadius: "50%", background: P.white, transition: "left .2s" }} />
+                </button>
+                <label
+                  onClick={() => appState !== "running" && setIsPublic(p => !p)}
+                  style={{ fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, letterSpacing: ".05em", textTransform: "uppercase", color: isPublic ? P.forest : P.inkFaint, cursor: appState === "running" ? "not-allowed" : "pointer" }}>
+                  Publicly Listed Company
+                </label>
+                <span style={{ fontSize: 10, color: P.inkFaint, fontFamily: "'Instrument Sans'" }}>
+                  — enables SEC/BSE data, earnings transcripts
+                </span>
+              </div>
+              {isPublic && (
+                <input
+                  type="text"
+                  value={ticker}
+                  onChange={e => setTicker(e.target.value.toUpperCase())}
+                  disabled={appState === "running"}
+                  placeholder="Ticker symbol (optional — auto-detected if blank)"
+                  style={{ width: "100%", padding: "9px 14px", border: `2px solid ${P.sand}`, borderRadius: 4, fontFamily: "'JetBrains Mono'", fontSize: 13, background: P.white, color: P.ink, letterSpacing: ".05em" }}
+                />
+              )}
+            </div>
+
             <div style={{ marginBottom: 24 }}>
               <label style={{ display: "block", fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, letterSpacing: ".05em", textTransform: "uppercase", color: P.inkMid, marginBottom: 8 }}>
                 Context & Strategic Questions
@@ -4793,6 +4827,28 @@ ${pageGap}
               )}
             </div>
           </div>
+
+          {/* ── Data Intelligence Panel ─────────────────────────────── */}
+          {dataIntel && dataIntel.sources?.length > 0 && (
+            <div style={{ marginTop: 24, marginBottom: 8 }}>
+              <div style={{ fontFamily: "'Instrument Sans'", fontSize: 10, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: P.inkMid, marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ color: P.forest }}>◈</span>
+                Data Intelligence — {dataIntel.label}
+                {dataIntel.ticker && <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, color: P.inkFaint, fontWeight: 400 }}> · {dataIntel.ticker}</span>}
+              </div>
+              <div style={{ display: "grid", gap: 4 }}>
+                {dataIntel.sources.map(s => (
+                  <div key={s.key} style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "7px 10px", background: s.status === 'ok' ? "#f0faf3" : "#faf7f0", border: `1px solid ${s.status === 'ok' ? '#c3e6cb' : P.sand}`, borderRadius: 4 }}>
+                    <span style={{ fontSize: 11, color: s.status === 'ok' ? '#28a745' : P.inkFaint, flexShrink: 0, marginTop: 1 }}>{s.status === 'ok' ? '✓' : '✗'}</span>
+                    <div style={{ flex: 1 }}>
+                      <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, fontWeight: 700, color: P.forest, letterSpacing: ".04em" }}>{s.label}</span>
+                      <span style={{ fontFamily: "'Instrument Sans'", fontSize: 10, color: P.inkSoft, marginLeft: 8 }}>{s.detail}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Progress */}
           {Object.keys(statuses).length > 0 && (
