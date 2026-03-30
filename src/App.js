@@ -3062,7 +3062,7 @@ export default function AdvisorSprint() {
   };
 
   // Look up previous sprint when company name changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (!company.trim() || company.trim().length < 3) {
       setPrevSprintFound(null);
       setFortnightlyResult(null);
