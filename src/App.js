@@ -94,15 +94,15 @@ const P = {
 
 const AGENTS = [
   { id: "framing", wave: 0, icon: "⊕", label: "Category & Competitive Framing", sub: "Establishes ground truth before all agents run" },
-  { id: "market", wave: 1, icon: "◈", label: "Market Position & Category Dynamics", sub: "Category size, growth, competitive landscape" },
+  { id: "market", wave: 1, icon: "◈", label: "Category Intelligence", sub: "Category sizing, structural forces, share dynamics" },
   { id: "portfolio", wave: 1, icon: "◉", label: "Portfolio Strategy & SKU Rationalization", sub: "Product mix, SKU performance, keep/kill/launch" },
   { id: "brand", wave: 1, icon: "◎", label: "Brand Positioning & Storytelling", sub: "Brand perception, target customer, messaging" },
-  { id: "margins", wave: 1, icon: "◐", label: "Margin Improvement & Unit Economics", sub: "COGS optimization, channel mix, profitability" },
+  { id: "margins", wave: 1, icon: "◐", label: "Profitability Engine", sub: "Margin architecture, COGS, channel unit economics" },
   { id: "growth", wave: 1, icon: "◆", label: "Growth Strategy & Channel Orchestration", sub: "GTM roadmap, geographic expansion, sales team" },
-  { id: "competitive", wave: 1, icon: "◇", label: "Competitive Battle Plan", sub: "Head-to-head analysis, attack/defend strategies" },
+  { id: "competitive", wave: 1, icon: "◇", label: "Competitive Radar", sub: "Threat mapping, attack/defend playbook" },
   { id: "synergy",  wave: 2, icon: "◈", label: "Synergy Playbook",                        sub: "Post-acquisition integration, ITC asset leverage" },
-  { id: "platform", wave: 2, icon: "◉", label: "Platform Expansion & D2C Brand Incubator", sub: "Strategic portfolio transformation" },
-  { id: "intl",     wave: 2, icon: "◎", label: "International Benchmarks & Global Playbook", sub: "Global analogs, MT/QC transitions, transferable lessons" },
+  { id: "platform", wave: 2, icon: "◉", label: "Category Adjacency", sub: "Adjacent category expansion opportunities" },
+  { id: "intl",     wave: 2, icon: "◎", label: "Global Playbook", sub: "International benchmarks, expansion playbook" },
   { id: "synopsis", wave: 3, icon: "◉", label: "Executive Synopsis",                        sub: "Strategic synthesis of all 10 agents" },
   { id: "brief",    wave: 4, icon: "◈", label: "CEO Opportunity Brief",                       sub: "2-page visual brief: gaps, occasions, trends, 18-month moves" },
 ];
@@ -2688,6 +2688,12 @@ export default function AdvisorSprint() {
   const [companyMode, setCompanyMode] = useState("standalone"); // "standalone" | "acquired" | "parent"
   const [context, setContext] = useState("");
 
+  // Fortnightly report state
+  const [prevSprintFound, setPrevSprintFound] = useState(null);
+  const [fortnightlyRunning, setFortnightlyRunning] = useState(false);
+  const [fortnightlyResult, setFortnightlyResult] = useState(null);
+  const [fortnightlyError, setFortnightlyError] = useState('');
+
   const [appState, setAppState] = useState("idle");
   const [testMode, setTestMode] = useState(false);
   const [market, setMarket] = useState("India"); // India | US | Global // TEST MODE: runs only Agent 1 (market) to verify visuals cheaply
@@ -3052,6 +3058,81 @@ export default function AdvisorSprint() {
       setBriefPdfError(e.message);
     } finally {
       setBriefPdfGenerating(false);
+    }
+  };
+
+  // Look up previous sprint when company name changes
+  React.useEffect(() => {
+    if (!company.trim() || company.trim().length < 3) {
+      setPrevSprintFound(null);
+      setFortnightlyResult(null);
+      setFortnightlyError('');
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const token = localStorage.getItem('advisor_token') || '';
+        const r = await fetch('/api/sprint-lookup?company=' + encodeURIComponent(company.trim()), {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (r.ok) {
+          const d = await r.json();
+          setPrevSprintFound(d.found && d.sprints.length > 0 ? d.sprints[0] : null);
+        }
+      } catch(e) {
+        setPrevSprintFound(null);
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [company]);
+
+  const runFortnightly = async () => {
+    if (!company.trim() || fortnightlyRunning) return;
+    setFortnightlyRunning(true);
+    setFortnightlyResult(null);
+    setFortnightlyError('');
+    try {
+      const token = localStorage.getItem('advisor_token') || '';
+      const res = await fetch('/api/fortnightly', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({
+          company: company.trim(),
+          ctx: context.trim(),
+          market: market,
+          competitors: [],
+          categoryTerms: [],
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Request failed' }));
+        throw new Error(err.error || 'Fortnightly run failed');
+      }
+      const reader = res.body.getReader();
+      const dec = new TextDecoder();
+      let buf = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        const lines = buf.split('
+');
+        buf = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const ev = JSON.parse(line.slice(6));
+            if (ev.type === 'done') {
+              setFortnightlyResult({ shareUrl: ev.shareUrl, sprintId: ev.sprintId });
+            }
+            if (ev.type === 'error') throw new Error(ev.message);
+          } catch(pe) { if (!pe.message?.startsWith('JSON')) throw pe; }
+        }
+      }
+    } catch(e) {
+      setFortnightlyError(e.message);
+    } finally {
+      setFortnightlyRunning(false);
     }
   };
 
@@ -4734,6 +4815,64 @@ ${pageGap}
               >
                 {appState === "running" ? `Running... ${formatTime(elapsed)}` : testMode ? "▶ Test Run (Agent 1 only)" : "Run Analysis"}
               </button>
+
+
+              {/* Fortnightly Update button — appears when previous sprint found */}
+              {prevSprintFound && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <button
+                    onClick={fortnightlyRunning ? undefined : runFortnightly}
+                    disabled={fortnightlyRunning || appState === 'running'}
+                    style={{
+                      padding: '12px 20px',
+                      background: fortnightlyRunning ? '#888' : '#c8893a',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: 4,
+                      fontFamily: "'Instrument Sans'",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: (fortnightlyRunning || appState === 'running') ? 'not-allowed' : 'pointer',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {fortnightlyRunning ? '⟳ Running delta...' : '↻ Fortnightly Update'}
+                  </button>
+                  <span style={{ fontSize: 9, color: '#888', fontFamily: "'Instrument Sans'", lineHeight: 1.4 }}>
+                    Baseline: {new Date(prevSprintFound.created_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })}
+                  </span>
+                </div>
+              )}
+
+              {/* Fortnightly result link */}
+              {fortnightlyResult && (
+                <a
+                  href={fortnightlyResult.shareUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    padding: '10px 16px',
+                    background: '#1a3325',
+                    color: '#c8893a',
+                    border: '1px solid #c8893a',
+                    borderRadius: 4,
+                    fontFamily: "'Instrument Sans'",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  ↗ View Fortnightly Report
+                </a>
+              )}
+
+              {/* Fortnightly error */}
+              {fortnightlyError && (
+                <span style={{ fontSize: 11, color: '#e24b4a', fontFamily: "'Instrument Sans'" }}>
+                  {fortnightlyError}
+                </span>
+              )}
 
               {/* Test mode toggle */}
               <div
