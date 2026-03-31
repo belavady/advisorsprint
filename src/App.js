@@ -3071,9 +3071,8 @@ export default function AdvisorSprint() {
     }
     const timer = setTimeout(async () => {
       try {
-        const token = localStorage.getItem('advisor_token') || '';
-        const r = await fetch('/api/sprint-lookup?company=' + encodeURIComponent(company.trim()), {
-          headers: { 'Authorization': 'Bearer ' + token }
+        const r = await fetch(API_URL.replace('/api/claude', '/api/sprint-lookup') + '?company=' + encodeURIComponent(company.trim()), {
+          headers: authHeaders()
         });
         if (r.ok) {
           const d = await r.json();
@@ -3092,10 +3091,9 @@ export default function AdvisorSprint() {
     setFortnightlyResult(null);
     setFortnightlyError('');
     try {
-      const token = localStorage.getItem('advisor_token') || '';
-      const res = await fetch('/api/fortnightly', {
+      const res = await fetch(API_URL.replace('/api/claude', '/api/fortnightly'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        headers: authHeaders(),
         body: JSON.stringify({
           company: company.trim(),
           ctx: context.trim(),
