@@ -3556,18 +3556,20 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\\n[...truncated - ful
     }
     const timer = setTimeout(async () => {
       try {
-        const token = sessionTokenRef.current || sessionToken || '';
+        console.log('[SprintLookup] checking:', company.trim());
         const r = await fetch(
-          API_URL.replace('/api/claude', '/api/sprint-lookup') + '?company=' + encodeURIComponent(company.trim()),
-          { headers: { 'Content-Type': 'application/json', 'x-session-token': token } }
+          API_URL.replace('/api/claude', '/api/sprint-lookup') + '?company=' + encodeURIComponent(company.trim())
         );
+        console.log('[SprintLookup] status:', r.status);
         if (r.ok) {
           const d = await r.json();
+          console.log('[SprintLookup] result:', d);
           setPrevSprintFound(d.found && d.sprints.length > 0 ? d.sprints[0] : null);
         } else {
           setPrevSprintFound(null);
         }
       } catch(e) {
+        console.log('[SprintLookup] error:', e.message);
         setPrevSprintFound(null);
       }
     }, 600);
