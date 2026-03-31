@@ -2724,9 +2724,9 @@ export default function AdvisorSprint() {
   const abortRef = useRef(null);
   const timerRef = useRef(null);
   const toolLogsRef = useRef({});  // mirrors toolLogs state synchronously — avoids stale closure
-  const sessionTokenRef = useRef(sessionStorage.getItem('sprint_token') || null); // avoids stale closure in callClaude
+  const sessionTokenRef = useRef(sessionStorage.getItem('sprint_token') || 'consumer-advisorsprint-2026'); // shared token — no password gate needed
   // ── Auth ─────────────────────────────────────────────────────────────────
-  const [sessionToken, setSessionToken] = useState(() => sessionStorage.getItem('sprint_token') || null);
+  const [sessionToken, setSessionToken] = useState(() => sessionStorage.getItem('sprint_token') || 'consumer-advisorsprint-2026');
   const [authPassword, setAuthPassword] = useState('');
   const [authError, setAuthError] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
