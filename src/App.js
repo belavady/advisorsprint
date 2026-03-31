@@ -3061,30 +3061,6 @@ export default function AdvisorSprint() {
     }
   };
 
-  // Look up previous sprint when company name changes
-  useEffect(() => {
-    if (!company.trim() || company.trim().length < 3) {
-      setPrevSprintFound(null);
-      setFortnightlyResult(null);
-      setFortnightlyError('');
-      return;
-    }
-    const timer = setTimeout(async () => {
-      try {
-        const r = await fetch(API_URL.replace('/api/claude', '/api/sprint-lookup') + '?company=' + encodeURIComponent(company.trim()), {
-          headers: authHeaders()
-        });
-        if (r.ok) {
-          const d = await r.json();
-          setPrevSprintFound(d.found && d.sprints.length > 0 ? d.sprints[0] : null);
-        }
-      } catch(e) {
-        setPrevSprintFound(null);
-      }
-    }, 600);
-    return () => clearTimeout(timer);
-  }, [company]);
-
   const runFortnightly = async () => {
     if (!company.trim() || fortnightlyRunning) return;
     setFortnightlyRunning(true);
@@ -3569,6 +3545,34 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\\n[...truncated - ful
     'x-session-token': sessionTokenRef.current || sessionToken || '',
     ...extra,
   });
+
+  // Look up previous sprint when company name changes — must be after authHeaders
+  useEffect(() => {
+    if (!company.trim() || company.trim().length < 3) {
+      setPrevSprintFound(null);
+      setFortnightlyResult(null);
+      setFortnightlyError('');
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const token = sessionTokenRef.current || sessionToken || '';
+        const r = await fetch(
+          API_URL.replace('/api/claude', '/api/sprint-lookup') + '?company=' + encodeURIComponent(company.trim()),
+          { headers: { 'Content-Type': 'application/json', 'x-session-token': token } }
+        );
+        if (r.ok) {
+          const d = await r.json();
+          setPrevSprintFound(d.found && d.sprints.length > 0 ? d.sprints[0] : null);
+        } else {
+          setPrevSprintFound(null);
+        }
+      } catch(e) {
+        setPrevSprintFound(null);
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [company, sessionToken]);
 
   const handleAuth = async () => {
     if (!authPassword.trim()) return;
@@ -4658,8 +4662,16 @@ ${pageGap}
                   onChange={(e) => setCompany(e.target.value)}
                   disabled={appState === "running"}
                   placeholder="e.g. Little Caesars, The Whole Truth"
-                  style={{ width: "100%", padding: "10px 14px", border: `2px solid ${P.sand}`, borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 15, background: P.white }}
+                  style={{ width: "100%", padding: "10px 14px", border: `2px solid ${prevSprintFound ? '#c8893a' : P.sand}`, borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 15, background: P.white }}
                 />
+                {prevSprintFound && (
+                  <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#c8893a', flexShrink: 0 }} />
+                    <span style={{ fontSize: 11, fontFamily: "'Instrument Sans'", color: '#c8893a', fontWeight: 600 }}>
+                      Previous sprint found · {new Date(prevSprintFound.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })} · Fortnightly Update available
+                    </span>
+                  </div>
+                )}
               </div>
               <div style={{ flex: 1 }}>
                 <label style={{ display: "block", fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, letterSpacing: ".05em", textTransform: "uppercase", color: P.inkMid, marginBottom: 8 }}>
