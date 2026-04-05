@@ -565,58 +565,27 @@ const fmtMoney = (val) => val != null ? `${CUR}${val}${UNIT}` : 'N/A';
 
 // ── REPAIR JSON — fixes model JSON malformations before JSON.parse ────────
 function repairJson(raw) {
-  // Step 1: basic cleanup
   let s = raw
-    .replace(/\/\/[^\n\r]*/g, '')
-    .replace(/\r\n|\r|\n/g, ' ')
-    .replace(/[\x00-\x09\x0b\x0c\x0e-\x1f\x7f]/g, '')
-    .replace(/,(\s*[}\]])/g, '$1')
-    .replace(/\[\s*\.\.\.\s*\]/g, '[]')
-    .replace(/\{\s*\.\.\.\s*\}/g, '{}');
+    .replace(/\/\/[^\n\r]*/g, '')        // remove // comments before newline collapse
+    .replace(/\r\n|\r|\n/g, ' ')          // literal newlines → space
+    .replace(/[\x00-\x09\x0b\x0c\x0e-\x1f\x7f]/g, '') // control chars
+    .replace(/,(\s*[}\]])/g, '$1')          // trailing commas
+    .replace(/\[\s*\.\.\.\s*\]/g, '[]') // [...] → []
+    .replace(/\{\s*\.\.\.\s*\}/g, '{}'); // {...} → {}
   const start = s.indexOf('{');
   if (start === -1) return s;
-  s = s.slice(start);
-  // Step 2: try clean parse first
-  try { JSON.parse(s); return s; } catch(e) {}
-  // Step 3: truncation recovery — walk tracking open structures, close them
-  let inStr = false, esc = false;
-  const stack = [];
-  let lastGoodPos = 0;
-  for (let i = 0; i < s.length; i++) {
+  let depth = 0, end = -1, inString = false, escape = false;
+  for (let i = start; i < s.length; i++) {
     const c = s[i];
-    if (esc) { esc = false; continue; }
-    if (c === '\\' && inStr) { esc = true; continue; }
-    if (c === '"') {
-      if (!inStr) { inStr = true; }
-      else { inStr = false; lastGoodPos = i + 1; }
-      continue;
-    }
-    if (inStr) continue;
-    if (c === '{') { stack.push('}'); continue; }
-    if (c === '[') { stack.push(']'); continue; }
-    if (c === '}' || c === ']') {
-      if (stack.length && stack[stack.length - 1] === c) { stack.pop(); lastGoodPos = i + 1; }
-      continue;
-    }
-    if (c !== ',' && c !== ':' && c !== ' ') lastGoodPos = i + 1;
-  }
-  let repaired = s.slice(0, lastGoodPos).replace(/,\s*$/, '');
-  if (inStr) repaired += '"';
-  repaired += stack.slice().reverse().join('');
-  try { JSON.parse(repaired); return repaired; } catch(e2) {}
-  // Step 4: last resort — find deepest complete object
-  let depth = 0, end = -1;
-  inStr = false; esc = false;
-  for (let i = 0; i < s.length; i++) {
-    const c = s[i];
-    if (esc) { esc = false; continue; }
-    if (c === '\\' && inStr) { esc = true; continue; }
-    if (c === '"') { inStr = !inStr; continue; }
-    if (inStr) continue;
+    if (escape) { escape = false; continue; }
+    if (c === '\\' && inString) { escape = true; continue; }
+    if (c === '"') { inString = !inString; continue; }
+    if (inString) continue;
     if (c === '{') depth++;
     else if (c === '}') { depth--; if (depth === 0) { end = i; break; } }
   }
-  return end !== -1 ? s.slice(0, end + 1) : s;
+  if (end !== -1) s = s.slice(start, end + 1);
+  return s;
 }
 
 // ── KPI ROW — 4 tiles, compact ────────────────────────────────────────────
@@ -1772,7 +1741,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
       svg += `<circle cx="${lx + dotOffX}" cy="${ly}" r="2.5" fill="${s.fill}" stroke="${s.stroke}" stroke-width="1"/>`;
 
       // Label text — wrap at natural word boundary, no hard truncation
-      const raw   = (s.occ.occasion || '').slice(0, 28);
+      const raw   = (s.occ.occasion || '').replace(/\s*\([^)]*\)/g,'').trim().slice(0, 28);
       const words = raw.split(' ');
 
       // Wrap only if multi-word AND long enough to benefit
