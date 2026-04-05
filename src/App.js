@@ -4954,6 +4954,23 @@ ${pageGap}
                       )}
                     </div>
                   )}
+                  {/* Retry Brief — shown when brief DATA_BLOCK is fallback (no schema produced) */}
+                  {(() => {
+                    const db = dataBlocks['brief'] || {};
+                    const isFallback = !db.occasionWheel || !Array.isArray(db.occasionWheel) ||
+                      (Array.isArray(db.kpis) && db.kpis[0] && (
+                        db.kpis[0].label === 'Analysis Complete' ||
+                        db.kpis[0].label === 'Brief Status' ||
+                        db.kpis[0].sub === 'Data block not generated' ||
+                        db.kpis[0].sub === 'See prose below'
+                      ));
+                    return isFallback ? (
+                      <button onClick={retryBrief} disabled={retryingBrief}
+                        style={{ padding: "12px 24px", background: retryingBrief ? "#999" : P.terra, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: retryingBrief ? "not-allowed" : "pointer" }}>
+                        {retryingBrief ? "⟳ Retrying Brief…" : "↺ Retry Brief Only"}
+                      </button>
+                    ) : null;
+                  })()}
                   <button
                     onClick={generateTracePDF}
                     disabled={tracePdfGenerating}
