@@ -565,27 +565,58 @@ const fmtMoney = (val) => val != null ? `${CUR}${val}${UNIT}` : 'N/A';
 
 // ── REPAIR JSON — fixes model JSON malformations before JSON.parse ────────
 function repairJson(raw) {
+  // Step 1: basic cleanup
   let s = raw
-    .replace(/\/\/[^\n\r]*/g, '')        // remove // comments before newline collapse
-    .replace(/\r\n|\r|\n/g, ' ')          // literal newlines → space
-    .replace(/[\x00-\x09\x0b\x0c\x0e-\x1f\x7f]/g, '') // control chars
-    .replace(/,(\s*[}\]])/g, '$1')          // trailing commas
-    .replace(/\[\s*\.\.\.\s*\]/g, '[]') // [...] → []
-    .replace(/\{\s*\.\.\.\s*\}/g, '{}'); // {...} → {}
+    .replace(/\/\/[^\n\r]*/g, '')
+    .replace(/\r\n|\r|\n/g, ' ')
+    .replace(/[\x00-\x09\x0b\x0c\x0e-\x1f\x7f]/g, '')
+    .replace(/,(\s*[}\]])/g, '$1')
+    .replace(/\[\s*\.\.\.\s*\]/g, '[]')
+    .replace(/\{\s*\.\.\.\s*\}/g, '{}');
   const start = s.indexOf('{');
   if (start === -1) return s;
-  let depth = 0, end = -1, inString = false, escape = false;
-  for (let i = start; i < s.length; i++) {
+  s = s.slice(start);
+  // Step 2: try clean parse first
+  try { JSON.parse(s); return s; } catch(e) {}
+  // Step 3: truncation recovery — walk tracking open structures, close them
+  let inStr = false, esc = false;
+  const stack = [];
+  let lastGoodPos = 0;
+  for (let i = 0; i < s.length; i++) {
     const c = s[i];
-    if (escape) { escape = false; continue; }
-    if (c === '\\' && inString) { escape = true; continue; }
-    if (c === '"') { inString = !inString; continue; }
-    if (inString) continue;
+    if (esc) { esc = false; continue; }
+    if (c === '\\' && inStr) { esc = true; continue; }
+    if (c === '"') {
+      if (!inStr) { inStr = true; }
+      else { inStr = false; lastGoodPos = i + 1; }
+      continue;
+    }
+    if (inStr) continue;
+    if (c === '{') { stack.push('}'); continue; }
+    if (c === '[') { stack.push(']'); continue; }
+    if (c === '}' || c === ']') {
+      if (stack.length && stack[stack.length - 1] === c) { stack.pop(); lastGoodPos = i + 1; }
+      continue;
+    }
+    if (c !== ',' && c !== ':' && c !== ' ') lastGoodPos = i + 1;
+  }
+  let repaired = s.slice(0, lastGoodPos).replace(/,\s*$/, '');
+  if (inStr) repaired += '"';
+  repaired += stack.slice().reverse().join('');
+  try { JSON.parse(repaired); return repaired; } catch(e2) {}
+  // Step 4: last resort — find deepest complete object
+  let depth = 0, end = -1;
+  inStr = false; esc = false;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (esc) { esc = false; continue; }
+    if (c === '\\' && inStr) { esc = true; continue; }
+    if (c === '"') { inStr = !inStr; continue; }
+    if (inStr) continue;
     if (c === '{') depth++;
     else if (c === '}') { depth--; if (depth === 0) { end = i; break; } }
   }
-  if (end !== -1) s = s.slice(start, end + 1);
-  return s;
+  return end !== -1 ? s.slice(0, end + 1) : s;
 }
 
 // ── KPI ROW — 4 tiles, compact ────────────────────────────────────────────
@@ -4954,23 +4985,6 @@ ${pageGap}
                       )}
                     </div>
                   )}
-                  {/* Retry Brief — shown when brief DATA_BLOCK is fallback (no schema produced) */}
-                  {(() => {
-                    const db = dataBlocks['brief'] || {};
-                    const isFallback = !db.occasionWheel || !Array.isArray(db.occasionWheel) ||
-                      (Array.isArray(db.kpis) && db.kpis[0] && (
-                        db.kpis[0].label === 'Analysis Complete' ||
-                        db.kpis[0].label === 'Brief Status' ||
-                        db.kpis[0].sub === 'Data block not generated' ||
-                        db.kpis[0].sub === 'See prose below'
-                      ));
-                    return isFallback ? (
-                      <button onClick={retryBrief} disabled={retryingBrief}
-                        style={{ padding: "12px 24px", background: retryingBrief ? "#999" : P.terra, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: retryingBrief ? "not-allowed" : "pointer" }}>
-                        {retryingBrief ? "⟳ Retrying Brief…" : "↺ Retry Brief Only"}
-                      </button>
-                    ) : null;
-                  })()}
                   <button
                     onClick={generateTracePDF}
                     disabled={tracePdfGenerating}
