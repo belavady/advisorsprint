@@ -110,6 +110,22 @@ const AGENTS = [
 const W1 = AGENTS.filter(a => a.wave === 1).map(a => a.id);
 const W2 = AGENTS.filter(a => a.wave === 2).map(a => a.id);
 
+// ── Global Incumbent agents — wave structure mirrors consumer ──────────────
+const GLOBAL_AGENTS = [
+  { id: "g_category",  wave: 1, icon: "⊕", label: "Category Intelligence",       sub: "Global category sizing, sugar tax exposure, D2C gap, functional encroachment" },
+  { id: "g_portfolio", wave: 1, icon: "⬡", label: "Portfolio & Format Strategy",  sub: "Format presence matrix, premium gap, NFC/functional absence by market" },
+  { id: "g_brand",     wave: 1, icon: "◉", label: "Brand & Health Perception",    sub: "Health credibility radar, sugar narrative impact, generational gap" },
+  { id: "g_insurgent", wave: 1, icon: "◇", label: "New-Age Entrant Threats",      sub: "Funded insurgents, occasion erosion, private label structural threat" },
+  { id: "g_rivals",    wave: 2, icon: "⊗", label: "Incumbent Competitive",        sub: "Tropicana, Innocent, private label battle plan — including internal Coke conflict" },
+  { id: "g_system",    wave: 2, icon: "⊜", label: "System Constraint & Agility",  sub: "Coke bottler system as asset and constraint, innovation speed gap" },
+  { id: "g_channels",  wave: 2, icon: "⇡", label: "Growth & Channel Expansion",   sub: "Foodservice, vending, travel retail, eCommerce waterfall opportunity" },
+  { id: "g_markets",   wave: 2, icon: "⊞", label: "Global Portfolio Priority",    sub: "INVEST / DEFEND / HARVEST / REASSESS stance per market" },
+  { id: "g_synopsis",  wave: 3, icon: "◈", label: "Executive Synopsis",           sub: "Cross-agent collision insight — the finding no consultant would write" },
+  { id: "g_brief",     wave: 4, icon: "◆", label: "CEO Opportunity Brief",        sub: "Global strategic radar, 3 moves, bold statement" },
+];
+const GW1 = GLOBAL_AGENTS.filter(a => a.wave === 1).map(a => a.id);
+const GW2 = GLOBAL_AGENTS.filter(a => a.wave === 2).map(a => a.id);
+
 
 
 
@@ -2695,8 +2711,9 @@ export default function AdvisorSprint() {
   const [fortnightlyError, setFortnightlyError] = useState('');
 
   const [appState, setAppState] = useState("idle");
+  const [toolMode, setToolMode] = useState("consumer"); // consumer | global
   const [testMode, setTestMode] = useState(false);
-  const [market, setMarket] = useState("India"); // India | US | Global // TEST MODE: runs only Agent 1 (market) to verify visuals cheaply
+  const [market, setMarket] = useState("India"); // India | US | Global
   const [isPublic, setIsPublic] = useState(false);
   const [ticker, setTicker] = useState("");
   const [results, setResults] = useState({});
@@ -2776,7 +2793,7 @@ export default function AdvisorSprint() {
           method: 'POST',
           headers: authHeaders({ 'x-tool-name': 'advisor', 'Connection': 'keep-alive' }),
           signal,
-          body: JSON.stringify({ agentId, mode: 'consumer', ...params }),
+          body: JSON.stringify({ agentId, mode: params._modeOverride || 'consumer', ...params }),
         });
       } catch (fetchErr) {
         if (signal.aborted) throw fetchErr;
@@ -2863,9 +2880,9 @@ export default function AdvisorSprint() {
     return fullText;
   }, [setSources, setStatuses]); // uses sessionTokenRef.current to avoid stale closure
 
-  const runAgent = useCallback(async (id, params, signal, docs) => {
+  const runAgent = useCallback(async (id, params, signal, docs, modeOverride) => {
     try {
-      const text = await callClaude(id, params, signal);
+      const text = await callClaude(id, {...params, _modeOverride: modeOverride}, signal);
       if (!signal.aborted) {
         // Strip DATA_BLOCK from display — keep only prose for reader
         const dbMatch = text.match(/<<<DATA_BLOCK>>>\s*```json([\s\S]*?)```\s*<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>|<<<DATA_BLOCK>>>\s*(\{[\s\S]*\})/);
@@ -3161,18 +3178,82 @@ export default function AdvisorSprint() {
     });
 
     const initStatus = {};
-    const agentsToRun = testMode ? ['market'] : AGENTS.map(a => a.id);
-    AGENTS.forEach(a => initStatus[a.id] = agentsToRun.includes(a.id) ? "queued" : "idle");
+    const isGlobalMode = toolMode === 'global';
+    const activeAgents = isGlobalMode ? GLOBAL_AGENTS : AGENTS;
+    const agentsToRun = testMode ? (isGlobalMode ? ['g_category'] : ['market']) : activeAgents.map(a => a.id);
+    activeAgents.forEach(a => initStatus[a.id] = agentsToRun.includes(a.id) ? "queued" : "idle");
     setStatuses(initStatus);
     setDataIntel(null);
 
     try {
       setAppState("running");
       
-      // All agents run sequentially — one at a time with gap to respect 30k/min rate limit
+      // All agents run sequentially — one at a time with gap to respect rate limit
       const w1texts = {};
+
+      // ── GLOBAL MODE: no framing agent, run all 10 global agents in sequence ──
+      if (isGlobalMode) {
+        const ALL_GLOBAL_ORDERED = testMode ? ['g_category'] : [...GW1, ...GW2, 'g_synopsis', 'g_brief'];
+        let totalApiCalls = 0;
+        const MAX_GLOBAL_API_CALLS = 14;
+
+        for (const id of ALL_GLOBAL_ORDERED) {
+          if (signal.aborted) break;
+          totalApiCalls++;
+          if (totalApiCalls > MAX_GLOBAL_API_CALLS) {
+            console.error(`[GlobalSprint] API call limit reached — aborting`);
+            alert(`Safety stop: global sprint exceeded ${MAX_GLOBAL_API_CALLS} API calls. Please contact support.`);
+            abortRef.current?.abort();
+            setAppState("error");
+            return;
+          }
+          setStatuses(s => ({ ...s, [id]: "running" }));
+          // g_synopsis and g_brief get all prior outputs as synthesis context
+          let ctx_for_agent = {};
+          if (id === 'g_brief' || id === 'g_synopsis') {
+            ctx_for_agent = w1texts;
+          } else if (GW2.includes(id)) {
+            ctx_for_agent = w1texts;
+          }
+          const agentParams = {
+            company: co, acquirer: acq, ctx,
+            synthCtx: ctx_for_agent,
+            market: 'Global', // always Global for global mode
+            companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(),
+            framingBlock: '', isPublic, ticker: ticker.trim()
+          };
+          let text = "";
+          try {
+            text = await runAgent(id, agentParams, signal, [], 'global');
+          } catch(agentErr) {
+            console.error(`[GlobalSprint] Agent ${id} failed:`, agentErr.message);
+            setStatuses(s => ({ ...s, [id]: "error" }));
+            setAppState("error");
+            return;
+          }
+          w1texts[id] = text;
+          try {
+            sessionStorage.setItem(`sprint_${co}_global`, JSON.stringify(w1texts));
+          } catch(e) {}
+          if (!signal.aborted && id !== 'g_synopsis') {
+            setStatuses(s => ({ ...s, [id]: "done" }));
+            if (!testMode) await new Promise(r => setTimeout(r, 60000));
+          }
+          if (!signal.aborted && id === 'g_synopsis') {
+            setStatuses(s => ({ ...s, g_synopsis: "done" }));
+          }
+        }
+        if (!signal.aborted) {
+          setAppState("done");
+          if (wakeLock) { try { await wakeLock.release(); } catch(e) {} wakeLock = null; }
+          markSprintComplete();
+        }
+        return;
+      }
+
+      // ── CONSUMER MODE (original flow below) ─────────────────────────────
       const ALL_AGENTS_ORDERED = testMode
-        ? ['market']  // TEST MODE: single agent to verify visuals cheaply
+        ? ['market']
         : [...W1, ...W2, 'synopsis', 'brief'];
 
       // ── AGENT 0: Category & Competitive Framing — runs first, before all others ──
@@ -3624,7 +3705,7 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\\n[...truncated - ful
         headers: authHeaders(),
         body: JSON.stringify({
           company: company.trim(),
-          tool: 'consumer',
+          tool: toolMode === 'global' ? 'global' : 'consumer',
           sector: market,
           results,
           dataBlocks,
@@ -4518,7 +4599,8 @@ ${pageGap}
       let resolvedDataBlocks = { ...dataBlocks };
       let resolvedResults    = { ...results };
       try {
-        const saved = sessionStorage.getItem(`sprint_${company.trim()}`);
+        const storageKey = toolMode === 'global' ? `sprint_${company.trim()}_global` : `sprint_${company.trim()}`;
+        const saved = sessionStorage.getItem(storageKey);
         if (saved) {
           const w1 = JSON.parse(saved);
           Object.entries(w1).forEach(([id, raw]) => {
@@ -4716,7 +4798,47 @@ ${pageGap}
               </div>
             </div>
 
+            {/* ── Tool Mode toggle ─────────────────────────────────────── */}
             <div style={{ marginBottom: 24 }}>
+              <label style={{ display: "block", fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, letterSpacing: ".05em", textTransform: "uppercase", color: P.inkMid, marginBottom: 8 }}>
+                Analysis Mode
+              </label>
+              <div style={{ display: "flex", gap: 8 }}>
+                {[
+                  { id: "consumer", label: "Consumer / FMCG", sub: "D2C brands, India/US/Global" },
+                  { id: "global",   label: "Global Incumbent", sub: "Large multinational brands" }
+                ].map(m => (
+                  <button
+                    key={m.id}
+                    onClick={() => appState !== "running" && setToolMode(m.id)}
+                    style={{
+                      padding: "10px 16px",
+                      border: `2px solid ${toolMode === m.id ? P.forest : P.sand}`,
+                      borderRadius: 4,
+                      background: toolMode === m.id ? P.forest : P.white,
+                      color: toolMode === m.id ? P.white : P.inkMid,
+                      fontFamily: "'Instrument Sans'",
+                      fontSize: 12,
+                      fontWeight: toolMode === m.id ? 700 : 400,
+                      cursor: appState === "running" ? "not-allowed" : "pointer",
+                      letterSpacing: ".03em",
+                      textAlign: "left",
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    <div>{m.label}</div>
+                    <div style={{ fontSize: 10, opacity: 0.7, fontWeight: 400, marginTop: 2 }}>{m.sub}</div>
+                  </button>
+                ))}
+              </div>
+              {toolMode === "global" && (
+                <div style={{ marginTop: 8, padding: "8px 12px", background: "#f0f7f2", borderRadius: 4, border: `1px solid ${P.sand}`, fontSize: 11, color: P.inkMid, fontFamily: "'Instrument Sans'" }}>
+                  Global Incumbent mode runs 10 specialist agents for large multinational brands — Minute Maid, Tropicana, Nestlé, Unilever brands, etc. Market is set to Global automatically.
+                </div>
+              )}
+            </div>
+
+            <div style={{ marginBottom: 24, display: toolMode === "global" ? "none" : "block" }}>
               <label style={{ display: "block", fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, letterSpacing: ".05em", textTransform: "uppercase", color: P.inkMid, marginBottom: 8 }}>
                 Market
               </label>
@@ -4824,7 +4946,7 @@ ${pageGap}
                 disabled={!company.trim() || appState === "running" || sprintCreditUsed}
                 style={{ padding: "12px 24px", background: sprintCreditUsed ? P.inkFaint : appState === "running" ? P.inkFaint : testMode ? P.gold : P.forest, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: (appState === "running" || sprintCreditUsed) ? "not-allowed" : "pointer" }}
               >
-                {appState === "running" ? `Running... ${formatTime(elapsed)}` : testMode ? "▶ Test Run (Agent 1 only)" : "Run Analysis"}
+                {appState === "running" ? `Running... ${formatTime(elapsed)}` : testMode ? "▶ Test Run (Agent 1 only)" : toolMode === "global" ? "Run Global Analysis" : "Run Analysis"}
               </button>
 
 
@@ -4933,13 +5055,15 @@ ${pageGap}
 
               {appState === "done" && (
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                  <button
-                    onClick={generatePDF}
-                    disabled={pdfGenerating}
-                    style={{ padding: "12px 24px", background: pdfGenerating ? "#999" : P.terra, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: pdfGenerating ? "not-allowed" : "pointer" }}>
-                    {pdfGenerating ? "⟳ Generating PDF..." : "⬇ Download Full Report"}
-                  </button>
-                  {(results['brief'] || (dataBlocks['brief'] && dataBlocks['brief'].agent === 'brief')) && (
+                  {toolMode !== "global" && (
+                    <button
+                      onClick={generatePDF}
+                      disabled={pdfGenerating}
+                      style={{ padding: "12px 24px", background: pdfGenerating ? "#999" : P.terra, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: pdfGenerating ? "not-allowed" : "pointer" }}>
+                      {pdfGenerating ? "⟳ Generating PDF..." : "⬇ Download Full Report"}
+                    </button>
+                  )}
+                  {toolMode !== "global" && (results['brief'] || (dataBlocks['brief'] && dataBlocks['brief'].agent === 'brief')) && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                       <button
                         onClick={() => { setBriefPdfError(''); generateBriefPDF(); }}
@@ -4954,12 +5078,14 @@ ${pageGap}
                       )}
                     </div>
                   )}
-                  <button
-                    onClick={generateTracePDF}
-                    disabled={tracePdfGenerating}
-                    style={{ padding: "12px 24px", background: tracePdfGenerating ? "#999" : "#4c1d95", color: "#fff", border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: tracePdfGenerating ? "not-allowed" : "pointer" }}>
-                    {tracePdfGenerating ? "⟳ Building Trace..." : "⬇ Research Trace"}
-                  </button>
+                  {toolMode !== "global" && (
+                    <button
+                      onClick={generateTracePDF}
+                      disabled={tracePdfGenerating}
+                      style={{ padding: "12px 24px", background: tracePdfGenerating ? "#999" : "#4c1d95", color: "#fff", border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: tracePdfGenerating ? "not-allowed" : "pointer" }}>
+                      {tracePdfGenerating ? "⟳ Building Trace..." : "⬇ Research Trace"}
+                    </button>
+                  )}
                   {appState === "done" && (
                     <button
                       onClick={saveSprint}
@@ -5004,7 +5130,7 @@ ${pageGap}
           {Object.keys(statuses).length > 0 && (
             <div style={{ marginTop: 32 }}>
               <div style={{ display: "grid", gap: 8 }}>
-                {AGENTS.map((agent) => {
+                {(toolMode === 'global' ? GLOBAL_AGENTS : AGENTS).map((agent) => {
                   const status = statuses[agent.id];
                   const bgColor = status === "done" ? "#d4f4dd" : status === "running" ? "#fff3cd" : status === "error" ? "#f8d7da" : P.parchment;
                   
