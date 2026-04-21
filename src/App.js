@@ -659,11 +659,12 @@ function renderMarket(db) {
       h += `</div>`;
       if (pct <= 15) h += `<span style="position:absolute;left:${pct+1}%;top:50%;transform:translateY(-50%);font-size:7px;font-weight:700;color:${labelColor};">${fmtMoney(c.revenueCr)}</span>`;
       h += `</div>`;
-      h += `<div style="width:52px;flex-shrink:0;text-align:right;font-size:7px;font-weight:700;color:${(c.growthRate||0)>50?V.terra:V.green};">+${c.growthRate||0}% YoY</div>`;
+      const _grC = (c.growthRate||0) < 0 ? V.red : (c.growthRate||0) < 10 ? V.amber : V.green;
+      h += `<div style="width:52px;flex-shrink:0;text-align:right;font-size:7px;font-weight:700;color:${_grC};">+${c.growthRate||0}% YoY</div>`;
       h += `</div>`;
     });
     h += `</div>`;
-    h += `<div style="font-size:6.5px;color:${V.inkFaint};margin-bottom:8px;">Revenue (${CUR}${UNIT}) shown in bars. YoY growth rate shown right. Source: est. FY25.</div>`;
+    h += `<div style="font-size:6.5px;color:${V.inkFaint};margin-bottom:8px;">Revenue (${CUR}${UNIT}) shown in bars. YoY growth rate shown right. Source: est. most recent FY.</div>`;
   }
 
   // Channel heatmap — tighter
@@ -672,7 +673,7 @@ function renderMarket(db) {
     h += `<table style="width:100%;border-collapse:collapse;font-size:7.5px;margin-bottom:6px;">`;
     h += `<thead><tr>
       <th style="background:${V.forest};color:#fff;padding:5px 10px;text-align:left;font-size:6.5px;letter-spacing:.06em;border:1px solid ${V.forest};">Channel</th>
-      <th style="background:${V.forest};color:#fff;padding:5px 8px;text-align:center;font-size:6.5px;letter-spacing:.06em;border:1px solid ${V.forest};">Co. Presence</th>
+      <th style="background:${V.forest};color:#fff;padding:5px 8px;text-align:center;font-size:6.5px;letter-spacing:.06em;border:1px solid ${V.forest};">Brand Presence</th>
       <th style="background:${V.forest};color:#fff;padding:5px 8px;text-align:center;font-size:6.5px;letter-spacing:.06em;border:1px solid ${V.forest};">Category Growth</th>
       <th style="background:${V.forest};color:#fff;padding:5px 8px;text-align:center;font-size:6.5px;letter-spacing:.06em;border:1px solid ${V.forest};">Competitive Density</th>
     </tr></thead><tbody>`;
@@ -711,8 +712,8 @@ function renderPortfolio(db) {
     svg += `<line x1="${PL+cw/2}" y1="${PT}" x2="${PL+cw/2}" y2="${PT+ch}" stroke="${V.sand}" stroke-width="1" stroke-dasharray="3,2"/>`;
     svg += `<line x1="${PL}" y1="${PT+ch/2}" x2="${PL+cw}" y2="${PT+ch/2}" stroke="${V.sand}" stroke-width="1" stroke-dasharray="3,2"/>`;
     // Quad labels
-    [{t:'STARS',x:PL+6,y:PT+10},{t:'QUESTIONS',x:PL+cw/2+6,y:PT+10},{t:'CASH COWS',x:PL+6,y:PT+ch/2+10},{t:'DOGS',x:PL+cw/2+6,y:PT+ch/2+10}]
-      .forEach(q=>svg+=`<text x="${q.x}" y="${q.y}" fill="${V.inkFaint}" font-size="5.5" font-family="monospace" opacity=".7">${q.t}</text>`);
+    [{t:'STARS',x:PL+cw/4,y:PT+8},{t:'QUESTIONS',x:PL+3*cw/4,y:PT+8},{t:'CASH COWS',x:PL+cw/4,y:PT+ch-4},{t:'DOGS',x:PL+3*cw/4,y:PT+ch-4}]
+      .forEach(q=>svg+=`<text x="${q.x}" y="${q.y}" fill="${V.inkFaint}" font-size="5.5" font-family="monospace" opacity=".65" text-anchor="middle">${q.t}</text>`);
     // Axes labels
     svg += `<text x="${PL-5}" y="${PT+ch/2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle" transform="rotate(-90,${PL-5},${PT+ch/2})">Market Growth</text>`;
     svg += `<text x="${PL+cw/2}" y="${H-2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">Competitive Position →</text>`;
@@ -725,6 +726,15 @@ function renderPortfolio(db) {
       const c = vColors[s.verdict]||V.forest;
       svg += `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}70" stroke="${c}" stroke-width="1.5"/>`;
       svg += `<text x="${x}" y="${y+3}" fill="${V.ink}" font-size="7" text-anchor="middle" font-weight="800">${si+1}</text>`;
+      // Segment badge: T=traditional, W=western, H=healthy, O=other
+      const segMap = {traditional:'T', western:'W', healthy:'H', other:'O'};
+      const segLabel = segMap[(s.segment||'').toLowerCase()] || null;
+      const segColors = {T:'#c8922a', W:'#2563eb', H:'#16a34a', O:'#9b8c78'};
+      if (segLabel) {
+        const sc = segColors[segLabel] || '#9b8c78';
+        svg += `<rect x="${x+r-6}" y="${y-r-1}" width="10" height="10" rx="2" fill="${sc}" opacity="0.9"/>`;
+        svg += `<text x="${x+r-1}" y="${y-r+7}" fill="#fff" font-size="6" text-anchor="middle" font-weight="800">${segLabel}</text>`;
+      }
     });
     svg += `<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+ch}" stroke="${V.inkFaint}" stroke-width=".8"/>`;
     svg += `<line x1="${PL}" y1="${PT+ch}" x2="${PL+cw}" y2="${PT+ch}" stroke="${V.inkFaint}" stroke-width=".8"/>`;
@@ -871,7 +881,8 @@ function renderBrand(db) {
     svg+=`<text x="${lx+24}" y="56" fill="${V.terra}" font-size="7.5" font-weight="700">Recommended: ${rec}</text>`;
     svg+=`<text x="${lx+14}" y="74" fill="${V.inkFaint}" font-size="6">0=hide · 50=equal · 100=lead</text>`;
     svg+='</svg>';
-    h+=sectionLabel((db.itcAssociationDial&&db.itcAssociationDial.acquirerName?db.itcAssociationDial.acquirerName:'Acquirer')+' Association Strategy — Integration Dial');
+    const _dialModeLabel = 'Association Strategy';
+    h+=sectionLabel((db.itcAssociationDial&&db.itcAssociationDial.acquirerName?db.itcAssociationDial.acquirerName:'Acquirer')+' '+_dialModeLabel);
     const noteText = d.note ? `<div style="font-size:6.5px;color:${V.inkFaint};margin-top:4px;">${d.note}</div>` : '';
     h+=`<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:8px 12px;margin-bottom:8px;">${svg}${noteText}</div>`;
   }
@@ -908,7 +919,7 @@ function renderMargins(db) {
         svg+=`<text x="${x+bw/2}" y="${y+bh+8}" fill="${V.terra}" font-size="6" text-anchor="middle">${val}%</text>`;
         running+=val;
       }
-      const short=bar.label.length>9?bar.label.slice(0,8)+'…':bar.label;
+      const short=bar.label.length>14?bar.label.slice(0,13)+'…':bar.label;
       svg+=`<text x="${x+bw/2}" y="${H-PB+11}" fill="${V.inkSoft}" font-size="5.5" text-anchor="middle" transform="rotate(-30,${x+bw/2},${H-PB+11})">${short}</text>`;
     });
     svg+=`<line x1="${PL}" y1="${H-PB}" x2="${W-PR}" y2="${H-PB}" stroke="${V.sand}" stroke-width="1"/>`;
@@ -964,7 +975,7 @@ function renderGrowth(db) {
 
   // Revenue bridge — tighter
   if (db.revenueBridge && db.revenueBridge.length) {
-    h += sectionLabel('Revenue Bridge — FY25 to FY26 Target (₹ Cr)');
+    h += sectionLabel('Revenue Bridge — Growth Levers & Risks');
     const bars=db.revenueBridge;
     const W=510, H=130, PL=16, PR=10, PT=18, PB=22;
     const bw=Math.max(18,Math.floor((W-PL-PR)/bars.length)-3);
@@ -995,7 +1006,7 @@ function renderGrowth(db) {
         cursor+=val;
       }
       const label=bar.label.replace(/lever \d+ — /i,'').replace(/risk \d+ — /i,'');
-      const short=label.length>10?label.slice(0,9)+'…':label;
+      const short=label.length>15?label.slice(0,14)+'…':label;
       svg+=`<text x="${x+bw/2}" y="${H-PB+12}" fill="${V.inkSoft}" font-size="5.5" text-anchor="middle" transform="rotate(-30,${x+bw/2},${H-PB+12})">${short}</text>`;
     });
     svg+=`<line x1="${PL}" y1="${H-PB}" x2="${W-PR}" y2="${H-PB}" stroke="${V.sand}" stroke-width="1"/>`;
@@ -1005,7 +1016,7 @@ function renderGrowth(db) {
 
   // Channel mix — current vs target as stacked horizontal bars (cleaner than donuts)
   if (db.channelMixCurrent && db.channelMixTarget && db.channelMixCurrent.length) {
-    h += sectionLabel('Channel Mix — Current vs FY26 Target');
+    h += sectionLabel('Channel Mix — Current vs Target');
     const colors=[V.forest,V.terra,V.amber,V.blue,'#888'];
     const renderBar=(data,label)=>{
       let bar=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">`;
@@ -1070,10 +1081,38 @@ function renderCompetitive(db) {
     h+=`</div>`;
   }
 
+  if (db.speedThreatMatrix && db.speedThreatMatrix.length && db.speedThreatMatrix.some(r=>r.threatScore||r.speedScore)) {
+    h += sectionLabel('Threat Speed Matrix — Urgency vs Danger');
+    const stW=510,stH=130,stPL=28,stPR=10,stPT=12,stPB=22;
+    const stCW=stW-stPL-stPR,stCH=stH-stPT-stPB;
+    const stMaxRev=Math.max(...db.speedThreatMatrix.map(r=>r.revenueCr||1),1);
+    let stSvg=`<svg width="${stW}" height="${stH}">`;
+    stSvg+=`<line x1="${stPL}" y1="${stPT}" x2="${stPL}" y2="${stPT+stCH}" stroke="${V.sand}" stroke-width="1"/>`;
+    stSvg+=`<line x1="${stPL}" y1="${stPT+stCH}" x2="${stPL+stCW}" y2="${stPT+stCH}" stroke="${V.sand}" stroke-width="1"/>`;
+    stSvg+=`<line x1="${stPL+stCW/2}" y1="${stPT}" x2="${stPL+stCW/2}" y2="${stPT+stCH}" stroke="${V.sand}" stroke-width="1" stroke-dasharray="3,2"/>`;
+    stSvg+=`<line x1="${stPL}" y1="${stPT+stCH/2}" x2="${stPL+stCW}" y2="${stPT+stCH/2}" stroke="${V.sand}" stroke-width="1" stroke-dasharray="3,2"/>`;
+    stSvg+=`<rect x="${stPL+stCW/2}" y="${stPT}" width="${stCW/2}" height="${stCH/2}" fill="${V.terra}06"/>`;
+    [{t:'MONITOR',x:stPL+stCW/4,y:stPT+10},{t:'ACT NOW',x:stPL+3*stCW/4,y:stPT+10},{t:'WATCH',x:stPL+stCW/4,y:stPT+stCH-4},{t:'DEFEND',x:stPL+3*stCW/4,y:stPT+stCH-4}]
+      .forEach(q=>stSvg+=`<text x="${q.x}" y="${q.y}" fill="${V.inkFaint}" font-size="5.5" font-family="monospace" opacity=".65" text-anchor="middle">${q.t}</text>`);
+    stSvg+=`<text x="${stPL-4}" y="${stPT+stCH/2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle" transform="rotate(-90,${stPL-4},${stPT+stCH/2})">Speed →</text>`;
+    stSvg+=`<text x="${stPL+stCW/2}" y="${stH-2}" fill="${V.inkFaint}" font-size="6" text-anchor="middle">Threat Level →</text>`;
+    db.speedThreatMatrix.forEach((r,i)=>{
+      const stX=stPL+((r.threatScore||0)/10)*stCW;
+      const stY=stPT+stCH-((r.speedScore||0)/10)*stCH;
+      const stR=Math.max(6,5+((r.revenueCr||0)/stMaxRev)*10);
+      stSvg+=`<circle cx="${stX}" cy="${stY}" r="${stR}" fill="${V.terra}50" stroke="${V.terra}" stroke-width="1.5"/>`;
+      stSvg+=`<text x="${stX}" y="${stY+3}" fill="${V.ink}" font-size="6.5" text-anchor="middle" font-weight="700">${i+1}</text>`;
+    });
+    stSvg+=`</svg>`;
+    const stLeg=db.speedThreatMatrix.map((r,i)=>`<div style="display:flex;align-items:center;gap:5px;"><span style="width:15px;height:15px;border-radius:50%;background:${V.terra}50;border:1.5px solid ${V.terra};display:flex;align-items:center;justify-content:center;font-size:6.5px;font-weight:700;color:#fff;flex-shrink:0;">${i+1}</span><span style="font-size:7px;color:${V.inkMid};">${r.name}</span></div>`).join('');
+    h+=`<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:8px 12px;margin-bottom:4px;">${stSvg}</div>`;
+    h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 16px;padding:6px 12px;background:${V.parchment};border:1px solid ${V.sand};border-radius:4px;margin-bottom:8px;">${stLeg}</div>`;
+  }
+
   if (db.battleCards && db.battleCards.length) {
     h += sectionLabel('Battle Plan');
     const modeStyle={ATTACK:[V.terra,`${V.terra}12`],DEFEND:[V.green,`${V.green}10`],MONITOR:[V.amber,`${V.amber}12`]};
-    h+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;">`;
+    h+=`<div style="display:grid;grid-template-columns:repeat(${Math.min(db.battleCards.length,3)},1fr);gap:6px;margin-bottom:8px;">`;
     db.battleCards.forEach(c=>{
       const[fg,bg]=modeStyle[c.mode]||['#666','#f5f5f5'];
       h+=`<div style="background:${bg};border:1px solid ${fg}40;border-radius:4px;padding:8px 10px;border-top:3px solid ${fg};">`;
@@ -1108,7 +1147,7 @@ function renderSynergy(db) {
       const vw=((s.valueCr||0)/maxVal)*100;
       const ew=((s.ease||0)/100)*100;
       h+=`<div style="display:flex;align-items:center;gap:7px;padding:5px 8px;background:${sb};border:1px solid ${sc}30;border-radius:3px;border-left:3px solid ${sc};">`;
-      h+=`<div style="flex:1;font-size:7px;font-weight:600;color:${V.inkMid};">${s.asset.length>30?s.asset.slice(0,29)+'…':s.asset}</div>`;
+      h+=`<div style="flex:1;font-size:7px;font-weight:600;color:${V.inkMid};line-height:1.3;">${s.asset.length>55?s.asset.slice(0,54)+'…':s.asset}</div>`;
       h+=`<div style="width:70px;flex-shrink:0;">`;
       h+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:1px;"><div style="width:${vw}%;max-width:70px;height:5px;background:${sc};border-radius:2px;min-width:2px;"></div><span style="font-size:6px;color:${sc};font-weight:700;">${fmtMoney(s.valueCr)}</span></div>`;
       h+=`<div style="display:flex;align-items:center;gap:3px;"><div style="width:${ew}%;max-width:70px;height:3px;background:${sc}60;border-radius:2px;min-width:2px;"></div><span style="font-size:5.5px;color:${V.inkFaint};">ease:${s.ease}</span></div>`;
@@ -1144,7 +1183,7 @@ function renderPlatform(db) {
   let h = '';
 
   if (db.opportunityBubbles && db.opportunityBubbles.length) {
-    h += sectionLabel('Platform Opportunities — Strategic Fit × Market Growth × TAM');
+    h += sectionLabel('Adjacent Category Opportunities — Strategic Fit × Market Growth × TAM');
     const W=510, H=150, PL=28, PR=10, PT=12, PB=22;
     const cw=W-PL-PR, ch=H-PT-PB;
     const maxTam=Math.max(...db.opportunityBubbles.map(o=>o.tamCr||1),1);
@@ -1191,47 +1230,96 @@ function renderPlatform(db) {
   return h;
 }
 
-// ── AGENT 9: INTL ────────────────────────────────────────────────────────
+// ── AGENT 9: INTL ────────────────────────────────────────────
 function renderIntl(db) {
   let h = '';
 
+  // Market comparison radar — two-market framework
   if (db.marketRadar && db.marketRadar.axes && db.marketRadar.markets && db.marketRadar.markets.length) {
-    h += sectionLabel('Market Entry Radar — Multi-Dimension Comparison');
+    h += sectionLabel('Two-Market Framework — Maturity Mirror & India Analog');
     const axes=db.marketRadar.axes, markets=db.marketRadar.markets;
-    const N=axes.length, R=58, ocx=85, ocy=72, W=370, H=155;
-    const colors=[V.terra,V.forest,V.amber];
+    const N=axes.length, R=58, ocx=90, ocy=75, W=400, H=165;
+    const colors=[V.terra, V.forest, V.amber];
     const toXY=(score,axisIdx,maxScore=10)=>{
       const angle=(2*Math.PI*axisIdx/N)-Math.PI/2;
       const r2=(score/maxScore)*R;
-      return[ocx+r2*Math.cos(angle),ocy+r2*Math.sin(angle)];
+      return [ocx+r2*Math.cos(angle), ocy+r2*Math.sin(angle)];
     };
     let svg=`<svg width="${W}" height="${H}">`;
+    // Grid rings
     [0.25,0.5,0.75,1].forEach(scale=>{
       const pts=axes.map((_,i)=>toXY(scale*10,i).join(',')).join(' ');
       svg+=`<polygon points="${pts}" fill="none" stroke="${V.sand}" stroke-width="${scale===1?1:.5}"/>`;
     });
+    // Axes + labels
     axes.forEach((ax,i)=>{
       const[x,y]=toXY(10,i);
       svg+=`<line x1="${ocx}" y1="${ocy}" x2="${x}" y2="${y}" stroke="${V.sand}" stroke-width=".8"/>`;
-      const[lx,ly]=toXY(11.8,i);
-      const short=ax.length>12?ax.slice(0,11)+'…':ax;
-      svg+=`<text x="${lx}" y="${ly+2}" fill="${V.inkSoft}" font-size="6" text-anchor="middle">${short}</text>`;
+      const[lx,ly]=toXY(12.5,i);
+      const short=ax.length>18?ax.slice(0,17)+'…':ax;
+      const anchor = lx > ocx+8 ? 'start' : lx < ocx-8 ? 'end' : 'middle';
+      svg+=`<text x="${lx}" y="${ly+2}" fill="${V.inkSoft}" font-size="6" text-anchor="${anchor}">${short}</text>`;
     });
+    // Market polygons
     markets.forEach((m,mi)=>{
-      if(!m.scores||!m.scores.length)return;
-      const maxScore=Math.max(...m.scores,1);
+      if(!m.scores||!m.scores.length) return;
       const pts=m.scores.map((s,i)=>toXY(Math.min(s,10),i).join(',')).join(' ');
       svg+=`<polygon points="${pts}" fill="${colors[mi%colors.length]}20" stroke="${colors[mi%colors.length]}" stroke-width="1.5"/>`;
     });
+    // Legend
     markets.forEach((m,mi)=>{
-      svg+=`<rect x="${W-80}" y="${14+mi*16}" width="8" height="8" fill="${colors[mi%colors.length]}40" stroke="${colors[mi%colors.length]}" stroke-width="1.5" rx="1"/>`;
-      svg+=`<text x="${W-68}" y="${21+mi*16}" fill="${V.inkMid}" font-size="7">${m.name}</text>`;
+      svg+=`<rect x="${W-110}" y="${14+mi*18}" width="9" height="9" fill="${colors[mi%colors.length]}40" stroke="${colors[mi%colors.length]}" stroke-width="1.5" rx="1"/>`;
+      svg+=`<text x="${W-97}" y="${22+mi*18}" fill="${V.inkMid}" font-size="7" font-weight="600">${m.name}</text>`;
     });
     svg+='</svg>';
     h+=`<div style="background:#fff;border:1px solid ${V.sand};border-radius:4px;padding:8px 12px;margin-bottom:8px;display:inline-block;">${svg}</div>`;
   }
 
-  if (db.entryPriority && db.entryPriority.length) {
+  // Analog brand cards — lifecycle-matched playbook
+  if (db.analogBrands && db.analogBrands.length) {
+    h += sectionLabel('Analog Brand Playbook — Lifecycle-Matched Comparators');
+    const abColors = [V.terra, V.forest, V.amber];
+    h += `<div style="display:grid;gap:6px;margin-bottom:8px;">`;
+    db.analogBrands.forEach((ab, i) => {
+      const c = abColors[i % abColors.length];
+      h += `<div style="padding:8px 12px;background:#fff;border:1px solid ${V.sand};border-radius:4px;border-left:3px solid ${c};">`;
+      h += `<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:3px;">`;
+      h += `<span style="font-size:8px;font-weight:800;color:${c};">${ab.name||''}</span>`;
+      h += `<span style="font-size:6.5px;font-family:monospace;color:${V.inkFaint};">· ${ab.market||''}</span>`;
+      h += `</div>`;
+      if (ab.lifecycleStageMatch) h += `<div style="font-size:7px;color:${V.inkSoft};margin-bottom:3px;font-style:italic;">${ab.lifecycleStageMatch}</div>`;
+      if (ab.keyMoves || ab.strategy) h += `<div style="font-size:7px;color:${V.inkMid};line-height:1.4;margin-bottom:3px;"><strong>Moves: </strong>${ab.keyMoves||ab.strategy||''}</div>`;
+      if (ab.lesson) h += `<div style="font-size:7px;color:${c};font-weight:600;border-top:1px solid ${V.sand};padding-top:3px;margin-top:3px;">→ ${ab.lesson}</div>`;
+      h += `</div>`;
+    });
+    h += `</div>`;
+  }
+
+  // Trend arrival sequence
+  if (db.trendArrivalSequence && db.trendArrivalSequence.length) {
+    h += sectionLabel('Trend Arrival Sequence — What India Must Prepare For');
+    h += `<table style="width:100%;border-collapse:collapse;font-size:7px;margin-bottom:8px;">`;
+    h += `<thead><tr>`;
+    ['Trend / Format','Lead Mkt Status','India Arrival','Adoption Driver','Must Do Before'].forEach(col =>
+      h += `<th style="background:${V.forest};color:#fff;padding:5px 7px;text-align:left;font-size:6px;letter-spacing:.05em;border:1px solid ${V.forest};">${col}</th>`
+    );
+    h += `</tr></thead><tbody>`;
+    const stColors = {mainstream:V.green, building:V.amber, emerging:V.blue};
+    db.trendArrivalSequence.forEach((row, i) => {
+      const sc = stColors[row.statusInMarket1] || V.inkFaint;
+      h += `<tr>
+        <td style="padding:5px 7px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-weight:700;color:${V.forest};font-size:7px;">${row.trend||''}</td>
+        <td style="padding:5px 7px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};"><span style="background:${sc}20;color:${sc};font-family:monospace;font-size:6px;font-weight:700;padding:2px 5px;border-radius:2px;">${(row.statusInMarket1||'').toUpperCase()}</span></td>
+        <td style="padding:5px 7px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};font-family:monospace;font-weight:700;color:${V.terra};font-size:7px;">${row.expectedIndiaArrival||'—'}</td>
+        <td style="padding:5px 7px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};color:${V.inkSoft};font-size:6.5px;">${row.adoptionDriver||''}</td>
+        <td style="padding:5px 7px;background:${i%2?V.parchment:'#fff'};border:1px solid ${V.sand};color:${V.inkMid};font-weight:600;font-size:6.5px;">${row.companyAction||row.brandResponse||''}</td>
+      </tr>`;
+    });
+    h += `</tbody></table>`;
+  }
+
+  // Keep old entryPriority table for backward compat (old sprints)
+  if (db.entryPriority && db.entryPriority.length && !db.trendArrivalSequence) {
     h += sectionLabel('Market Entry Priority');
     h+=`<table style="width:100%;border-collapse:collapse;font-size:7.5px;margin-bottom:8px;">`;
     h+=`<thead><tr>`;
@@ -1264,7 +1352,7 @@ function renderSynopsis(db) {
     const vBg=v=>({STRONG:V.greenBg,WATCH:V.amberBg,OPTIMISE:V.blueBg,UNDERDELIVERED:V.redBg,RISK:V.redBg}[v]||'#f0f0f0');
     // Wrap heading + grid together so they never split across pages
     h += `<div style="break-inside:avoid;page-break-inside:avoid;">`;
-    h += sectionLabel('9-Agent Intelligence Dashboard');
+    h += sectionLabel(`${db.agentVerdicts.length}-Agent Intelligence Dashboard`);
     h+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:10px;">`;
     db.agentVerdicts.forEach(av=>{
       const vc=vColor(av.verdict),vb=vBg(av.verdict);
@@ -1721,7 +1809,7 @@ function buildBriefHtml({ company, acquirer, parentCo="", companyMode="standalon
     // ── Label angle computation with collision avoidance ──────────────
     // Use segment midpoint angles, then iteratively push apart if too close
     let labelAngles = segs.map(s => (s.startAngle + s.endAngle) / 2);
-    const MIN_GAP = 0.40; // radians — ~23 degrees minimum between adjacent labels
+    const MIN_GAP = Math.max(0.40, (2*Math.PI/Math.max(occasions.length||occs.length,1))*0.82);
     for (let iter = 0; iter < 5; iter++) {
       for (let i = 0; i < labelAngles.length; i++) {
         const next = (i + 1) % labelAngles.length;
