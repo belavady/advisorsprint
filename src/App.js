@@ -2919,6 +2919,7 @@ export default function AdvisorSprint() {
 
   // ── Cadence state ─────────────────────────────────────────────────────
   const [cadenceMode, setCadenceMode] = useState("baseline");
+  const [framingBlock, setFramingBlock] = useState("");
   const [strategicBets, setStrategicBets] = useState("");
   const [priorSprintCtx, setPriorSprintCtx] = useState("");
   const [monthlyHistoryCtx, setMonthlyHistoryCtx] = useState("");
@@ -3665,6 +3666,7 @@ export default function AdvisorSprint() {
           // Extract the FRAMING_BLOCK from the output
           const framingMatch = framingText.match(/<<<FRAMING_BLOCK>>>([\s\S]*?)<<<END_FRAMING_BLOCK>>>/);
           framingBlock = framingMatch ? framingMatch[1].trim() : framingText.trim();
+          setFramingBlock(framingBlock);
           w1texts['framing'] = framingText;
           setStatuses(s => ({ ...s, framing: "done" }));
           // Short gap before Wave 1
