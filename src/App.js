@@ -2917,6 +2917,12 @@ export default function AdvisorSprint() {
   const [companyMode, setCompanyMode] = useState("standalone"); // "standalone" | "acquired" | "parent"
   const [context, setContext] = useState("");
 
+  // ── Cadence state ─────────────────────────────────────────────────────
+  const [cadenceMode, setCadenceMode] = useState("baseline");
+  const [strategicBets, setStrategicBets] = useState("");
+  const [priorSprintCtx, setPriorSprintCtx] = useState("");
+  const [monthlyHistoryCtx, setMonthlyHistoryCtx] = useState("");
+
   // Fortnightly report state
   const [prevSprintFound, setPrevSprintFound] = useState(null);
   const [fortnightlyRunning, setFortnightlyRunning] = useState(false);
