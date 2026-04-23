@@ -6032,7 +6032,6 @@ ${pageGap}
               Link expires in 30 days · Recipients can ask questions — they cannot run sprints
             </div>
           </div>
-          </div>
         </>
       )}
 
