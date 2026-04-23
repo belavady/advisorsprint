@@ -3307,9 +3307,7 @@ export default function AdvisorSprint() {
           mode: toolMode,
           company: co,
           acquirer: acquirer.trim(),
-          ctx: (context.trim() + '
-
-' + (extraCtx||'')).trim(),
+          ctx: (context.trim() + '\n\n' + (extraCtx||'')).trim(),
           synthCtx: {},
           market,
           companyMode,
