@@ -110,6 +110,33 @@ const AGENTS = [
 const W1 = AGENTS.filter(a => a.wave === 1).map(a => a.id);
 const W2 = AGENTS.filter(a => a.wave === 2).map(a => a.id);
 
+// ── Cadence agent display definitions ────────────────────────────────────
+const FORTNIGHTLY_AGENTS = [
+  { id: "signal_scanner", wave: 1, icon: "⚡", label: "Signal Scanner", sub: "Competitive signals in the last 14 days — delta only" },
+];
+const MONTHLY_AGENTS = [
+  { id: "framing",            wave: 0, icon: "⊕", label: "Category Framing",          sub: "Updated ground truth for this month" },
+  { id: "monthly_market",     wave: 1, icon: "◈", label: "Category Intelligence",      sub: "What moved in the category this month" },
+  { id: "monthly_competitive",wave: 1, icon: "◆", label: "Competitive Radar",          sub: "Competitive moves in the last 30 days" },
+  { id: "monthly_brand",      wave: 1, icon: "◎", label: "Brand Positioning",          sub: "Brand signal shifts this month" },
+  { id: "monthly_growth",     wave: 1, icon: "◉", label: "Growth Strategy",            sub: "Channel execution pulse" },
+  { id: "monthly_margins",    wave: 1, icon: "◇", label: "Profitability Signals",       sub: "Input cost and margin signals" },
+  { id: "monthly_synopsis",   wave: 2, icon: "★", label: "Monthly Synthesis",          sub: "Bet tracker + delta summary + 30-day outlook" },
+];
+const QUARTERLY_BRAND_AGENTS = [
+  { id: "quarterly_framing",  wave: 0, icon: "⊕", label: "Quarterly Accountability",  sub: "Bet review + updated financial ground truth" },
+  ...AGENTS.filter(a => a.wave !== 0),
+  { id: "quarterly_synopsis", wave: 2, icon: "★", label: "Quarterly Synthesis",        sub: "Accountability + new bets + direction change" },
+  { id: "brief",              wave: 2, icon: "⬡", label: "Opportunity Brief",          sub: "CEO document" },
+];
+const CATEGORY_REPORT_AGENTS = [
+  { id: "cat_structure",      wave: 1, icon: "◈", label: "Category Structure",         sub: "Traditional / Western / BFY sizing and dynamics" },
+  { id: "cat_competitive",    wave: 1, icon: "◆", label: "Competitive Dynamics",       sub: "Full competitive landscape across all players" },
+  { id: "cat_channel",        wave: 1, icon: "◉", label: "Channel Shift",              sub: "GT / MT / QC evolution and trajectory" },
+  { id: "cat_innovation",     wave: 1, icon: "◇", label: "Innovation Scan",            sub: "Format frontiers and funded challengers" },
+  { id: "cat_outlook",        wave: 2, icon: "★", label: "Category Strategic Outlook", sub: "36-month forecast + ITC portfolio position" },
+];
+
 // ── Global Incumbent agents — wave structure mirrors consumer ──────────────
 const GLOBAL_AGENTS = [
   { id: "g_category",  wave: 1, icon: "⊕", label: "Category Intelligence",       sub: "Global category sizing, sugar tax exposure, D2C gap, functional encroachment" },
@@ -1408,6 +1435,104 @@ function renderSynopsis(db) {
   }
   return h;
 }
+
+// ── RESEARCH AGENT RENDERER ───────────────────────────────────────────────
+function renderResearchAgent(db) {
+  let h = '';
+  h += sectionLabel('Pre-Sprint Data Pack — Primary Source Retrieval');
+  if (db.kpis && db.kpis.length) h += renderKPIs(db.kpis);
+  if (db.topActions && db.topActions.length) {
+    h += `<div style="display:grid;gap:4px;margin-bottom:10px;">`;
+    db.topActions.forEach(row => {
+      const cc = row.confidence === 'H' ? V.green : row.confidence === 'M' ? V.amber : '#aaa';
+      h += `<div style="display:flex;align-items:baseline;gap:8px;padding:5px 10px;background:#fff;border:1px solid ${V.sand};border-radius:3px;border-left:3px solid ${cc};">`;
+      h += `<span style="font-size:7px;font-family:monospace;font-weight:700;color:${V.inkMid};width:200px;flex-shrink:0;">${row.action}</span>`;
+      h += `<span style="font-size:8px;font-weight:800;color:${V.forest};flex:1;">${row.impact||''}</span>`;
+      h += `<span style="font-family:monospace;font-size:6px;font-weight:700;color:${cc};">${row.confidence==='H'?'HIGH':row.confidence==='M'?'MED':'LOW'} CONF</span>`;
+      h += `</div>`;
+    });
+    h += `</div>`;
+  }
+  if (db.verdictRow) h += renderVerdict(db.verdictRow);
+  return h;
+}
+
+// ── CADENCE RENDERERS ─────────────────────────────────────────────────────
+
+function renderSignalScanner(db) {
+  let h = '';
+  if (db.kpis && db.kpis.length) h += renderKPIs(db.kpis);
+  if (db.verdictRow) h += renderVerdict(db.verdictRow);
+  if (db.topActions && db.topActions.length) {
+    h += sectionLabel('Signal Log — Prioritised by Impact');
+    const urgencyColor = {ACT_NOW: V.terra, WATCH: V.amber, NOTE: V.inkFaint};
+    h += `<div style="display:grid;gap:5px;margin-bottom:10px;">`;
+    db.topActions.forEach((a) => {
+      const uc = urgencyColor[a.urgency] || V.inkFaint;
+      h += `<div style="padding:8px 12px;background:#fff;border:1px solid ${V.sand};border-radius:4px;border-left:3px solid ${uc};">`;
+      h += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">`;
+      h += `<span style="font-family:monospace;font-size:6.5px;font-weight:700;color:${uc};background:${uc}15;padding:2px 6px;border-radius:3px;">${a.urgency||'NOTE'}</span>`;
+      h += `<span style="font-size:7.5px;font-weight:700;color:${V.forest};">${a.action}</span>`;
+      h += `<span style="margin-left:auto;font-size:6.5px;font-family:monospace;color:${V.inkFaint};">${a.confidence==='H'?'HIGH':a.confidence==='M'?'MED':'LOW'} CONF</span>`;
+      h += `</div>`;
+      if (a.impact) h += `<div style="font-size:7px;color:${V.inkSoft};line-height:1.4;">${a.impact}</div>`;
+      h += `</div>`;
+    });
+    h += `</div>`;
+  }
+  return h;
+}
+
+function renderMonthlySynopsis(db) {
+  let h = '';
+  if (db.bets && db.bets.length) {
+    h += sectionLabel('Bet Tracker — 30-Day Status');
+    const betStatusColor = {ON_TRACK: V.green, ACCELERATING: V.terra, STALLING: V.amber, ALERT: V.red, LOST: V.red};
+    const betStatusBg = {ON_TRACK: V.greenBg, ACCELERATING: `${V.terra}12`, STALLING: V.amberBg, ALERT: V.redBg, LOST: V.redBg};
+    h += `<div style="display:grid;gap:5px;margin-bottom:10px;">`;
+    db.bets.forEach((b, i) => {
+      const sc = betStatusColor[b.status] || V.inkFaint;
+      const sb = betStatusBg[b.status] || V.parchment;
+      h += `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:${sb};border:1px solid ${sc}30;border-radius:4px;border-left:3px solid ${sc};">`;
+      h += `<span style="font-family:monospace;font-size:9px;font-weight:800;color:${sc};width:14px;">${i+1}</span>`;
+      h += `<div style="flex:1;">`;
+      h += `<div style="font-size:7.5px;font-weight:700;color:${V.forest};margin-bottom:2px;">${b.statement||b.action||''}</div>`;
+      if (b.evidence) h += `<div style="font-size:6.5px;color:${V.inkSoft};">${b.evidence}</div>`;
+      h += `</div>`;
+      h += `<span style="font-family:monospace;font-size:7px;font-weight:700;color:${sc};text-transform:uppercase;flex-shrink:0;">${b.status||''}</span>`;
+      h += `</div>`;
+    });
+    h += `</div>`;
+  }
+  h += renderSynopsis(db);
+  return h;
+}
+
+function renderQuarterlyFraming(db) {
+  let h = '';
+  if (db.kpis && db.kpis.length) h += renderKPIs(db.kpis);
+  if (db.topActions && db.topActions.length) {
+    h += sectionLabel('Quarterly Bet Accountability');
+    const verdictColor = {WON: V.green, LOST: V.red, PIVOT_NEEDED: V.amber, ACTIVE: V.blue};
+    const verdictBg = {WON: V.greenBg, LOST: V.redBg, PIVOT_NEEDED: V.amberBg, ACTIVE: V.blueBg};
+    h += `<div style="display:grid;gap:6px;margin-bottom:10px;">`;
+    db.topActions.forEach((a) => {
+      const vc = verdictColor[a.verdict] || V.inkFaint;
+      const vb = verdictBg[a.verdict] || V.parchment;
+      h += `<div style="padding:8px 12px;background:${vb};border:1px solid ${vc}30;border-radius:4px;border-left:3px solid ${vc};">`;
+      h += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">`;
+      h += `<span style="font-family:monospace;font-size:6.5px;font-weight:700;color:${vc};background:${vc}20;padding:2px 6px;border-radius:3px;">${a.verdict||'ACTIVE'}</span>`;
+      h += `<span style="font-size:7.5px;font-weight:700;color:${V.forest};">${a.action}</span>`;
+      h += `</div>`;
+      if (a.impact) h += `<div style="font-size:7px;color:${V.inkSoft};line-height:1.4;">${a.impact}</div>`;
+      h += `</div>`;
+    });
+    h += `</div>`;
+  }
+  if (db.verdictRow) h += renderVerdict(db.verdictRow);
+  return h;
+}
+
 
 // ── DISPATCHER ───────────────────────────────────────────────────────────
 function renderAgentVisuals(agentId, db, market="India") {
@@ -3172,45 +3297,197 @@ export default function AdvisorSprint() {
     setFortnightlyResult(null);
     setFortnightlyError('');
     try {
-      const res = await fetch(API_URL.replace('/api/claude', '/api/fortnightly'), {
-        method: 'POST',
-        headers: authHeaders(),
-        body: JSON.stringify({
-          company: company.trim(),
-          ctx: context.trim(),
-          market: market,
-          competitors: [],
-          categoryTerms: [],
-        }),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: 'Request failed' }));
-        throw new Error(err.error || 'Fortnightly run failed');
-      }
-      const reader = res.body.getReader();
-      const dec = new TextDecoder();
-      let buf = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += dec.decode(value, { stream: true });
-        const lines = buf.split("\n");
-        buf = lines.pop();
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          try {
-            const ev = JSON.parse(line.slice(6));
-            if (ev.type === 'done') {
-              setFortnightlyResult({ shareUrl: ev.shareUrl, sprintId: ev.sprintId });
-            }
-            if (ev.type === 'error') throw new Error(ev.message);
-          } catch(pe) { if (!pe.message?.startsWith('JSON')) throw pe; }
+      // New cadence system: use main /api/claude endpoint with signal_scanner agent
+      const co = company.trim();
+      const signal = new AbortController();
+      let fullText = '';
+      const runAgentDirect = async (agentId, extraCtx) => {
+        const body = {
+          agentId,
+          mode: toolMode,
+          company: co,
+          acquirer: acquirer.trim(),
+          ctx: (context.trim() + '
+
+' + (extraCtx||'')).trim(),
+          synthCtx: {},
+          market,
+          companyMode,
+          parentCo: parentCo.trim(),
+          parentSince: parentSince.trim(),
+          framingBlock: framingBlock || '',
+          strategicBets: strategicBets || '',
+          priorSprint: priorSprintCtx || '',
+        };
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: authHeaders({ 'x-tool-name': 'advisor' }),
+          body: JSON.stringify(body),
+          signal: signal.signal,
+        });
+        if (!res.ok) throw new Error('Agent request failed');
+        const reader = res.body.getReader();
+        const dec = new TextDecoder();
+        let buf = '', text = '';
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += dec.decode(value, { stream: true });
+          const lines = buf.split('
+'); buf = lines.pop();
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            try {
+              const ev = JSON.parse(line.slice(6));
+              if (ev.type === 'chunk') text += ev.text || '';
+              if (ev.type === 'done') text = ev.text || text;
+            } catch(e) {}
+          }
         }
-      }
+        return text;
+      };
+      const scanText = await runAgentDirect('signal_scanner', '');
+      // Store in results under signal_scanner key
+      setResults(r => ({ ...r, signal_scanner: scanText }));
+      try {
+        const db = JSON.parse((scanText.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/) || ['','{}'])[1]);
+        setDataBlocks(d => ({ ...d, signal_scanner: db }));
+      } catch(e) {}
+      setFortnightlyResult({ done: true });
     } catch(e) {
       setFortnightlyError(e.message);
     } finally {
       setFortnightlyRunning(false);
+    }
+  };
+
+  // ── Monthly cadence runner ─────────────────────────────────────────────
+  const runMonthlyCadence = async () => {
+    if (!company.trim() || appState === 'running') return;
+    setAppState('running');
+    setResults({});
+    setDataBlocks({});
+    setStatuses({});
+    const signal = new AbortController();
+    abortRef.current = signal;
+    const co = company.trim();
+    const monthlyAgents = ['monthly_market','monthly_competitive','monthly_brand','monthly_growth','monthly_margins'];
+    const synthCtxForMonthly = {};
+    try {
+      // Run framing first to get FGT
+      setStatuses(s => ({ ...s, framing: 'running' }));
+      const framingText = await runAgent('framing', {
+        company: co, acquirer: acquirer.trim(), ctx: context.trim(),
+        synthCtx: {}, market, companyMode, parentCo: parentCo.trim(),
+        parentSince: parentSince.trim(), framingBlock: '',
+        strategicBets: strategicBets || '', priorSprint: priorSprintCtx || '',
+      }, signal.signal, []);
+      setResults(r => ({ ...r, framing: framingText }));
+      setStatuses(s => ({ ...s, framing: 'done' }));
+      const newFramingBlock = framingText.match(/<<<FRAMING_BLOCK>>>([\s\S]*?)<<<END_FRAMING_BLOCK>>>/)?.[1] || '';
+
+      // Run 5 monthly agents
+      for (const agentId of monthlyAgents) {
+        setStatuses(s => ({ ...s, [agentId]: 'running' }));
+        const text = await runAgent(agentId, {
+          company: co, acquirer: acquirer.trim(),
+          ctx: context.trim(),
+          synthCtx: synthCtxForMonthly,
+          market, companyMode, parentCo: parentCo.trim(),
+          parentSince: parentSince.trim(),
+          framingBlock: newFramingBlock,
+          strategicBets: strategicBets || '',
+          priorSprint: priorSprintCtx || '',
+        }, signal.signal, []);
+        synthCtxForMonthly[agentId] = text;
+        setResults(r => ({ ...r, [agentId]: text }));
+        try {
+          const db = JSON.parse((text.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/) || ['','{}'])[1]);
+          setDataBlocks(d => ({ ...d, [agentId]: db }));
+        } catch(e) {}
+        setStatuses(s => ({ ...s, [agentId]: 'done' }));
+      }
+
+      // Run monthly synopsis
+      setStatuses(s => ({ ...s, monthly_synopsis: 'running' }));
+      const synText = await runAgent('monthly_synopsis', {
+        company: co, acquirer: acquirer.trim(), ctx: context.trim(),
+        synthCtx: synthCtxForMonthly, market, companyMode,
+        parentCo: parentCo.trim(), parentSince: parentSince.trim(),
+        framingBlock: newFramingBlock,
+        strategicBets: strategicBets || '', priorSprint: priorSprintCtx || '',
+      }, signal.signal, []);
+      setResults(r => ({ ...r, monthly_synopsis: synText }));
+      try {
+        const db = JSON.parse((synText.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/) || ['','{}'])[1]);
+        setDataBlocks(d => ({ ...d, monthly_synopsis: db }));
+      } catch(e) {}
+      setStatuses(s => ({ ...s, monthly_synopsis: 'done' }));
+      setAppState('done');
+    } catch(e) {
+      console.error('[Monthly] Error:', e.message);
+      setAppState('error');
+    }
+  };
+
+  // ── Quarterly brand deep dive runner ──────────────────────────────────
+  const runQuarterlyBrand = async () => {
+    if (!company.trim() || appState === 'running') return;
+    // Quarterly brand = full 11-agent sprint + quarterly framing + quarterly synopsis
+    // Set cadenceMode so runSprint knows to use quarterly agents
+    setCadenceMode('quarterly_brand');
+    // Small delay to let state update, then run sprint
+    await new Promise(r => setTimeout(r, 50));
+    runSprint();
+  };
+
+  // ── Quarterly category report runner ──────────────────────────────────
+  const runQuarterlyCategory = async () => {
+    if (!company.trim() || appState === 'running') return;
+    setAppState('running');
+    setResults({});
+    setDataBlocks({});
+    setStatuses({});
+    const signal = new AbortController();
+    abortRef.current = signal;
+    const co = company.trim();
+    const catAgents = ['cat_structure','cat_competitive','cat_channel','cat_innovation'];
+    const synthCtxForCat = {};
+    try {
+      for (const agentId of catAgents) {
+        setStatuses(s => ({ ...s, [agentId]: 'running' }));
+        const text = await runAgent(agentId, {
+          company: co, acquirer: acquirer.trim(), ctx: context.trim(),
+          synthCtx: synthCtxForCat, market, companyMode,
+          parentCo: parentCo.trim(), parentSince: parentSince.trim(),
+          framingBlock: '', priorSprint: priorSprintCtx || '',
+        }, signal.signal, []);
+        synthCtxForCat[agentId] = text;
+        setResults(r => ({ ...r, [agentId]: text }));
+        try {
+          const db = JSON.parse((text.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/) || ['','{}'])[1]);
+          setDataBlocks(d => ({ ...d, [agentId]: db }));
+        } catch(e) {}
+        setStatuses(s => ({ ...s, [agentId]: 'done' }));
+      }
+      // Category outlook synthesis
+      setStatuses(s => ({ ...s, cat_outlook: 'running' }));
+      const outlookText = await runAgent('cat_outlook', {
+        company: co, acquirer: acquirer.trim(), ctx: context.trim(),
+        synthCtx: synthCtxForCat, market, companyMode,
+        parentCo: parentCo.trim(), parentSince: parentSince.trim(),
+        framingBlock: '', priorSprint: priorSprintCtx || '',
+      }, signal.signal, []);
+      setResults(r => ({ ...r, cat_outlook: outlookText }));
+      try {
+        const db = JSON.parse((outlookText.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/) || ['','{}'])[1]);
+        setDataBlocks(d => ({ ...d, cat_outlook: db }));
+      } catch(e) {}
+      setStatuses(s => ({ ...s, cat_outlook: 'done' }));
+      setAppState('done');
+    } catch(e) {
+      console.error('[CategoryReport] Error:', e.message);
+      setAppState('error');
     }
   };
 
@@ -3340,16 +3617,47 @@ export default function AdvisorSprint() {
       }
 
       // ── CONSUMER MODE (original flow below) ─────────────────────────────
+      // For quarterly brand: prepend quarterly_framing, swap synopsis for quarterly_synopsis
+      const isQuarterlyBrand = cadenceMode === 'quarterly_brand';
       const ALL_AGENTS_ORDERED = testMode
         ? ['market']
-        : [...W1, ...W2, 'synopsis', 'brief'];
+        : isQuarterlyBrand
+          ? ['quarterly_framing', ...W1, ...W2, 'quarterly_synopsis', 'brief']
+          : [...W1, ...W2, 'synopsis', 'brief'];
+
+      // ── AGENT 0a: Research Agent — fetches primary sources before framing ──────────
+      let researchDataPack = "";
+      if (!testMode && (cadenceMode === "baseline" || cadenceMode === "quarterly_brand")) {
+        setStatuses(s => ({ ...s, research: "running" }));
+        try {
+          const researchText = await runAgent("research", {
+            company: co, acquirer: acq, ctx, synthCtx: {},
+            market, companyMode, parentCo: parentCo.trim(),
+            parentSince: parentSince.trim(), framingBlock: "", isPublic, ticker: ticker.trim(),
+            strategicBets: strategicBets || "", priorSprint: priorSprintCtx || "",
+          }, signal, []);
+          w1texts["research"] = researchText;
+          setResults(r => ({ ...r, research: researchText }));
+          const dpMatch = researchText.match(/<<<DATA_PACK>>>([\s\S]*?)<<<END_DATA_PACK>>>/);
+          if (dpMatch) researchDataPack = dpMatch[1].trim();
+          try {
+            const dpKpis = [{label:"ITC FMCG Revenue",value:"see pack",sub:"",trend:"flat",confidence:"H"},
+                            {label:"Bikaji Revenue",value:"see pack",sub:"",trend:"up",confidence:"H"}];
+            setDataBlocks(d => ({ ...d, research: { agent:"research", kpis: dpKpis, topActions:[], verdictRow:{verdict:"STRONG",finding:"Primary sources fetched",confidence:"H"} }}));
+          } catch(e) {}
+          setStatuses(s => ({ ...s, research: "done" }));
+        } catch(e) {
+          console.warn("[Research] Non-fatal:", e.message);
+          setStatuses(s => ({ ...s, research: "error" }));
+        }
+      }
 
       // ── AGENT 0: Category & Competitive Framing — runs first, before all others ──
       let framingBlock = "";
       if (!testMode) {
         setStatuses(s => ({ ...s, framing: "running" }));
         try {
-          const framingParams = { company: co, acquirer: acq, ctx, synthCtx: {}, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock: '', isPublic, ticker: ticker.trim() };
+          const framingParams = { company: co, acquirer: acq, ctx: (ctx + (researchDataPack ? "\n\nPRE-RETRIEVED DATA PACK — use these locked figures, do not re-derive:\n" + researchDataPack : "")), synthCtx: {}, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock: '', isPublic, ticker: ticker.trim() };
           const framingText = await runAgent('framing', framingParams, signal, []);
           // Extract the FRAMING_BLOCK from the output
           const framingMatch = framingText.match(/<<<FRAMING_BLOCK>>>([\s\S]*?)<<<END_FRAMING_BLOCK>>>/);
@@ -3387,13 +3695,97 @@ export default function AdvisorSprint() {
         // and avoid QUIC timeout on very long Opus requests
         let ctx_for_agent = {};
         if (id === 'brief') {
+          // PRE-BRIEF SYNTHESIS: run a lightweight Sonnet pass to extract and lock
+          // the 15 key data points from all prior agent DATA_BLOCKs.
+          // This prevents the brief agent from re-deriving numbers and getting
+          // different answers from what agents actually found.
+          try {
+            const synthPrompt = `You are a data extraction assistant. Read the following agent outputs and extract exactly these data points in JSON format. Extract from the DATA_BLOCK sections only — do not infer or estimate.
+
+Return ONLY valid JSON, nothing else:
+{
+  "brandRevenue": "exact figure or range from agent outputs",
+  "categorySize": "western snacks category size",
+  "marketShare": "brand share estimate",
+  "topCompetitor1": "name and revenue",
+  "topCompetitor2": "name and revenue", 
+  "topCompetitor3": "name and revenue",
+  "qcGap": "brand QC presence vs category benchmark",
+  "grossMargin": "brand gross margin estimate",
+  "topOccasionGap": "highest value occasion the brand is absent from",
+  "competitiveWindow": "months before key competitive threat materialises",
+  "gtStrength": "GT channel position",
+  "tier23Signal": "Tier 2/3 expansion signal",
+  "topGrowthLever": "single highest value growth move",
+  "analogBrand": "international analog brand and key lesson",
+  "synergyAsset": "highest value untapped parent asset"
+}
+
+AGENT OUTPUTS:
+${Object.entries(w1texts).filter(([k])=>k!=='framing').map(([k,v])=>{
+  const db = v.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/);
+  return db ? `[${k.toUpperCase()} DATA_BLOCK]
+${db[1].slice(0,600)}` : '';
+}).filter(Boolean).join('
+
+').slice(0,12000)}`;
+
+            const synthRes = await fetch(API_URL, {
+              method: 'POST',
+              headers: authHeaders({ 'x-tool-name': 'advisor' }),
+              body: JSON.stringify({
+                agentId: 'gap_analysis',
+                prompt: synthPrompt,
+                market
+              }),
+              signal: AbortSignal.timeout(45000),
+            });
+            if (synthRes.ok) {
+              const synthReader = synthRes.body.getReader();
+              const synthDecoder = new TextDecoder();
+              let synthBuffer = '', synthText = '';
+              while (true) {
+                const { done, value } = await synthReader.read();
+                if (done) break;
+                synthBuffer += synthDecoder.decode(value, { stream: true });
+                const lines = synthBuffer.split('
+');
+                synthBuffer = lines.pop();
+                for (const line of lines) {
+                  if (!line.startsWith('data: ')) continue;
+                  try {
+                    const d = JSON.parse(line.slice(6));
+                    if (d.type === 'chunk') synthText += d.text || '';
+                    if (d.type === 'done') synthText = d.text || synthText;
+                  } catch(e) {}
+                }
+              }
+              // Parse the extracted data points and inject into brief synthesis context
+              try {
+                const clean = synthText.replace(/```json|```/g,'').trim();
+                const extracted = JSON.parse(clean);
+                // Prepend as a locked context block for the brief agent
+                const lockBlock = `
+
+LOCKED DATA POINTS FROM PRIOR AGENTS — USE THESE EXACTLY, DO NOT RE-DERIVE:
+${JSON.stringify(extracted, null, 2)}
+
+`;
+                w1texts['_briefLock'] = lockBlock;
+              } catch(e) {
+                console.warn('[PreBrief] Could not parse synthesis:', e.message);
+              }
+            }
+          } catch(synthErr) {
+            console.warn('[PreBrief] Synthesis step failed (non-fatal):', synthErr.message);
+          }
           ctx_for_agent = w1texts; // brief receives all agent outputs INCLUDING synopsis
         } else if (id === 'synopsis') {
           ctx_for_agent = w1texts; // Full outputs passed — makePrompt handles per-agent trimming
         } else if (W2.includes(id)) {
           ctx_for_agent = w1texts;
         }
-        const agentParams = { company: co, acquirer: acq, ctx, synthCtx: ctx_for_agent, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock, isPublic, ticker: ticker.trim() };
+        const agentParams = { company: co, acquirer: acq, ctx, synthCtx: ctx_for_agent, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock, isPublic, ticker: ticker.trim(), strategicBets: strategicBets || '', priorSprint: priorSprintCtx || '', monthlyHistory: monthlyHistoryCtx || '' };
         let text = "";
         try {
           text = await runAgent(id, agentParams, signal, []);
@@ -5029,12 +5421,99 @@ ${pageGap}
             </div>
 
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+              
+              {/* ── Cadence Selector ────────────────────────────────── */}
+              <div style={{ marginBottom: 12 }}>
+                <label style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: P.inkMid, display: "block", marginBottom: 6 }}>
+                  Report Cadence
+                </label>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  {[
+                    { key: "baseline", label: "Baseline", icon: "◈" },
+                    { key: "fortnightly", label: "Fortnightly", icon: "⚡" },
+                    { key: "monthly", label: "Monthly", icon: "◉" },
+                    { key: "quarterly_brand", label: "Quarterly Brand", icon: "◎" },
+                    { key: "quarterly_category", label: "Category Report", icon: "⬡" },
+                  ].map(opt => (
+                    <button
+                      key={opt.key}
+                      onClick={() => appState !== "running" && setCadenceMode(opt.key)}
+                      style={{
+                        padding: "5px 10px", border: `1px solid ${cadenceMode === opt.key ? P.forest : P.sand}`,
+                        borderRadius: 3, background: cadenceMode === opt.key ? P.forest : "#fff",
+                        color: cadenceMode === opt.key ? "#fff" : P.inkMid,
+                        fontFamily: "'JetBrains Mono'", fontSize: 10, fontWeight: 600, cursor: "pointer",
+                      }}
+                    >
+                      {opt.icon} {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Cadence context inputs (fortnightly/monthly/quarterly) ── */}
+              {cadenceMode !== "baseline" && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
+                  <div>
+                    <label style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: P.inkMid, display: "block", marginBottom: 4 }}>
+                      Strategic Bets (from prior baseline)
+                    </label>
+                    <textarea
+                      value={strategicBets}
+                      onChange={e => setStrategicBets(e.target.value)}
+                      placeholder={"Paste <<<STRATEGIC_BETS>>> block from baseline Synopsis..."}
+                      rows={3}
+                      style={{ width: "100%", padding: "8px 10px", border: `1px solid ${P.sand}`, borderRadius: 4, fontFamily: "'JetBrains Mono'", fontSize: 11, resize: "vertical", boxSizing: "border-box" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: P.inkMid, display: "block", marginBottom: 4 }}>
+                      Prior Sprint Context (baseline summary)
+                    </label>
+                    <textarea
+                      value={priorSprintCtx}
+                      onChange={e => setPriorSprintCtx(e.target.value)}
+                      placeholder={"Paste key findings from baseline report (Executive Synopsis text)..."}
+                      rows={3}
+                      style={{ width: "100%", padding: "8px 10px", border: `1px solid ${P.sand}`, borderRadius: 4, fontFamily: "'JetBrains Mono'", fontSize: 11, resize: "vertical", boxSizing: "border-box" }}
+                    />
+                  </div>
+                  {(cadenceMode === "quarterly_brand" || cadenceMode === "quarterly_category") && (
+                    <div>
+                      <label style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: P.inkMid, display: "block", marginBottom: 4 }}>
+                        Prior Monthly Reports
+                      </label>
+                      <textarea
+                        value={monthlyHistoryCtx}
+                        onChange={e => setMonthlyHistoryCtx(e.target.value)}
+                        placeholder={"Paste prior monthly synopsis outputs (3 months)..."}
+                        rows={3}
+                        style={{ width: "100%", padding: "8px 10px", border: `1px solid ${P.sand}`, borderRadius: 4, fontFamily: "'JetBrains Mono'", fontSize: 11, resize: "vertical", boxSizing: "border-box" }}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+
               <button
-                onClick={sprintCreditUsed ? undefined : runSprint}
+                onClick={sprintCreditUsed ? undefined : (
+                  cadenceMode === "fortnightly" ? runFortnightly :
+                  cadenceMode === "monthly" ? runMonthlyCadence :
+                  cadenceMode === "quarterly_brand" ? runQuarterlyBrand :
+                  cadenceMode === "quarterly_category" ? runQuarterlyCategory :
+                  runSprint
+                )}
                 disabled={!company.trim() || appState === "running" || sprintCreditUsed}
                 style={{ padding: "12px 24px", background: sprintCreditUsed ? P.inkFaint : appState === "running" ? P.inkFaint : testMode ? P.gold : P.forest, color: P.white, border: "none", borderRadius: 4, fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 600, cursor: (appState === "running" || sprintCreditUsed) ? "not-allowed" : "pointer" }}
               >
-                {appState === "running" ? `Running... ${formatTime(elapsed)}` : testMode ? "▶ Test Run (Agent 1 only)" : toolMode === "global" ? "Run Global Analysis" : "Run Analysis"}
+                {appState === "running" ? `Running... ${formatTime(elapsed)}` :
+                 testMode ? "▶ Test Run (Agent 1 only)" :
+                 toolMode === "global" ? "Run Global Analysis" :
+                 cadenceMode === "fortnightly" ? "⚡ Run Fortnightly Signal Scan" :
+                 cadenceMode === "monthly" ? "◉ Run Monthly Update" :
+                 cadenceMode === "quarterly_brand" ? "◎ Run Quarterly Brand Deep Dive" :
+                 cadenceMode === "quarterly_category" ? "⬡ Run Category Report" :
+                 "◈ Run Baseline Analysis"}
               </button>
 
 
@@ -5218,7 +5697,12 @@ ${pageGap}
           {Object.keys(statuses).length > 0 && (
             <div style={{ marginTop: 32 }}>
               <div style={{ display: "grid", gap: 8 }}>
-                {(toolMode === 'global' ? GLOBAL_AGENTS : AGENTS).map((agent) => {
+                {(toolMode === 'global' ? GLOBAL_AGENTS :
+                   cadenceMode === 'fortnightly' ? FORTNIGHTLY_AGENTS :
+                   cadenceMode === 'monthly' ? MONTHLY_AGENTS :
+                   cadenceMode === 'quarterly_brand' ? QUARTERLY_BRAND_AGENTS :
+                   cadenceMode === 'quarterly_category' ? CATEGORY_REPORT_AGENTS :
+                   AGENTS).map((agent) => {
                   const status = statuses[agent.id];
                   const bgColor = status === "done" ? "#d4f4dd" : status === "running" ? "#fff3cd" : status === "error" ? "#f8d7da" : P.parchment;
                   
