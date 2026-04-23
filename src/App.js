@@ -5971,6 +5971,7 @@ ${pageGap}
                 </div>
               </div>
             </div>
+          </div>
           </>
         );
       })()}
@@ -6031,6 +6032,7 @@ ${pageGap}
             <div style={{ marginTop: 10, fontSize: 9, color: P.inkFaint, fontFamily: 'monospace' }}>
               Link expires in 30 days · Recipients can ask questions — they cannot run sprints
             </div>
+          </div>
           </div>
         </>
       )}
@@ -6557,6 +6559,10 @@ ${pageGap}
       </div>
     );
   })}
+  </div>
+  </div>
+  </div>
+  </div>
   </div>
   );
 }
