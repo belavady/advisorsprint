@@ -5169,6 +5169,7 @@ ${pageGap}
   };
 
   return (
+    <>
     <div>
       <style>{GLOBAL_CSS}</style>
 
@@ -6034,9 +6035,10 @@ ${pageGap}
           </div>
         </>
       )}
+    </div>
 
-      {/* PDF CONTENT - 16 PAGES WITH BEAUTIFUL FORMATTING */}
-<div style={{ display: "none" }} className="print-only">
+    {/* PDF CONTENT - 16 PAGES WITH BEAUTIFUL FORMATTING */}
+    <div style={{ display: "none" }} className="print-only">
   
   {/* ENHANCED CSS FOR PDF */}
   <style>{`
@@ -6369,13 +6371,13 @@ ${pageGap}
           </div>
         </div>
       </div>
-      
+            
       <div 
         className="agent-content" 
         style={{ fontSize: 11.5, lineHeight: 1.85, color: P.inkMid }} 
         dangerouslySetInnerHTML={{ __html: md(results.synopsis) }} 
       />
-      
+            
       <div style={{ pageBreakAfter: "always", height: 20 }}></div>
     </div>
   )}
@@ -6494,7 +6496,7 @@ ${pageGap}
             {ROLE_LAYERS.find(l => l.agents.includes(agent.id))?.label?.toUpperCase() || 'SPECIALIST'} • {ROLE_LAYERS.find(l => l.agents.includes(agent.id))?.sublabel?.split('·')[0].trim() || ''}
           </div>
         </div>
-        
+              
         {/* Section summary callout — pulled from verdictRow */}
         {dataBlocks[agent.id]?.verdictRow && (
           <div style={{
@@ -6553,12 +6555,11 @@ ${pageGap}
 
           </div>
           );
+              })}
+            </div>
+          );
         })}
-      </div>
-    );
-  })}
-  </div>
-  </div>
-  </div>
+    </div>
+    </>
   );
 }
