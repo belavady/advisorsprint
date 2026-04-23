@@ -3721,11 +3721,8 @@ Return ONLY valid JSON, nothing else:
 AGENT OUTPUTS:
 ${Object.entries(w1texts).filter(([k])=>k!=='framing').map(([k,v])=>{
   const db = v.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/);
-  return db ? `[${k.toUpperCase()} DATA_BLOCK]
-${db[1].slice(0,600)}` : '';
-}).filter(Boolean).join('
-
-').slice(0,12000)}`;
+  return db ? `[${k.toUpperCase()} DATA_BLOCK]\n${db[1].slice(0,600)}` : '';
+}).filter(Boolean).join('\n\n').slice(0,12000)}`;
 
             const synthRes = await fetch(API_URL, {
               method: 'POST',
