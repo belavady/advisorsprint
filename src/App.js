@@ -2705,13 +2705,7 @@ function md(text) {
   // Strip lines starting with "Now " that are narration
   text = text.replace(/^Now (?:I (?:have|can|will)|constructing|compiling|writing|producing)[^\n]*\n/gim, '');
   // Remove entire derivation blocks (multi-line) between "Key derivations" and the next heading or blank line
-  text = text.replace(/(?:^|
-)(Key derivations?[^
-]*
-[\s\S]*?)(?=
-##|
-<<<|$)/gim, '
-');
+  text = text.replace(/(?:^|\n)(Key derivations?[^\n]*\n[\s\S]*?)(?=\n##|\n<<<|$)/gim, '\n');
   text = text.replace(/^#{1,2}\s*$/gm, ''); // remove empty headers left behind
 
   // First, fix the Sources line to ensure it's on one line
