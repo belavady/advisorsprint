@@ -6541,15 +6541,15 @@ ${pageGap}
           </div>
         )}
 
-        <div 
-          className="agent-content" 
-          data-wave={agent.wave} 
-          style={{ fontSize: 11.5, lineHeight: 1.85, color: P.inkMid }} 
-          dangerouslySetInnerHTML={{ __html: md(result) }} 
-        />
+          <div 
+            className="agent-content" 
+            data-wave={agent.wave} 
+            style={{ fontSize: 11.5, lineHeight: 1.85, color: P.inkMid }} 
+            dangerouslySetInnerHTML={{ __html: md(result) }} 
+          />
 
-        {/* ── DataBlock Inspector ── diagnostic panel, screen-only ── */}
-        <DataBlockInspector agentId={agent.id} agentLabel={agent.label} db={dataBlocks[agent.id]} />
+          {/* ── DataBlock Inspector ── diagnostic panel, screen-only ── */}
+          <DataBlockInspector agentId={agent.id} agentLabel={agent.label} db={dataBlocks[agent.id]} />
 
           </div>
           );
