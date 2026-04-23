@@ -110,6 +110,34 @@ const AGENTS = [
 const W1 = AGENTS.filter(a => a.wave === 1).map(a => a.id);
 const W2 = AGENTS.filter(a => a.wave === 2).map(a => a.id);
 
+// ── Role Layer definitions — three audience tiers ─────────────────────
+const ROLE_LAYERS = [
+  {
+    id: 'execution',
+    label: 'Execution',
+    sublabel: '90-day · What do I do next?',
+    color: '#2D6A4F',
+    bgColor: '#EAF4EE',
+    agents: ['market', 'competitive', 'brand', 'portfolio'],
+  },
+  {
+    id: 'strategy',
+    label: 'Strategy',
+    sublabel: '12-month · Where does the money go?',
+    color: '#B45309',
+    bgColor: '#FEF3C7',
+    agents: ['growth', 'margins', 'platform', 'intl'],
+  },
+  {
+    id: 'leadership',
+    label: 'Leadership',
+    sublabel: '3-year · Is the thesis intact?',
+    color: '#1E3A5F',
+    bgColor: '#E8EEF6',
+    agents: ['synergy', 'synopsis', 'brief'],
+  },
+];
+
 // ── Cadence agent display definitions ────────────────────────────────────
 const FORTNIGHTLY_AGENTS = [
   { id: "signal_scanner", wave: 1, icon: "⚡", label: "Signal Scanner", sub: "Competitive signals in the last 14 days — delta only" },
@@ -2672,6 +2700,18 @@ function md(text) {
   
   // Strip reasoning preamble lines that agents sometimes output
   text = text.replace(/^[^\n]*(?:I'll conduct|I will conduct|Let me|Based on my research|I need to|I'll search|I'll analyze|I'll now|I'll begin|I'll start)[^\n]*\n/gim, '');
+  // Strip derivation/working narration blocks — these should never appear in output
+  text = text.replace(/^(?:Key derivations?|Working:|Now constructing|Constructing the|Before writing|Let me (?:compile|derive|calculate|compute|now)|I(?:'ll| will) (?:now |)(?:compile|derive|construct|write|produce))[^\n]*\n/gim, '');
+  // Strip lines starting with "Now " that are narration
+  text = text.replace(/^Now (?:I (?:have|can|will)|constructing|compiling|writing|producing)[^\n]*\n/gim, '');
+  // Remove entire derivation blocks (multi-line) between "Key derivations" and the next heading or blank line
+  text = text.replace(/(?:^|
+)(Key derivations?[^
+]*
+[\s\S]*?)(?=
+##|
+<<<|$)/gim, '
+');
   text = text.replace(/^#{1,2}\s*$/gm, ''); // remove empty headers left behind
 
   // First, fix the Sources line to ensure it's on one line
@@ -2919,6 +2959,8 @@ export default function AdvisorSprint() {
 
   // ── Cadence state ─────────────────────────────────────────────────────
   const [cadenceMode, setCadenceMode] = useState("baseline");
+  const [openLayers, setOpenLayers] = useState({ execution: true, strategy: false, leadership: false });
+  const toggleLayer = (id) => setOpenLayers(s => ({ ...s, [id]: !s[id] }));
   const [framingBlock, setFramingBlock] = useState("");
   const [strategicBets, setStrategicBets] = useState("");
   const [priorSprintCtx, setPriorSprintCtx] = useState("");
@@ -5697,7 +5739,39 @@ ${pageGap}
           {/* Progress */}
           {Object.keys(statuses).length > 0 && (
             <div style={{ marginTop: 32 }}>
-              <div style={{ display: "grid", gap: 8 }}>
+              {/* Role layer grouping in progress panel — baseline only */}
+              {cadenceMode === 'baseline' && toolMode !== 'global'
+                ? ROLE_LAYERS.map(layer => {
+                    const layerAgentList = AGENTS.filter(a => layer.agents.includes(a.id));
+                    return (
+                      <div key={layer.id} style={{ marginBottom: 12 }}>
+                        <div style={{
+                          fontFamily: "'JetBrains Mono'", fontSize: 9, fontWeight: 700,
+                          letterSpacing: '.1em', textTransform: 'uppercase',
+                          color: layer.color, marginBottom: 5, paddingLeft: 2,
+                          borderLeft: `2px solid ${layer.color}`, paddingLeft: 6,
+                        }}>{layer.label}</div>
+                        <div style={{ display: 'grid', gap: 6 }}>
+                          {layerAgentList.map((agent) => {
+                            const status = statuses[agent.id];
+                            const bgColor = status === "done" ? "#d4f4dd" : status === "running" ? "#fff3cd" : status === "error" ? "#f8d7da" : P.parchment;
+                            return (
+                              <div key={agent.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: 10, background: bgColor, borderRadius: 4, border: `1px solid ${P.sand}`, borderLeft: `3px solid ${layer.color}40` }}>
+                                <div style={{ fontSize: 16 }}>{agent.icon}</div>
+                                <div style={{ flex: 1 }}>
+                                  <div style={{ fontFamily: "'Instrument Sans'", fontSize: 12, fontWeight: 600, color: P.ink }}>{agent.label}</div>
+                                </div>
+                                <div style={{ fontFamily: "'Instrument Sans'", fontSize: 11, fontWeight: 600, color: status === "done" ? "#28a745" : status === "running" ? "#fd7e14" : P.inkFaint }}>
+                                  {status === "done" ? "✓" : status === "running" ? "⟳" : status === "error" ? "✗" : "○"}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })
+                : <div style={{ display: "grid", gap: 8 }}>
                 {(toolMode === 'global' ? GLOBAL_AGENTS :
                    cadenceMode === 'fortnightly' ? FORTNIGHTLY_AGENTS :
                    cadenceMode === 'monthly' ? MONTHLY_AGENTS :
@@ -5741,7 +5815,7 @@ ${pageGap}
                     </div>
                   );
                 })}
-              </div>
+                </div>}
             </div>
           )}
 
@@ -6313,22 +6387,74 @@ ${pageGap}
   )}
 
   {/* PAGES 6-14: INDIVIDUAL AGENTS WITH ENHANCED FORMATTING */}
-  {AGENTS.filter(a => a.id !== 'synopsis').map((agent, index) => {
-    const result = results[agent.id];
-    if (!result) return null;
-    
-    const isLastAgent = index === AGENTS.filter(a => a.id !== 'synopsis').length - 1;
-    
+  {ROLE_LAYERS.map((layer) => {
+    const layerAgents = AGENTS.filter(a => layer.agents.includes(a.id) && results[a.id]);
+    if (layerAgents.length === 0) return null;
+    const isOpen = openLayers[layer.id];
+
     return (
-      <div 
-        key={agent.id}
-        id={`section-${agent.id}`}
-        style={{ 
-          pageBreakBefore: "always", 
-          pageBreakAfter: isLastAgent ? "auto" : "always", 
-          padding: "20px 50px 40px 50px" 
-        }}
-      >
+      <div key={layer.id} style={{ marginBottom: 0 }}>
+
+        {/* ── Role Layer Header — collapsible ── */}
+        <div
+          onClick={() => toggleLayer(layer.id)}
+          className="no-print"
+          style={{
+            display: 'flex', alignItems: 'center', gap: 12,
+            padding: '14px 50px',
+            background: layer.bgColor,
+            borderTop: `3px solid ${layer.color}`,
+            cursor: 'pointer',
+            userSelect: 'none',
+          }}
+        >
+          <div style={{
+            width: 8, height: 8, borderRadius: '50%',
+            background: layer.color, flexShrink: 0,
+          }} />
+          <div style={{ flex: 1 }}>
+            <div style={{
+              fontFamily: "'Instrument Sans'", fontSize: 14, fontWeight: 700,
+              color: layer.color, letterSpacing: '.01em',
+            }}>{layer.label}</div>
+            <div style={{
+              fontFamily: "'JetBrains Mono'", fontSize: 10, fontWeight: 500,
+              color: layer.color, opacity: 0.7, marginTop: 1,
+            }}>{layer.sublabel} · {layerAgents.length} agents</div>
+          </div>
+          {/* Agent pills preview */}
+          <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+            {layerAgents.map(a => (
+              <span key={a.id} style={{
+                fontFamily: "'JetBrains Mono'", fontSize: 9, fontWeight: 700,
+                color: layer.color, background: 'white',
+                border: `1px solid ${layer.color}40`,
+                borderRadius: 3, padding: '2px 6px',
+                textTransform: 'uppercase', letterSpacing: '.05em',
+              }}>{a.label.split(' ')[0]}</span>
+            ))}
+          </div>
+          <div style={{
+            fontFamily: 'monospace', fontSize: 14, color: layer.color,
+            marginLeft: 8, transform: isOpen ? 'rotate(0deg)' : 'rotate(-90deg)',
+            transition: 'transform 0.2s',
+          }}>▼</div>
+        </div>
+
+        {/* ── Agent pages within this layer ── */}
+        {isOpen && layerAgents.map((agent, index) => {
+          const result = results[agent.id];
+          const isLastInLayer = index === layerAgents.length - 1;
+          return (
+          <div
+            key={agent.id}
+            id={`section-${agent.id}`}
+            style={{
+              pageBreakBefore: "always",
+              pageBreakAfter: isLastInLayer && layer.id === 'business_head' ? "auto" : "always",
+              padding: "20px 50px 40px 50px"
+            }}
+          >
         <div className="no-screen"><div style={{ background: P.forest, padding: "14px 20px", borderBottom: `3px solid ${P.forestMid}`, width: "100%" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -6353,11 +6479,25 @@ ${pageGap}
               {agent.label}
             </h2>
           </div>
+          {/* Role layer badge */}
+          {(() => {
+            const layer = ROLE_LAYERS.find(l => l.agents.includes(agent.id));
+            return layer ? (
+              <span style={{
+                display: 'inline-block',
+                fontFamily: "'JetBrains Mono'", fontSize: 8, fontWeight: 700,
+                letterSpacing: '.12em', textTransform: 'uppercase',
+                color: layer.color, background: layer.bgColor,
+                border: `1px solid ${layer.color}40`,
+                borderRadius: 3, padding: '3px 8px', marginBottom: 8,
+              }}>{layer.label} · {layer.sublabel}</span>
+            ) : null;
+          })()}
           <p style={{ fontSize: 11, color: P.inkSoft, fontStyle: "italic", margin: 0, paddingLeft: 43 }}>
             {agent.sub}
           </p>
           <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: agent.wave === 1 ? P.forestSoft : P.terraSoft, marginTop: 10, paddingLeft: 43 }}>
-            WAVE {agent.wave} • AGENT {index + 1} OF 10
+            {ROLE_LAYERS.find(l => l.agents.includes(agent.id))?.label?.toUpperCase() || 'SPECIALIST'} • {ROLE_LAYERS.find(l => l.agents.includes(agent.id))?.sublabel?.split('·')[0].trim() || ''}
           </div>
         </div>
         
@@ -6417,10 +6557,12 @@ ${pageGap}
         {/* ── DataBlock Inspector ── diagnostic panel, screen-only ── */}
         <DataBlockInspector agentId={agent.id} agentLabel={agent.label} db={dataBlocks[agent.id]} />
 
+          </div>
+          );
+        })}
       </div>
     );
   })}
-</div>
     </div>
   );
 }
