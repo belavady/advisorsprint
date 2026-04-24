@@ -113,6 +113,14 @@ const W2 = AGENTS.filter(a => a.wave === 2).map(a => a.id);
 // ── Role Layer definitions — three audience tiers ─────────────────────
 const ROLE_LAYERS = [
   {
+    id: 'leadership',
+    label: 'Leadership',
+    sublabel: '3-year · Is the thesis intact?',
+    color: '#1E3A5F',
+    bgColor: '#E8EEF6',
+    agents: ['synergy', 'synopsis', 'brief'],
+  },
+  {
     id: 'execution',
     label: 'Execution',
     sublabel: '90-day · What do I do next?',
@@ -127,14 +135,6 @@ const ROLE_LAYERS = [
     color: '#B45309',
     bgColor: '#FEF3C7',
     agents: ['growth', 'margins', 'platform', 'intl'],
-  },
-  {
-    id: 'leadership',
-    label: 'Leadership',
-    sublabel: '3-year · Is the thesis intact?',
-    color: '#1E3A5F',
-    bgColor: '#E8EEF6',
-    agents: ['synergy', 'synopsis', 'brief'],
   },
 ];
 
@@ -2953,7 +2953,7 @@ export default function AdvisorSprint() {
 
   // ── Cadence state ─────────────────────────────────────────────────────
   const [cadenceMode, setCadenceMode] = useState("baseline");
-  const [openLayers, setOpenLayers] = useState({ execution: true, strategy: false, leadership: false });
+  const [openLayers, setOpenLayers] = useState({ leadership: true, execution: true, strategy: true });
   const toggleLayer = (id) => setOpenLayers(s => ({ ...s, [id]: !s[id] }));
   const [framingBlock, setFramingBlock] = useState("");
   const [strategicBets, setStrategicBets] = useState("");
