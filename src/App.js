@@ -92,6 +92,14 @@ const P = {
   white: "#faf8f4",
 };
 
+const CADENCE_AGENTS = {
+  baseline:           ['market','competitive','brand','portfolio','channel','growth','margins','synergy','platform','intl','synopsis','brief'],
+  fortnightly:        ['signal_scanner'],
+  monthly:            ['monthly_market','monthly_competitive','monthly_brand','monthly_growth','monthly_margins','monthly_channel','monthly_synopsis'],
+  quarterly_brand:    ['quarterly_framing','market','competitive','brand','portfolio','channel','growth','margins','synergy','platform','intl','quarterly_synopsis'],
+  quarterly_category: ['cat_structure','cat_competitive','cat_channel','cat_innovation','cat_outlook'],
+};
+
 const AGENTS = [
   { id: "framing", wave: 0, icon: "⊕", label: "Category & Competitive Framing", sub: "Establishes ground truth before all agents run" },
   { id: "market", wave: 1, icon: "◈", label: "Category Intelligence", sub: "Category sizing, structural forces, share dynamics" },
@@ -100,6 +108,7 @@ const AGENTS = [
   { id: "margins", wave: 1, icon: "◐", label: "Profitability Engine", sub: "Margin architecture, COGS, channel unit economics" },
   { id: "growth", wave: 1, icon: "◆", label: "Growth Strategy & Channel Orchestration", sub: "GTM roadmap, geographic expansion, sales team" },
   { id: "competitive", wave: 1, icon: "◇", label: "Competitive Radar", sub: "Threat mapping, attack/defend playbook" },
+  { id: "channel",     wave: 1, icon: "⬢", label: "Channel Intelligence", sub: "QC deep-dive, channel stack economics, digital shelf position" },
   { id: "synergy",  wave: 2, icon: "◈", label: "Synergy Playbook",                        sub: "Post-acquisition integration, ITC asset leverage" },
   { id: "platform", wave: 2, icon: "◉", label: "Category Adjacency", sub: "Adjacent category expansion opportunities" },
   { id: "intl",     wave: 2, icon: "◎", label: "Global Playbook", sub: "International benchmarks, expansion playbook" },
@@ -126,7 +135,7 @@ const ROLE_LAYERS = [
     sublabel: '90-day · What do I do next?',
     color: '#2D6A4F',
     bgColor: '#EAF4EE',
-    agents: ['market', 'competitive', 'brand', 'portfolio'],
+    agents: ['market', 'competitive', 'brand', 'portfolio', 'channel'],
   },
   {
     id: 'strategy',
@@ -2956,6 +2965,10 @@ export default function AdvisorSprint() {
   const [openLayers, setOpenLayers] = useState({ leadership: true, execution: true, strategy: true });
   const toggleLayer = (id) => setOpenLayers(s => ({ ...s, [id]: !s[id] }));
   const [framingBlock, setFramingBlock] = useState("");
+  const [periodStart, setPeriodStart] = useState("");
+  const [baselineSprintIdInput, setBaselineSprintIdInput] = useState("");
+  const [quarterLabel, setQuarterLabel] = useState("Q4");
+  const [categoryLabel, setCategoryLabel] = useState("Organised Snacks");
   const [strategicBets, setStrategicBets] = useState("");
   const [priorSprintCtx, setPriorSprintCtx] = useState("");
   const [monthlyHistoryCtx, setMonthlyHistoryCtx] = useState("");
@@ -3358,7 +3371,13 @@ export default function AdvisorSprint() {
           parentSince: parentSince.trim(),
           framingBlock: framingBlock || '',
           strategicBets: strategicBets || '',
-          priorSprint: priorSprintCtx || '',
+          priorSprint: priorSprintCtx ? (typeof priorSprintCtx === 'string' ? priorSprintCtx : [
+              priorSprintCtx.results?.synopsis ? '=== BASELINE SYNOPSIS ===\n' + priorSprintCtx.results.synopsis : '',
+              priorSprintCtx.results?.market ? '=== MARKET INTELLIGENCE ===\n' + priorSprintCtx.results.market : '',
+              priorSprintCtx.results?.competitive ? '=== COMPETITIVE RADAR ===\n' + priorSprintCtx.results.competitive : '',
+              priorSprintCtx.results?.growth ? '=== GROWTH STRATEGY ===\n' + priorSprintCtx.results.growth : '',
+              priorSprintCtx.strategic_bets ? '=== STRATEGIC BETS ===\n' + JSON.stringify(priorSprintCtx.strategic_bets) : '',
+            ].filter(Boolean).join('\n\n').slice(0, 8000)) : '',
         };
         const res = await fetch(API_URL, {
           method: 'POST',
@@ -3420,7 +3439,13 @@ export default function AdvisorSprint() {
         company: co, acquirer: acquirer.trim(), ctx: context.trim(),
         synthCtx: {}, market, companyMode, parentCo: parentCo.trim(),
         parentSince: parentSince.trim(), framingBlock: '',
-        strategicBets: strategicBets || '', priorSprint: priorSprintCtx || '',
+        strategicBets: strategicBets || '', priorSprint: priorSprintCtx ? (typeof priorSprintCtx === 'string' ? priorSprintCtx : [
+              priorSprintCtx.results?.synopsis ? '=== BASELINE SYNOPSIS ===\n' + priorSprintCtx.results.synopsis : '',
+              priorSprintCtx.results?.market ? '=== MARKET INTELLIGENCE ===\n' + priorSprintCtx.results.market : '',
+              priorSprintCtx.results?.competitive ? '=== COMPETITIVE RADAR ===\n' + priorSprintCtx.results.competitive : '',
+              priorSprintCtx.results?.growth ? '=== GROWTH STRATEGY ===\n' + priorSprintCtx.results.growth : '',
+              priorSprintCtx.strategic_bets ? '=== STRATEGIC BETS ===\n' + JSON.stringify(priorSprintCtx.strategic_bets) : '',
+            ].filter(Boolean).join('\n\n').slice(0, 8000)) : '',
       }, signal.signal, []);
       setResults(r => ({ ...r, framing: framingText }));
       setStatuses(s => ({ ...s, framing: 'done' }));
@@ -3437,7 +3462,13 @@ export default function AdvisorSprint() {
           parentSince: parentSince.trim(),
           framingBlock: newFramingBlock,
           strategicBets: strategicBets || '',
-          priorSprint: priorSprintCtx || '',
+          priorSprint: priorSprintCtx ? (typeof priorSprintCtx === 'string' ? priorSprintCtx : [
+              priorSprintCtx.results?.synopsis ? '=== BASELINE SYNOPSIS ===\n' + priorSprintCtx.results.synopsis : '',
+              priorSprintCtx.results?.market ? '=== MARKET INTELLIGENCE ===\n' + priorSprintCtx.results.market : '',
+              priorSprintCtx.results?.competitive ? '=== COMPETITIVE RADAR ===\n' + priorSprintCtx.results.competitive : '',
+              priorSprintCtx.results?.growth ? '=== GROWTH STRATEGY ===\n' + priorSprintCtx.results.growth : '',
+              priorSprintCtx.strategic_bets ? '=== STRATEGIC BETS ===\n' + JSON.stringify(priorSprintCtx.strategic_bets) : '',
+            ].filter(Boolean).join('\n\n').slice(0, 8000)) : '',
         }, signal.signal, []);
         synthCtxForMonthly[agentId] = text;
         setResults(r => ({ ...r, [agentId]: text }));
@@ -3455,7 +3486,13 @@ export default function AdvisorSprint() {
         synthCtx: synthCtxForMonthly, market, companyMode,
         parentCo: parentCo.trim(), parentSince: parentSince.trim(),
         framingBlock: newFramingBlock,
-        strategicBets: strategicBets || '', priorSprint: priorSprintCtx || '',
+        strategicBets: strategicBets || '', priorSprint: priorSprintCtx ? (typeof priorSprintCtx === 'string' ? priorSprintCtx : [
+              priorSprintCtx.results?.synopsis ? '=== BASELINE SYNOPSIS ===\n' + priorSprintCtx.results.synopsis : '',
+              priorSprintCtx.results?.market ? '=== MARKET INTELLIGENCE ===\n' + priorSprintCtx.results.market : '',
+              priorSprintCtx.results?.competitive ? '=== COMPETITIVE RADAR ===\n' + priorSprintCtx.results.competitive : '',
+              priorSprintCtx.results?.growth ? '=== GROWTH STRATEGY ===\n' + priorSprintCtx.results.growth : '',
+              priorSprintCtx.strategic_bets ? '=== STRATEGIC BETS ===\n' + JSON.stringify(priorSprintCtx.strategic_bets) : '',
+            ].filter(Boolean).join('\n\n').slice(0, 8000)) : '',
       }, signal.signal, []);
       setResults(r => ({ ...r, monthly_synopsis: synText }));
       try {
@@ -3500,7 +3537,13 @@ export default function AdvisorSprint() {
           company: co, acquirer: acquirer.trim(), ctx: context.trim(),
           synthCtx: synthCtxForCat, market, companyMode,
           parentCo: parentCo.trim(), parentSince: parentSince.trim(),
-          framingBlock: '', priorSprint: priorSprintCtx || '',
+          framingBlock: '', priorSprint: priorSprintCtx ? (typeof priorSprintCtx === 'string' ? priorSprintCtx : [
+              priorSprintCtx.results?.synopsis ? '=== BASELINE SYNOPSIS ===\n' + priorSprintCtx.results.synopsis : '',
+              priorSprintCtx.results?.market ? '=== MARKET INTELLIGENCE ===\n' + priorSprintCtx.results.market : '',
+              priorSprintCtx.results?.competitive ? '=== COMPETITIVE RADAR ===\n' + priorSprintCtx.results.competitive : '',
+              priorSprintCtx.results?.growth ? '=== GROWTH STRATEGY ===\n' + priorSprintCtx.results.growth : '',
+              priorSprintCtx.strategic_bets ? '=== STRATEGIC BETS ===\n' + JSON.stringify(priorSprintCtx.strategic_bets) : '',
+            ].filter(Boolean).join('\n\n').slice(0, 8000)) : '',
         }, signal.signal, []);
         synthCtxForCat[agentId] = text;
         setResults(r => ({ ...r, [agentId]: text }));
@@ -3516,7 +3559,13 @@ export default function AdvisorSprint() {
         company: co, acquirer: acquirer.trim(), ctx: context.trim(),
         synthCtx: synthCtxForCat, market, companyMode,
         parentCo: parentCo.trim(), parentSince: parentSince.trim(),
-        framingBlock: '', priorSprint: priorSprintCtx || '',
+        framingBlock: '', priorSprint: priorSprintCtx ? (typeof priorSprintCtx === 'string' ? priorSprintCtx : [
+              priorSprintCtx.results?.synopsis ? '=== BASELINE SYNOPSIS ===\n' + priorSprintCtx.results.synopsis : '',
+              priorSprintCtx.results?.market ? '=== MARKET INTELLIGENCE ===\n' + priorSprintCtx.results.market : '',
+              priorSprintCtx.results?.competitive ? '=== COMPETITIVE RADAR ===\n' + priorSprintCtx.results.competitive : '',
+              priorSprintCtx.results?.growth ? '=== GROWTH STRATEGY ===\n' + priorSprintCtx.results.growth : '',
+              priorSprintCtx.strategic_bets ? '=== STRATEGIC BETS ===\n' + JSON.stringify(priorSprintCtx.strategic_bets) : '',
+            ].filter(Boolean).join('\n\n').slice(0, 8000)) : '',
       }, signal.signal, []);
       setResults(r => ({ ...r, cat_outlook: outlookText }));
       try {
@@ -3822,7 +3871,13 @@ ${JSON.stringify(extracted, null, 2)}
         } else if (W2.includes(id)) {
           ctx_for_agent = w1texts;
         }
-        const agentParams = { company: co, acquirer: acq, ctx, synthCtx: ctx_for_agent, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock, isPublic, ticker: ticker.trim(), strategicBets: strategicBets || '', priorSprint: priorSprintCtx || '', monthlyHistory: monthlyHistoryCtx || '' };
+        const agentParams = { company: co, acquirer: acq, ctx, synthCtx: ctx_for_agent, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock, isPublic, ticker: ticker.trim(), strategicBets: strategicBets || '', priorSprint: priorSprintCtx ? (typeof priorSprintCtx === 'string' ? priorSprintCtx : [
+              priorSprintCtx.results?.synopsis ? '=== BASELINE SYNOPSIS ===\n' + priorSprintCtx.results.synopsis : '',
+              priorSprintCtx.results?.market ? '=== MARKET INTELLIGENCE ===\n' + priorSprintCtx.results.market : '',
+              priorSprintCtx.results?.competitive ? '=== COMPETITIVE RADAR ===\n' + priorSprintCtx.results.competitive : '',
+              priorSprintCtx.results?.growth ? '=== GROWTH STRATEGY ===\n' + priorSprintCtx.results.growth : '',
+              priorSprintCtx.strategic_bets ? '=== STRATEGIC BETS ===\n' + JSON.stringify(priorSprintCtx.strategic_bets) : '',
+            ].filter(Boolean).join('\n\n').slice(0, 8000)) : '', monthlyHistory: monthlyHistoryCtx || '' };
         let text = "";
         try {
           text = await runAgent(id, agentParams, signal, []);
@@ -4230,6 +4285,11 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\\n[...truncated - ful
           toolLogs,
           sources,
           elapsed,
+          cadenceType: cadenceMode || 'baseline',
+          baselineSprintId: priorSprintCtx?.sprintId || null,
+          periodStart: cadenceMode && cadenceMode !== 'baseline' ? periodStart : null,
+          periodEnd: cadenceMode && cadenceMode !== 'baseline' ? new Date().toISOString().slice(0,10) : null,
+          strategicBets: strategicBets || null,
         }),
       });
       if (!res.ok) throw new Error('Save failed');
@@ -5489,45 +5549,96 @@ ${pageGap}
                 </div>
               </div>
 
-              {/* ── Cadence context inputs (fortnightly/monthly/quarterly) ── */}
+              {/* ── Cadence context: load from prior sprint ── */}
               {cadenceMode !== "baseline" && (
-                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
-                  <div>
-                    <label style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: P.inkMid, display: "block", marginBottom: 4 }}>
-                      Strategic Bets (from prior baseline)
-                    </label>
-                    <textarea
-                      value={strategicBets}
-                      onChange={e => setStrategicBets(e.target.value)}
-                      placeholder={"Paste <<<STRATEGIC_BETS>>> block from baseline Synopsis..."}
-                      rows={3}
-                      style={{ width: "100%", padding: "8px 10px", border: `1px solid ${P.sand}`, borderRadius: 4, fontFamily: "'JetBrains Mono'", fontSize: 11, resize: "vertical", boxSizing: "border-box" }}
-                    />
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12, padding: "12px 14px", background: P.parchment, borderRadius: 6, border: `1px solid ${P.sand}` }}>
+                  <div style={{ fontFamily: "'JetBrains Mono'", fontSize: 9, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: P.inkMid, marginBottom: 4 }}>
+                    Cadence Settings
                   </div>
-                  <div>
-                    <label style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: P.inkMid, display: "block", marginBottom: 4 }}>
-                      Prior Sprint Context (baseline summary)
-                    </label>
-                    <textarea
-                      value={priorSprintCtx}
-                      onChange={e => setPriorSprintCtx(e.target.value)}
-                      placeholder={"Paste key findings from baseline report (Executive Synopsis text)..."}
-                      rows={3}
-                      style={{ width: "100%", padding: "8px 10px", border: `1px solid ${P.sand}`, borderRadius: 4, fontFamily: "'JetBrains Mono'", fontSize: 11, resize: "vertical", boxSizing: "border-box" }}
-                    />
-                  </div>
-                  {(cadenceMode === "quarterly_brand" || cadenceMode === "quarterly_category") && (
-                    <div>
-                      <label style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: P.inkMid, display: "block", marginBottom: 4 }}>
-                        Prior Monthly Reports
-                      </label>
-                      <textarea
-                        value={monthlyHistoryCtx}
-                        onChange={e => setMonthlyHistoryCtx(e.target.value)}
-                        placeholder={"Paste prior monthly synopsis outputs (3 months)..."}
-                        rows={3}
-                        style={{ width: "100%", padding: "8px 10px", border: `1px solid ${P.sand}`, borderRadius: 4, fontFamily: "'JetBrains Mono'", fontSize: 11, resize: "vertical", boxSizing: "border-box" }}
+
+                  {/* Period dates */}
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontFamily: "'JetBrains Mono'", fontSize: 9, color: P.inkSoft, display: "block", marginBottom: 3 }}>Period Start</label>
+                      <input
+                        type="date"
+                        value={periodStart}
+                        onChange={e => setPeriodStart(e.target.value)}
+                        style={{ width: "100%", padding: "6px 8px", border: `1px solid ${P.sand}`, borderRadius: 4, fontFamily: "'JetBrains Mono'", fontSize: 11, boxSizing: "border-box" }}
                       />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontFamily: "'JetBrains Mono'", fontSize: 9, color: P.inkSoft, display: "block", marginBottom: 3 }}>Period End (today)</label>
+                      <input
+                        type="date"
+                        value={new Date().toISOString().slice(0,10)}
+                        readOnly
+                        style={{ width: "100%", padding: "6px 8px", border: `1px solid ${P.sand}`, borderRadius: 4, fontFamily: "'JetBrains Mono'", fontSize: 11, background: P.cream, boxSizing: "border-box", color: P.inkSoft }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Baseline sprint selector */}
+                  {cadenceMode !== "quarterly_category" && (
+                    <div>
+                      <label style={{ fontFamily: "'JetBrains Mono'", fontSize: 9, color: P.inkSoft, display: "block", marginBottom: 3 }}>
+                        Baseline Sprint ID {priorSprintCtx?.sprintId ? `— loaded: ${priorSprintCtx.sprintId}` : ""}
+                      </label>
+                      <div style={{ display: "flex", gap: 6 }}>
+                        <input
+                          type="text"
+                          value={baselineSprintIdInput || ""}
+                          onChange={e => setBaselineSprintIdInput(e.target.value)}
+                          placeholder="e.g. bingo-2026-03-31-abc1"
+                          style={{ flex: 1, padding: "6px 8px", border: `1px solid ${P.sand}`, borderRadius: 4, fontFamily: "'JetBrains Mono'", fontSize: 11, boxSizing: "border-box" }}
+                        />
+                        <button
+                          onClick={async () => {
+                            if (!baselineSprintIdInput) return;
+                            try {
+                              const r = await fetch(`${API_URL.replace('/api/claude', '/api/sprint-data')}/${baselineSprintIdInput}`, { headers: authHeaders() });
+                              if (!r.ok) throw new Error("Sprint not found");
+                              const data = await r.json();
+                              setPriorSprintCtx(data);
+                              setStrategicBets(data.strategic_bets || "");
+                              alert(`✓ Loaded: ${data.company} — ${data.created_at?.slice(0,10)}`);
+                            } catch(e) { alert("Could not load sprint: " + e.message); }
+                          }}
+                          style={{ padding: "6px 12px", background: P.forest, color: P.cream, border: "none", borderRadius: 4, fontFamily: "'JetBrains Mono'", fontSize: 10, cursor: "pointer", fontWeight: 700 }}
+                        >
+                          Load
+                        </button>
+                      </div>
+                      {priorSprintCtx?.sprintId && (
+                        <div style={{ fontFamily: "'JetBrains Mono'", fontSize: 9, color: P.forestSoft, marginTop: 3 }}>
+                          ✓ {priorSprintCtx.company} · {priorSprintCtx.created_at?.slice(0,10)} · {Object.keys(priorSprintCtx.results||{}).length} agents
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Quarter fields for quarterly reports */}
+                  {(cadenceMode === "quarterly_brand" || cadenceMode === "quarterly_category") && (
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontFamily: "'JetBrains Mono'", fontSize: 9, color: P.inkSoft, display: "block", marginBottom: 3 }}>Quarter (e.g. Q4)</label>
+                        <input
+                          type="text"
+                          value={quarterLabel || ""}
+                          onChange={e => setQuarterLabel(e.target.value)}
+                          placeholder="Q4"
+                          style={{ width: "100%", padding: "6px 8px", border: `1px solid ${P.sand}`, borderRadius: 4, fontFamily: "'JetBrains Mono'", fontSize: 11, boxSizing: "border-box" }}
+                        />
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontFamily: "'JetBrains Mono'", fontSize: 9, color: P.inkSoft, display: "block", marginBottom: 3 }}>Category</label>
+                        <input
+                          type="text"
+                          value={categoryLabel || "Organised Snacks"}
+                          onChange={e => setCategoryLabel(e.target.value)}
+                          style={{ width: "100%", padding: "6px 8px", border: `1px solid ${P.sand}`, borderRadius: 4, fontFamily: "'JetBrains Mono'", fontSize: 11, boxSizing: "border-box" }}
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
