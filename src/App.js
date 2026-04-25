@@ -93,7 +93,7 @@ const P = {
 };
 
 const CADENCE_AGENTS = {
-  baseline:           ['market','competitive','brand','portfolio','channel','growth','margins','synergy','platform','intl','synopsis','brief'],
+  baseline:           ['research','market','competitive','brand','portfolio','channel','growth','margins','synergy','platform','intl','synopsis','brief'],
   fortnightly:        ['signal_scanner'],
   monthly:            ['monthly_market','monthly_competitive','monthly_brand','monthly_growth','monthly_margins','monthly_channel','monthly_synopsis'],
   quarterly_brand:    ['quarterly_framing','market','competitive','brand','portfolio','channel','growth','margins','synergy','platform','intl','quarterly_synopsis'],
@@ -101,7 +101,8 @@ const CADENCE_AGENTS = {
 };
 
 const AGENTS = [
-  { id: "framing", wave: 0, icon: "⊕", label: "Category & Competitive Framing", sub: "Establishes ground truth before all agents run" },
+  { id: "research",  wave: 0, icon: "⊗", label: "Research & Source Validation", sub: "Fetches and validates primary data sources before all agents run" },
+  { id: "framing",   wave: 0, icon: "⊕", label: "Category & Competitive Framing", sub: "Establishes ground truth before all agents run" },
   { id: "market", wave: 1, icon: "◈", label: "Category Intelligence", sub: "Category sizing, structural forces, share dynamics" },
   { id: "portfolio", wave: 1, icon: "◉", label: "Portfolio Strategy & SKU Rationalization", sub: "Product mix, SKU performance, keep/kill/launch" },
   { id: "brand", wave: 1, icon: "◎", label: "Brand Positioning & Storytelling", sub: "Brand perception, target customer, messaging" },
