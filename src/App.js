@@ -3192,8 +3192,8 @@ export default function AdvisorSprint() {
       return text;
     } catch (e) {
       if (e.name === "AbortError") return "";
+      // Don't set a fake result — let the sprint hard-stop handle it cleanly
       setStatuses(s => ({ ...s, [id]: "error" }));
-      setResults(r => ({ ...r, [id]: `Error: ${e.message}` }));
       throw e; // propagate — sprint loop must know an agent failed
     }
   }, [company, callClaude]);
@@ -4494,7 +4494,30 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\\n[...truncated - ful
       const signal = ctrl.signal;
       setStatuses(s => ({ ...s, brief: "running" }));
       const briefParams = { company: co, acquirer: acq, ctx, synthCtx: w1texts, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock: w1texts['framing'] || '', isPublic, ticker: ticker.trim() };
-      await runAgent('brief', briefParams, signal, []);
+      // Brief uses Opus (~3-4 min) — HTTP2 drops are common, retry once
+      let briefDone = false;
+      for (let bAttempt = 0; bAttempt < 2 && !signal.aborted; bAttempt++) {
+        try {
+          await runAgent('brief', briefParams, signal, []);
+          briefDone = true;
+          break;
+        } catch(bErr) {
+          // HTTP2 protocol errors: fail fast — don't retry, keepalive should prevent these
+          const isHttp2Drop = bErr.message && (bErr.message.includes('HTTP2') || bErr.message.includes('ERR_HTTP2'));
+          if (isHttp2Drop) {
+            console.error('[Brief] HTTP2 connection drop — failing fast (not retrying)');
+            throw bErr;
+          }
+          // Other network errors: retry once
+          if (bAttempt === 0 && bErr.message && bErr.message.includes('fetch')) {
+            console.warn('[Brief] Network error, retrying in 5s:', bErr.message);
+            await new Promise(r => setTimeout(r, 5000));
+          } else {
+            throw bErr;
+          }
+        }
+      }
+      if (!briefDone) throw new Error('Brief failed after retry');
       setStatuses(s => ({ ...s, brief: "done" }));
       setAppState("done");
     } catch(e) {
