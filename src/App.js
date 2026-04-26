@@ -4503,13 +4503,18 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\\n[...truncated - ful
           break;
         } catch(bErr) {
           // HTTP2 protocol errors: fail fast — don't retry, keepalive should prevent these
-          const isHttp2Drop = bErr.message && (bErr.message.includes('HTTP2') || bErr.message.includes('ERR_HTTP2'));
-          if (isHttp2Drop) {
-            console.error('[Brief] HTTP2 connection drop — failing fast (not retrying)');
+          // Any network-level drop — fail fast, no retry
+          // ERR_HTTP2_PROTOCOL_ERROR surfaces as "Failed to fetch" in browser
+          const isNetworkDrop = bErr.message && (
+            bErr.message.includes('HTTP2') || bErr.message.includes('ERR_HTTP2') ||
+            bErr.message.includes('Failed to fetch') || bErr.message.includes('NetworkError') ||
+            bErr.message.includes('protocol error')
+          );
+          if (isNetworkDrop) {
+            console.error('[Brief] Network drop — failing fast:', bErr.message);
             throw bErr;
           }
-          // Other network errors: retry once
-          if (bAttempt === 0 && bErr.message && bErr.message.includes('fetch')) {
+          if (bAttempt === 0) {
             console.warn('[Brief] Network error, retrying in 5s:', bErr.message);
             await new Promise(r => setTimeout(r, 5000));
           } else {
