@@ -103,7 +103,7 @@ const CADENCE_AGENTS = {
 const AGENTS = [
   { id: "research",  wave: 0, icon: "⊗", label: "Research & Source Validation", sub: "Fetches and validates primary data sources before all agents run" },
   { id: "framing",   wave: 0, icon: "⊕", label: "Category & Competitive Framing", sub: "Establishes ground truth before all agents run" },
-  { id: "market", wave: 1, icon: "◈", label: "Category Intelligence", sub: "Category sizing, structural forces, share dynamics" },
+  { id: "market", wave: 1, icon: "◈", label: "Category Snapshot", sub: "Category sizing, structural forces, share dynamics" },
   { id: "portfolio", wave: 1, icon: "◉", label: "Portfolio Strategy & SKU Rationalization", sub: "Product mix, SKU performance, keep/kill/launch" },
   { id: "brand", wave: 1, icon: "◎", label: "Brand Positioning & Storytelling", sub: "Brand perception, target customer, messaging" },
   { id: "margins", wave: 1, icon: "◐", label: "Profitability Engine", sub: "Margin architecture, COGS, channel unit economics" },
@@ -154,7 +154,7 @@ const FORTNIGHTLY_AGENTS = [
 ];
 const MONTHLY_AGENTS = [
   { id: "framing",            wave: 0, icon: "⊕", label: "Category Framing",          sub: "Updated ground truth for this month" },
-  { id: "monthly_market",     wave: 1, icon: "◈", label: "Category Intelligence",      sub: "What moved in the category this month" },
+  { id: "monthly_market",     wave: 1, icon: "◈", label: "Category Snapshot",      sub: "What moved in the category this month" },
   { id: "monthly_competitive",wave: 1, icon: "◆", label: "Competitive Radar",          sub: "Competitive moves in the last 30 days" },
   { id: "monthly_brand",      wave: 1, icon: "◎", label: "Brand Positioning",          sub: "Brand signal shifts this month" },
   { id: "monthly_growth",     wave: 1, icon: "◉", label: "Growth Strategy",            sub: "Channel execution pulse" },
@@ -177,7 +177,7 @@ const CATEGORY_REPORT_AGENTS = [
 
 // ── Global Incumbent agents — wave structure mirrors consumer ──────────────
 const GLOBAL_AGENTS = [
-  { id: "g_category",  wave: 1, icon: "⊕", label: "Category Intelligence",       sub: "Global category sizing, sugar tax exposure, D2C gap, functional encroachment" },
+  { id: "g_category",  wave: 1, icon: "⊕", label: "Category Snapshot",       sub: "Global category sizing, sugar tax exposure, D2C gap, functional encroachment" },
   { id: "g_portfolio", wave: 1, icon: "⬡", label: "Portfolio & Format Strategy",  sub: "Format presence matrix, premium gap, NFC/functional absence by market" },
   { id: "g_brand",     wave: 1, icon: "◉", label: "Brand & Health Perception",    sub: "Health credibility radar, sugar narrative impact, generational gap" },
   { id: "g_insurgent", wave: 1, icon: "◇", label: "New-Age Entrant Threats",      sub: "Funded insurgents, occasion erosion, private label structural threat" },
@@ -3875,8 +3875,35 @@ export default function AdvisorSprint() {
           console.log("[Reddit] Consumer voice injected");
         } catch(e) { console.warn("[Reddit] Non-fatal:", e.message); }
 
+        // 8. QuickCommerce API — live shelf data
+        try {
+          const qcBase2 = API_URL.replace('/api/claude', '');
+          let qcBlock = "\nQUICK COMMERCE LIVE SHELF (Blinkit/Zepto/Swiggy — Mumbai):\n";
+          for (const qcTerm of [`${co} chips`, "Mad Angles"]) {
+            const qr = await fetch(
+              `${qcBase2}/api/quickcommerce?query=${encodeURIComponent(qcTerm)}&lat=19.0596&lon=72.8295`,
+              { headers: authHeaders() }
+            );
+            if (qr.ok) {
+              const qd = await qr.json();
+              if (qd.groupSearch && Object.keys(qd.groupSearch).length) {
+                qcBlock += `\n  "${qcTerm}":\n`;
+                Object.entries(qd.groupSearch).forEach(([plat, items]) => {
+                  if (items && items[0]) {
+                    const t = items[0];
+                    const disc = t.mrp > t.price ? ` (${Math.round((1-t.price/t.mrp)*100)}% off)` : ' (MRP)';
+                    qcBlock += `    ${plat}: \u20b9${t.price}${disc} ${t.quantity} \u2014 ${t.available ? 'IN STOCK' : 'OOS'}\n`;
+                  }
+                });
+              }
+            }
+          }
+          trendsDataBlock += qcBlock;
+          console.log("[QC] Shelf data injected");
+        } catch(e) { console.warn("[QC] Non-fatal:", e.message); }
+
         if (trendsDataBlock) {
-          trendsDataBlock += "\n[Sources: Google Trends/News/Shopping via SerpAPI; YouTube Data API; Reddit API]\n";
+          trendsDataBlock += "\n[Sources: Trends/News/Shopping via SerpAPI; YouTube; Reddit; QuickCommerce API]\n";
         }
       }
 
@@ -3962,11 +3989,13 @@ ${Object.entries(w1texts).filter(([k])=>k!=='framing').map(([k,v])=>{
   return db ? `[${k.toUpperCase()} DATA_BLOCK]\n${db[1].slice(0,600)}` : '';
 }).filter(Boolean).join('\n\n').slice(0,12000)}`;
 
-            const synthRes = await fetch(API_URL, {
+            const sessionTokForSynth = sessionTokenRef.current || sessionToken || '';
+            const synthRes = await fetch(API_URL + '?t=' + encodeURIComponent(sessionTokForSynth), {
               method: 'POST',
-              headers: authHeaders({ 'x-tool-name': 'advisor' }),
+              headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 agentId: 'gap_analysis',
+                mode: 'consumer',
                 prompt: synthPrompt,
                 market
               }),
@@ -4027,13 +4056,22 @@ ${JSON.stringify(extracted, null, 2)}
         try {
           text = await runAgent(id, agentParams, signal, []);
         } catch(agentErr) {
-          // Agent failed — mark it as error, stop the sprint
           console.error(`[Sprint] Agent ${id} failed:`, agentErr.message);
           setStatuses(s => ({ ...s, [id]: "error" }));
-          setAppState("error");
-          return; // exits runSprint entirely — no more API calls
+          // Critical agents halt sprint; analysis agents continue
+          const isCritical = id === 'framing' || id === 'brief';
+          if (isCritical) {
+            setAppState("error");
+            return;
+          }
+          // Non-critical: log and continue — synopsis must still run
+          text = `[${id} failed: ${agentErr.message}]`;
         }
         w1texts[id] = text;
+        // Save to React results state so pills show content
+        if (text && !text.startsWith('[') ) {
+          setResults(r => ({ ...r, [id]: text }));
+        }
 
         // Persist raw agent text to sessionStorage after every agent —
         // trace PDF and retry flows read from here as the reliable source
