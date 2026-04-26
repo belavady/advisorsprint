@@ -6820,31 +6820,3 @@ ${pageGap}
   );
 }
 
-        // 8. QuickCommerce API — live QC shelf data
-        try {
-          const qcApiBase = API_URL.replace('/api/claude', '');
-          let qcBlock = "\\nQUICK COMMERCE LIVE SHELF DATA (Blinkit/Zepto/Swiggy/BigBasket):\\n";
-          for (const term of [`${company.trim()} chips`, "Mad Angles"]) {
-            const qr = await fetch(`${qcApiBase}/api/quickcommerce?query=${encodeURIComponent(term)}&pincode=400001`, { headers: authHeaders() });
-            if (qr.ok) {
-              const qd = await qr.json();
-              if (qd.groupSearch && Object.keys(qd.groupSearch).length) {
-                qcBlock += `\\n  "${term}":\\n`;
-                Object.entries(qd.groupSearch).forEach(([p, items]) => {
-                  if (items && items[0]) {
-                    const t = items[0];
-                    const d = t.mrp > t.price ? ` (${Math.round((1-t.price/t.mrp)*100)}% off)` : ' (MRP)';
-                    qcBlock += `    ${p}: ₹${t.price}${d} ${t.quantity} — ${t.available ? 'IN STOCK' : 'OOS'}\\n`;
-                  }
-                });
-              }
-            }
-          }
-          const etaR = await fetch(`${qcApiBase}/api/quickcommerce?type=eta&pincode=400001`, { headers: authHeaders() });
-          if (etaR.ok) {
-            const eD = await etaR.json();
-            if (eD.etas) { qcBlock += "\\n  ETAs (Mumbai):\\n"; Object.entries(eD.etas).forEach(([p,e]) => { if(e&&e.available) qcBlock += `    ${p}: ${e.etaDisplay}\\n`; }); }
-          }
-          trendsDataBlock += qcBlock;
-          console.log("[QC] Shelf data injected");
-        } catch(e) { console.warn("[QC] Non-fatal:", e.message); }
