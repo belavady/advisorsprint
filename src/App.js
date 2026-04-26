@@ -3059,9 +3059,10 @@ export default function AdvisorSprint() {
 
       let res;
       try {
-        res = await fetch(API_URL, {
+        const sessionTok = sessionTokenRef.current || sessionToken || '';
+        res = await fetch(API_URL + '?t=' + encodeURIComponent(sessionTok), {
           method: 'POST',
-          headers: authHeaders({ 'x-tool-name': 'advisor', 'Connection': 'keep-alive' }),
+          headers: { 'Content-Type': 'application/json' },
           signal,
           body: JSON.stringify({ agentId, mode: params._modeOverride || 'consumer', ...params }),
         });
@@ -3742,16 +3743,159 @@ export default function AdvisorSprint() {
         }
       }
 
+      // ── SERPAPI DATA ENRICHMENT: fetch before framing ───────────────────────────
+      let trendsDataBlock = "";
+      if (!testMode && cadenceMode === "baseline" && market && market.toLowerCase().includes("india")) {
+        const baseApiUrl = API_URL.replace('/api/claude', '');
+        const co = company.trim();
+
+        // 1. Google Trends — time series (brand momentum)
+        try {
+          const trendTerms = [co, co + " chips", "Mad Angles", "Bikaji", "Lays chips"].slice(0,5).join(",");
+          const tr = await fetch(`${baseApiUrl}/api/trends?terms=${encodeURIComponent(trendTerms)}&geo=IN&timeframe=today+12-m`, { headers: authHeaders() });
+          if (tr.ok) {
+            const td = await tr.json();
+            trendsDataBlock += "\n\nGOOGLE TRENDS — SEARCH INTEREST (India, 12 months, index 0-100):\n";
+            Object.entries(td.summary || {}).forEach(([term, d]) => {
+              trendsDataBlock += `  ${term}: avg=${d.avg}/100, trend=${d.trend}, recent=${d.recentAvg} vs prior=${d.priorAvg}\n`;
+            });
+            if (td.relatedQueries?.length) {
+              trendsDataBlock += `  Rising searches: ${td.relatedQueries.map(q => q.query).join(", ")}\n`;
+            }
+            console.log("[Trends] Time series injected");
+          }
+        } catch(e) { console.warn("[Trends] Non-fatal:", e.message); }
+
+        // 2. Google Trends — geographic (state-level interest)
+        try {
+          const gr = await fetch(`${baseApiUrl}/api/trends/geo?term=${encodeURIComponent(co + " chips")}&country=IN`, { headers: authHeaders() });
+          if (gr.ok) {
+            const gd = await gr.json();
+            if (gd.geoData?.length) {
+              trendsDataBlock += "\nGOOGLE TRENDS — STATE-LEVEL INTEREST for '" + co + " chips':\n";
+              gd.geoData.slice(0, 8).forEach(r => {
+                trendsDataBlock += `  ${r.region}: ${r.value}/100\n`;
+              });
+              console.log("[TrendsGeo] Geographic injected");
+            }
+          }
+        } catch(e) { console.warn("[TrendsGeo] Non-fatal:", e.message); }
+
+        // 3. Google Trends — related topics (brand association)
+        try {
+          const tp = await fetch(`${baseApiUrl}/api/trends/topics?term=${encodeURIComponent(co)}&geo=IN`, { headers: authHeaders() });
+          if (tp.ok) {
+            const td = await tp.json();
+            if (td.rising?.length) {
+              trendsDataBlock += "\nGOOGLE TRENDS — RISING TOPICS ASSOCIATED WITH '" + co + "':\n";
+              td.rising.slice(0, 5).forEach(t => {
+                trendsDataBlock += `  ${t.topic} (${t.type}): ${t.value}\n`;
+              });
+              console.log("[TrendsTopics] Topics injected");
+            }
+          }
+        } catch(e) { console.warn("[TrendsTopics] Non-fatal:", e.message); }
+
+        // 4. Google News — recent news (last 30 days)
+        try {
+          const newsTerms = [`${co} ITC snacks 2026`, `Bingo snacks India 2026`, `ITC FMCG Quick Commerce 2026`];
+          let newsBlock = "\nGOOGLE NEWS — RECENT COVERAGE:\n";
+          for (const q of newsTerms) {
+            const nr = await fetch(`${baseApiUrl}/api/news?q=${encodeURIComponent(q)}&geo=in&num=3`, { headers: authHeaders() });
+            if (nr.ok) {
+              const nd = await nr.json();
+              nd.articles?.slice(0,2).forEach(a => {
+                newsBlock += `  [${a.date}] ${a.source}: ${a.title}\n`;
+              });
+            }
+          }
+          trendsDataBlock += newsBlock;
+          console.log("[News] Recent news injected");
+        } catch(e) { console.warn("[News] Non-fatal:", e.message); }
+
+        // 5. Google Shopping — price intelligence
+        try {
+          const shopTerms = [`${co} chips`, `Mad Angles`, `Bikaji namkeen`];
+          let shopBlock = "\nGOOGLE SHOPPING — LIVE PRICING SIGNALS:\n";
+          for (const q of shopTerms) {
+            const sr = await fetch(`${baseApiUrl}/api/shopping?q=${encodeURIComponent(q)}&country=in&num=3`, { headers: authHeaders() });
+            if (sr.ok) {
+              const sd = await sr.json();
+              sd.results?.slice(0,2).forEach(p => {
+                shopBlock += `  ${p.title}: ${p.price} (${p.source})\n`;
+              });
+            }
+          }
+          trendsDataBlock += shopBlock;
+          console.log("[Shopping] Price intelligence injected");
+        } catch(e) { console.warn("[Shopping] Non-fatal:", e.message); }
+
+        // 6. YouTube — campaign intelligence
+        try {
+          const ytQueries = [
+            `${co} chips ad campaign`,
+            `Bingo snacks India commercial`,
+            `Lays chips India ad`,
+            `Bikaji snacks campaign`,
+          ];
+          let ytBlock = "\nYOUTUBE CAMPAIGN INTELLIGENCE (top videos by views, India):\n";
+          for (const q of ytQueries.slice(0, 2)) {
+            const yr = await fetch(`${baseApiUrl}/api/youtube?q=${encodeURIComponent(q)}&num=3`, { headers: authHeaders() });
+            if (yr.ok) {
+              const yd = await yr.json();
+              yd.videos?.slice(0, 2).forEach(v => {
+                const views = v.views ? `${(v.views/1000000).toFixed(1)}M views` : 'views unknown';
+                ytBlock += `  [${v.channel}] "${v.title.slice(0,50)}" — ${views}\n`;
+              });
+            }
+          }
+          trendsDataBlock += ytBlock;
+          console.log("[YouTube] Campaign intelligence injected");
+        } catch(e) { console.warn("[YouTube] Non-fatal:", e.message); }
+
+        // 7. Reddit — organic consumer voice
+        try {
+          const redditQueries = [
+            `${co} chips review india`,
+            `bingo snacks india`,
+            `quick commerce snacks zepto blinkit india`,
+          ];
+          let redditBlock = "\nREDDIT — ORGANIC CONSUMER VOICE (r/india, r/IndianFood, last 12 months):\n";
+          for (const q of redditQueries.slice(0, 2)) {
+            const rr = await fetch(`${baseApiUrl}/api/reddit?q=${encodeURIComponent(q)}&limit=4`, { headers: authHeaders() });
+            if (rr.ok) {
+              const rd = await rr.json();
+              rd.posts?.slice(0, 2).forEach(p => {
+                redditBlock += `  r/${p.subreddit} (${p.score}pts): ${p.title.slice(0, 70)}\n`;
+                if (p.selftext) redditBlock += `    "${p.selftext.slice(0, 100)}"\n`;
+              });
+            }
+          }
+          trendsDataBlock += redditBlock;
+          console.log("[Reddit] Consumer voice injected");
+        } catch(e) { console.warn("[Reddit] Non-fatal:", e.message); }
+
+        if (trendsDataBlock) {
+          trendsDataBlock += "\n[Sources: Google Trends/News/Shopping via SerpAPI; YouTube Data API; Reddit API]\n";
+        }
+      }
+
       // ── AGENT 0: Category & Competitive Framing — runs first, before all others ──
       let framingBlock = "";
       if (!testMode) {
         setStatuses(s => ({ ...s, framing: "running" }));
         try {
-          const framingParams = { company: co, acquirer: acq, ctx: (ctx + (researchDataPack ? "\n\nPRE-RETRIEVED DATA PACK — use these locked figures, do not re-derive:\n" + researchDataPack : "")), synthCtx: {}, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock: '', isPublic, ticker: ticker.trim() };
+          const framingParams = { company: co, acquirer: acq, ctx: (ctx + (researchDataPack ? "\n\nPRE-RETRIEVED DATA PACK — use these locked figures, do not re-derive:\n" + researchDataPack : "") + trendsDataBlock), synthCtx: {}, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock: '', isPublic, ticker: ticker.trim() };
           const framingText = await runAgent('framing', framingParams, signal, []);
           // Extract the FRAMING_BLOCK from the output
           const framingMatch = framingText.match(/<<<FRAMING_BLOCK>>>([\s\S]*?)<<<END_FRAMING_BLOCK>>>/);
           framingBlock = framingMatch ? framingMatch[1].trim() : framingText.trim();
+          // Extract SIGNALS_BLOCK and append to framingBlock for all downstream agents
+          const signalsMatch = framingText.match(/<<<SIGNALS_BLOCK>>>([\s\S]*?)<<<END_SIGNALS_BLOCK>>>/);
+          if (signalsMatch) {
+            framingBlock += '\n\n<<<SIGNALS_BLOCK>>>\n' + signalsMatch[1].trim() + '\n<<<END_SIGNALS_BLOCK>>>';
+            console.log('[Framing] SIGNALS_BLOCK extracted — all enrichment signals now available to downstream agents');
+          }
           setFramingBlock(framingBlock);
           w1texts['framing'] = framingText;
           setStatuses(s => ({ ...s, framing: "done" }));
@@ -6675,3 +6819,32 @@ ${pageGap}
     </>
   );
 }
+
+        // 8. QuickCommerce API — live QC shelf data
+        try {
+          const qcApiBase = API_URL.replace('/api/claude', '');
+          let qcBlock = "\\nQUICK COMMERCE LIVE SHELF DATA (Blinkit/Zepto/Swiggy/BigBasket):\\n";
+          for (const term of [`${company.trim()} chips`, "Mad Angles"]) {
+            const qr = await fetch(`${qcApiBase}/api/quickcommerce?query=${encodeURIComponent(term)}&pincode=400001`, { headers: authHeaders() });
+            if (qr.ok) {
+              const qd = await qr.json();
+              if (qd.groupSearch && Object.keys(qd.groupSearch).length) {
+                qcBlock += `\\n  "${term}":\\n`;
+                Object.entries(qd.groupSearch).forEach(([p, items]) => {
+                  if (items && items[0]) {
+                    const t = items[0];
+                    const d = t.mrp > t.price ? ` (${Math.round((1-t.price/t.mrp)*100)}% off)` : ' (MRP)';
+                    qcBlock += `    ${p}: ₹${t.price}${d} ${t.quantity} — ${t.available ? 'IN STOCK' : 'OOS'}\\n`;
+                  }
+                });
+              }
+            }
+          }
+          const etaR = await fetch(`${qcApiBase}/api/quickcommerce?type=eta&pincode=400001`, { headers: authHeaders() });
+          if (etaR.ok) {
+            const eD = await etaR.json();
+            if (eD.etas) { qcBlock += "\\n  ETAs (Mumbai):\\n"; Object.entries(eD.etas).forEach(([p,e]) => { if(e&&e.available) qcBlock += `    ${p}: ${e.etaDisplay}\\n`; }); }
+          }
+          trendsDataBlock += qcBlock;
+          console.log("[QC] Shelf data injected");
+        } catch(e) { console.warn("[QC] Non-fatal:", e.message); }
