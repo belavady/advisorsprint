@@ -3170,7 +3170,7 @@ export default function AdvisorSprint() {
             // Fallback: create minimal dataBlock so visuals still render
             setDataBlocks(d => ({ ...d, [id]: {
               agent: id,
-              kpis: [{ label: 'Analysis', value: '✓', sub: 'See prose below', trend: 'flat', confidence: 'M' }],
+              parseError: true, kpis: [{ label: 'Analysis', value: '✓', sub: 'See prose below', trend: 'flat', confidence: 'M' }],
               verdictRow: { dimension: id, verdict: 'WATCH', finding: 'DATA_BLOCK parse failed — see full analysis below', confidence: 'L' },
               topActions: [{ action: 'Review full analysis below', impact: 50, speed: 50, confidence: 'L' }]
             }}));
@@ -4020,20 +4020,10 @@ ${Object.entries(w1texts).filter(([k])=>k!=='framing').map(([k,v])=>{
                   } catch(e) {}
                 }
               }
-              // Parse the extracted data points and inject into brief synthesis context
-              try {
-                const clean = synthText.replace(/```json|```/g,'').trim();
-                const extracted = JSON.parse(clean);
-                // Prepend as a locked context block for the brief agent
-                const lockBlock = `
-
-LOCKED DATA POINTS FROM PRIOR AGENTS — USE THESE EXACTLY, DO NOT RE-DERIVE:
-${JSON.stringify(extracted, null, 2)}
-
-`;
-                w1texts['_briefLock'] = lockBlock;
-              } catch(e) {
-                console.warn('[PreBrief] Could not parse synthesis:', e.message);
+              // Use synthesis text directly — gap_analysis returns prose not JSON
+              if (synthText && synthText.length > 50) {
+                w1texts['_briefLock'] = `\n\nSYNTHESIS CONTEXT FOR BRIEF:\n${synthText.slice(0, 3000)}\n\n`;
+                console.log('[PreBrief] Synthesis locked:', synthText.length, 'chars');
               }
             }
           } catch(synthErr) {
@@ -4056,22 +4046,23 @@ ${JSON.stringify(extracted, null, 2)}
         try {
           text = await runAgent(id, agentParams, signal, []);
         } catch(agentErr) {
+          // Any agent failure stops the sprint — partial reports cannot be shared
           console.error(`[Sprint] Agent ${id} failed:`, agentErr.message);
           setStatuses(s => ({ ...s, [id]: "error" }));
-          // Critical agents halt sprint; analysis agents continue
-          const isCritical = id === 'framing' || id === 'brief';
-          if (isCritical) {
-            setAppState("error");
-            return;
-          }
-          // Non-critical: log and continue — synopsis must still run
-          text = `[${id} failed: ${agentErr.message}]`;
+          setAppState("error");
+          alert(`Sprint stopped: ${id} agent failed.\n\nError: ${agentErr.message}\n\nThis preserves your remaining credits. Check Render logs for the cause, then re-run.`);
+          return;
+        }
+
+        // Quality gate — stop if agent produced no meaningful output
+        if (!text || text.trim().length < 100) {
+          console.error(`[Sprint] Agent ${id} produced empty output (${text?.length || 0} chars)`);
+          setStatuses(s => ({ ...s, [id]: "error" }));
+          setAppState("error");
+          alert(`Sprint stopped: ${id} agent produced no output.\n\nThis usually means a server error or timeout. Check Render logs, then re-run.`);
+          return;
         }
         w1texts[id] = text;
-        // Save to React results state so pills show content
-        if (text && !text.startsWith('[') ) {
-          setResults(r => ({ ...r, [id]: text }));
-        }
 
         // Persist raw agent text to sessionStorage after every agent —
         // trace PDF and retry flows read from here as the reliable source
@@ -4537,7 +4528,15 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\\n[...truncated - ful
       setStatuses(s => ({ ...s, synopsis: "running" }));
       const synopsisParams = { company: co, acquirer: acq, ctx, synthCtx: w1texts, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock: w1texts['framing'] || '', isPublic, ticker: ticker.trim() };
       const synopsisText = await runAgent('synopsis', synopsisParams, signal, []);
-      w1texts['synopsis'] = synopsisText;
+      // Synopsis quality gate
+        if (!synopsisText || synopsisText.trim().length < 200) {
+          console.error('[Sprint] Synopsis empty:', synopsisText?.length || 0, 'chars');
+          setStatuses(s => ({ ...s, synopsis: 'error' }));
+          setAppState('error');
+          alert('Sprint stopped: Synopsis empty. Brief will not run — credits preserved. Check Render logs then re-run.');
+          return;
+        }
+        w1texts['synopsis'] = synopsisText;
       sessionStorage.setItem(`sprint_${co}`, JSON.stringify(w1texts));
       setStatuses(s => ({ ...s, synopsis: "done" }));
       if (signal.aborted) return;
