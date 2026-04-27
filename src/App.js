@@ -3354,67 +3354,53 @@ export default function AdvisorSprint() {
     setFortnightlyRunning(true);
     setFortnightlyResult(null);
     setFortnightlyError('');
+
+    const FORTNIGHTLY_API = API_URL.replace('/api/claude', '/api/fortnightly');
+    // POC: hardcoded baseline sprint ID for Bingo! ITC demo
+    // POST-ITC DEAL FLAG: make this dynamic
+    const BASELINE_SPRINT_ID = 'bingo-2026-04-27-k6vy';
+
     try {
-      // New cadence system: use main /api/claude endpoint with signal_scanner agent
-      const co = company.trim();
-      const signal = new AbortController();
-      let fullText = '';
-      const runAgentDirect = async (agentId, extraCtx) => {
-        const body = {
-          agentId,
-          mode: toolMode,
-          company: co,
-          acquirer: acquirer.trim(),
-          ctx: (context.trim() + '\n\n' + (extraCtx||'')).trim(),
-          synthCtx: {},
-          market,
-          companyMode,
-          parentCo: parentCo.trim(),
-          parentSince: parentSince.trim(),
-          framingBlock: framingBlock || '',
-          strategicBets: strategicBets || '',
-          priorSprint: priorSprintCtx ? (typeof priorSprintCtx === 'string' ? priorSprintCtx : [
-              priorSprintCtx.results?.synopsis ? '=== BASELINE SYNOPSIS ===\n' + priorSprintCtx.results.synopsis : '',
-              priorSprintCtx.results?.market ? '=== MARKET INTELLIGENCE ===\n' + priorSprintCtx.results.market : '',
-              priorSprintCtx.results?.competitive ? '=== COMPETITIVE RADAR ===\n' + priorSprintCtx.results.competitive : '',
-              priorSprintCtx.results?.growth ? '=== GROWTH STRATEGY ===\n' + priorSprintCtx.results.growth : '',
-              priorSprintCtx.strategic_bets ? '=== STRATEGIC BETS ===\n' + JSON.stringify(priorSprintCtx.strategic_bets) : '',
-            ].filter(Boolean).join('\n\n').slice(0, 8000)) : '',
-        };
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: authHeaders({ 'x-tool-name': 'advisor' }),
-          body: JSON.stringify(body),
-          signal: signal.signal,
-        });
-        if (!res.ok) throw new Error('Agent request failed');
-        const reader = res.body.getReader();
-        const dec = new TextDecoder();
-        let buf = '', text = '';
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          buf += dec.decode(value, { stream: true });
-          const lines = buf.split('\n'); buf = lines.pop();
-          for (const line of lines) {
-            if (!line.startsWith('data: ')) continue;
-            try {
-              const ev = JSON.parse(line.slice(6));
-              if (ev.type === 'chunk') text += ev.text || '';
-              if (ev.type === 'done') text = ev.text || text;
-            } catch(e) {}
-          }
+      const res = await fetch(FORTNIGHTLY_API, {
+        method: 'POST',
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({
+          company: company.trim(),
+          baselineSprintId: BASELINE_SPRINT_ID,
+          market: market || 'India',
+          parentCo: parentCo ? parentCo.trim() : 'ITC Limited',
+          companyMode: companyMode || 'parent',
+        }),
+      });
+      if (!res.ok) throw new Error('Fortnightly request failed: ' + res.status);
+
+      const reader = res.body.getReader();
+      const dec = new TextDecoder();
+      let buf = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        const lines = buf.split('
+'); buf = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const ev = JSON.parse(line.slice(6));
+            if (ev.type === 'status') {
+              setFortnightlyResult({ status: ev.message, step: ev.step, total: ev.total });
+            }
+            if (ev.type === 'agent_done') {
+              setFortnightlyResult(r => ({ ...(r||{}), lastAgent: ev.label }));
+            }
+            if (ev.type === 'done') {
+              setFortnightlyResult({ done: true, sprintId: ev.sprintId, shareUrl: ev.shareUrl, periodLabel: ev.periodLabel });
+            }
+            if (ev.type === 'error') throw new Error(ev.message);
+          } catch(e) { if (!e.message || !e.message.startsWith('JSON')) throw e; }
         }
-        return text;
-      };
-      const scanText = await runAgentDirect('signal_scanner', '');
-      // Store in results under signal_scanner key
-      setResults(r => ({ ...r, signal_scanner: scanText }));
-      try {
-        const db = JSON.parse((scanText.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/) || ['','{}'])[1]);
-        setDataBlocks(d => ({ ...d, signal_scanner: db }));
-      } catch(e) {}
-      setFortnightlyResult({ done: true });
+      }
     } catch(e) {
       setFortnightlyError(e.message);
     } finally {
@@ -5907,16 +5893,28 @@ ${pageGap}
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    {fortnightlyRunning ? '⟳ Running delta...' : '↻ Fortnightly Update'}
+                    {fortnightlyRunning ? '⟳ Running Fortnightly...' : '↻ Fortnightly Update'}
                   </button>
-                  <span style={{ fontSize: 9, color: '#888', fontFamily: "'Instrument Sans'", lineHeight: 1.4 }}>
-                    Baseline: {new Date(prevSprintFound.created_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })}
-                  </span>
+                  {fortnightlyRunning && fortnightlyResult?.status && (
+                    <span style={{ fontSize: 9, color: '#c8893a', fontFamily: "'Instrument Sans'", lineHeight: 1.4 }}>
+                      {fortnightlyResult.status}{fortnightlyResult.step ? ` (${fortnightlyResult.step}/${fortnightlyResult.total})` : ''}
+                    </span>
+                  )}
+                  {fortnightlyRunning && fortnightlyResult?.lastAgent && (
+                    <span style={{ fontSize: 9, color: '#7aaa8a', fontFamily: "'Instrument Sans'", lineHeight: 1.4 }}>
+                      ✓ {fortnightlyResult.lastAgent}
+                    </span>
+                  )}
+                  {!fortnightlyRunning && (
+                    <span style={{ fontSize: 9, color: '#888', fontFamily: "'Instrument Sans'", lineHeight: 1.4 }}>
+                      Period: Apr 13–27, 2026 · ~25-35 min
+                    </span>
+                  )}
                 </div>
               )}
 
               {/* Fortnightly result link */}
-              {fortnightlyResult && (
+              {fortnightlyResult?.done && fortnightlyResult.shareUrl && (
                 <a
                   href={fortnightlyResult.shareUrl}
                   target="_blank"
