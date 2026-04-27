@@ -2980,6 +2980,11 @@ export default function AdvisorSprint() {
   const [fortnightlyResult, setFortnightlyResult] = useState(null);
   const [fortnightlyError, setFortnightlyError] = useState('');
 
+  // Monthly report state
+  const [monthlyRunning, setMonthlyRunning] = useState(false);
+  const [monthlyResult, setMonthlyResult] = useState(null);
+  const [monthlyError, setMonthlyError] = useState('');
+
   const [appState, setAppState] = useState("idle");
   const [toolMode, setToolMode] = useState("consumer"); // consumer | global
   const [testMode, setTestMode] = useState(false);
@@ -3354,30 +3359,96 @@ export default function AdvisorSprint() {
     setFortnightlyRunning(true);
     setFortnightlyResult(null);
     setFortnightlyError('');
-
-    const FORTNIGHTLY_API = API_URL.replace('/api/claude', '/api/fortnightly');
-    // POC: hardcoded baseline sprint ID for Bingo! ITC demo
-    // POST-ITC DEAL FLAG: make this dynamic
-    const BASELINE_SPRINT_ID = 'bingo-2026-04-27-k6vy';
-
     try {
-      const res = await fetch(FORTNIGHTLY_API, {
+      // New cadence system: use main /api/claude endpoint with signal_scanner agent
+      const co = company.trim();
+      const signal = new AbortController();
+      let fullText = '';
+      const runAgentDirect = async (agentId, extraCtx) => {
+        const body = {
+          agentId,
+          mode: toolMode,
+          company: co,
+          acquirer: acquirer.trim(),
+          ctx: (context.trim() + '\n\n' + (extraCtx||'')).trim(),
+          synthCtx: {},
+          market,
+          companyMode,
+          parentCo: parentCo.trim(),
+          parentSince: parentSince.trim(),
+          framingBlock: framingBlock || '',
+          strategicBets: strategicBets || '',
+          priorSprint: priorSprintCtx ? (typeof priorSprintCtx === 'string' ? priorSprintCtx : [
+              priorSprintCtx.results?.synopsis ? '=== BASELINE SYNOPSIS ===\n' + priorSprintCtx.results.synopsis : '',
+              priorSprintCtx.results?.market ? '=== MARKET INTELLIGENCE ===\n' + priorSprintCtx.results.market : '',
+              priorSprintCtx.results?.competitive ? '=== COMPETITIVE RADAR ===\n' + priorSprintCtx.results.competitive : '',
+              priorSprintCtx.results?.growth ? '=== GROWTH STRATEGY ===\n' + priorSprintCtx.results.growth : '',
+              priorSprintCtx.strategic_bets ? '=== STRATEGIC BETS ===\n' + JSON.stringify(priorSprintCtx.strategic_bets) : '',
+            ].filter(Boolean).join('\n\n').slice(0, 8000)) : '',
+        };
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: authHeaders({ 'x-tool-name': 'advisor' }),
+          body: JSON.stringify(body),
+          signal: signal.signal,
+        });
+        if (!res.ok) throw new Error('Agent request failed');
+        const reader = res.body.getReader();
+        const dec = new TextDecoder();
+        let buf = '', text = '';
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += dec.decode(value, { stream: true });
+          const lines = buf.split('\n'); buf = lines.pop();
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            try {
+              const ev = JSON.parse(line.slice(6));
+              if (ev.type === 'chunk') text += ev.text || '';
+              if (ev.type === 'done') text = ev.text || text;
+            } catch(e) {}
+          }
+        }
+        return text;
+      };
+      const scanText = await runAgentDirect('signal_scanner', '');
+      // Store in results under signal_scanner key
+      setResults(r => ({ ...r, signal_scanner: scanText }));
+      try {
+        const db = JSON.parse((scanText.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/) || ['','{}'])[1]);
+        setDataBlocks(d => ({ ...d, signal_scanner: db }));
+      } catch(e) {}
+      setFortnightlyResult({ done: true });
+    } catch(e) {
+      setFortnightlyError(e.message);
+    } finally {
+      setFortnightlyRunning(false);
+    }
+  };
+
+  // ── Monthly Update runner — calls POST /api/monthly ──────────────────────
+  const runMonthly = async () => {
+    if (!company.trim() || monthlyRunning) return;
+    setMonthlyRunning(true);
+    setMonthlyResult(null);
+    setMonthlyError('');
+    try {
+      const res = await fetch(`${API_URL.replace('/api/claude', '')}/api/monthly`, {
         method: 'POST',
         headers: authHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           company: company.trim(),
-          baselineSprintId: BASELINE_SPRINT_ID,
+          baselineSprintId: 'bingo-2026-04-27-k6vy',
           market: market || 'India',
-          parentCo: parentCo ? parentCo.trim() : 'ITC Limited',
-          companyMode: companyMode || 'parent',
+          parentCo: parentCo?.trim() || '',
+          companyMode: companyMode || 'standalone',
         }),
       });
-      if (!res.ok) throw new Error('Fortnightly request failed: ' + res.status);
-
+      if (!res.ok) throw new Error(`Monthly request failed: ${res.status}`);
       const reader = res.body.getReader();
       const dec = new TextDecoder();
       let buf = '';
-
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -3387,23 +3458,15 @@ export default function AdvisorSprint() {
           if (!line.startsWith('data: ')) continue;
           try {
             const ev = JSON.parse(line.slice(6));
-            if (ev.type === 'status') {
-              setFortnightlyResult({ status: ev.message, step: ev.step, total: ev.total });
-            }
-            if (ev.type === 'agent_done') {
-              setFortnightlyResult(r => ({ ...(r||{}), lastAgent: ev.label }));
-            }
-            if (ev.type === 'done') {
-              setFortnightlyResult({ done: true, sprintId: ev.sprintId, shareUrl: ev.shareUrl, periodLabel: ev.periodLabel });
-            }
+            if (ev.type === 'done') setMonthlyResult({ shareUrl: ev.shareUrl, sprintId: ev.sprintId });
             if (ev.type === 'error') throw new Error(ev.message);
-          } catch(e) { if (!e.message || !e.message.startsWith('JSON')) throw e; }
+          } catch(e) { if (e.message && !e.message.startsWith('JSON')) throw e; }
         }
       }
     } catch(e) {
-      setFortnightlyError(e.message);
+      setMonthlyError(e.message);
     } finally {
-      setFortnightlyRunning(false);
+      setMonthlyRunning(false);
     }
   };
 
@@ -5892,28 +5955,16 @@ ${pageGap}
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    {fortnightlyRunning ? '⟳ Running Fortnightly...' : '↻ Fortnightly Update'}
+                    {fortnightlyRunning ? '⟳ Running delta...' : '↻ Fortnightly Update'}
                   </button>
-                  {fortnightlyRunning && fortnightlyResult?.status && (
-                    <span style={{ fontSize: 9, color: '#c8893a', fontFamily: "'Instrument Sans'", lineHeight: 1.4 }}>
-                      {fortnightlyResult.status}{fortnightlyResult.step ? ` (${fortnightlyResult.step}/${fortnightlyResult.total})` : ''}
-                    </span>
-                  )}
-                  {fortnightlyRunning && fortnightlyResult?.lastAgent && (
-                    <span style={{ fontSize: 9, color: '#7aaa8a', fontFamily: "'Instrument Sans'", lineHeight: 1.4 }}>
-                      ✓ {fortnightlyResult.lastAgent}
-                    </span>
-                  )}
-                  {!fortnightlyRunning && (
-                    <span style={{ fontSize: 9, color: '#888', fontFamily: "'Instrument Sans'", lineHeight: 1.4 }}>
-                      Period: Apr 13–27, 2026 · ~25-35 min
-                    </span>
-                  )}
+                  <span style={{ fontSize: 9, color: '#888', fontFamily: "'Instrument Sans'", lineHeight: 1.4 }}>
+                    Baseline: {new Date(prevSprintFound.created_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })}
+                  </span>
                 </div>
               )}
 
               {/* Fortnightly result link */}
-              {fortnightlyResult?.done && fortnightlyResult.shareUrl && (
+              {fortnightlyResult && (
                 <a
                   href={fortnightlyResult.shareUrl}
                   target="_blank"
@@ -5933,6 +5984,63 @@ ${pageGap}
                 >
                   ↗ View Fortnightly Report
                 </a>
+              )}
+
+              {/* Monthly Update button */}
+              {prevSprintFound && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <button
+                    onClick={monthlyRunning ? undefined : runMonthly}
+                    disabled={monthlyRunning || appState === 'running'}
+                    style={{
+                      padding: '12px 20px',
+                      background: monthlyRunning ? '#888' : '#2e7d52',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: 4,
+                      fontFamily: "'Instrument Sans'",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: (monthlyRunning || appState === 'running') ? 'not-allowed' : 'pointer',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {monthlyRunning ? '⟳ Running monthly...' : '◉ Monthly Update'}
+                  </button>
+                  <span style={{ fontSize: 9, color: '#888', fontFamily: "'Instrument Sans'", lineHeight: 1.4 }}>
+                    30-day · 8 agents · Mar 27 – Apr 27
+                  </span>
+                </div>
+              )}
+
+              {/* Monthly result link */}
+              {monthlyResult && (
+                <a
+                  href={monthlyResult.shareUrl}
+                  target='_blank'
+                  rel='noreferrer'
+                  style={{
+                    padding: '10px 16px',
+                    background: '#0f2e1a',
+                    color: '#2ecc87',
+                    border: '1px solid #2ecc87',
+                    borderRadius: 4,
+                    fontFamily: "'Instrument Sans'",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  ↗ View Monthly Report
+                </a>
+              )}
+
+              {/* Monthly error */}
+              {monthlyError && (
+                <span style={{ fontSize: 11, color: '#e24b4a', fontFamily: "'Instrument Sans'" }}>
+                  {monthlyError}
+                </span>
               )}
 
               {/* Fortnightly error */}
