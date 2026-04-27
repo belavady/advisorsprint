@@ -4576,6 +4576,8 @@ ${prose.slice(0, PROSE_CAP)}${prose.length > PROSE_CAP ? '\\n[...truncated - ful
         }
         w1texts['synopsis'] = synopsisText;
       sessionStorage.setItem(`sprint_${co}`, JSON.stringify(w1texts));
+      // Store in results state so renderSynopsis can read raw text for 90-day table
+      setResults(r => ({ ...r, synopsis: synopsisText }));
       setStatuses(s => ({ ...s, synopsis: "done" }));
       if (signal.aborted) return;
       await new Promise(r => setTimeout(r, 30000));
