@@ -3732,9 +3732,19 @@ export default function AdvisorSprint() {
           const dpMatch = researchText.match(/<<<DATA_PACK>>>([\s\S]*?)<<<END_DATA_PACK>>>/);
           if (dpMatch) researchDataPack = dpMatch[1].trim();
           try {
-            const dpKpis = [{label:"ITC FMCG Revenue",value:"see pack",sub:"",trend:"flat",confidence:"H"},
-                            {label:"Bikaji Revenue",value:"see pack",sub:"",trend:"up",confidence:"H"}];
-            setDataBlocks(d => ({ ...d, research: { agent:"research", kpis: dpKpis, topActions:[], verdictRow:{verdict:"STRONG",finding:"Primary sources fetched",confidence:"H"} }}));
+            // Parse research DATA_BLOCK to get real sources array for Sources pill
+            const resDbMatch = researchText.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/);
+            if (resDbMatch) {
+              try {
+                const resDb = JSON.parse(resDbMatch[1].trim());
+                setDataBlocks(d => ({ ...d, research: resDb }));
+              } catch(e) {
+                // Fallback to hardcoded if parse fails
+                const dpKpis = [{label:"ITC FMCG Revenue",value:"see pack",sub:"",trend:"flat",confidence:"H"},
+                                {label:"Bikaji Revenue",value:"see pack",sub:"",trend:"up",confidence:"H"}];
+                setDataBlocks(d => ({ ...d, research: { agent:"research", kpis: dpKpis, topActions:[], verdictRow:{verdict:"STRONG",finding:"Primary sources fetched",confidence:"H"} }}));
+              }
+            }
           } catch(e) {}
           setStatuses(s => ({ ...s, research: "done" }));
         } catch(e) {
