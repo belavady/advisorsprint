@@ -2985,6 +2985,10 @@ export default function AdvisorSprint() {
   const [monthlyResult, setMonthlyResult] = useState(null);
   const [monthlyError, setMonthlyError] = useState('');
 
+  const [quarterlyRunning, setQuarterlyRunning] = useState(false);
+  const [quarterlyResult, setQuarterlyResult] = useState(null);
+  const [quarterlyError, setQuarterlyError] = useState('');
+
   const [appState, setAppState] = useState("idle");
   const [toolMode, setToolMode] = useState("consumer"); // consumer | global
   const [testMode, setTestMode] = useState(false);
@@ -3467,6 +3471,46 @@ export default function AdvisorSprint() {
       setMonthlyError(e.message);
     } finally {
       setMonthlyRunning(false);
+    }
+  };
+
+  // ── Quarterly Deep-Dive runner — calls POST /api/quarterly ───────────────
+  const runQuarterlyDeepDive = async () => {
+    if (!company.trim() || quarterlyRunning) return;
+    setQuarterlyRunning(true);
+    setQuarterlyResult(null);
+    setQuarterlyError('');
+    try {
+      const res = await fetch(`${API_URL.replace('/api/claude', '')}/api/quarterly`, {
+        method: 'POST',
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({
+          company: company.trim(),
+          baselineSprintId: 'bingo-2026-04-27-k6vy',
+        }),
+      });
+      if (!res.ok) throw new Error(`Quarterly request failed: ${res.status}`);
+      const reader = res.body.getReader();
+      const dec = new TextDecoder();
+      let buf = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        const lines = buf.split('\n'); buf = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const ev = JSON.parse(line.slice(6));
+            if (ev.type === 'done') setQuarterlyResult({ shareUrl: ev.shareUrl, sprintId: ev.sprintId });
+            if (ev.type === 'error') throw new Error(ev.message);
+          } catch(e) { if (e.message && !e.message.startsWith('JSON')) throw e; }
+        }
+      }
+    } catch(e) {
+      setQuarterlyError(e.message);
+    } finally {
+      setQuarterlyRunning(false);
     }
   };
 
@@ -6040,6 +6084,63 @@ ${pageGap}
               {monthlyError && (
                 <span style={{ fontSize: 11, color: '#e24b4a', fontFamily: "'Instrument Sans'" }}>
                   {monthlyError}
+                </span>
+              )}
+
+              {/* Quarterly Deep-Dive button */}
+              {prevSprintFound && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <button
+                    onClick={quarterlyRunning ? undefined : runQuarterlyDeepDive}
+                    disabled={quarterlyRunning || appState === 'running'}
+                    style={{
+                      padding: '12px 20px',
+                      background: quarterlyRunning ? '#888' : '#1e3a5f',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: 4,
+                      fontFamily: "'Instrument Sans'",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: (quarterlyRunning || appState === 'running') ? 'not-allowed' : 'pointer',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {quarterlyRunning ? '⟳ Running quarterly...' : '◎ Q1 Brand Deep-Dive'}
+                  </button>
+                  <span style={{ fontSize: 9, color: '#888', fontFamily: "'Instrument Sans'", lineHeight: 1.4 }}>
+                    90-day · 9 agents · Jan 27 – Apr 27
+                  </span>
+                </div>
+              )}
+
+              {/* Quarterly result link */}
+              {quarterlyResult && (
+                <a
+                  href={quarterlyResult.shareUrl}
+                  target='_blank'
+                  rel='noreferrer'
+                  style={{
+                    padding: '10px 16px',
+                    background: '#0f1e30',
+                    color: '#5b9bd5',
+                    border: '1px solid #5b9bd5',
+                    borderRadius: 4,
+                    fontFamily: "'Instrument Sans'",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  ↗ View Q1 Deep-Dive
+                </a>
+              )}
+
+              {/* Quarterly error */}
+              {quarterlyError && (
+                <span style={{ fontSize: 11, color: '#e24b4a', fontFamily: "'Instrument Sans'" }}>
+                  {quarterlyError}
                 </span>
               )}
 
