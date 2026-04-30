@@ -3612,65 +3612,57 @@ export default function AdvisorSprint() {
     runSprint();
   };
 
-  // ── Quarterly category report runner ──────────────────────────────────
+  // ── Quarterly Category Report runner — calls POST /api/category-quarterly ──
   const runQuarterlyCategory = async () => {
     if (!company.trim() || appState === 'running') return;
     setAppState('running');
     setResults({});
     setDataBlocks({});
     setStatuses({});
-    const signal = new AbortController();
-    abortRef.current = signal;
-    const co = company.trim();
-    const catAgents = ['cat_structure','cat_competitive','cat_channel','cat_innovation'];
-    const synthCtxForCat = {};
+    const CAT_AGENTS = ['occasion','consumer','competitive','channel','trajectory','bingo','synopsis'];
+    CAT_AGENTS.forEach(id => setStatuses(s => ({ ...s, [id]: 'queued' })));
     try {
-      for (const agentId of catAgents) {
-        setStatuses(s => ({ ...s, [agentId]: 'running' }));
-        const text = await runAgent(agentId, {
-          company: co, acquirer: acquirer.trim(), ctx: context.trim(),
-          synthCtx: synthCtxForCat, market, companyMode,
-          parentCo: parentCo.trim(), parentSince: parentSince.trim(),
-          framingBlock: '', priorSprint: priorSprintCtx ? (typeof priorSprintCtx === 'string' ? priorSprintCtx : [
-              priorSprintCtx.results?.synopsis ? '=== BASELINE SYNOPSIS ===\n' + priorSprintCtx.results.synopsis : '',
-              priorSprintCtx.results?.market ? '=== MARKET INTELLIGENCE ===\n' + priorSprintCtx.results.market : '',
-              priorSprintCtx.results?.competitive ? '=== COMPETITIVE RADAR ===\n' + priorSprintCtx.results.competitive : '',
-              priorSprintCtx.results?.growth ? '=== GROWTH STRATEGY ===\n' + priorSprintCtx.results.growth : '',
-              priorSprintCtx.strategic_bets ? '=== STRATEGIC BETS ===\n' + JSON.stringify(priorSprintCtx.strategic_bets) : '',
-            ].filter(Boolean).join('\n\n').slice(0, 8000)) : '',
-        }, signal.signal, []);
-        synthCtxForCat[agentId] = text;
-        setResults(r => ({ ...r, [agentId]: text }));
-        try {
-          const db = JSON.parse((text.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/) || ['','{}'])[1]);
-          setDataBlocks(d => ({ ...d, [agentId]: db }));
-        } catch(e) {}
-        setStatuses(s => ({ ...s, [agentId]: 'done' }));
+      const res = await fetch(`${API_URL.replace('/api/claude', '')}/api/category-quarterly`, {
+        method: 'POST',
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ company: company.trim() }),
+      });
+      if (!res.ok) throw new Error(`Category report request failed: ${res.status}`);
+      const reader = res.body.getReader();
+      const dec = new TextDecoder();
+      let buf = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        const lines = buf.split('\n'); buf = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const ev = JSON.parse(line.slice(6));
+            if (ev.type === 'status') {
+              setStatuses(s => ({ ...s, _status: ev.message }));
+            }
+            if (ev.type === 'agent_done') {
+              setStatuses(s => ({ ...s, [ev.agentId]: 'done' }));
+            }
+            if (ev.type === 'done') {
+              setAppState('done');
+              if (ev.shareUrl) {
+                window.open(ev.shareUrl, '_blank');
+              }
+            }
+            if (ev.type === 'error') throw new Error(ev.message);
+          } catch(e) { if (e.message && !e.message.startsWith('JSON')) throw e; }
+        }
       }
-      // Category outlook synthesis
-      setStatuses(s => ({ ...s, cat_outlook: 'running' }));
-      const outlookText = await runAgent('cat_outlook', {
-        company: co, acquirer: acquirer.trim(), ctx: context.trim(),
-        synthCtx: synthCtxForCat, market, companyMode,
-        parentCo: parentCo.trim(), parentSince: parentSince.trim(),
-        framingBlock: '', priorSprint: priorSprintCtx ? (typeof priorSprintCtx === 'string' ? priorSprintCtx : [
-              priorSprintCtx.results?.synopsis ? '=== BASELINE SYNOPSIS ===\n' + priorSprintCtx.results.synopsis : '',
-              priorSprintCtx.results?.market ? '=== MARKET INTELLIGENCE ===\n' + priorSprintCtx.results.market : '',
-              priorSprintCtx.results?.competitive ? '=== COMPETITIVE RADAR ===\n' + priorSprintCtx.results.competitive : '',
-              priorSprintCtx.results?.growth ? '=== GROWTH STRATEGY ===\n' + priorSprintCtx.results.growth : '',
-              priorSprintCtx.strategic_bets ? '=== STRATEGIC BETS ===\n' + JSON.stringify(priorSprintCtx.strategic_bets) : '',
-            ].filter(Boolean).join('\n\n').slice(0, 8000)) : '',
-      }, signal.signal, []);
-      setResults(r => ({ ...r, cat_outlook: outlookText }));
-      try {
-        const db = JSON.parse((outlookText.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/) || ['','{}'])[1]);
-        setDataBlocks(d => ({ ...d, cat_outlook: db }));
-      } catch(e) {}
-      setStatuses(s => ({ ...s, cat_outlook: 'done' }));
-      setAppState('done');
     } catch(e) {
       console.error('[CategoryReport] Error:', e.message);
       setAppState('error');
+    } finally {
+      // Guard: if stream ended without a 'done' event (server crash, Render timeout)
+      // and state is still 'running', set to error so UI doesn't stay stuck
+      setAppState(prev => prev === 'running' ? 'error' : prev);
     }
   };
 
