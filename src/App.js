@@ -4144,8 +4144,7 @@ ${Object.entries(w1texts).filter(([k])=>k!=='framing').map(([k,v])=>{
             const prose = v.replace(/<<<DATA_BLOCK>>>[\s\S]*?<<<END_DATA_BLOCK>>>/g, '').trim();
             // Strip H1 lines — synopsis should find cross-agent tensions, not restate agent headlines
             const prunedProse = prose
-              .replace(/^##\s+H1\s*[——\-][^
-]*/gm, '')
+              .replace(/^##\s+H1\s*[——\-][^\n]*/gm, '')
               .replace(/^\*\*H1[^*]*\*\*/gm, '')
               .trim()
               .slice(0, 1200);
