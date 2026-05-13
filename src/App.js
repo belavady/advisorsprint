@@ -3753,7 +3753,16 @@ export default function AdvisorSprint() {
           if (id === 'g_brief' || id === 'g_synopsis') {
             ctx_for_agent = w1texts;
           } else if (GW2.includes(id)) {
-            ctx_for_agent = w1texts;
+            // Global W2: DATA_BLOCK metrics only — no prose to prevent thesis echo
+            const gw2ctx = {};
+            Object.entries(w1texts).forEach(([k, v]) => {
+              if (typeof v !== 'string') { gw2ctx[k] = v; return; }
+              const dbMatch = v.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/);
+              gw2ctx[k] = dbMatch
+                ? '<<<DATA_BLOCK>>>' + dbMatch[1].slice(0, 800) + '<<<END_DATA_BLOCK>>>'
+                : v.slice(0, 300);
+            });
+            ctx_for_agent = gw2ctx;
           }
           const agentParams = {
             company: co, acquirer: acq, ctx,
@@ -4125,9 +4134,40 @@ ${Object.entries(w1texts).filter(([k])=>k!=='framing').map(([k,v])=>{
           }
           ctx_for_agent = w1texts; // brief receives all agent outputs INCLUDING synopsis
         } else if (id === 'synopsis') {
-          ctx_for_agent = w1texts; // Full outputs passed — makePrompt handles per-agent trimming
+          // Synopsis: full DATA_BLOCK + prose capped at 1200 chars with H1 stripped
+          // makePrompt trims further on server side, but pre-trim here improves signal:noise
+          const synCtx = {};
+          Object.entries(w1texts).forEach(([k, v]) => {
+            if (typeof v !== 'string') { synCtx[k] = v; return; }
+            const dbMatch = v.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/);
+            const dataBlock = dbMatch ? '<<<DATA_BLOCK>>>' + dbMatch[1] + '<<<END_DATA_BLOCK>>>' : '';
+            const prose = v.replace(/<<<DATA_BLOCK>>>[\s\S]*?<<<END_DATA_BLOCK>>>/g, '').trim();
+            // Strip H1 lines — synopsis should find cross-agent tensions, not restate agent headlines
+            const prunedProse = prose
+              .replace(/^##\s+H1\s*[——\-][^
+]*/gm, '')
+              .replace(/^\*\*H1[^*]*\*\*/gm, '')
+              .trim()
+              .slice(0, 1200);
+            synCtx[k] = dataBlock + (prunedProse ? '
+
+' + prunedProse : '');
+          });
+          ctx_for_agent = synCtx;
         } else if (W2.includes(id)) {
-          ctx_for_agent = w1texts;
+          // W2 agents (synergy, platform, intl): DATA_BLOCK metrics only from W1
+          // Full prose causes W2 agents to echo W1 thesis framing
+          const w2ctx = {};
+          Object.entries(w1texts).forEach(([k, v]) => {
+            if (typeof v !== 'string') { w2ctx[k] = v; return; }
+            const dbMatch = v.match(/<<<DATA_BLOCK>>>([\s\S]*?)<<<END_DATA_BLOCK>>>/);
+            if (dbMatch) {
+              w2ctx[k] = '<<<DATA_BLOCK>>>' + dbMatch[1].slice(0, 800) + '<<<END_DATA_BLOCK>>>';
+            } else {
+              w2ctx[k] = v.slice(0, 300);
+            }
+          });
+          ctx_for_agent = w2ctx;
         }
         const agentParams = { company: co, acquirer: acq, ctx, synthCtx: ctx_for_agent, market, companyMode, parentCo: parentCo.trim(), parentSince: parentSince.trim(), framingBlock, isPublic, ticker: ticker.trim(), strategicBets: strategicBets || '', priorSprint: priorSprintCtx ? (typeof priorSprintCtx === 'string' ? priorSprintCtx : [
               priorSprintCtx.results?.synopsis ? '=== BASELINE SYNOPSIS ===\n' + priorSprintCtx.results.synopsis : '',
