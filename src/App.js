@@ -4148,9 +4148,7 @@ ${Object.entries(w1texts).filter(([k])=>k!=='framing').map(([k,v])=>{
               .replace(/^\*\*H1[^*]*\*\*/gm, '')
               .trim()
               .slice(0, 1200);
-            synCtx[k] = dataBlock + (prunedProse ? '
-
-' + prunedProse : '');
+            synCtx[k] = dataBlock + (prunedProse ? '\n\n' + prunedProse : '');
           });
           ctx_for_agent = synCtx;
         } else if (W2.includes(id)) {
